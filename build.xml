@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="MetricsReloaded" default="compile">
+  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="plugin.class.path"/>
+  <property file="build.properties"/>
+  <property name="src.dir" value="src"/>
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA Maia"/>
+  <property name="idea.plugin.dir"
+            value="${my.user.dir}/Library/Application Support/IntelliJIDEA90"/>
+  <property name="debug" value="true"/>
+  <property name="optimize" value="off"/>
+  <property name="deprecation" value="off"/>
+  <property name="project.fullname" value="MetricsReloaded"/>
+  <property name="project.version" value="1.0.1"/>
+  <property name="jar.file" value="build/MetricsReloaded.jar"/>
+  <property name="resources.jar.file" value="build/resources_en.jar"/>
+  <property name="dist.zip.file"
+            value="build/${project.fullname}.${project.version}.zip"/>
+  <property name="build.classes.dir" value="build/classes"/>
+  <property name="src.dir" value="src"/>
+
+  <property name="openapi.src.dir" value="openapi/src"/>
+  <property name="openapi.build.classes.dir" value="openapi/build/classes"/>
+  <property name="openapi.jar.file" value="openapi/build/MetricsReloadedOpenAPI.jar"/>
+  <property name="openapi.javadoc.dir" value="openapi/build/javadoc"/>
+
+  <property name="stockmetrics.jar.file" value="stockmetrics/build/stockmetrics.jar"/>
+  <property name="stockmetrics.resources.jar.file" value="stockmetrics/build/stockmetrics_resources_en.jar"/>
+  <property name="stockmetrics.src.dir" value="stockmetrics/src"/>
+  <property name="stockmetrics.build.classes.dir" value="stockmetrics/build/classes"/>
+
+  <property name="utils.jar.file" value="utils/build/utils.jar"/>
+  <property name="utils.src.dir" value="utils/src"/>
+  <property name="utils.build.classes.dir" value="/utils/build/classes"/>
+
+  <property name="build.compiler" value="modern"/>
+  <path id="openapi.class.path">
+    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/lib/openAPI.jar"/>
+  </path>
+
+  <path id="plugin.class.path">
+    <pathelement location="lib/jcommon-0.9.1.jar"/>
+    <pathelement location="lib/jfreechart-0.9.16.jar"/>
+    <pathelement location="${openapi.jar.file}"/>
+    <pathelement location="${utils.jar.file}"/>
+    <pathelement location="${idea.dir}/lib/idea.jar"/>
+    <pathelement location="${idea.dir}/lib/openAPI.jar"/>
+    <pathelement location="${idea.dir}/lib/jdom.jar"/>
+    <pathelement location="${idea.dir}/lib/extensions.jar"/>
+    <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
+    <pathelement location="${idea.dir}/redist/javac2.jar"/>
+    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+  </path>
+
+  <target name="init">
+    <echo message="my.user.dir = ${my.user.dir}"/>
+  </target>
+
+  <target name="prepare" depends="init">
+    <mkdir dir="${openapi.build.classes.dir}"/>
+    <mkdir dir="${stockmetrics.build.classes.dir}"/>
+    <mkdir dir="${utils.build.classes.dir}"/>
+    <mkdir dir="${build.classes.dir}"/>
+  </target>
+
+  <target name="compile-openapi" depends="prepare">
+    <javac srcdir="${openapi.src.dir}" destdir="${openapi.build.classes.dir}"
+           includes="com/sixrr/**" debug="${debug}">
+      <classpath refid="openapi.class.path"/>
+    </javac>
+  </target>
+
+  <target name="javadoc-openapi" depends="prepare">
+    <javadoc2 sourcepath="${openapi.src.dir}" destdir="${openapi.javadoc.dir}" packagenames="com.sixrr.metrics"
+              classpathref="openapi.class.path"/>
+  </target>
+
+  <target name="create-openapi-jars" depends="compile-openapi">
+    <jar jarfile="${openapi.jar.file}">
+      <fileset dir="${openapi.build.classes.dir}"/>
+    </jar>
+  </target>
+
+  <target name="compile-utils" depends="prepare, create-openapi-jars">
+    <javac srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
+           includes="com/sixrr/**" debug="${debug}">
+      <classpath refid="plugin.class.path"/>
+    </javac>
+  </target>
+
+  <target name="create-utils-jars" depends="compile-utils">
+    <jar jarfile="${utils.jar.file}">
+      <fileset dir="${utils.build.classes.dir}"/>
+    </jar>
+  </target>
+  <target name="compile-stockmetrics" depends="prepare, create-openapi-jars, create-utils-jars">
+    <javac srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
+           includes="com/sixrr/**" debug="${debug}">
+      <classpath refid="plugin.class.path"/>
+    </javac>
+  </target>
+
+  <target name="create-stockmetrics-jars" depends="compile-stockmetrics">
+    <jar jarfile="${stockmetrics.jar.file}">
+      <fileset dir="${stockmetrics.build.classes.dir}"/>
+    </jar>
+    <jar jarfile="${stockmetrics.resources.jar.file}">
+      <fileset dir="stockmetrics/src">
+        <include name="**/*.properties"/>
+      </fileset>
+      <fileset dir="stockmetrics/metricsDescriptions">
+        <include name="**/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="compile" depends="prepare, create-openapi-jars, create-utils-jars">
+    <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}"
+            includes="com/sixrr/**" debug="${debug}">
+      <classpath refid="plugin.class.path"/>
+    </javac2>
+  </target>
+
+  <target name="create_jars" depends="compile">
+    <jar jarfile="${openapi.jar.file}">
+      <fileset dir="${openapi.build.classes.dir}"/>
+    </jar>
+    <jar jarfile="${jar.file}">
+      <fileset dir="${build.classes.dir}"/>
+      <fileset dir=".">
+        <include name="META-INF/plugin.xml"/>
+      </fileset>
+    </jar>
+    <jar jarfile="${resources.jar.file}">
+      <fileset dir="src">
+        <include name="**/*.properties"/>
+      </fileset>
+      <fileset dir="resources">
+        <include name="**/**"/>
+      </fileset>
+    </jar>
+
+  </target>
+
+  <target name="deploy" depends="clean,create_jars,create-stockmetrics-jars,create-utils-jars, javadoc-openapi"
+          description="deploy the plugin">
+
+    <mkdir dir="${idea.plugin.dir}"/>
+    <mkdir dir="${idea.plugin.dir}/MetricsReloaded"/>
+    <mkdir dir="${idea.plugin.dir}/MetricsReloaded/doc"/>
+    <mkdir dir="${idea.plugin.dir}/MetricsReloaded/license"/>
+    <mkdir dir="${idea.plugin.dir}/MetricsReloaded/lib"/>
+    <mkdir dir="${idea.plugin.dir}/MetricsReloaded/help"/>
+    <copy file="${openapi.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="${stockmetrics.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="${stockmetrics.resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="${utils.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="${jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="${resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="lib/commons-collections-3.1.jar"
+          todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="lib/jcommon-0.9.1.jar"
+          todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy file="lib/jfreechart-0.9.16.jar"
+          todir="${idea.plugin.dir}/MetricsReloaded/lib"
+          overwrite="true"/>
+    <copy todir="${idea.plugin.dir}/MetricsReloaded/license"
+          overwrite="true">
+      <fileset dir="license">
+        <include name="**/**"/>
+      </fileset>
+    </copy>
+    <copy todir="${idea.plugin.dir}/MetricsReloaded/doc"
+          overwrite="true">
+      <fileset dir="${openapi.javadoc.dir}"/>
+    </copy>
+    <!--copy file="${help.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/help" overwrite="true"/-->
+  </target>
+
+  <target name="clean" depends="init"
+          description="Clean up the distribution">
+    <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
+    <delete failonerror="false" dir="${build.classes.dir}"/>
+    <delete failonerror="false" file="${jar.file}"/>
+    <delete failonerror="false" file="${openapi.jar.file}"/>
+    <!--delete failonerror="false" file="${help.jar.file}"/-->
+  </target>
+
+  <target name="remove-svn">
+    <delete dir="." includes="**/.svn/**" defaultexcludes="false"/>
+    <delete dir="." includes="**/.svn" defaultexcludes="false"/>
+  </target>
+  <target name="package">
+    <zip zipfile="../MetricsReloaded.zip">
+      <fileset dir=".">
+        <include name="**/**"/>
+      </fileset>
+    </zip>
+  </target>
+</project>

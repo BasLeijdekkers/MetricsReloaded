@@ -1,0 +1,46 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin version="2">
+    <name>MetricsReloaded</name>
+    <description><![CDATA[
+    More than 250 automated code metrics for IntelliJ IDEA.
+    If you like this plugin, why don't you follow <a href="http://www.twitter.com/inspectorbas">me on twitter</a>
+    ]]></description>
+    <vendor url="http://www.sixthandredriver.com"
+            email="basleijdekkers at gmail dot com">Bas Leijdekkers &amp; Sixth and Red River Software
+    </vendor>
+    <version>0.9.1</version>
+    <idea-version since-build="8500"/>
+
+    <extensions xmlns="com.intellij">
+        <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
+    </extensions>
+
+    <application-components>
+        <component>
+            <interface-class>com.sixrr.metrics.plugin.MetricsPluginApplication</interface-class>
+            <implementation-class>com.sixrr.metrics.plugin.MetricsPluginApplicationImpl</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sixrr.stockmetrics.DefaultMetricProvider</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <component>
+            <interface-class>com.sixrr.metrics.plugin.MetricsPlugin</interface-class>
+            <implementation-class>com.sixrr.metrics.plugin.MetricsPluginImpl</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <group>
+            <action id="Metrics.ProjectMetricsAction" class="com.sixrr.metrics.plugin.ProjectMetricsAction"
+                    text="Calculate Metrics..."/>
+            <!--action id="Metrics.ViewOfflineMetricsResults"
+                    class="com.sixrr.metrics.offline.ViewOfflineMetricsResultsAction"
+                    text="View Offline Metrics Results...">
+            </action-->
+            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+        </group>
+    </actions>
+</idea-plugin>

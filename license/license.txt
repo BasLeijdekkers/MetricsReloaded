@@ -1,0 +1,8 @@
+
+MetricsReloaded is open-source software, released under the Apache 2.0 license, a
+copy of which is included with this software.
+
+The charting function of MetricsReloaded is provided by JFreeChart,
+an open-source graphing library.  For more information about JFreeChart, see
+http://www.jfreechart.org.   JFreeChart is distributed under the GNU Lesser General
+Public License (LGPL).  A copy of the license is included in this distribution.
