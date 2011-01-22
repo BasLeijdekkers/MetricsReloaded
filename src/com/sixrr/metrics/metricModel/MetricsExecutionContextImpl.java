@@ -73,9 +73,6 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
                 scope.accept(new PsiElementVisitor() {
                     private int mainTraversalProgress = 0;
 
-                    public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
-                    }
-
                     public void visitFile(PsiFile psiFile) {
                         super.visitFile(psiFile);
                         final String fileName = psiFile.getName();
