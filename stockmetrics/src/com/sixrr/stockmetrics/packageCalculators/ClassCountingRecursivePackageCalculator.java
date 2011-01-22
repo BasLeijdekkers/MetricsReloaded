@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 abstract class ClassCountingRecursivePackageCalculator extends PackageCalculator {
+
     private final BuckettedCount<PsiPackage> numClassesPerPackage = new BuckettedCount<PsiPackage>();
 
     public void endMetricsRun() {
@@ -42,6 +43,11 @@ abstract class ClassCountingRecursivePackageCalculator extends PackageCalculator
     private class Visitor extends JavaRecursiveElementVisitor {
 
         public void visitClass(PsiClass aClass) {
+            super.visitClass(aClass);
+            if (aClass instanceof PsiTypeParameter ||
+                    aClass instanceof PsiEnumConstantInitializer) {
+                return;
+            }
             final boolean satisfied = satisfies(aClass);
             final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(aClass);
             for (final PsiPackage aPackage : packages) {

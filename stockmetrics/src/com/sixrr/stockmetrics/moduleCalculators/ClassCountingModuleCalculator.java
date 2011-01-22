@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.BuckettedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 abstract class ClassCountingModuleCalculator extends ModuleCalculator {
+
     private final BuckettedCount<Module> numClassesPerModule = new BuckettedCount<Module>();
 
     protected abstract boolean satisfies(PsiClass aClass);
@@ -43,7 +42,13 @@ abstract class ClassCountingModuleCalculator extends ModuleCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitClass(PsiClass aClass) {
+            super.visitClass(aClass);
+            if (aClass instanceof PsiTypeParameter ||
+                    aClass instanceof PsiEnumConstantInitializer) {
+                return;
+            }
             final Module module = ClassUtils.calculateModule(aClass);
 
             numClassesPerModule.createBucket(module);
