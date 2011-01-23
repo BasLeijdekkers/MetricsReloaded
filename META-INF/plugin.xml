@@ -3,9 +3,8 @@
     <name>MetricsReloaded</name>
     <description><![CDATA[
     More than 250 automated code metrics for IntelliJ IDEA.
-    If you like this plugin, why don't you follow <a href="http://www.twitter.com/inspectorbas">me on twitter</a>
     ]]></description>
-    <vendor url="http://www.sixthandredriver.com"
+    <vendor url="http://www.twitter.com/inspectorbas"
             email="basleijdekkers at gmail dot com">Bas Leijdekkers &amp; Sixth and Red River Software
     </vendor>
     <version>0.9.1</version>
