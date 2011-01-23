@@ -61,11 +61,11 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         toolbarGroup.add(new EditThresholdsAction(this));
         toolbarGroup.add(new CloseMetricsViewAction(this));
         final ActionManager actionManager = ActionManager.getInstance();
-        final ActionToolbar toolbar = actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, true);
+        final ActionToolbar toolbar =
+                actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
         myContentPanel = new JPanel(new BorderLayout());
-        myContentPanel.setBackground(Color.gray);
         metricsDisplay = new MetricsDisplay(project, config, repository);
-        myContentPanel.add(toolbar.getComponent(), BorderLayout.NORTH);
+        myContentPanel.add(toolbar.getComponent(), BorderLayout.WEST);
         myContentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
     }
 
