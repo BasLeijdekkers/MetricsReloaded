@@ -111,7 +111,7 @@
       <component id="3b54e" class="javax.swing.JComboBox" binding="filterComboBox" custom-create="true">
         <constraints>
           <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="15" height="-1"/>
+            <minimum-size width="150" height="-1"/>
           </grid>
         </constraints>
         <properties>
