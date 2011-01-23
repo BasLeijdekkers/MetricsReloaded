@@ -1,37 +1,38 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <project name="MetricsReloaded" default="compile">
-  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="plugin.class.path"/>
+
   <property file="build.properties"/>
-  <property name="src.dir" value="src"/>
-  <property name="idea.dir" value="/Applications/IntelliJ IDEA Maia"/>
+
+  <!-- override these in a build.properties file -->
+  <property name="my.user.dir" value="/Users/bas"/>
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA 10"/>
   <property name="idea.plugin.dir"
-            value="${my.user.dir}/Library/Application Support/IntelliJIDEA90"/>
+            value="${my.user.dir}/Library/Application Support/IntelliJIdea10"/>
+
+  <property name="src.dir" value="src"/>
+  <property name="build.classes.dir" value="build/classes"/>
   <property name="debug" value="true"/>
   <property name="optimize" value="off"/>
   <property name="deprecation" value="off"/>
-  <property name="project.fullname" value="MetricsReloaded"/>
-  <property name="project.version" value="1.0.1"/>
   <property name="jar.file" value="build/MetricsReloaded.jar"/>
   <property name="resources.jar.file" value="build/resources_en.jar"/>
-  <property name="dist.zip.file"
-            value="build/${project.fullname}.${project.version}.zip"/>
-  <property name="build.classes.dir" value="build/classes"/>
-  <property name="src.dir" value="src"/>
+  <property name="project.fullname" value="MetricsReloaded"/>
+  <property name="dist.zip.file" value="build/${project.fullname}.zip"/>
 
   <property name="openapi.src.dir" value="openapi/src"/>
   <property name="openapi.build.classes.dir" value="openapi/build/classes"/>
   <property name="openapi.jar.file" value="openapi/build/MetricsReloadedOpenAPI.jar"/>
   <property name="openapi.javadoc.dir" value="openapi/build/javadoc"/>
 
-  <property name="stockmetrics.jar.file" value="stockmetrics/build/stockmetrics.jar"/>
-  <property name="stockmetrics.resources.jar.file" value="stockmetrics/build/stockmetrics_resources_en.jar"/>
   <property name="stockmetrics.src.dir" value="stockmetrics/src"/>
   <property name="stockmetrics.build.classes.dir" value="stockmetrics/build/classes"/>
+  <property name="stockmetrics.jar.file" value="stockmetrics/build/stockmetrics.jar"/>
+  <property name="stockmetrics.resources.jar.file" value="stockmetrics/build/stockmetrics_resources_en.jar"/>
 
-  <property name="utils.jar.file" value="utils/build/utils.jar"/>
   <property name="utils.src.dir" value="utils/src"/>
-  <property name="utils.build.classes.dir" value="/utils/build/classes"/>
+  <property name="utils.build.classes.dir" value="utils/build/classes"/>
+  <property name="utils.jar.file" value="utils/build/utils.jar"/>
 
   <property name="build.compiler" value="modern"/>
   <path id="openapi.class.path">
@@ -49,9 +50,9 @@
     <pathelement location="${idea.dir}/lib/jdom.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
     <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
-    <pathelement location="${idea.dir}/redist/javac2.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
   </path>
+  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpath="${idea.dir}/redist/javac2.jar"/>
 
   <target name="init">
     <echo message="my.user.dir = ${my.user.dir}"/>
@@ -94,6 +95,7 @@
       <fileset dir="${utils.build.classes.dir}"/>
     </jar>
   </target>
+  
   <target name="compile-stockmetrics" depends="prepare, create-openapi-jars, create-utils-jars">
     <javac srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
@@ -123,9 +125,6 @@
   </target>
 
   <target name="create_jars" depends="compile">
-    <jar jarfile="${openapi.jar.file}">
-      <fileset dir="${openapi.build.classes.dir}"/>
-    </jar>
     <jar jarfile="${jar.file}">
       <fileset dir="${build.classes.dir}"/>
       <fileset dir=".">
@@ -164,8 +163,6 @@
           overwrite="true"/>
     <copy file="${resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
           overwrite="true"/>
-    <copy file="lib/commons-collections-3.1.jar"
-          todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
     <copy file="lib/jcommon-0.9.1.jar"
           todir="${idea.plugin.dir}/MetricsReloaded/lib"
           overwrite="true"/>
@@ -194,15 +191,18 @@
     <!--delete failonerror="false" file="${help.jar.file}"/-->
   </target>
 
-  <target name="remove-svn">
-    <delete dir="." includes="**/.svn/**" defaultexcludes="false"/>
-    <delete dir="." includes="**/.svn" defaultexcludes="false"/>
-  </target>
-  <target name="package">
-    <zip zipfile="../MetricsReloaded.zip">
-      <fileset dir=".">
-        <include name="**/**"/>
-      </fileset>
+  <target name="package" depends="create_jars"
+          description="create zipfile for uploading to plugins.intellij.net">
+    <zip destfile="${dist.zip.file}">
+      <zipfileset file="${jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="${resources.jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="${utils.jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="${openapi.jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="${stockmetrics.jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="${stockmetrics.resources.jar.file}" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="lib/jcommon-0.9.1.jar" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="lib/jfreechart-0.9.16.jar" prefix="MetricsReloaded/lib"/>
+      <zipfileset dir="license" prefix="MetricsReloaded/license"/>
     </zip>
   </target>
 </project>
