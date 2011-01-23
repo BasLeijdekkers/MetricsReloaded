@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2010, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,14 +17,16 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.table.JBTable;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.*;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -40,16 +42,10 @@ import java.util.*;
 import java.util.List;
 
 public class MetricsDisplay {
+    
     private boolean hasOverlay = false;
-    private JTable projectMetricsTable;
-    private JTable packageMetricsTable;
-    private JTable moduleMetricsTable;
-    private JTable classMetricsTable;
-    private JTable interfaceMetricsTable;
-    private JTable methodMetricsTable;
-    private final Map<MetricCategory, JTable> tables =
-            new HashMap<MetricCategory, JTable>();
-    private JTabbedPane tabbedPane;
+    private final Map<MetricCategory, JTable> tables = new HashMap<MetricCategory, JTable>();
+    private JTabbedPane tabbedPane = new JTabbedPane();
     private final MetricsReloadedConfig configuration;
     private final MetricsProfileRepository profileRepository;
 
@@ -58,11 +54,17 @@ public class MetricsDisplay {
         super();
         this.configuration = configuration;
         this.profileRepository = profileRepository;
+        final JTable projectMetricsTable = new JBTable();
         tables.put(MetricCategory.Project, projectMetricsTable);
+        final JTable moduleMetricsTable = new JBTable();
         tables.put(MetricCategory.Module, moduleMetricsTable);
+        final JTable packageMetricsTable = new JBTable();
         tables.put(MetricCategory.Package, packageMetricsTable);
+        final JTable classMetricsTable = new JBTable();
         tables.put(MetricCategory.Class, classMetricsTable);
+        final JTable interfaceMetricsTable = new JBTable();
         tables.put(MetricCategory.Interface, interfaceMetricsTable);
+        final JTable methodMetricsTable = new JBTable();
         tables.put(MetricCategory.Method, methodMetricsTable);
         setupTable(projectMetricsTable, project);
         setupTable(moduleMetricsTable, project);
@@ -70,6 +72,18 @@ public class MetricsDisplay {
         setupTable(classMetricsTable, project);
         setupTable(interfaceMetricsTable, project);
         setupTable(methodMetricsTable, project);
+        tabbedPane.add(MetricsReloadedBundle.message("project.metrics"),
+                ScrollPaneFactory.createScrollPane(projectMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("module.metrics"),
+                ScrollPaneFactory.createScrollPane(moduleMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("package.metrics"),
+                ScrollPaneFactory.createScrollPane(packageMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("class.metrics"),
+                ScrollPaneFactory.createScrollPane(classMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("interface.metrics"),
+                ScrollPaneFactory.createScrollPane(interfaceMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("method.metrics"),
+                ScrollPaneFactory.createScrollPane(methodMetricsTable));
     }
 
     private void setupTable(JTable table, Project project) {
@@ -87,16 +101,18 @@ public class MetricsDisplay {
         for (final MetricCategory category : categories) {
             final JTable table = getTableForCategory(category);
             final String type = MetricsCategoryNameUtil.getShortNameForCategory(category);
-            final MetricTableSpecification tableSpecification = displaySpecification.getSpecification(category);
+            final MetricTableSpecification tableSpecification =
+                    displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
-            final MetricTableModel model = new MetricTableModel(results, type, tableSpecification, profileRepository);
+            final MetricTableModel model =
+                    new MetricTableModel(results, type, tableSpecification, profileRepository);
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
                 tabbedPane.remove(tab);
-            } else {
-                final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
-                tabbedPane.add(tab, longName);
+                continue;
             }
+            final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
+            tabbedPane.add(tab, longName);
             table.setModel(model);
             table.setCellSelectionEnabled(false);
             table.setRowSelectionAllowed(false);
@@ -106,8 +122,8 @@ public class MetricsDisplay {
             final TableColumnModel columnModel = table.getColumnModel();
             columnModel.addColumnModelListener(columnListener);
             final int columnCount = columnModel.getColumnCount();
-            for (int i1 = 0; i1 < columnCount; i1++) {
-                final TableColumn column = columnModel.getColumn(i1);
+            for (int i = 0; i < columnCount; i++) {
+                final TableColumn column = columnModel.getColumn(i);
                 column.addPropertyChangeListener(columnListener);
             }
             setRenderers(table, type);
@@ -119,7 +135,8 @@ public class MetricsDisplay {
         return tables.get(category);
     }
 
-    public void updateMetricsResults(MetricsRun run, MetricDisplaySpecification displaySpecification) {
+    public void updateMetricsResults(MetricsRun run,
+                                     MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = getTableForCategory(category);
@@ -131,12 +148,14 @@ public class MetricsDisplay {
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification =
+                    displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
     }
 
-    public void updateMetricsResultsWithDiff(MetricsRun results, MetricDisplaySpecification displaySpecification) {
+    public void updateMetricsResultsWithDiff(MetricsRun results,
+                                             MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = getTableForCategory(category);
@@ -147,19 +166,21 @@ public class MetricsDisplay {
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
                 tabbedPane.remove(tab);
-            } else {
-                final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
-                tabbedPane.add(tab, longName);
+                continue;
             }
+            final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
+            tabbedPane.add(tab, longName);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification =
+                    displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
         hasOverlay = true;
     }
 
-    public void overlayWithDiff(MetricsRun prevRun, MetricDisplaySpecification displaySpecification) {
+    public void overlayWithDiff(MetricsRun prevRun,
+                                MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = getTableForCategory(category);
@@ -168,13 +189,14 @@ public class MetricsDisplay {
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
                 tabbedPane.remove(tab);
-            } else {
-                final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
-                tabbedPane.add(tab, longName);
+                continue;
             }
+            final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
+            tabbedPane.add(tab, longName);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification =
+                    displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
         hasOverlay = true;
@@ -189,13 +211,14 @@ public class MetricsDisplay {
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
                 tabbedPane.remove(tab);
-            } else {
-                final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
-                tabbedPane.add(tab, longName);
+                continue;
             }
+            final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
+            tabbedPane.add(tab, longName);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification =
+                    displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
         hasOverlay = false;
@@ -225,7 +248,7 @@ public class MetricsDisplay {
             final FontMetrics fontMetrics = table.getFontMetrics(font);
 
             final int rowCount = model.getRowCount();
-            int maxFirstColumnWidth = 0;
+            int maxFirstColumnWidth = 100;
             for (int i = 0; i < rowCount; i++) {
                 final String name = (String) model.getValueAt(i, 0);
                 if (name != null) {
