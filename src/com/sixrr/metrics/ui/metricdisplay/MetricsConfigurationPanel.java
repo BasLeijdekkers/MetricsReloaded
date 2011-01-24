@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -238,10 +238,6 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
                 currentProfileIsModified = true;
             }
         });
-    }
-
-    public void run() {
-        show();
     }
 
     private void setupMetricsTree() {
@@ -831,7 +827,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         return "";
     }
 
-    private  class CopyProfileAction extends AbstractAction {
+    private class CopyProfileAction extends AbstractAction {
 
         private final MetricsProfileRepository repository;
         private final Project project;
@@ -854,7 +850,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         }
     }
 
-    private  class NewProfileAction extends AbstractAction {
+    private class NewProfileAction extends AbstractAction {
 
         private final MetricsProfileRepository repository;
         private final Project project;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,7 +37,8 @@ import javax.swing.*;
 public class ProjectMetricsAction extends BaseAnalysisAction {
 
     public ProjectMetricsAction() {
-        super(MetricsReloadedBundle.message("metrics.calculation"), MetricsReloadedBundle.message("metrics"));
+        super(MetricsReloadedBundle.message("metrics.calculation"),
+                MetricsReloadedBundle.message("metrics"));
     }
 
     protected void analyze(Project project, AnalysisScope analysisScope) {
@@ -45,17 +46,19 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
         final MetricsProfileRepository repository = plugin.getProfileRepository();
         final MetricsProfile profile = repository.getCurrentProfile();
         final MetricsToolWindow toolWindow = plugin.getMetricsToolWindow();
-        final MetricsExecutionContextImpl executionContext = new MetricsExecutionContextImpl(project, analysisScope);
+        final MetricsExecutionContextImpl executionContext =
+                new MetricsExecutionContextImpl(project, analysisScope);
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
         final boolean cancelled = executionContext.execute(profile, metricsRun);
         final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
         if (cancelled) {
             return;
         }
-        if(!metricsRun.hasWarnings(profile)  && showOnlyWarnings)
-        {
+        if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
             final ImageIcon icon = IconHelper.getIcon("/general/informationDialog.png");
-            Messages.showMessageDialog(project, "No metrics warnings found", "No metrics warnings found", icon);
+            Messages.showMessageDialog(project,
+                    MetricsReloadedBundle.message("no.metrics.warnings.found"),
+                    MetricsReloadedBundle.message("no.metrics.warnings.found"), icon);
             return;
         }
         final String profileName = profile.getName();
@@ -66,11 +69,9 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
     }
 
     @Nullable
-    protected JComponent getAdditionalActionSettings(Project project,
-                                                     BaseAnalysisActionDialog baseAnalysisActionDialog) {
-        final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
-        final MetricsProfileRepository repository = plugin.getProfileRepository();
-        final ProfileSelectionPanel profileSelectionPanel = new ProfileSelectionPanel(project, repository);
+    protected JComponent getAdditionalActionSettings(
+            Project project, BaseAnalysisActionDialog dialog) {
+        final ProfileSelectionPanel profileSelectionPanel = new ProfileSelectionPanel(project);
         return profileSelectionPanel.getPanel();
     }
 }
