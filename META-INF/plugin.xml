@@ -2,9 +2,12 @@
 <idea-plugin version="2">
     <name>MetricsReloaded</name>
     <description><![CDATA[
-    More than 250 automated code metrics for IntelliJ IDEA.
+    More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
+    IntelliJ IDEA 9 and 10. Follow further development of
+    <a href="https://github.com/BasLeijdekkers/MetricsReloaded">this plugin on GitHub</a> or follow
+    <a href="http://twitter.com/inspectorbas">me on twitter</a> for announcements and other things.
     ]]></description>
-    <vendor url="http://www.twitter.com/inspectorbas"
+    <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
             email="basleijdekkersYour Pants@gmail.com">Bas Leijdekkers (remove Your Pants to mail me;)</vendor>
     <version>0.9.1</version>
     <idea-version since-build="8500"/>
