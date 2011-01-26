@@ -1,5 +1,5 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
-<idea-plugin version="2">
+<idea-plugin version="2" url="http://plugins.intellij.net/plugin/?id=93">
     <name>MetricsReloaded</name>
     <description><![CDATA[
     More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
@@ -9,7 +9,7 @@
     ]]></description>
     <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
             email="basleijdekkersYour Pants@gmail.com">Bas Leijdekkers (remove Your Pants to mail me;)</vendor>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
     <idea-version since-build="8500"/>
 
     <extensions xmlns="com.intellij">
