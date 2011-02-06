@@ -103,6 +103,8 @@ public class ProfileSelectionPanel {
                 final MetricsConfigurationPanel configurationPanel =
                         new MetricsConfigurationPanel(project, repository);
                 configurationPanel.show();
+                final String[] profiles = repository.getProfileNames();
+                comboBox.setModel(new DefaultComboBoxModel(profiles));
                 final MetricsProfile currentProfile = repository.getCurrentProfile();
                 final String currentProfileName = currentProfile.getName();
                 comboBox.setSelectedItem(currentProfileName);
