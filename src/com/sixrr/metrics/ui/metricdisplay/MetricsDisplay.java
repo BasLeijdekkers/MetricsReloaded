@@ -99,13 +99,14 @@ public class MetricsDisplay {
     public void setMetricsResults(MetricDisplaySpecification displaySpecification, MetricsRun run) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
-            final JTable table = getTableForCategory(category);
+            final JTable table = tables.get(category);
             final String type = MetricsCategoryNameUtil.getShortNameForCategory(category);
             final MetricTableSpecification tableSpecification =
                     displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
             final MetricTableModel model =
                     new MetricTableModel(results, type, tableSpecification, profileRepository);
+            table.setModel(model);
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
                 tabbedPane.remove(tab);
@@ -113,7 +114,6 @@ public class MetricsDisplay {
             }
             final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
             tabbedPane.add(tab, longName);
-            table.setModel(model);
             table.setCellSelectionEnabled(false);
             table.setRowSelectionAllowed(false);
             table.setColumnSelectionAllowed(true);
@@ -131,15 +131,11 @@ public class MetricsDisplay {
         }
     }
 
-    private JTable getTableForCategory(MetricCategory category) {
-        return tables.get(category);
-    }
-
     public void updateMetricsResults(MetricsRun run,
                                      MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
-            final JTable table = getTableForCategory(category);
+            final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setResults(run.getResultsForCategory(category));
             table.setCellSelectionEnabled(false);
@@ -158,7 +154,7 @@ public class MetricsDisplay {
                                              MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
-            final JTable table = getTableForCategory(category);
+            final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             final MetricsResult prevResults = model.getResults();
             model.setPrevResults(prevResults);
@@ -183,7 +179,7 @@ public class MetricsDisplay {
                                 MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
-            final JTable table = getTableForCategory(category);
+            final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setPrevResults(prevRun.getResultsForCategory(category));
             final Container tab = table.getParent().getParent();
@@ -205,7 +201,7 @@ public class MetricsDisplay {
     public void removeDiffOverlay(MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
-            final JTable table = getTableForCategory(category);
+            final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setPrevResults(null);
             final Container tab = table.getParent().getParent();
