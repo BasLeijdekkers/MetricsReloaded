@@ -25,13 +25,13 @@ import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.util.containers.Convertor;
 import com.intellij.util.ui.Tree;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
-import com.sixrr.metrics.ui.dialogs.ProfileNameDialog;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.metricModel.MetricComparator;
 import com.sixrr.metrics.metricModel.MetricInstance;
@@ -832,7 +832,8 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         private final MetricsProfileRepository repository;
         private final Project project;
 
-        CopyProfileAction(MetricsProfileRepository repository, MetricsConfigurationPanel metricsConfigurationPanel,
+        CopyProfileAction(MetricsProfileRepository repository,
+                          MetricsConfigurationPanel metricsConfigurationPanel,
                           Project project) {
             super(MetricsReloadedBundle.message("copy.profile.action"));
             this.repository = repository;
@@ -840,13 +841,15 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         }
 
         public void actionPerformed(ActionEvent event) {
-            final ProfileNameDialog profileNameDialog = new ProfileNameDialog(project);
-            profileNameDialog.run();
-            final String newProfileName = profileNameDialog.getNewName();
-            if (profileNameDialog.isOkSelected()) {
-                repository.duplicateCurrentProfile(newProfileName);
-                updateSelection(newProfileName);
+            final String newProfileName = Messages.showInputDialog(saveAsButton,
+                    MetricsReloadedBundle.message("enter.new.profile.name"),
+                    MetricsReloadedBundle.message("create.new.metrics.profile"),
+                    Messages.getQuestionIcon());
+            if (newProfileName == null) {
+                return;
             }
+            repository.duplicateCurrentProfile(newProfileName);
+            updateSelection(newProfileName);
         }
     }
 
@@ -855,7 +858,8 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         private final MetricsProfileRepository repository;
         private final Project project;
 
-        NewProfileAction(MetricsProfileRepository repository, MetricsConfigurationPanel metricsConfigurationPanel,
+        NewProfileAction(MetricsProfileRepository repository,
+                         MetricsConfigurationPanel metricsConfigurationPanel,
                          Project project) {
             super(MetricsReloadedBundle.message("new.profile.action"));
             this.repository = repository;
@@ -863,13 +867,15 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
         }
 
         public void actionPerformed(ActionEvent event) {
-            final ProfileNameDialog profileNameDialog = new ProfileNameDialog(project);
-            profileNameDialog.run();
-            final String newProfileName = profileNameDialog.getNewName();
-            if (profileNameDialog.isOkSelected()) {
-                repository.createEmptyProfile(newProfileName);
-                updateSelection(newProfileName);
+            final String newProfileName = Messages.showInputDialog(saveAsButton,
+                    MetricsReloadedBundle.message("enter.new.profile.name"),
+                    MetricsReloadedBundle.message("create.new.metrics.profile"),
+                    Messages.getQuestionIcon());
+            if (newProfileName == null) {
+                return;
             }
+            repository.createEmptyProfile(newProfileName);
+            updateSelection(newProfileName);
         }
     }
 }
