@@ -18,7 +18,7 @@ package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ComboboxWithBrowseButton;
-import com.intellij.ui.SeparatorFactory;
+import com.intellij.ui.TitledSeparator;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
@@ -44,22 +44,24 @@ public class ProfileSelectionPanel {
 
         final ComboboxWithBrowseButton comboboxWithBrowseButton =
                 buildComboBoxWithBrowseButton(project, repository);
-        final JComponent separator = SeparatorFactory.createSeparator(
-                MetricsReloadedBundle.message("metrics.profile"),
-                comboboxWithBrowseButton.getComboBox());
+
+        final JComponent separator =
+                new TitledSeparator(MetricsReloadedBundle.message("metrics.profile"));
         final JCheckBox checkBox = buildCheckBox(configuration);
 
         final GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets.left = 5;
+        constraints.insets.left = 0;
+        constraints.insets.bottom = 8;
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
         panel.add(separator, constraints);
 
         constraints.insets.left = 12;
+        constraints.insets.bottom = 0;
         constraints.gridy = 1;
         panel.add(comboboxWithBrowseButton, constraints);
 
