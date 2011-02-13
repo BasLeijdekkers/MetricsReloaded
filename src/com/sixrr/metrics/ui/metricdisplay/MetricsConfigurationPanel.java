@@ -31,13 +31,12 @@ import com.intellij.util.containers.Convertor;
 import com.intellij.util.ui.Tree;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
-import com.sixrr.metrics.metricModel.MetricComparator;
 import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
@@ -244,6 +243,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
 
         metricsTree = new MetricsTree();
         treeScrollPane.setViewportView(metricsTree);
+        populateTree();
         final MyTreeCellRenderer renderer = new MyTreeCellRenderer();
         metricsTree.setCellRenderer(renderer);
         metricsTree.setRootVisible(true);
@@ -273,33 +273,33 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
                 }
             }
         });
-        populateTree();
         metricsTree.setSelectionRow(0);
     }
 
     private void populateTree() {
-        final MetricTreeNode root = new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
+        final MetricTreeNode root =
+                new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
         final Map<MetricCategory, MetricTreeNode> categoryNodes =
                 new EnumMap<MetricCategory, MetricTreeNode>(MetricCategory.class);
 
         if (profile != null) {
             final List<MetricInstance> metrics = profile.getMetrics();
-            final MetricInstance[] metricsArray = metrics.toArray(new MetricInstance[metrics.size()]);
-            Arrays.sort(metricsArray, new MetricComparator());
-            for (final MetricInstance metricInstance : metricsArray) {
+            for (final MetricInstance metricInstance : metrics) {
                 final Metric metric = metricInstance.getMetric();
-                if (isMetricAccepted(metric)) {
-                    final MetricCategory category = metric.getCategory();
-                    MetricTreeNode categoryNode = categoryNodes.get(category);
-                    if (categoryNode == null) {
-                        categoryNode = new MetricTreeNode(
-                                MetricsCategoryNameUtil.getLongNameForCategory(category), true);
-                        root.add(categoryNode);
-                        categoryNodes.put(category, categoryNode);
-                    }
-                    final MetricTreeNode metricNode = new MetricTreeNode(metricInstance, metricInstance.isEnabled());
-                    categoryNode.add(metricNode);
+                if (!isMetricAccepted(metric)) {
+                    continue;
                 }
+                final MetricCategory category = metric.getCategory();
+                MetricTreeNode categoryNode = categoryNodes.get(category);
+                if (categoryNode == null) {
+                    categoryNode = new MetricTreeNode(
+                            MetricsCategoryNameUtil.getLongNameForCategory(category), true);
+                    root.add(categoryNode);
+                    categoryNodes.put(category, categoryNode);
+                }
+                final MetricTreeNode metricNode =
+                        new MetricTreeNode(metricInstance, metricInstance.isEnabled());
+                categoryNode.add(metricNode);
             }
         }
 
