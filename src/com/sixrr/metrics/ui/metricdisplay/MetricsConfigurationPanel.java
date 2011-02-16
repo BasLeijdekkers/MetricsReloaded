@@ -56,6 +56,15 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
+/**
+ * todo if ok or apply is not pressed do not add or remove profiles!
+ * todo sort correctly
+ * todo fix cce -> use inspection like tree/renderer
+ * todo pretty highlighting
+ * todo default action buttons
+ * todo default scroll bars
+ * todo resizeability
+ */
 public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSelectionListener {
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
@@ -89,7 +98,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
     private String[] filters = new String[0];
 
     public MetricsConfigurationPanel(Project project, MetricsProfileRepository repository) {
-        super(project, false);
+        super(project, true);
         this.project = project;
         this.repository = repository;
         profile = this.repository.getCurrentProfile();
@@ -406,8 +415,8 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
             public void mousePressed(MouseEvent event) {
                 super.mousePressed(event);
                 final JPopupMenu popup = new JPopupMenu();
-                popup.add(new JMenuItem(new CopyProfileAction(repository, MetricsConfigurationPanel.this, project)));
-                popup.add(new JMenuItem(new NewProfileAction(repository, MetricsConfigurationPanel.this, project)));
+                popup.add(new JMenuItem(new CopyProfileAction(repository)));
+                popup.add(new JMenuItem(new NewProfileAction(repository)));
                 popup.show(saveAsButton, 0, saveAsButton.getHeight());
             }
         });
@@ -445,6 +454,12 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
 
     private void toggleDeleteButton() {
         deleteButton.setEnabled(repository.getProfileNames().length != 0);
+        /*final boolean anyProfilesLeft = repository.getProfileNames().length != 0;
+        if (!anyProfilesLeft) {
+            deleteButton.setEnabled(anyProfilesLeft);
+            return;
+        }
+        deleteButton.setEnabled(!profile.isBuiltIn());*/
     }
 
     private void toggleResetButton() {
@@ -830,14 +845,10 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
     private class CopyProfileAction extends AbstractAction {
 
         private final MetricsProfileRepository repository;
-        private final Project project;
 
-        CopyProfileAction(MetricsProfileRepository repository,
-                          MetricsConfigurationPanel metricsConfigurationPanel,
-                          Project project) {
+        CopyProfileAction(MetricsProfileRepository repository) {
             super(MetricsReloadedBundle.message("copy.profile.action"));
             this.repository = repository;
-            this.project = project;
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -848,22 +859,25 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
             if (newProfileName == null) {
                 return;
             }
-            repository.duplicateCurrentProfile(newProfileName);
-            updateSelection(newProfileName);
+            if (repository.profileExists(newProfileName)) {
+                Messages.showErrorDialog(
+                        MetricsReloadedBundle.message("unable.to.create.profile.dialog.message",
+                                newProfileName),
+                        MetricsReloadedBundle.message("unable.to.create.profile.dialog.title"));
+            } else {
+                repository.duplicateCurrentProfile(newProfileName);
+                updateSelection(newProfileName);
+            }
         }
     }
 
     private class NewProfileAction extends AbstractAction {
 
         private final MetricsProfileRepository repository;
-        private final Project project;
 
-        NewProfileAction(MetricsProfileRepository repository,
-                         MetricsConfigurationPanel metricsConfigurationPanel,
-                         Project project) {
+        NewProfileAction(MetricsProfileRepository repository) {
             super(MetricsReloadedBundle.message("new.profile.action"));
             this.repository = repository;
-            this.project = project;
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -874,8 +888,15 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
             if (newProfileName == null) {
                 return;
             }
-            repository.createEmptyProfile(newProfileName);
-            updateSelection(newProfileName);
+            if (repository.profileExists(newProfileName)) {
+                Messages.showErrorDialog(
+                        MetricsReloadedBundle.message("unable.to.create.profile.dialog.message",
+                                newProfileName),
+                        MetricsReloadedBundle.message("unable.to.create.profile.dialog.title"));
+            } else {
+                repository.createEmptyProfile(newProfileName);
+                updateSelection(newProfileName);
+            }
         }
     }
 }
