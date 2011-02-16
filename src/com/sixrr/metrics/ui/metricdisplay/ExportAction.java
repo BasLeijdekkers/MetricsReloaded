@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,15 +33,17 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class ExportAction extends AnAction {
+class ExportAction extends AnAction {
+
     public static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
 
     private static final Icon EXPORT_ICON = IconHelper.getIcon("/actions/export.png");
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
-    public ExportAction(MetricsToolWindow toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("export.action"), MetricsReloadedBundle.message("export.description"),
+    ExportAction(MetricsToolWindow toolWindow, Project project) {
+        super(MetricsReloadedBundle.message("export.action"),
+                MetricsReloadedBundle.message("export.description"),
                 EXPORT_ICON);
         this.toolWindow = toolWindow;
         this.project = project;
@@ -51,9 +53,11 @@ public class ExportAction extends AnAction {
 
         final MetricsRun currentResults = toolWindow.getCurrentRun();
         final JFileChooser chooser = new JFileChooser();
-        final FileTypeFilter xmlFilter = new FileTypeFilter(".xml", MetricsReloadedBundle.message("xml.files"));
+        final FileTypeFilter xmlFilter =
+                new FileTypeFilter(".xml", MetricsReloadedBundle.message("xml.files"));
 //        final FileTypeFilter htmlFilter = new FileTypeFilter(".html", "HTML Files");
-        final FileTypeFilter csvFilter = new FileTypeFilter(".csv", MetricsReloadedBundle.message("csv.files"));
+        final FileTypeFilter csvFilter =
+                new FileTypeFilter(".csv", MetricsReloadedBundle.message("csv.files"));
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.addChoosableFileFilter(csvFilter);
 //        chooser.addChoosableFileFilter(htmlFilter);
@@ -97,5 +101,4 @@ public class ExportAction extends AnAction {
             LOGGER.info("Metrics export to file failed", ex);
         }
     }
-
 }
