@@ -2,7 +2,8 @@ package com.sixrr.metrics.metricModel;
 
 import com.sixrr.metrics.Metric;
 
-public interface MetricInstance extends Cloneable {
+public interface MetricInstance extends Cloneable, Comparable<MetricInstance> {
+
     Metric getMetric();
 
     boolean isEnabled();

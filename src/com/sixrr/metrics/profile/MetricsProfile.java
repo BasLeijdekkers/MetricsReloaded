@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@ import com.sixrr.metrics.metricModel.MetricInstance;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public interface MetricsProfile extends Cloneable {
+
     void setName(String newProfileName);
 
     String getName();
@@ -36,7 +38,11 @@ public interface MetricsProfile extends Cloneable {
 
     @Nullable MetricInstance getMetricForName(String metricName);
 
-    void writeToFile(File profileFile);
+    void writeToFile(File profileFile) throws IOException;
 
     MetricDisplaySpecification getDisplaySpecification();
+
+    void setBuiltIn(boolean builtIn);
+
+    boolean isBuiltIn();
 }

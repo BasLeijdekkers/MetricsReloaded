@@ -17,6 +17,7 @@
 package com.sixrr.metrics.metricModel;
 
 import com.sixrr.metrics.Metric;
+import com.sixrr.metrics.MetricCategory;
 
 public class MetricInstanceImpl implements MetricInstance {
 
@@ -29,6 +30,18 @@ public class MetricInstanceImpl implements MetricInstance {
 
     public MetricInstanceImpl(Metric metric) {
         this.metric = metric;
+    }
+
+    public int compareTo(MetricInstance o) {
+        final MetricCategory category1 = metric.getCategory();
+        final MetricCategory category2 = o.getMetric().getCategory();
+        final int categoryComparison = category1.compareTo(category2);
+        if (categoryComparison != 0) {
+            return -categoryComparison;
+        }
+        final String displayName1 = metric.getDisplayName();
+        final String displayName2 = o.getMetric().getDisplayName();
+        return displayName1.compareTo(displayName2);
     }
 
     public Metric getMetric() {
@@ -83,5 +96,9 @@ public class MetricInstanceImpl implements MetricInstance {
         out.lowerThresholdEnabled = lowerThresholdEnabled;
         out.lowerThreshold = lowerThreshold;
         return out;
+    }
+
+    public String toString() {
+        return metric.getCategory() + "/" + metric.getDisplayName();
     }
 }

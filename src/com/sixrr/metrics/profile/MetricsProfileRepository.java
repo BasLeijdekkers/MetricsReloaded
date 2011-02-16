@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.sixrr.metrics.profile;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
@@ -25,12 +26,18 @@ import com.sixrr.metrics.metricModel.MetricInstance;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings(
-        {"OverlyComplexMethod", "OverlyCoupledMethod", "OverlyComplexClass", "OverlyCoupledClass", "ClassWithTooManyMethods"})
+@SuppressWarnings({"OverlyComplexMethod", "OverlyCoupledMethod", "OverlyComplexClass",
+        "OverlyCoupledClass", "ClassWithTooManyMethods"})
 public class MetricsProfileRepository {
-    @NonNls public static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";
+
+    private static final Logger LOG =
+            Logger.getInstance("#com.sixrr.metrics.profile.MetricsProfileRepository");
+
+    @NonNls public static final String METRIC_PROFILE_DIR =
+            PathManager.getConfigPath() + File.separator + "metrics";
 
     private final Map<String, MetricsProfile> profiles = new LinkedHashMap<String, MetricsProfile>(20);
     private final MetricsProfileTemplate template;
@@ -75,37 +82,37 @@ public class MetricsProfileRepository {
                 .getComponents(MetricProvider.class);
         for (MetricProvider provider : metricProviders) {
             final List<PrebuiltMetricProfile> prebuiltProfiles = provider.getPrebuiltProfiles();
-            if (prebuiltProfiles != null) {
-                for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {
-                    addPrebuiltProfile(prebuiltProfile);
-                }
+            for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {
+                addPrebuiltProfile(prebuiltProfile);
             }
         }
     }
 
-    private void addPrebuiltProfile(PrebuiltMetricProfile prebuiltProfile) {
-        final String name = prebuiltProfile.getProfileName();
+    private void addPrebuiltProfile(PrebuiltMetricProfile builtInProfile) {
+        final String name = builtInProfile.getProfileName();
         if (profiles.containsKey(name)) {
             return;
         }
         final MetricsProfile profile = template.instantiate(name);
-        final Set<String> metricNames = prebuiltProfile.getMetricIDs();
+        final Set<String> metricNames = builtInProfile.getMetricIDs();
         for (String metricName : metricNames) {
             final MetricInstance instance = profile.getMetricForName(metricName);
-            if (instance != null) {
-                final Double lowerThreshold = prebuiltProfile.getLowerThresholdForMetric(metricName);
-                final Double upperThreshold = prebuiltProfile.getUpperThresholdForMetric(metricName);
-                instance.setEnabled(true);
-                if (lowerThreshold != null) {
-                    instance.setLowerThresholdEnabled(true);
-                    instance.setLowerThreshold(lowerThreshold);
-                }
-                if (upperThreshold != null) {
-                    instance.setUpperThresholdEnabled(true);
-                    instance.setUpperThreshold(upperThreshold);
-                }
+            if (instance == null) {
+                continue;
+            }
+            instance.setEnabled(true);
+            final Double lowerThreshold = builtInProfile.getLowerThresholdForMetric(metricName);
+            final Double upperThreshold = builtInProfile.getUpperThresholdForMetric(metricName);
+            if (lowerThreshold != null) {
+                instance.setLowerThresholdEnabled(true);
+                instance.setLowerThreshold(lowerThreshold);
+            }
+            if (upperThreshold != null) {
+                instance.setUpperThresholdEnabled(true);
+                instance.setUpperThreshold(upperThreshold);
             }
         }
+        profile.setBuiltIn(true);
         profiles.put(name, profile);
     }
 
@@ -160,15 +167,18 @@ public class MetricsProfileRepository {
     public void reloadProfileFromStorage(MetricsProfile profile) {
         final File profileFile = getFileForProfile(profile);
         final MetricsProfile newProfile = MetricsProfileImpl.loadFromFile(profileFile);
-        if(newProfile !=null)
-        {
+        if (newProfile != null) {
             profiles.put(newProfile.getName(),  newProfile);
         }
     }
 
     public static void persistProfile(MetricsProfile profile) {
         final File profileFile = getFileForProfile(profile);
-        profile.writeToFile(profileFile);
+        try {
+            profile.writeToFile(profileFile);
+        } catch (IOException e) {
+            LOG.warn(e);
+        }
     }
 
     @NonNls

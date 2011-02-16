@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.MetricProvider;
-import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
-import com.sixrr.metrics.metricModel.MetricComparator;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
+import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"HardCodedStringLiteral"})
@@ -70,7 +68,6 @@ class MetricsProfileTemplate {
 
     public void printMetricsDescriptions() {
         final List<MetricInstance> metrics = instantiateMetrics();
-        Collections.sort(metrics, new MetricComparator());
 
         System.out.println(metrics.size() + "  metrics");
         MetricCategory currentCategory = null;

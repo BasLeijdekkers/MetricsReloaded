@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,24 +26,35 @@ import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
 public class MetricsProfileImpl implements MetricsProfile {
+
     private String name;
-    private List<MetricInstance> metrics = new ArrayList<MetricInstance>(32);
+    private List<MetricInstance> metrics = new ArrayList<MetricInstance>();
     private MetricDisplaySpecification displaySpecification = new MetricDisplaySpecification();
+    private boolean builtIn = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
         super();
         this.name = name;
         this.metrics.addAll(metrics);
+        Collections.sort(this.metrics);
     }
 
     public MetricDisplaySpecification getDisplaySpecification() {
         return displaySpecification;
+    }
+
+    public boolean isBuiltIn() {
+        return builtIn;
+    }
+
+    public void setBuiltIn(boolean builtIn) {
+        this.builtIn = builtIn;
     }
 
     public void setName(String newProfileName) {
@@ -61,12 +72,13 @@ public class MetricsProfileImpl implements MetricsProfile {
     public void replaceMetrics(List<MetricInstance> newMetrics) {
         metrics.clear();
         metrics.addAll(newMetrics);
+        Collections.sort(metrics);
     }
 
     public Object clone() throws CloneNotSupportedException {
         final MetricsProfileImpl out = (MetricsProfileImpl) super.clone();
         out.metrics = new ArrayList<MetricInstance>(metrics.size());
-        for (final MetricInstance metric : metrics) {
+        for (MetricInstance metric : metrics) {
             out.metrics.add(metric.clone());
         }
         out.displaySpecification = new MetricDisplaySpecification();
@@ -107,10 +119,9 @@ public class MetricsProfileImpl implements MetricsProfile {
         }
         final Element profileRoot = doc.getRootElement();
         final String profileName = profileRoot.getAttributeValue("name");
-        final List children = profileRoot.getChildren("METRIC");
+        final List<Element> children = profileRoot.getChildren("METRIC");
         final List<MetricInstance> profileMetrics = new ArrayList<MetricInstance>(200);
-        for (final Object aChildren : children) {
-            final Element metricElement = (Element) aChildren;
+        for (final Element metricElement : children) {
             final MetricInstance metric = parseMetric(metricElement);
             if (metric != null) {
                 profileMetrics.add(metric);
@@ -125,19 +136,22 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void parseDisplaySpec(Element displaySpecElement, MetricDisplaySpecification spec) {
+    private static void parseDisplaySpec(Element displaySpecElement,
+                                         MetricDisplaySpecification spec) {
         final MetricCategory[] categories = MetricCategory.values();
         for (MetricCategory category : categories) {
             final String tag = category.name();
             final Element projectElement = displaySpecElement.getChild(tag.toUpperCase());
-            final MetricTableSpecification projectDisplaySpecification = spec.getSpecification(category);
-            projectDisplaySpecification.setAscending("true".equals(projectElement.getAttributeValue("ascending")));
-            projectDisplaySpecification
-                    .setSortColumn(Integer.parseInt(projectElement.getAttributeValue("sort_column")));
-            projectDisplaySpecification
-                    .setColumnOrder(parseStringList(projectElement.getAttributeValue("column_order")));
-            projectDisplaySpecification
-                    .setColumnWidths(parseIntList(projectElement.getAttributeValue("column_widths")));
+            final MetricTableSpecification projectDisplaySpecification =
+                    spec.getSpecification(category);
+            projectDisplaySpecification.setAscending("true".equals(
+                    projectElement.getAttributeValue("ascending")));
+            projectDisplaySpecification.setSortColumn(
+                    Integer.parseInt(projectElement.getAttributeValue("sort_column")));
+            projectDisplaySpecification.setColumnOrder(
+                    parseStringList(projectElement.getAttributeValue("column_order")));
+            projectDisplaySpecification.setColumnWidths(
+                    parseIntList(projectElement.getAttributeValue("column_widths")));
         }
     }
 
@@ -175,7 +189,8 @@ public class MetricsProfileImpl implements MetricsProfile {
     private static MetricInstance parseMetric(Element metricElement) {
         final String className = metricElement.getAttributeValue("className");
 
-        final String lowerThresholdEnabledString = metricElement.getAttributeValue("lowerThresholdEnabled");
+        final String lowerThresholdEnabledString =
+                metricElement.getAttributeValue("lowerThresholdEnabled");
         boolean lowerThresholdEnabled = false;
         if (lowerThresholdEnabledString != null) {
             lowerThresholdEnabled = "true".equals(lowerThresholdEnabledString);
@@ -185,7 +200,8 @@ public class MetricsProfileImpl implements MetricsProfile {
         if (lowerThresholdString != null) {
             lowerThreshold = Double.parseDouble(lowerThresholdString);
         }
-        final String upperThresholdEnabledString = metricElement.getAttributeValue("upperThresholdEnabled");
+        final String upperThresholdEnabledString =
+                metricElement.getAttributeValue("upperThresholdEnabled");
 
         boolean upperThresholdEnabled = false;
         if (upperThresholdEnabledString != null) {
@@ -203,7 +219,8 @@ public class MetricsProfileImpl implements MetricsProfile {
         }
         final Metric metric;
         try {
-            final Class<? extends Metric> metricClass = (Class<? extends Metric>) Class.forName(className);
+            final Class<? extends Metric> metricClass =
+                    (Class<? extends Metric>) Class.forName(className);
             metric = metricClass.newInstance();
         } catch (Exception e) {
             return null;
@@ -218,35 +235,23 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
-    public void writeToFile(File profileFile) {
-        FileOutputStream fileStr = null;
-        PrintWriter writer = null;
+    public void writeToFile(File profileFile) throws FileNotFoundException {
+        final PrintWriter writer = new PrintWriter(new FileOutputStream(profileFile));
         try {
-            fileStr = new FileOutputStream(profileFile);
-            writer = new PrintWriter(fileStr);
             writer.println("<METRICS_PROFILE name = \"" + name + "\">");
             writeDisplaySpec(writer, displaySpecification);
             for (final MetricInstance metric : metrics) {
                 writeMetric(metric, writer);
             }
             writer.println("</METRICS_PROFILE>");
-        } catch (IOException e) {
-            return;
         } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-                if (fileStr != null) {
-                    fileStr.close();
-                }
-            } catch (IOException e) {
-            }
+            writer.close();
         }
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void writeDisplaySpec(PrintWriter writer, MetricDisplaySpecification displaySpecification) {
+    private static void writeDisplaySpec(PrintWriter writer,
+                                         MetricDisplaySpecification displaySpecification) {
         writer.println("\t<DISPLAY_SPEC>");
 
         final MetricCategory[] categories = MetricCategory.values();
@@ -257,7 +262,8 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void printTableSpec(MetricDisplaySpecification displaySpecification, MetricCategory category,
+    private static void printTableSpec(MetricDisplaySpecification displaySpecification,
+                                       MetricCategory category,
                                        PrintWriter writer) {
         final MetricTableSpecification projectSpec = displaySpecification.getSpecification(category);
         final List<String> columnOrder = projectSpec.getColumnOrder();
@@ -268,10 +274,10 @@ public class MetricsProfileImpl implements MetricsProfile {
                 "column_widths = \"" + writeListAsString(columnWidths) + "\" " + "/>");
     }
 
-    private static String writeListAsString(List<? extends Object> list) {
+    private static String writeListAsString(List<?> list) {
         final StringBuffer out = new StringBuffer();
 
-        for (Iterator<? extends Object> iterator = list.iterator(); iterator.hasNext();) {
+        for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
             final Object element = iterator.next();
             out.append(element);
             if (iterator.hasNext()) {
