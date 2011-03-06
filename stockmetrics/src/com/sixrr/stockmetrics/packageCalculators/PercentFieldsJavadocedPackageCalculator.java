@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class PercentFieldsJavadocedPackageCalculator extends PackageCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitField(PsiField field) {
             super.visitField(field);
             final PsiClass containingClass = field.getContainingClass();
@@ -50,6 +51,9 @@ public class PercentFieldsJavadocedPackageCalculator extends PackageCalculator {
                 return;
             }
             final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
+            if (aPackage == null) {
+                return;
+            }
             numFieldsPerPackage.createBucket(aPackage);
             if (field.getFirstChild()instanceof PsiDocComment) {
                 numJavadocedFieldsPerPackage.incrementBucketValue(aPackage);

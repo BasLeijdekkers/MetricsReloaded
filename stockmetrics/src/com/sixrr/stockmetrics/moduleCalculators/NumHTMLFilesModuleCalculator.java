@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,14 +20,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 
 public class NumHTMLFilesModuleCalculator extends FileCountModuleCalculator {
+
     protected boolean satisfies(PsiFile file) {
         if (!(file instanceof XmlFile)) {
             return false;
         }
         final String fileName = file.getName();
-        if (fileName == null) {
-            return false;
-        }
         //noinspection HardCodedStringLiteral
         return fileName.endsWith(".html") || fileName.endsWith(".htm");
     }

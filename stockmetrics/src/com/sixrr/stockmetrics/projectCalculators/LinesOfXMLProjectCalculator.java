@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,13 +29,15 @@ public class LinesOfXMLProjectCalculator extends ElementCountProjectCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitFile(PsiFile file) {
-            if (file instanceof XmlFile) {
-                final String fileName = file.getName();
-                //noinspection HardCodedStringLiteral
-                if (fileName != null && !fileName.endsWith(".htm") && !fileName.endsWith(".html")) {
-                    numElements += LineUtil.countLines(file);
-                }
+            if (!(file instanceof XmlFile)) {
+                return;
+            }
+            final String fileName = file.getName();
+            //noinspection HardCodedStringLiteral
+            if (!fileName.endsWith(".htm") && !fileName.endsWith(".html")) {
+                numElements += LineUtil.countLines(file);
             }
         }
     }

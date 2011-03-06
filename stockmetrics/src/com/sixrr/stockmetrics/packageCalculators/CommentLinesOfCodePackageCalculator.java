@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 import java.util.Set;
 
 public class CommentLinesOfCodePackageCalculator extends PackageCalculator {
+
     private final BuckettedCount<PsiPackage> numCommentLinesPerPackage = new BuckettedCount<PsiPackage>();
 
     public void endMetricsRun() {
@@ -44,12 +45,18 @@ public class CommentLinesOfCodePackageCalculator extends PackageCalculator {
 
         public void visitJavaFile(PsiJavaFile file) {
             final PsiPackage aPackage = ClassUtils.findPackage(file);
+            if (aPackage == null) {
+                return;
+            }
             numCommentLinesPerPackage.createBucket(aPackage);
         }
 
         public void visitComment(PsiComment comment) {
             final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
             final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
             final int lineCount = LineUtil.countLines(comment);
             numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }

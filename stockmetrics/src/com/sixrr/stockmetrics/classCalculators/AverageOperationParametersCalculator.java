@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,21 +28,20 @@ public class AverageOperationParametersCalculator extends ClassCalculator {
 
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (isConcreteClass(aClass)) {
-                int parameterCount = 0;
-                final PsiMethod[] methods = aClass.getMethods();
-                for (final PsiMethod method : methods) {
-                    final PsiParameterList parameterList = method.getParameterList();
-                    final PsiParameter[] parameters = parameterList.getParameters();
-                    if (parameters != null) {
-                        parameterCount += parameters.length;
-                    }
-                }
-                if (methods.length == 0) {
-                    postMetric(aClass, 0);
-                } else {
-                    postMetric(aClass, parameterCount, methods.length);
-                }
+            if (!isConcreteClass(aClass)) {
+                return;
+            }
+            int parameterCount = 0;
+            final PsiMethod[] methods = aClass.getMethods();
+            for (final PsiMethod method : methods) {
+                final PsiParameterList parameterList = method.getParameterList();
+                final PsiParameter[] parameters = parameterList.getParameters();
+                parameterCount += parameters.length;
+            }
+            if (methods.length == 0) {
+                postMetric(aClass, 0);
+            } else {
+                postMetric(aClass, parameterCount, methods.length);
             }
         }
     }

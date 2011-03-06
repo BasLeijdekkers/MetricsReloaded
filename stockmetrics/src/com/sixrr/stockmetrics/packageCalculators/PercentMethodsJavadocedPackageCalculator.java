@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 public class PercentMethodsJavadocedPackageCalculator extends PackageCalculator {
+    
     private final BuckettedCount<PsiPackage> numJavadocedMethodsPerPackage = new BuckettedCount<PsiPackage>();
     private final BuckettedCount<PsiPackage> numMethodsPerPackage = new BuckettedCount<PsiPackage>();
 
@@ -42,19 +43,23 @@ public class PercentMethodsJavadocedPackageCalculator extends PackageCalculator 
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiClass containingClass = method.getContainingClass();
             if (containingClass == null || ClassUtils.isAnonymous(containingClass)) {
                 return;
             }
-            final PsiPackage packageName = ClassUtils.findPackage(containingClass);
-            numMethodsPerPackage.createBucket(packageName);
+            final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
+            if (aPackage == null) {
+                return;
+            }
+            numMethodsPerPackage.createBucket(aPackage);
 
             if (method.getFirstChild()instanceof PsiDocComment) {
-                numJavadocedMethodsPerPackage.incrementBucketValue(packageName);
+                numJavadocedMethodsPerPackage.incrementBucketValue(aPackage);
             }
-            numMethodsPerPackage.incrementBucketValue(packageName);
+            numMethodsPerPackage.incrementBucketValue(aPackage);
         }
     }
 }

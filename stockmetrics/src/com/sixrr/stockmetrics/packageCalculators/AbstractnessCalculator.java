@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 public class AbstractnessCalculator extends PackageCalculator {
+
     private final BuckettedCount<PsiPackage> numAbstractClassesPerPackage = new BuckettedCount<PsiPackage>();
     private final BuckettedCount<PsiPackage> numClassesPerPackage = new BuckettedCount<PsiPackage>();
 
@@ -41,15 +42,20 @@ public class AbstractnessCalculator extends PackageCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (!ClassUtils.isAnonymous(aClass)) {
-                final PsiPackage aPackage = ClassUtils.findPackage(aClass);
-                if (aClass.isInterface() || aClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
-                    numAbstractClassesPerPackage.incrementBucketValue(aPackage);
-                }
-                numClassesPerPackage.incrementBucketValue(aPackage);
+            if (ClassUtils.isAnonymous(aClass)) {
+                return;
             }
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
+            if (aClass.isInterface() || aClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
+                numAbstractClassesPerPackage.incrementBucketValue(aPackage);
+            }
+            numClassesPerPackage.incrementBucketValue(aPackage);
         }
     }
 }

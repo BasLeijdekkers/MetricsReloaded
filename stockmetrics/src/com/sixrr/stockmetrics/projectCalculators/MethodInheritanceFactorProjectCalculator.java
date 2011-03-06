@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator {
+
     private int availableMethods = 0;
     private int inheritedMethods = 0;
 
@@ -31,6 +32,7 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             final PsiMethod[] allMethods = aClass.getAllMethods();
@@ -87,6 +89,6 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
         }
         final String fileName = file.getName();
         //noinspection HardCodedStringLiteral
-        return fileName != null && !fileName.endsWith(".java");
+        return !fileName.endsWith(".java");
     }
 }

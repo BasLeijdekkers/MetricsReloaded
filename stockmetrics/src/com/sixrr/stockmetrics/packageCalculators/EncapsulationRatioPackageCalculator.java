@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,12 +48,15 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            final PsiPackage psiPackage = ClassUtils.findPackage(aClass);
-            numClassesPerPackage.createBucket(psiPackage);
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
+            numClassesPerPackage.createBucket(aPackage);
             if (!TestUtils.isTest(aClass) && !ClassUtils.isAnonymous(aClass)) {
-                numClassesPerPackage.incrementBucketValue(psiPackage);
+                numClassesPerPackage.incrementBucketValue(aPackage);
                 if (isInternal(aClass)) {
-                    numInternalClassesPerPackage.incrementBucketValue(psiPackage);
+                    numInternalClassesPerPackage.incrementBucketValue(aPackage);
                 }
             }
         }
@@ -74,11 +77,12 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
             final PsiElement element = reference.getElement();
             final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
 
-            if (referencingClass != null && !TestUtils.isTest(referencingClass)) {
-                final String referencingPackageName = ClassUtils.calculatePackageName(referencingClass);
-                if (!packageName.equals(referencingPackageName)) {
-                    return false;
-                }
+            if (referencingClass == null || TestUtils.isTest(referencingClass)) {
+                continue;
+            }
+            final String referencingPackageName = ClassUtils.calculatePackageName(referencingClass);
+            if (!packageName.equals(referencingPackageName)) {
+                return false;
             }
         }
         return true;

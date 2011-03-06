@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,11 +46,14 @@ abstract class ClassCountingPackageCalculator extends PackageCalculator {
                     aClass instanceof PsiEnumConstantInitializer) {
                 return;
             }
-            final PsiPackage psiPackage = ClassUtils.findPackage(aClass);
-            numClassesPerPackage.createBucket(psiPackage);
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
+            numClassesPerPackage.createBucket(aPackage);
 
             if (satisfies(aClass)) {
-                numClassesPerPackage.incrementBucketValue(psiPackage);
+                numClassesPerPackage.incrementBucketValue(aPackage);
             }
         }
     }

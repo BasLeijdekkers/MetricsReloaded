@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -340,12 +340,13 @@ public class DependentsMapImpl implements DependentsMap {
             if ("_Dummy_.__Array__".equals(referencedClassName)) {
                 return;
             }
-            final PsiJavaFile classFile = PsiTreeUtil.getParentOfType(referencedClass, PsiJavaFile.class);
+            final PsiJavaFile classFile =
+                    PsiTreeUtil.getParentOfType(referencedClass, PsiJavaFile.class);
             if (classFile == null) {
                 return;
             }
             @NonNls final String classFileName = classFile.getName();
-            if (classFileName == null || !classFileName.endsWith(".java")) {
+            if (!classFileName.endsWith(".java")) {
                 return;
             }
             addDependent(referencedClass, currentClass, currentPackage);

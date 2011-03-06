@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 public class AverageCyclomaticComplexityPackageCalculator extends PackageCalculator {
+
     private int methodNestingDepth = 0;
     private int complexity = 0;
     private final BuckettedCount<PsiPackage> totalComplexityPerPackage = new BuckettedCount<PsiPackage>();
@@ -44,8 +45,6 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
 
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitMethod(PsiMethod method) {
-            if (methodNestingDepth == 0) {
-            }
             if (method.getBody() != null) {
                 complexity = 1;
             }
@@ -55,11 +54,15 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
             methodNestingDepth--;
             if (methodNestingDepth == 0) {
                 final PsiClass containingClass = method.getContainingClass();
-                if (containingClass != null) {
-                    final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
-                    totalComplexityPerPackage.incrementBucketValue(aPackage, complexity);
-                    numMethodsPerPackage.incrementBucketValue(aPackage);
+                if (containingClass == null) {
+                    return;
                 }
+                final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
+                if (aPackage == null) {
+                    return;
+                }
+                totalComplexityPerPackage.incrementBucketValue(aPackage, complexity);
+                numMethodsPerPackage.incrementBucketValue(aPackage);
             }
         }
 

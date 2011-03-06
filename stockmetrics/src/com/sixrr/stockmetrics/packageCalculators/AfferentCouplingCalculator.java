@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.sixrr.stockmetrics.dependency.DependentsMap;
 import java.util.Set;
 
 public class AfferentCouplingCalculator extends PackageCalculator {
+
     private final BuckettedCount<PsiPackage> numExternalDependentsPerPackage = new BuckettedCount<PsiPackage>();
 
     public void endMetricsRun() {
@@ -44,15 +45,21 @@ public class AfferentCouplingCalculator extends PackageCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (!ClassUtils.isAnonymous(aClass)) {
-                final PsiPackage referencedPackage = ClassUtils.findPackage(aClass);
-                numExternalDependentsPerPackage.createBucket(referencedPackage);
-                final DependentsMap dependentsMap = getDependentsMap();
-                final Set<PsiPackage> packageDependents = dependentsMap.calculatePackageDependents(aClass);
-                for (final PsiPackage referencingPackage : packageDependents) {
-                    final int strength = dependentsMap.getStrengthForPackageDependent(aClass, referencingPackage);
-                    numExternalDependentsPerPackage.incrementBucketValue(referencedPackage, strength);
-                }
+            if (ClassUtils.isAnonymous(aClass)) {
+                return;
+            }
+            final PsiPackage referencedPackage = ClassUtils.findPackage(aClass);
+            if (referencedPackage == null) {
+                return;
+            }
+            numExternalDependentsPerPackage.createBucket(referencedPackage);
+            final DependentsMap dependentsMap = getDependentsMap();
+            final Set<PsiPackage> packageDependents =
+                    dependentsMap.calculatePackageDependents(aClass);
+            for (final PsiPackage referencingPackage : packageDependents) {
+                final int strength =
+                        dependentsMap.getStrengthForPackageDependent(aClass, referencingPackage);
+                numExternalDependentsPerPackage.incrementBucketValue(referencedPackage, strength);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,9 +27,8 @@ import com.intellij.codeInsight.AnnotationUtil;
 import org.jetbrains.annotations.NonNls;
 
 public class TestUtils {
-    private TestUtils() {
-        super();
-    }
+
+    private TestUtils() {}
 
     public static boolean isTest(PsiClass aClass) {
         final PsiManager manager = aClass.getManager();
@@ -72,6 +71,9 @@ public class TestUtils {
         final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
         final PsiClass testCase =
                 psiFacade.findClass("junit.framework.TestCase", scope);
+        if (testCase == null) {
+            return false;
+        }
         if (aClass.isInheritor(testCase, true)) {
             return true;
         }

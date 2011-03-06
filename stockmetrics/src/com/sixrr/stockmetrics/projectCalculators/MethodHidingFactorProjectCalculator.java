@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
+    
     private int numMethods = 0;
     private int numPublicMethods = 0;
     private int numClasses = 0;
@@ -43,6 +44,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             numMethods++;
@@ -50,7 +52,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
 
             if (method.hasModifierProperty(PsiModifier.PRIVATE) ||
                     containingClass.hasModifierProperty(PsiModifier.PRIVATE)) {
-                //dodn't do anythng
+                //don't do anything
             } else if (method.hasModifierProperty(PsiModifier.PROTECTED) ||
                     containingClass.hasModifierProperty(PsiModifier.PROTECTED)) {
                 totalVisibility += getSubclassCount(containingClass);

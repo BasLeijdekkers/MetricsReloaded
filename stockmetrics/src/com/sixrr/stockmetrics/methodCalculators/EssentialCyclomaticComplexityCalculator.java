@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -93,10 +93,12 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
         final PsiStatement[] statements = body.getStatements();
         boolean pendingLabel = true;
         for (final PsiStatement child : statements) {
-            if (child instanceof PsiBreakStatement &&
-                    ((PsiBreakStatement) child).findExitedStatement()
-                            .equals(statement)) {
-                pendingLabel = true;
+            if (child instanceof PsiBreakStatement) {
+                final PsiBreakStatement breakStatement = (PsiBreakStatement) child;
+                final PsiStatement exitedStatement = breakStatement.findExitedStatement();
+                if (statement.equals(exitedStatement)) {
+                    pendingLabel = true;
+                }
             } else if (child instanceof PsiSwitchLabelStatement) {
                 if (!pendingLabel) {
                     return false;

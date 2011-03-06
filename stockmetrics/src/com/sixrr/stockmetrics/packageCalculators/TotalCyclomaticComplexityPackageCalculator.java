@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 public class TotalCyclomaticComplexityPackageCalculator extends PackageCalculator {
+
     private int methodNestingDepth = 0;
     private int complexity = 0;
     private final BuckettedCount<PsiPackage> totalComplexityPerPackage = new BuckettedCount<PsiPackage>();
@@ -53,10 +54,14 @@ public class TotalCyclomaticComplexityPackageCalculator extends PackageCalculato
             methodNestingDepth--;
             if (methodNestingDepth == 0) {
                 final PsiClass containingClass = method.getContainingClass();
-                if (containingClass != null) {
-                    final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
-                    totalComplexityPerPackage.incrementBucketValue(aPackage, complexity);
+                if (containingClass == null) {
+                    return;
                 }
+                final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
+                if (aPackage == null) {
+                    return;
+                }
+                totalComplexityPerPackage.incrementBucketValue(aPackage, complexity);
             }
         }
 

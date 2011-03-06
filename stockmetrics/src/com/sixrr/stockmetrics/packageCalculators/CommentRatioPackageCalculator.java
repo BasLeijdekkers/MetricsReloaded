@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,11 +43,15 @@ public class CommentRatioPackageCalculator extends PackageCalculator {
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage packageName = ClassUtils.findPackage(file);
+            final PsiPackage aPackage = ClassUtils.findPackage(file);
             final int lineCount = LineUtil.countLines(file);
-            numLinesPerPackage.incrementBucketValue(packageName, lineCount);
+            if (aPackage == null) {
+                return;
+            }
+            numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }
 
         public void visitComment(PsiComment comment) {
@@ -55,6 +59,9 @@ public class CommentRatioPackageCalculator extends PackageCalculator {
             final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
             final PsiPackage aPackage = ClassUtils.findPackage(aClass);
             final int lineCount = LineUtil.countLines(comment);
+            if (aPackage == null) {
+                return;
+            }
             numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }
     }

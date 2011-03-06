@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,18 +25,15 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 public class ClassUtils {
 
-    private ClassUtils() {
-        super();
-    }
+    private ClassUtils() {}
 
     public static String calculatePackageName(PsiClass aClass) {
         final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
@@ -71,7 +68,8 @@ public class ClassUtils {
     }
 
     public static boolean isAnonymous(PsiClass aClass) {
-        return aClass instanceof PsiAnonymousClass;
+        return aClass instanceof PsiAnonymousClass ||
+                aClass instanceof PsiTypeParameter;
     }
 
     public static Module calculateModule(PsiClass aClass) {
@@ -169,6 +167,7 @@ public class ClassUtils {
         return psiFacade.findPackage(referencedPackageName);
     }
 
+    @Nullable
     public static PsiPackage findPackage(PsiClass referencedClass) {
         if (referencedClass == null) {
             return null;

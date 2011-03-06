@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.sixrr.metrics.utils.TestUtils;
 import java.util.Set;
 
 public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator {
+    
     private final BuckettedCount<PsiPackage> numLinesPerPackage = new BuckettedCount<PsiPackage>();
     private final BuckettedCount<PsiPackage> numCommentLinesPerPackage = new BuckettedCount<PsiPackage>();
 
@@ -43,24 +44,33 @@ public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            if (!TestUtils.isTest(file)) {
-                final PsiPackage packageName = ClassUtils.findPackage(file);
-                final int lineCount = LineUtil.countLines(file);
-                numLinesPerPackage.incrementBucketValue(packageName, lineCount);
+            if (TestUtils.isTest(file)) {
+                return;
             }
+            final PsiPackage aPackage = ClassUtils.findPackage(file);
+            if (aPackage == null) {
+                return;
+            }
+            final int lineCount = LineUtil.countLines(file);
+            numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }
 
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final PsiFile file = comment.getContainingFile();
-            if (!TestUtils.isTest(file)) {
-                final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
-                final PsiPackage aPackage = ClassUtils.findPackage(aClass);
-                final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
+            if (TestUtils.isTest(file)) {
+                return;
             }
+            final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
+            final int lineCount = LineUtil.countCommentOnlyLines(comment);
+            numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }
     }
 }

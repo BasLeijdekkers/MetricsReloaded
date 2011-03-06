@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 package com.sixrr.metrics.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class BuckettedCount<T> {
+
     private final Map<T, Integer> buckets = new HashMap<T, Integer>();
 
-    public void createBucket(T bucketName) {
+    public void createBucket(@NotNull T bucketName) {
         if (!buckets.containsKey(bucketName)) {
             buckets.put(bucketName, 0);
         }
@@ -33,7 +36,7 @@ public class BuckettedCount<T> {
         return buckets.keySet();
     }
 
-    public void incrementBucketValue(T bucketName, int increment) {
+    public void incrementBucketValue(@NotNull T bucketName, int increment) {
         if (buckets.containsKey(bucketName)) {
             buckets.put(bucketName, buckets.get(bucketName) + increment);
         } else {
@@ -41,7 +44,7 @@ public class BuckettedCount<T> {
         }
     }
 
-    public void incrementBucketValue(T bucketName) {
+    public void incrementBucketValue(@NotNull T bucketName) {
         incrementBucketValue(bucketName, 1);
     }
 

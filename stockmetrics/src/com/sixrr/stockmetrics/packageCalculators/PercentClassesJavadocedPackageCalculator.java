@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -45,9 +45,13 @@ public class PercentClassesJavadocedPackageCalculator extends PackageCalculator 
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
             if (ClassUtils.isAnonymous(aClass)) {
                 return;
             }

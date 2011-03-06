@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.sixrr.metrics.utils.TestUtils;
 import java.util.Set;
 
 public class NumTestMethodsPackageCalculator extends PackageCalculator {
+
     private final BuckettedCount<PsiPackage> numTestMethodsPerPackages = new BuckettedCount<PsiPackage>();
 
     public void endMetricsRun() {
@@ -42,17 +43,24 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage packageName = ClassUtils.findPackage(file);
-            numTestMethodsPerPackages.createBucket(packageName);
+            final PsiPackage aPackage = ClassUtils.findPackage(file);
+            if (aPackage == null) {
+                return;
+            }
+            numTestMethodsPerPackages.createBucket(aPackage);
         }
 
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiClass aClass = method.getContainingClass();
-            if (TestUtils.isJUnitTestMethod(method)) {
-                final PsiPackage aPackage = ClassUtils.findPackage(aClass);
-                numTestMethodsPerPackages.incrementBucketValue(aPackage, 1);
+            if (!TestUtils.isJUnitTestMethod(method)) {
+                return;
             }
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            if (aPackage == null) {
+                return;
+            }
+            numTestMethodsPerPackages.incrementBucketValue(aPackage, 1);
         }
     }
 }
