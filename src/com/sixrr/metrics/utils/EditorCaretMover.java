@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.Nullable;
 
 public class EditorCaretMover {
+
     private final Project project;
     private boolean shouldMoveCaret = true;
 
     public EditorCaretMover(Project project) {
-        super();
         this.project = project;
     }
 
