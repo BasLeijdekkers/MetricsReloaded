@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPackage;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MethodUtils;
 import org.jdom.Document;
@@ -40,15 +39,15 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class MetricsRunImpl implements MetricsRun {
+
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
     private final Map<MetricCategory, MetricsResult> metricResults =
-            new HashMap<MetricCategory, MetricsResult>();
+            new EnumMap<MetricCategory, MetricsResult>(MetricCategory.class);
     private String profileName = null;
     private AnalysisScope context = null;
     private TimeStamp timestamp = null;
 
     public MetricsRunImpl() {
-        super();
         final MetricCategory[] categories = MetricCategory.values();
         for (MetricCategory category : categories) {
             metricResults.put(category, new MetricsResultImpl());
@@ -60,9 +59,7 @@ public class MetricsRunImpl implements MetricsRun {
         final Collection<MetricsResult> results = metricResults.values();
         for (MetricsResult result : results) {
             final Metric[] metrics = result.getMetrics();
-            for (Metric metric : metrics) {
-                allMetrics.add(metric);
-            }
+            allMetrics.addAll(Arrays.asList(metrics));
         }
         return new ArrayList<Metric>(allMetrics);
     }
@@ -256,8 +253,8 @@ public class MetricsRunImpl implements MetricsRun {
                     "<SNAPSHOT" + " profile = \"" + profileName + '\"' + " timestamp = \"" + timestamp + '\"' + '>');
 
             final MetricCategory[] categories = MetricCategory.values();
-            for (int i = 0; i < categories.length; i++) {
-                writeResultsForCategory(categories[i], writer);
+            for (MetricCategory category : categories) {
+                writeResultsForCategory(category, writer);
             }
             writer.println("</SNAPSHOT>");
         } catch (IOException e) {
