@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.sixrr.metrics.ui.dialogs;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.ScrollPaneFactory;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
@@ -32,10 +33,11 @@ import java.io.IOException;
 import java.net.URL;
 
 public class ExplanationDialog extends DialogWrapper {
-    private JTextPane textPane;
-    private JPanel contentPanel;
-    private JLabel urlLabel;
-    private JLabel moreInformationLabel;
+
+    private final JTextPane textPane = new JTextPane();
+    private final JLabel urlLabel = new JLabel();
+    private final JLabel moreInformationLabel = new JLabel(MetricsReloadedBundle.message(
+            "for.more.information.go.to"));
 
     public ExplanationDialog(Project project) {
         super(project, false);
@@ -52,13 +54,10 @@ public class ExplanationDialog extends DialogWrapper {
         setTitle(MetricsReloadedBundle.message("explanation.dialog.title", metric.getDisplayName()));
         final String helpString = metric.getHelpDisplayString();
         final String helpURL = metric.getHelpURL();
-        if(helpString == null)
-        {
+        if (helpString == null) {
             urlLabel.setVisible(false);
             moreInformationLabel.setVisible(false);
-        }
-        else
-        {
+        } else {
             urlLabel.setVisible(true);
             urlLabel.setText(helpString);
             urlLabel.setForeground(Color.BLUE);
@@ -91,13 +90,30 @@ public class ExplanationDialog extends DialogWrapper {
     }
 
     public Action[] createActions() {
-        return new Action[0];
+        return new Action[] {
+                getOKAction()
+        };
     }
-
 
     @Nullable
     protected JComponent createCenterPanel() {
-        return contentPanel;
+        final JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        final GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.gridwidth = 2;
+        constraints.fill = GridBagConstraints.BOTH;
+        panel.add(ScrollPaneFactory.createScrollPane(textPane), constraints);
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.gridy = 1;
+        panel.add(moreInformationLabel, constraints);
+        constraints.gridx = 1;
+        constraints.insets.left = 5;
+        panel.add(urlLabel, constraints);
+        return panel;
     }
 
 }
