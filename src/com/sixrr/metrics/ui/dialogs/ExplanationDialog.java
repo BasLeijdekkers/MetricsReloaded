@@ -64,6 +64,8 @@ public class ExplanationDialog extends DialogWrapper {
             moreInformationLabel.setVisible(true);
         }
         urlLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
             public void mouseClicked(MouseEvent event) {
                 if (helpURL != null) {
                     BrowserUtil.launchBrowser("http://" + helpURL);
@@ -78,23 +80,26 @@ public class ExplanationDialog extends DialogWrapper {
             final URL resourceURL = metric.getClass().getResource(resourceName);
             textPane.setPage(resourceURL);
             return true;
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             return false;
         }
     }
 
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.ExplanationDialog";
 
     }
 
+    @Override
     public Action[] createActions() {
         return new Action[] {
                 getOKAction()
         };
     }
 
+    @Override
     @Nullable
     protected JComponent createCenterPanel() {
         final JPanel panel = new JPanel();
