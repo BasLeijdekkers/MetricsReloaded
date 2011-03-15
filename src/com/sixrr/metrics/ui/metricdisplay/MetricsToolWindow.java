@@ -23,6 +23,7 @@ import com.sixrr.metrics.MetricCategory;
 import org.jetbrains.annotations.NonNls;
 
 public interface MetricsToolWindow {
+
     @NonNls String TOOL_WINDOW_ICON_PATH = "/images/metricsToolWindow.png";
     @NonNls String METRICS_TOOL_WINDOW_ID = "Metrics";
 
@@ -51,6 +52,4 @@ public interface MetricsToolWindow {
     MetricsProfile getCurrentProfile();
 
     MetricCategory getSelectedCategory();
-
-    void refresh();
 }

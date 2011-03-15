@@ -1,23 +1,35 @@
+/*
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.sixrr.metrics.ui.dialogs;
 
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsResult;
-import com.sixrr.metrics.profile.MetricsProfile;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class ThresholdTableModel extends AbstractTableModel {
 
-    private final List<Metric> metrics;
-    private final MetricsProfile profile;
+    private final List<MetricInstance> metrics;
     private final MetricsResult result;
 
-
-    public ThresholdTableModel(List<Metric> metrics, MetricsProfile profile, MetricsResult result) {
+    public ThresholdTableModel(List<MetricInstance> metrics, MetricsResult result) {
         this.metrics = metrics;
-        this.profile = profile;
         this.result = result;
     }
 
@@ -29,42 +41,43 @@ public class ThresholdTableModel extends AbstractTableModel {
         return 6;
     }
 
-
+    @Override
     public boolean isCellEditable(int rowNum, int columnNum) {
         return columnNum > 3;
     }
 
-
+    @Override
     public String getColumnName(int columnNum) {
         switch (columnNum) {
             case 0:
-                return "Name";
+                return MetricsReloadedBundle.message("name");
             case 1:
-                return "Abbv";
+                return MetricsReloadedBundle.message("abbreviation");
             case 2:
-                return "Min";
+                return MetricsReloadedBundle.message("minimum");
             case 3:
-                return "Max";
+                return MetricsReloadedBundle.message("maximum");
             case 4:
-                return "Warn if less than";
+                return MetricsReloadedBundle.message("warn.if.less.than1");
             case 5:
-                return "Warn if greater than";
+                return MetricsReloadedBundle.message("warn.if.greater.than1");
             default:
                 return null;
         }
 
     }
 
+    @Override
     public Class<?> getColumnClass(int columnNum) {
         return String.class;
     }
 
     public Object getValueAt(int rowNum, int columnNum) {
-        final Metric metric = metrics.get(rowNum);
-        final MetricInstance instance = profile.getMetricForClass(metric.getClass());
+        final MetricInstance instance = metrics.get(rowNum);
         if (instance == null) {
             return null;
         }
+        final Metric metric = instance.getMetric();
         switch (columnNum) {
             case 0:
                 return metric.getDisplayName();
@@ -91,20 +104,17 @@ public class ThresholdTableModel extends AbstractTableModel {
         return  result.getMaximumForMetric(metric);
     }
 
+    @Override
     public void setValueAt(Object object, int rowNum, int columnNum) {
-        final Metric metric = metrics.get(rowNum);
-        final MetricInstance instance = profile.getMetricForClass(metric.getClass());
+        final MetricInstance instance = metrics.get(rowNum);
         if (instance == null) {
             return;
         }
         if (columnNum == 4) {
             final String valueString = ((String) object).trim();
-            if(valueString.length() == 0)
-            {
+            if(valueString.length() == 0) {
                 instance.setLowerThresholdEnabled(false);
-            }
-            else
-            {
+            } else {
                 try {
                     final double newThreshold = Double.parseDouble(valueString);
                     instance.setLowerThresholdEnabled(true);
@@ -112,7 +122,6 @@ public class ThresholdTableModel extends AbstractTableModel {
                 } catch (NumberFormatException ignore) {
                     instance.setLowerThresholdEnabled(false);
                 }
-
             }
         } else {
             final String valueString = ((String) object).trim();
@@ -126,9 +135,7 @@ public class ThresholdTableModel extends AbstractTableModel {
                 } catch (NumberFormatException ignore) {
                     instance.setUpperThresholdEnabled(false);
                 }
-
             }
         }
-
     }
 }

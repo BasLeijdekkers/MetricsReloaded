@@ -38,6 +38,7 @@ import java.awt.*;
 
 @SuppressWarnings({"ThisEscapedInObjectConstruction"})
 public class MetricsToolWindowImpl implements MetricsToolWindow {
+
     private final Project project;
     private final JPanel myContentPanel;
     private final MetricsDisplay metricsDisplay;
@@ -48,7 +49,6 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private boolean showOnlyWarnings = false;
 
     public MetricsToolWindowImpl(Project project, MetricsProfileRepository repository, MetricsReloadedConfig config) {
-        super();
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateMetricsViewAction(this, project));
@@ -154,9 +154,4 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     public MetricCategory getSelectedCategory() {
         return metricsDisplay.getSelectedCategory();
     }
-
-    public void refresh() {
-        metricsDisplay.refresh();
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,13 @@ public class MetricInstanceImpl implements MetricInstance {
         this.metric = metric;
     }
 
+    public void copyFrom(MetricInstance o) {
+        upperThresholdEnabled = o.isUpperThresholdEnabled();
+        upperThreshold = o.getUpperThreshold();
+        lowerThresholdEnabled = o.isLowerThresholdEnabled();
+        lowerThreshold = o.getLowerThreshold();
+    }
+
     public int compareTo(MetricInstance o) {
         final MetricCategory category1 = metric.getCategory();
         final MetricCategory category2 = o.getMetric().getCategory();
@@ -42,6 +49,26 @@ public class MetricInstanceImpl implements MetricInstance {
         final String displayName1 = metric.getDisplayName();
         final String displayName2 = o.getMetric().getDisplayName();
         return displayName1.compareTo(displayName2);
+    }
+
+    public boolean equals(Object o) {
+        if (o.getClass() != MetricInstanceImpl.class) {
+            return false;
+        }
+        final MetricInstanceImpl other = (MetricInstanceImpl) o;
+        final MetricCategory category1 = metric.getCategory();
+        final MetricCategory category2 = other.metric.getCategory();
+        if (category1 != category2) {
+            return false;
+        }
+        final String displayName1 = metric.getDisplayName();
+        final String displayName2 = other.metric.getDisplayName();
+        return displayName1.equals(displayName2);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * metric.getCategory().hashCode() + metric.getDisplayName().hashCode();
     }
 
     public Metric getMetric() {
@@ -88,14 +115,9 @@ public class MetricInstanceImpl implements MetricInstance {
         this.lowerThreshold = lowerThreshold;
     }
 
+    @Override
     public MetricInstanceImpl clone() throws CloneNotSupportedException {
-        final MetricInstanceImpl out = (MetricInstanceImpl) super.clone();
-        out.enabled = enabled;
-        out.upperThresholdEnabled = upperThresholdEnabled;
-        out.upperThreshold = upperThreshold;
-        out.lowerThresholdEnabled = lowerThresholdEnabled;
-        out.lowerThreshold = lowerThreshold;
-        return out;
+        return (MetricInstanceImpl) super.clone();
     }
 
     public String toString() {

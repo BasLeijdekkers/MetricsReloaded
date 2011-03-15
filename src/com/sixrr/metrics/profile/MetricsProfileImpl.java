@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ public class MetricsProfileImpl implements MetricsProfile {
     private boolean builtIn = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
-        super();
         this.name = name;
         this.metrics.addAll(metrics);
         Collections.sort(this.metrics);
@@ -47,6 +46,17 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     public MetricDisplaySpecification getDisplaySpecification() {
         return displaySpecification;
+    }
+
+    public void copyFrom(List<MetricInstance> metrics) {
+        for (MetricInstance newMetric : metrics) {
+            for (int i = 0, metricsSize = this.metrics.size(); i < metricsSize; i++) {
+                final MetricInstance metric = this.metrics.get(i);
+                if (metric.equals(newMetric)) {
+                    metric.copyFrom(newMetric);
+                }
+            }
+        }
     }
 
     public boolean isBuiltIn() {
@@ -107,7 +117,7 @@ public class MetricsProfileImpl implements MetricsProfile {
         return null;
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral"})
+    @SuppressWarnings("HardCodedStringLiteral")
     @Nullable
     public static MetricsProfile loadFromFile(File file) {
         final Document doc;

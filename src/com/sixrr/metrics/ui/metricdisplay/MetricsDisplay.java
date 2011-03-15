@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2010, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ public class MetricsDisplay {
 
     public MetricsDisplay(Project project, MetricsReloadedConfig configuration,
                           MetricsProfileRepository profileRepository) {
-        super();
         this.configuration = configuration;
         this.profileRepository = profileRepository;
         final JTable projectMetricsTable = new JBTable();
@@ -226,7 +225,7 @@ public class MetricsDisplay {
 
         final List<Integer> columnWidths = tableSpecification.getColumnWidths();
         final List<String> columnOrder = tableSpecification.getColumnOrder();
-        if (columnWidths != null && columnWidths.size() != 0) {
+        if (columnWidths != null && !columnWidths.isEmpty()) {
 
             final int columnCount = model.getColumnCount();
             for (int i = 0; i < columnCount; i++) {
@@ -306,22 +305,12 @@ public class MetricsDisplay {
         return null;
     }
 
-    public void refresh() {
-        for (MetricCategory category : MetricCategory.values()) {
-            final JTable table = tables.get(category);
-            if (table.isVisible()) {
-                table.updateUI();
-            }
-        }
-    }
-
-
     private class MyColumnListener implements TableColumnModelListener, PropertyChangeListener {
+        
         private final MetricTableSpecification tableSpecification;
         private final JTable table;
 
         private MyColumnListener(MetricTableSpecification tableSpecification, JTable table) {
-            super();
             this.tableSpecification = tableSpecification;
             this.table = table;
         }

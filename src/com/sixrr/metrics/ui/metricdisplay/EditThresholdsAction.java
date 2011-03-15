@@ -15,18 +15,20 @@
  */
 package com.sixrr.metrics.ui.metricdisplay;
 
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricsResult;
-import com.sixrr.metrics.plugin.MetricsPlugin;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.dialogs.ThresholdDialog;
 import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -44,32 +46,35 @@ class EditThresholdsAction extends AnAction {
         this.toolWindow = toolWindow;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
         final DataContext dataContext = event.getDataContext();
         final Project project = PlatformDataKeys.PROJECT.getData(dataContext);
-        assert project!=null;
+        assert project != null;
         final MetricCategory category = toolWindow.getSelectedCategory();
         final MetricsProfile profile = toolWindow.getCurrentProfile();
-        final List<MetricInstance> metrics = profile.getMetrics();
-        final List<Metric> selectedMetrics = new ArrayList<Metric>();
-        for (MetricInstance instance : metrics) {
-            if (instance.isEnabled()) {
-                final Metric metric = instance.getMetric();
-                if (metric.getCategory().equals(category)) {
-                    selectedMetrics.add(metric);
-                }
+        final List<MetricInstance> metrics = new ArrayList<MetricInstance>();
+        for (MetricInstance instance : profile.getMetrics()) {
+            if (!instance.isEnabled()) {
+                continue;
+            }
+            final Metric metric = instance.getMetric();
+            if (metric.getCategory() != category) {
+                continue;
+            }
+            try {
+                metrics.add(instance.clone());
+            } catch (CloneNotSupportedException e) {
+                throw new AssertionError(e);
             }
         }
         final MetricsResult results = toolWindow.getCurrentRun().getResultsForCategory(category);
         final ThresholdDialog dialog =
-                new ThresholdDialog(project, selectedMetrics, profile, results);
+                new ThresholdDialog(project, profile.getName(), metrics, results);
         dialog.show();
         if (dialog.isOK()) {
+            profile.copyFrom(metrics);
             MetricsProfileRepository.persistProfile(profile);
-            toolWindow.refresh();
-        } else {
-            final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
-            plugin.getProfileRepository().reloadProfileFromStorage(profile);
         }
     }
 }
