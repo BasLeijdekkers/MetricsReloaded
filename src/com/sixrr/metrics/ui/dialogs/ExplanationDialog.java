@@ -19,6 +19,7 @@ package com.sixrr.metrics.ui.dialogs;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.HyperlinkLabel;
 import com.intellij.ui.ScrollPaneFactory;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
@@ -26,16 +27,18 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 
 public class ExplanationDialog extends DialogWrapper {
 
+    private static final Action[] EMPTY_ACTION_ARRAY = new Action[0];
+
     private final JTextPane textPane = new JTextPane();
-    private final JLabel urlLabel = new JLabel();
+    private final HyperlinkLabel urlLabel = new HyperlinkLabel();
     private final JLabel moreInformationLabel = new JLabel(MetricsReloadedBundle.message(
             "for.more.information.go.to"));
 
@@ -43,6 +46,7 @@ public class ExplanationDialog extends DialogWrapper {
         super(project, false);
         setModal(true);
         init();
+        pack();
     }
 
     public void run(Metric metric) {
@@ -58,15 +62,12 @@ public class ExplanationDialog extends DialogWrapper {
             urlLabel.setVisible(false);
             moreInformationLabel.setVisible(false);
         } else {
+            urlLabel.setHyperlinkText(helpString);
             urlLabel.setVisible(true);
-            urlLabel.setText(helpString);
-            urlLabel.setForeground(Color.BLUE);
             moreInformationLabel.setVisible(true);
         }
-        urlLabel.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent event) {
+        urlLabel.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (helpURL != null) {
                     BrowserUtil.launchBrowser("http://" + helpURL);
                 }
@@ -94,9 +95,7 @@ public class ExplanationDialog extends DialogWrapper {
 
     @Override
     public Action[] createActions() {
-        return new Action[] {
-                getOKAction()
-        };
+        return EMPTY_ACTION_ARRAY;
     }
 
     @Override
