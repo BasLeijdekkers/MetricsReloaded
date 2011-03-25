@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         this.resultsHolder = resultsHolder;
         this.executionContext = executionContext;
         if (((BaseMetric)metric).requiresDependents() && getDependencyMap() == null) {
-            System.out.println("about to calculate dependencies");
             calculateDependencies();
         }
     }
@@ -96,6 +95,8 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         });
         final int allFilesCount = count[0];
         final PsiElementVisitor visitor = new JavaRecursiveElementVisitor() {
+
+            @Override
             public void visitClass(PsiClass aClass) {
                 super.visitClass(aClass);
                 dependencyMap.build(aClass);
