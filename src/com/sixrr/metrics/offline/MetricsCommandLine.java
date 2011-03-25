@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,10 +29,12 @@ import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.plugin.MetricsPlugin;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class MetricsCommandLine implements ApplicationStarter {
+    
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
     public String getCommandName() {
@@ -45,7 +47,7 @@ public class MetricsCommandLine implements ApplicationStarter {
         }
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral"})
+    @SuppressWarnings("HardCodedStringLiteral")
     private static void usage(String[] args) {
         System.err.println("MetricsReloaded command line error " + Arrays.toString(args));
         System.err
@@ -80,18 +82,21 @@ public class MetricsCommandLine implements ApplicationStarter {
             final Project project = ProjectManager.getInstance().loadAndOpenProject(projectFileName);
             final MetricsProfile profile = getMetricsProfile(project, metricsProfileName);
             final AnalysisScope scope = new AnalysisScope(project);
-            final MetricsExecutionContextImpl executionContext = new MetricsExecutionContextImpl(project, scope);
             final MetricsRunImpl metricsRun = new MetricsRunImpl();
-
-            final boolean cancelled = executionContext.execute(profile, metricsRun);
-
-            if (!cancelled) {
-                metricsRun.setProfileName(profile.getName());
-                metricsRun.setTimestamp(new TimeStamp());
-                metricsRun.setContext(scope);
-                final XMLExporter exporter = new XMLExporter(metricsRun);
-                exporter.export(outputXMLFileName);
-            }
+            new MetricsExecutionContextImpl(project, scope) {
+                @Override
+                public void onFinish() {
+                    metricsRun.setProfileName(profile.getName());
+                    metricsRun.setTimestamp(new TimeStamp());
+                    metricsRun.setContext(scope);
+                    final XMLExporter exporter = new XMLExporter(metricsRun);
+                    try {
+                        exporter.export(outputXMLFileName);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }.execute(profile, metricsRun);
         } catch (Exception ex) {
             logger.info("Unexpected exception", ex);
             // logger.error() activate the IDEA fatal error dialog stuff (?)

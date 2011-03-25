@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,103 +17,125 @@
 package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReferenceExpression;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricsExecutionContext;
 import com.sixrr.metrics.MetricsResultsHolder;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MetricsExecutionContextImpl implements MetricsExecutionContext {
+public abstract class MetricsExecutionContextImpl implements MetricsExecutionContext {
+
     private final Project project;
     private final AnalysisScope scope;
 
-    public MetricsExecutionContextImpl(Project project, AnalysisScope scope) {
-        super();
+    protected MetricsExecutionContextImpl(Project project, AnalysisScope scope) {
         this.project = project;
         this.scope = scope;
     }
 
-    public boolean execute(final MetricsProfile profile,
-                           final MetricsResultsHolder metricsRun) {
-        final int numFiles = scope.getFileCount();
-        final ProgressManager progressManager = ProgressManager.getInstance();
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                final ProgressIndicator progressIndicator = progressManager.getProgressIndicator();
+    public final void execute(final MetricsProfile profile,
+                              final MetricsResultsHolder metricsRun) {
+        final Task.Backgroundable task = new Task.Backgroundable(project, "MetricsReloaded", true) {
+
+            public void run(@NotNull final ProgressIndicator indicator) {
                 final List<MetricInstance> metrics = profile.getMetrics();
-                progressIndicator.setText(MetricsReloadedBundle.message("initializing.progress.string"));
+                indicator.setText(MetricsReloadedBundle.message("initializing.progress.string"));
+                final int numFiles = scope.getFileCount();
                 final int numMetrics = metrics.size();
                 final List<MetricCalculator> calculators = new ArrayList<MetricCalculator>(numMetrics);
-                for (final MetricInstance metricInstance : metrics) {
-                    final Metric metric = metricInstance.getMetric();
-                    if (metricInstance.isEnabled()) {
-                        final MetricCalculator calculator = metric.createCalculator();
+                ApplicationManager.getApplication().runReadAction(new Runnable() {
+                    public void run() {
+                        for (final MetricInstance metricInstance : metrics) {
+                            if (indicator.isCanceled()) {
+                                return;
+                            }
+                            final Metric metric = metricInstance.getMetric();
+                            if (metricInstance.isEnabled()) {
+                                final MetricCalculator calculator = metric.createCalculator();
 
-                        if (calculator != null) {
-                            calculators.add(calculator);
-                            calculator.beginMetricsRun(metricInstance.getMetric(), metricsRun,
-                                    MetricsExecutionContextImpl.this);
+                                if (calculator != null) {
+                                    calculators.add(calculator);
+                                    calculator.beginMetricsRun(metricInstance.getMetric(), metricsRun,
+                                            MetricsExecutionContextImpl.this);
+                                }
+                            }
                         }
-                    }
-                }
 
-                scope.accept(new PsiElementVisitor() {
-                    private int mainTraversalProgress = 0;
+                        scope.accept(new PsiElementVisitor() {
+                            private int mainTraversalProgress = 0;
 
-                    public void visitFile(PsiFile psiFile) {
-                        super.visitFile(psiFile);
-                        final String fileName = psiFile.getName();
-                        progressIndicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
-                        mainTraversalProgress++;
+                            @Override
+                            public void visitFile(PsiFile psiFile) {
+                                super.visitFile(psiFile);
+                                final String fileName = psiFile.getName();
+                                indicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
+                                mainTraversalProgress++;
 
-                        for (MetricCalculator calculator : calculators) {
-                            calculator.processFile(psiFile);
-                        }
-                        progressIndicator.setFraction((double) mainTraversalProgress / (double) numFiles);
+                                for (MetricCalculator calculator : calculators) {
+                                    calculator.processFile(psiFile);
+                                }
+                                indicator.setFraction((double) mainTraversalProgress / (double) numFiles);
+                            }
+                        });
                     }
                 });
 
-                progressIndicator.setText(MetricsReloadedBundle.message("tabulating.results.progress.string"));
+
+                indicator.setText(MetricsReloadedBundle.message("tabulating.results.progress.string"));
                 for (MetricCalculator calculator : calculators) {
+                    if (indicator.isCanceled()) {
+                        return;
+                    }
                     calculator.endMetricsRun();
                 }
             }
 
-        };
+            @Override
+            public void onSuccess() {
+                onFinish();
+            }
 
-        //noinspection HardCodedStringLiteral
-        return !progressManager.runProcessWithProgressSynchronously(runnable, "MetricsReloaded", true, project);
+            @Override
+            public void onCancel() {
+                MetricsExecutionContextImpl.this.onCancel();
+            }
+        };
+        task.queue();
     }
 
-    public Project getProject() {
+    public abstract void onFinish();
+
+    public void onCancel() {}
+
+    public final Project getProject() {
         return project;
     }
 
-    public AnalysisScope getScope() {
+    public final AnalysisScope getScope() {
         return scope;
     }
 
     private Map userData = new HashMap();
 
-    public <T> T getUserData(Key<T> key) {
+    public final <T> T getUserData(Key<T> key) {
         return (T) userData.get(key);
     }
 
-    public <T> void putUserData(Key<T> key, T t) {
+    public final <T> void putUserData(Key<T> key, T t) {
         userData.put(key, t);
     }
-
 }

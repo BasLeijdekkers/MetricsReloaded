@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package com.sixrr.metrics.plugin;
 import com.intellij.analysis.AnalysisScope;
 import com.intellij.analysis.BaseAnalysisAction;
 import com.intellij.analysis.BaseAnalysisActionDialog;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
@@ -30,6 +32,7 @@ import com.sixrr.metrics.ui.dialogs.ProfileSelectionPanel;
 import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
 import com.sixrr.metrics.utils.IconHelper;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -41,33 +44,35 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
                 MetricsReloadedBundle.message("metrics"));
     }
 
-    protected void analyze(Project project, AnalysisScope analysisScope) {
+    @Override
+    protected void analyze(@NotNull final Project project, final AnalysisScope analysisScope) {
         final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
         final MetricsProfileRepository repository = plugin.getProfileRepository();
         final MetricsProfile profile = repository.getCurrentProfile();
         final MetricsToolWindow toolWindow = plugin.getMetricsToolWindow();
-        final MetricsExecutionContextImpl executionContext =
-                new MetricsExecutionContextImpl(project, analysisScope);
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
-        final boolean cancelled = executionContext.execute(profile, metricsRun);
-        final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
-        if (cancelled) {
-            return;
-        }
-        if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-            final ImageIcon icon = IconHelper.getIcon("/general/informationDialog.png");
-            Messages.showMessageDialog(project,
-                    MetricsReloadedBundle.message("no.metrics.warnings.found"),
-                    MetricsReloadedBundle.message("no.metrics.warnings.found"), icon);
-            return;
-        }
-        final String profileName = profile.getName();
-        metricsRun.setProfileName(profileName);
-        metricsRun.setContext(analysisScope);
-        metricsRun.setTimestamp(new TimeStamp());
-        toolWindow.show(metricsRun, profile, analysisScope, showOnlyWarnings);
+        new MetricsExecutionContextImpl(project, analysisScope) {
+
+            @Override
+            public void onFinish() {
+                final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
+                if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
+                    final ImageIcon icon = IconHelper.getIcon("/general/informationDialog.png");
+                    Messages.showMessageDialog(project,
+                            MetricsReloadedBundle.message("no.metrics.warnings.found"),
+                            MetricsReloadedBundle.message("no.metrics.warnings.found"), icon);
+                    return;
+                }
+                final String profileName = profile.getName();
+                metricsRun.setProfileName(profileName);
+                metricsRun.setContext(analysisScope);
+                metricsRun.setTimestamp(new TimeStamp());
+                toolWindow.show(metricsRun, profile, analysisScope, showOnlyWarnings);
+            }
+        }.execute(profile, metricsRun);
     }
 
+    @Override
     @Nullable
     protected JComponent getAdditionalActionSettings(
             Project project, BaseAnalysisActionDialog dialog) {

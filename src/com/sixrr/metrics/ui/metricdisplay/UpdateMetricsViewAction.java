@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.sixrr.metrics.utils.IconHelper;
 import javax.swing.*;
 
 class UpdateMetricsViewAction extends AnAction {
+
     private static final Icon RELOAD_ICON = IconHelper.getIcon("/actions/refreshUsages.png");
     private final MetricsToolWindow toolWindow;
     private final Project project;
@@ -41,17 +42,20 @@ class UpdateMetricsViewAction extends AnAction {
         this.project = project;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
         final AnalysisScope currentScope = toolWindow.getCurrentScope();
-        final MetricsExecutionContextImpl executionContext = new MetricsExecutionContextImpl(project, currentScope);
         final MetricsProfile currentProfile = toolWindow.getCurrentProfile();
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
-        final boolean cancelled = executionContext.execute(currentProfile, metricsRun);
-        if (!cancelled) {
-            metricsRun.setProfileName(currentProfile.getName());
-            metricsRun.setContext(currentScope);
-            metricsRun.setTimestamp(new TimeStamp());
-            toolWindow.update(metricsRun);
-        }
+        new MetricsExecutionContextImpl(project, currentScope) {
+            
+            @Override
+            public void onFinish() {
+                metricsRun.setProfileName(currentProfile.getName());
+                metricsRun.setContext(currentScope);
+                metricsRun.setTimestamp(new TimeStamp());
+                toolWindow.update(metricsRun);
+            }
+        }.execute(currentProfile, metricsRun);
     }
 }

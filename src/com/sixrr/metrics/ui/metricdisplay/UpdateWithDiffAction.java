@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,17 +41,20 @@ class UpdateWithDiffAction extends AnAction {
         this.toolWindow = toolWindow;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
         final AnalysisScope scope = toolWindow.getCurrentScope();
-        final MetricsExecutionContextImpl executionContext = new MetricsExecutionContextImpl(project, scope);
         final MetricsProfile currentProfile = toolWindow.getCurrentProfile();
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
-        final boolean cancelled = executionContext.execute(currentProfile, metricsRun);
-        if (!cancelled) {
-            metricsRun.setContext(scope);
-            metricsRun.setProfileName(currentProfile.getName());
-            metricsRun.setTimestamp(new TimeStamp());
-            toolWindow.updateWithDiff(metricsRun);
-        }
+        new MetricsExecutionContextImpl(project, scope) {
+
+            @Override
+            public void onFinish() {
+                metricsRun.setContext(scope);
+                metricsRun.setProfileName(currentProfile.getName());
+                metricsRun.setTimestamp(new TimeStamp());
+                toolWindow.updateWithDiff(metricsRun);
+            }
+        }.execute(currentProfile, metricsRun);
     }
 }
