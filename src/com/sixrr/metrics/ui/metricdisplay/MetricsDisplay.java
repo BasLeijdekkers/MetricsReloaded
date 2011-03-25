@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ import java.util.List;
 public class MetricsDisplay {
     
     private boolean hasOverlay = false;
-    private final Map<MetricCategory, JTable> tables = new HashMap<MetricCategory, JTable>();
-    private JTabbedPane tabbedPane = new JTabbedPane();
+    private final Map<MetricCategory, JTable> tables = new EnumMap<MetricCategory, JTable>(MetricCategory.class);
+    private final JTabbedPane tabbedPane = new JTabbedPane();
     private final MetricsReloadedConfig configuration;
     private final MetricsProfileRepository profileRepository;
 
@@ -331,7 +331,7 @@ public class MetricsDisplay {
         public void columnSelectionChanged(ListSelectionEvent e) {
         }
 
-        @SuppressWarnings({"HardCodedStringLiteral"})
+        @SuppressWarnings("HardCodedStringLiteral")
         public void propertyChange(PropertyChangeEvent evt) {
             final String propertyName = evt.getPropertyName();
             if ("width".equalsIgnoreCase(propertyName)) {
