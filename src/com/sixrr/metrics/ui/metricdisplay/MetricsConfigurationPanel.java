@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.util.containers.Convertor;
 import com.intellij.util.ui.Tree;
@@ -35,7 +36,6 @@ import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
-import com.sixrr.metrics.utils.IconHelper;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -643,7 +643,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
     }
 
     public void createUIComponents() {
-        final Icon expandIcon = IconHelper.getIcon("/icons/inspector/expandall.png");
+        final Icon expandIcon = IconLoader.getIcon("/icons/inspector/expandall.png");
         final AnAction expandActon = new AnAction(MetricsReloadedBundle.message("expand.all.action"),
                 MetricsReloadedBundle.message("expand.all.description"), expandIcon) {
             public void actionPerformed(AnActionEvent anActionEvent) {
@@ -656,7 +656,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final Icon collapseIcon = IconHelper.getIcon("/icons/inspector/collapseall.png");
+        final Icon collapseIcon = IconLoader.getIcon("/icons/inspector/collapseall.png");
 
         final AnAction collapseAction = new AnAction(MetricsReloadedBundle.message("collapse.all.action"),
                 MetricsReloadedBundle.message("collapse.all.description"), collapseIcon) {
@@ -670,7 +670,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final Icon filterIcon = IconHelper.getIcon("/ant/filter.png");
+        final Icon filterIcon = IconLoader.getIcon("/ant/filter.png");
 
         final AnAction filterAction = new AnAction(MetricsReloadedBundle.message("apply.filter.action"),
                 MetricsReloadedBundle.message("apply.filter.description"), filterIcon) {

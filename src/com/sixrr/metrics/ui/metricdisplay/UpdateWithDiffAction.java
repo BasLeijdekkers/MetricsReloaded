@@ -20,25 +20,27 @@ import com.intellij.analysis.AnalysisScope;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
 import com.sixrr.metrics.profile.MetricsProfile;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 
 class UpdateWithDiffAction extends AnAction {
-    private static final Icon RELOAD_ICON = IconHelper.getIcon("/actions/diff.png");
-    private final Project project;
+
+    private static final Icon UPDATE_ICON = IconLoader.getIcon("/actions/refreshUsages.png");
+
     private final MetricsToolWindow toolWindow;
+    private final Project project;
 
     UpdateWithDiffAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("update.with.differences.action"),
-                MetricsReloadedBundle.message("update.with.differences.description"), RELOAD_ICON);
-        this.project = project;
+                MetricsReloadedBundle.message("update.with.differences.description"), UPDATE_ICON);
         this.toolWindow = toolWindow;
+        this.project = project;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricInstance;
@@ -27,7 +28,6 @@ import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.dialogs.ThresholdDialog;
-import com.sixrr.metrics.utils.IconHelper;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
@@ -36,13 +36,14 @@ import java.util.List;
 
 class EditThresholdsAction extends AnAction {
 
-    private static final Icon EDIT_ICON = IconHelper.getIcon("/actions/properties.png");
+    private static final Icon ICON = IconLoader.getIcon("/actions/properties.png");
+
     private final MetricsToolWindow toolWindow;
 
     EditThresholdsAction(MetricsToolWindow toolWindow) {
         super(MetricsReloadedBundle.message("edit.thresholds.action"),
                 MetricsReloadedBundle.message("edit.threshold.values.for.this.metric.profile"),
-                EDIT_ICON);
+                ICON);
         this.toolWindow = toolWindow;
     }
 

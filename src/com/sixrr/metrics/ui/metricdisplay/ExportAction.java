@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
-import com.sixrr.metrics.export.*;
+import com.sixrr.metrics.export.CSVExporter;
+import com.sixrr.metrics.export.Exporter;
+import com.sixrr.metrics.export.XMLExporter;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,21 +38,21 @@ import java.io.IOException;
 class ExportAction extends AnAction {
 
     public static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
+    private static final Icon ICON = IconLoader.getIcon("/actions/export.png");
 
-    private static final Icon EXPORT_ICON = IconHelper.getIcon("/actions/export.png");
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     ExportAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("export.action"),
                 MetricsReloadedBundle.message("export.description"),
-                EXPORT_ICON);
+                ICON);
         this.toolWindow = toolWindow;
         this.project = project;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
-
         final MetricsRun currentResults = toolWindow.getCurrentRun();
         final JFileChooser chooser = new JFileChooser();
         final FileTypeFilter xmlFilter =

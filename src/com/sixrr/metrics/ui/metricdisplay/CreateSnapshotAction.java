@@ -19,10 +19,10 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
@@ -31,19 +31,21 @@ import java.awt.*;
 import java.io.File;
 
 class CreateSnapshotAction extends AnAction {
-    private static final Icon RELOAD_ICON =
-            IconHelper.getIcon("/actions/dump.png");
+    
+    private static final Icon ICON = IconLoader.getIcon("/actions/dump.png");
+
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     CreateSnapshotAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("create.snapshot.action"),
                 MetricsReloadedBundle.message("create.snapshot.description"),
-                RELOAD_ICON);
+                ICON);
         this.toolWindow = toolWindow;
         this.project = project;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
         final MetricsRun currentResults = toolWindow.getCurrentRun();
         final JFileChooser chooser = new JFileChooser();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,29 +18,31 @@ package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
+import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
-import com.sixrr.metrics.utils.IconHelper;
 
 import javax.swing.*;
 
 class ToggleAutoscrollAction extends ToggleAction {
-    private static final Icon toggleAutoscrollIcon =
-            IconHelper.getIcon("/general/autoscrollToSource.png");
+
+    private static final Icon ICON = IconLoader.getIcon("/general/autoscrollToSource.png");
 
     private final MetricsReloadedConfig configuration;
 
     ToggleAutoscrollAction(MetricsReloadedConfig configuration) {
         super(MetricsReloadedBundle.message("autoscroll.to.source.action"),
                 MetricsReloadedBundle.message("autoscroll.to.source.description"),
-                toggleAutoscrollIcon);
+                ICON);
         this.configuration = configuration;
     }
 
+    @Override
     public boolean isSelected(AnActionEvent event) {
         return configuration.isAutoscroll();
     }
 
+    @Override
     public void setSelected(AnActionEvent event, boolean b) {
         configuration.setAutoscroll(b);
     }

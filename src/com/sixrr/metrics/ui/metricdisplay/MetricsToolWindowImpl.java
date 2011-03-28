@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -74,7 +74,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         myToolWindow = toolWindowManager
                 .registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel, ToolWindowAnchor.BOTTOM);
         myToolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
-        final ImageIcon icon = IconHelper.getIcon(TOOL_WINDOW_ICON_PATH);
+        final Icon icon = IconLoader.getIcon(TOOL_WINDOW_ICON_PATH);
         myToolWindow.setIcon(icon);
         myToolWindow.setAvailable(false, null);
     }

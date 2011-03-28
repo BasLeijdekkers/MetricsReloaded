@@ -19,10 +19,9 @@ package com.sixrr.metrics.plugin;
 import com.intellij.analysis.AnalysisScope;
 import com.intellij.analysis.BaseAnalysisAction;
 import com.intellij.analysis.BaseAnalysisActionDialog;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
@@ -30,7 +29,6 @@ import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.dialogs.ProfileSelectionPanel;
 import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
-import com.sixrr.metrics.utils.IconHelper;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +55,7 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
             public void onFinish() {
                 final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
                 if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-                    final ImageIcon icon = IconHelper.getIcon("/general/informationDialog.png");
+                    final Icon icon = IconLoader.getIcon("/general/informationDialog.png");
                     Messages.showMessageDialog(project,
                             MetricsReloadedBundle.message("no.metrics.warnings.found"),
                             MetricsReloadedBundle.message("no.metrics.warnings.found"), icon);

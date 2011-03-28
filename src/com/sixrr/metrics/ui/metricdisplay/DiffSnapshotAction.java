@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -31,21 +31,21 @@ import java.awt.*;
 import java.io.File;
 
 class DiffSnapshotAction extends AnAction {
-    private static final Icon DIFF_ICON =
-            IconHelper.getIcon("/diff/Diff.png");
+
+    private static final Icon ICON = IconLoader.getIcon("/diff/Diff.png");
 
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     DiffSnapshotAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("compare.with.snapshot.action"),
-                MetricsReloadedBundle.message("compare.with.snapshot.description"), DIFF_ICON);
+                MetricsReloadedBundle.message("compare.with.snapshot.description"), ICON);
         this.toolWindow = toolWindow;
         this.project = project;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
-
         final JFileChooser chooser = new JFileChooser();
         final FileFilter filter = new SnapshotFileFilter();
         chooser.setFileFilter(filter);
