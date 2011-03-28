@@ -49,7 +49,8 @@ public abstract class MetricsExecutionContextImpl implements MetricsExecutionCon
 
     public final void execute(final MetricsProfile profile,
                               final MetricsResultsHolder metricsRun) {
-        final Task.Backgroundable task = new Task.Backgroundable(project, "MetricsReloaded", true) {
+        final Task.Backgroundable task = new Task.Backgroundable(project,
+                MetricsReloadedBundle.message("calculating.metrics"), true) {
 
             public void run(@NotNull final ProgressIndicator indicator) {
                 final List<MetricInstance> metrics = profile.getMetrics();
