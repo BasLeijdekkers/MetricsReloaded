@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.NumberFormat;
 
-@SuppressWarnings({"MethodWithTooManyParameters"})
 class MetricCellRenderer extends DefaultTableCellRenderer {
     private static final Color UNCHANGED_COLOR = Color.white;
     private static final Color CHANGED_COLOR = new Color(189, 207, 255);
@@ -43,10 +42,10 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
     private final MetricInstance metricInstance;
 
     MetricCellRenderer(MetricInstance metricInstance) {
-        super();
         this.metricInstance = metricInstance;
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
         final MetricTableModel model = (MetricTableModel) table.getModel();
@@ -75,7 +74,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
         }
         final Metric metric = metricInstance.getMetric();
         final MetricType metricType = metric.getType();
-        if (metricType.equals(MetricType.Ratio) || metricType.equals(MetricType.RecursiveRatio)) {
+        if (metricType == MetricType.Ratio || metricType == MetricType.RecursiveRatio) {
             doubleValue *= 100.0;
         }
         final String stringValue = FormatUtils.formatValue(metric, (Double) value);
@@ -116,7 +115,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
         final Metric metric = metricInstance.getMetric();
         final Double currentValue = pair.getFirst();
         final Double prevValue = pair.getSecond();
-        final StringBuffer stringValue = new StringBuffer(16);
+        final StringBuilder stringValue = new StringBuilder(16);
         if (currentValue != null && prevValue != null && prevValue.equals(currentValue)) {
             stringValue.append(FormatUtils.formatValue(metric, currentValue));
         } else {
@@ -160,7 +159,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
         final Double currentValue = pair.getFirst();
         final Double prevValue = pair.getSecond();
         final MetricTableModel model = (MetricTableModel) table.getModel();
-        final StringBuffer stringValue = new StringBuffer(16);
+        final StringBuilder stringValue = new StringBuilder(16);
         if (row == model.getRowCount() - 1) {
             if (currentValue != null && prevValue != null && prevValue.equals(currentValue)) {
                 stringValue.append(FormatUtils.formatAverageValue(metric, currentValue));
@@ -190,6 +189,6 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
                 }
             }
         }
-        return (JLabel) super.getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
+        return super.getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
     }
 }
