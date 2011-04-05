@@ -20,24 +20,25 @@ import com.intellij.analysis.AnalysisScope;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
 import com.sixrr.metrics.profile.MetricsProfile;
-import com.sixrr.metrics.utils.IconHelper;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 
 class UpdateMetricsViewAction extends AnAction {
 
-    private static final Icon RELOAD_ICON = IconHelper.getIcon("/actions/refreshUsages.png");
+    private static final Icon ICON = IconLoader.getIcon("/actions/refreshUsages.png");
+
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     UpdateMetricsViewAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("update.metrics.action"),
-                MetricsReloadedBundle.message("update.metrics.description"), RELOAD_ICON);
+                MetricsReloadedBundle.message("update.metrics.description"), ICON);
         this.toolWindow = toolWindow;
         this.project = project;
     }

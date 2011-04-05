@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,55 +29,64 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
 public class MetricsPluginImpl implements ProjectComponent, MetricsPlugin, JDOMExternalizable {
+    
     private MetricsProfileRepository profileRepository = null;
     private final MetricsReloadedConfig config = new MetricsReloadedConfig();
     private final Project project;
     private MetricsToolWindow metricsToolWindow = null;
 
     public MetricsPluginImpl(Project project) {
-        super();
         this.project = project;
     }
 
+    @Override
     @NotNull public String getComponentName() {
         return "com.sixrr.metrics.MetricsReloaded";
     }
 
-    public void initComponent() {
-    }
+    @Override
+    public void initComponent() {}
 
-    public void disposeComponent() {
-    }
+    @Override
+    public void disposeComponent() {}
 
+    @Override
     public void projectOpened() {
-        profileRepository = new MetricsProfileRepository(config);
-        profileRepository.initialize();
-        metricsToolWindow = new MetricsToolWindowImpl(project, profileRepository, config);
+        metricsToolWindow = new MetricsToolWindowImpl(project, this, config);
         metricsToolWindow.register();
     }
 
+    @Override
     public void projectClosed() {
         metricsToolWindow.unregister();
     }
 
+    @Override
     public void readExternal(Element element) throws InvalidDataException {
         config.readExternal(element);
     }
 
+    @Override
     public void writeExternal(Element element) throws WriteExternalException {
         config.writeExternal(element);
     }
 
+    @Override
     public MetricsReloadedConfig getConfiguration() {
         return config;
     }
 
-
+    @Override
     public MetricsToolWindow getMetricsToolWindow() {
         return metricsToolWindow;
     }
 
+    @Override
     public MetricsProfileRepository getProfileRepository() {
+        if (profileRepository == null) {
+            profileRepository = new MetricsProfileRepository(config);
+            profileRepository.initialize();
+        }
         return profileRepository;
     }
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin version="2" url="http://plugins.intellij.net/plugin/?id=93">
   <name>MetricsReloaded</name>
+  <id>MetricsReloaded</id>
   <description><![CDATA[
     More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
     IntelliJ IDEA 9 and 10. Follow further development of
@@ -9,15 +10,24 @@
     ]]></description>
   <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
           email="basleijdekkersYour Pants@gmail.com">Bas Leijdekkers (remove Your Pants to mail me;)</vendor>
-  <version>0.9.2</version>
+  <version>1.0</version>
   <change-notes><![CDATA[
-    fixed exceptions under Alloy look and feel<br>
-    some minor UI improvements
+    Complete UI overhaul to make it look and behave better.<br>
+    Now calculates metrics in the background instead of using a modal foreground progress window
+   
   ]]></change-notes>
   <idea-version since-build="8500"/>
+  
+  <extensionPoints>
+    <extensionPoint name="metricProvider"
+                    interface="com.sixrr.metrics.MetricProvider"/>
+  </extensionPoints>
 
   <extensions xmlns="com.intellij">
     <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
+  </extensions>
+  <extensions defaultExtensionNs="MetricsReloaded">
+    <metricProvider implementation="com.sixrr.stockmetrics.DefaultMetricProvider"/>
   </extensions>
 
   <application-components>
@@ -34,6 +44,7 @@
     <component>
       <interface-class>com.sixrr.metrics.plugin.MetricsPlugin</interface-class>
       <implementation-class>com.sixrr.metrics.plugin.MetricsPluginImpl</implementation-class>
+      <skipForDefaultProject/>
     </component>
   </project-components>
 

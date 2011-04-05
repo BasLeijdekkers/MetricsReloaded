@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.sixrr.metrics;
 
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.extensions.ExtensionPointName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,7 +27,11 @@ import java.util.List;
  * Additionally, you can specify a list of pre-built metrics profiles, which may make it easier for new users to use your
  * metrics.
  */
-public interface MetricProvider extends ApplicationComponent {
+public interface MetricProvider {
+
+    ExtensionPointName<MetricProvider> EXTENSION_POINT_NAME = 
+            ExtensionPointName.create("MetricsReloaded.metricProvider");
+
     /**
      * Returns the list of metrics classes provided by this provider.
      * @return the metrics classes for this provider
@@ -37,7 +41,7 @@ public interface MetricProvider extends ApplicationComponent {
 
     /**
      * Returns the list of prebuilt metrics profiles provided by this provider.
-     * @return the prebuild metrics profiles for this provider.
+     * @return the prebuilt metrics profiles for this provider.
      */
     @NotNull
     List<PrebuiltMetricProfile> getPrebuiltProfiles();

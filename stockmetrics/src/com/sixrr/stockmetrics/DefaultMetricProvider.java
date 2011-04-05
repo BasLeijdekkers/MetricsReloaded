@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,25 +16,24 @@
 
 package com.sixrr.stockmetrics;
 
+import com.sixrr.metrics.Metric;
+import com.sixrr.metrics.MetricProvider;
+import com.sixrr.metrics.PrebuiltMetricProfile;
 import com.sixrr.stockmetrics.classMetrics.*;
 import com.sixrr.stockmetrics.classMetrics.NumTypeParametersMetric;
+import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.interfaceMetrics.*;
 import com.sixrr.stockmetrics.methodMetrics.*;
 import com.sixrr.stockmetrics.moduleMetrics.*;
 import com.sixrr.stockmetrics.packageMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
-import com.sixrr.metrics.MetricProvider;
-import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.PrebuiltMetricProfile;
-import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class   DefaultMetricProvider implements MetricProvider {
+public class DefaultMetricProvider implements MetricProvider {
+
     private static final String COMPLEXITY_PROFILE_NAME = StockMetricsBundle.message("complexity.metrics.profile.name");
     private static final String JAVADOC_PROFILE_NAME =
             StockMetricsBundle.message("javadoc.coverage.metrics.profile.name");
@@ -51,27 +50,18 @@ public class   DefaultMetricProvider implements MetricProvider {
     private static final String CHIDAMBER_KEMERER_PROFILE_NAME =
             StockMetricsBundle.message("chidamber.kemerer.metrics.profile.name");
 
-    private List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
+    private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
 
-    @NonNls
-    @NotNull
-    public String getComponentName() {
-        return "MetricsReloaded.DefaultMetricProvider";
-    }
-
-    public void initComponent() {
-        initializeMethodMetrics();
-        initializeClassMetrics();
-        initializeInterfaceMetrics();
-        initializePackageMetrics();
-        initializeModuleMetrics();
-        initializeProjectMetrics();
-    }
-
-    public void disposeComponent() {
-    }
-
+    @Override
     public List<Class<? extends Metric>> getMetricClasses() {
+        if (metricsClasses.isEmpty()) {
+            initializeMethodMetrics();
+            initializeClassMetrics();
+            initializeInterfaceMetrics();
+            initializePackageMetrics();
+            initializeModuleMetrics();
+            initializeProjectMetrics();
+        }
         return Collections.unmodifiableList(metricsClasses);
     }
 
@@ -379,6 +369,7 @@ public class   DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(NumAnnotationClassesProjectMetric.class);
     }
 
+    @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
         final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>();
         out.add(createComplexityProfile());
@@ -404,7 +395,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CODE_SIZE_PROFILE_NAME);
         profile.addMetric("LinesOfCodeProject");
@@ -428,7 +418,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createClassCountProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CLASS_COUNT_PROFILE_NAME);
         profile.addMetric("NumClassesProject");
@@ -446,7 +435,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createDependencyProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(DEPENDENCY_PROFILE_NAME);
         profile.addMetric("NumDependenciesClass");
@@ -464,7 +452,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createMoodProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(MOOD_PROFILE_NAME);
         profile.addMetric("MethodHidingFactorProject");
@@ -476,7 +463,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createMartinProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(MARTIN_PROFILE_NAME);
         profile.addMetric("AfferentCoupling");
@@ -487,7 +473,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createTestProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(TEST_PROFILE_NAME);
         profile.addMetric("NumTestCasesProject");
@@ -504,7 +489,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CHIDAMBER_KEMERER_PROFILE_NAME);
         profile.addMetric("ResponseForClass");
@@ -516,7 +500,6 @@ public class   DefaultMetricProvider implements MetricProvider {
         return profile;
     }
 
-    @SuppressWarnings({"OverlyLongMethod"})
     private static PrebuiltMetricProfile createJavadocProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(JAVADOC_PROFILE_NAME);
         profile.addMetric("JavadocLinesOfCodeMethod");

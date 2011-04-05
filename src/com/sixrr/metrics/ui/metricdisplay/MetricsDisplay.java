@@ -23,9 +23,9 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.*;
+import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricTableSpecification;
-import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
@@ -47,12 +47,12 @@ public class MetricsDisplay {
     private final Map<MetricCategory, JTable> tables = new EnumMap<MetricCategory, JTable>(MetricCategory.class);
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private final MetricsReloadedConfig configuration;
-    private final MetricsProfileRepository profileRepository;
+    private final MetricsPlugin metricsPlugin;
 
     public MetricsDisplay(Project project, MetricsReloadedConfig configuration,
-                          MetricsProfileRepository profileRepository) {
+                          MetricsPlugin metricsPlugin) {
         this.configuration = configuration;
-        this.profileRepository = profileRepository;
+        this.metricsPlugin = metricsPlugin;
         final JTable projectMetricsTable = new JBTable();
         tables.put(MetricCategory.Project, projectMetricsTable);
         final JTable moduleMetricsTable = new JBTable();
@@ -104,7 +104,8 @@ public class MetricsDisplay {
                     displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
             final MetricTableModel model =
-                    new MetricTableModel(results, type, tableSpecification, profileRepository);
+                    new MetricTableModel(results, type, tableSpecification,
+                            metricsPlugin.getProfileRepository());
             table.setModel(model);
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
@@ -315,22 +316,28 @@ public class MetricsDisplay {
             this.table = table;
         }
 
+        @Override
         public void columnAdded(TableColumnModelEvent e) {
         }
 
+        @Override
         public void columnRemoved(TableColumnModelEvent e) {
         }
 
+        @Override
         public void columnMoved(TableColumnModelEvent e) {
             saveColumnSpecification();
         }
 
+        @Override
         public void columnMarginChanged(ChangeEvent e) {
         }
 
+        @Override
         public void columnSelectionChanged(ListSelectionEvent e) {
         }
 
+        @Override
         @SuppressWarnings("HardCodedStringLiteral")
         public void propertyChange(PropertyChangeEvent evt) {
             final String propertyName = evt.getPropertyName();
@@ -353,7 +360,7 @@ public class MetricsDisplay {
             }
             tableSpecification.setColumnOrder(columns);
             tableSpecification.setColumnWidths(columnWidths);
-            profileRepository.persistCurrentProfile();
+            metricsPlugin.getProfileRepository().persistCurrentProfile();
         }
     }
 }

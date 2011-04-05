@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.profile;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -55,7 +56,6 @@ public class MetricsProfileRepository {
     }
 
     public MetricsProfileRepository(MetricsReloadedConfig configuration) {
-        super();
         this.configuration = configuration;
         template = new MetricsProfileTemplate();
         template.loadMetricsFromProviders();
@@ -69,17 +69,16 @@ public class MetricsProfileRepository {
             final String previouslySelectedProfile = configuration.getSelectedProfile();
             if (profiles.containsKey(previouslySelectedProfile)) {
                 selectedProfile = previouslySelectedProfile;
-            }
-            else
-            {
+            } else {
                 selectedProfile = profiles.keySet().iterator().next();
             }
         }
     }
 
     private void addPrebuiltProfiles() {
-        final MetricProvider[] metricProviders = ApplicationManager.getApplication()
-                .getComponents(MetricProvider.class);
+        final Application application = ApplicationManager.getApplication();
+        final MetricProvider[] metricProviders =
+                application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
         for (MetricProvider provider : metricProviders) {
             final List<PrebuiltMetricProfile> prebuiltProfiles = provider.getPrebuiltProfiles();
             for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {

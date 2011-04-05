@@ -28,9 +28,9 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsRun;
+import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
-import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
@@ -48,10 +48,9 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private MetricsProfile currentProfile = null;
     private boolean showOnlyWarnings = false;
 
-    public MetricsToolWindowImpl(Project project, MetricsProfileRepository repository, MetricsReloadedConfig config) {
+    public MetricsToolWindowImpl(Project project, MetricsPlugin plugin, MetricsReloadedConfig config) {
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
-        toolbarGroup.add(new UpdateMetricsViewAction(this, project));
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
         toolbarGroup.add(new ToggleAutoscrollAction(config));
         toolbarGroup.add(new ExportAction(this, project));
@@ -64,11 +63,12 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         final ActionToolbar toolbar =
                 actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
         myContentPanel = new JPanel(new BorderLayout());
-        metricsDisplay = new MetricsDisplay(project, config, repository);
+        metricsDisplay = new MetricsDisplay(project, config, plugin);
         myContentPanel.add(toolbar.getComponent(), BorderLayout.WEST);
         myContentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
     }
 
+    @Override
     public void register() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         myToolWindow = toolWindowManager
@@ -79,6 +79,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         myToolWindow.setAvailable(false, null);
     }
 
+    @Override
     public void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope, boolean showOnlyWarnings) {
         currentScope = scope;
         if (showOnlyWarnings) {
@@ -96,12 +97,14 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         myToolWindow.show(null);
     }
 
+    @Override
     public void update(MetricsRun results) {
         currentResults = results;
         final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.updateMetricsResults(results, displaySpecification);
     }
 
+    @Override
     public void updateWithDiff(MetricsRun results) {
         final MetricsRun prevResults = currentResults;
         currentResults = results;
@@ -111,6 +114,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
                 currentScope.getDisplayName(), prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
+    @Override
     public void reloadAsDiff(MetricsRun prevResults) {
         final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.overlayWithDiff(prevResults, displaySpecification);
@@ -118,6 +122,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
                 currentScope.getDisplayName(), prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
+    @Override
     public void removeDiffOverlay() {
         final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.removeDiffOverlay(displaySpecification);
@@ -125,32 +130,39 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
                 currentScope.getDisplayName(), currentResults.getTimestamp()));
     }
 
+    @Override
     public boolean hasDiffOverlay() {
         return metricsDisplay != null && metricsDisplay.hasDiffOverlay();
     }
 
+    @Override
     public void close() {
         myToolWindow.hide(null);
         myToolWindow.setAvailable(false, null);
     }
 
+    @Override
     public MetricsRun getCurrentRun() {
         return currentResults;
     }
 
+    @Override
     public AnalysisScope getCurrentScope() {
         return currentScope;
     }
 
+    @Override
     public void unregister() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         toolWindowManager.unregisterToolWindow(METRICS_TOOL_WINDOW_ID);
     }
 
+    @Override
     public MetricsProfile getCurrentProfile() {
         return currentProfile;
     }
 
+    @Override
     public MetricCategory getSelectedCategory() {
         return metricsDisplay.getSelectedCategory();
     }

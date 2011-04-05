@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.profile;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.sixrr.metrics.Metric;
@@ -74,7 +75,7 @@ class MetricsProfileTemplate {
         for (final MetricInstance metricInstance : metrics) {
             final Metric metric = metricInstance.getMetric();
             final MetricCategory category = metric.getCategory();
-            if (!category.equals(currentCategory)) {
+            if (category != currentCategory) {
                 System.out.println(MetricsCategoryNameUtil.getLongNameForCategory(category));
                 currentCategory = category;
             }
@@ -100,8 +101,9 @@ class MetricsProfileTemplate {
     }
 
     public void loadMetricsFromProviders() {
-        final MetricProvider[] metricProviders = ApplicationManager.getApplication()
-                .getComponents(MetricProvider.class);
+        final Application application = ApplicationManager.getApplication();
+        final MetricProvider[] metricProviders =
+                application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
         for (MetricProvider provider : metricProviders) {
             final List<Class<? extends Metric>> classesForProvider = provider.getMetricClasses();
             metricsClasses.addAll(classesForProvider);
