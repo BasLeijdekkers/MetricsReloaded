@@ -45,6 +45,7 @@
       <interface-class>com.sixrr.metrics.plugin.MetricsPlugin</interface-class>
       <implementation-class>com.sixrr.metrics.plugin.MetricsPluginImpl</implementation-class>
       <skipForDefaultProject/>
+      <option name="workspace" value="true" />
     </component>
   </project-components>
 
