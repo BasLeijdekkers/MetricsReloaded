@@ -74,7 +74,6 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
     @Nullable
     protected JComponent getAdditionalActionSettings(
             Project project, BaseAnalysisActionDialog dialog) {
-        final ProfileSelectionPanel profileSelectionPanel = new ProfileSelectionPanel(project);
-        return profileSelectionPanel.getPanel();
+        return new ProfileSelectionPanel(project);
     }
 }

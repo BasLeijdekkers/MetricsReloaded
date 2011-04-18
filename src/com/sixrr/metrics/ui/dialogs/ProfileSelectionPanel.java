@@ -33,11 +33,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class ProfileSelectionPanel {
-
-    private JComponent panel = new JPanel(new GridBagLayout());
+public class ProfileSelectionPanel extends JPanel {
 
     public ProfileSelectionPanel(Project project) {
+        super(new GridBagLayout());
         final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
         final MetricsProfileRepository repository = plugin.getProfileRepository();
         final MetricsReloadedConfig configuration = plugin.getConfiguration();
@@ -58,16 +57,15 @@ public class ProfileSelectionPanel {
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.anchor = GridBagConstraints.NORTHWEST;
-        panel.add(separator, constraints);
+        add(separator, constraints);
 
         constraints.insets.left = 12;
-        constraints.insets.bottom = 0;
         constraints.gridy = 1;
-        panel.add(comboboxWithBrowseButton, constraints);
+        add(comboboxWithBrowseButton, constraints);
 
         constraints.gridy = 2;
         constraints.weighty = 1.0;
-        panel.add(checkBox, constraints);
+        add(checkBox, constraints);
     }
 
     private static JCheckBox buildCheckBox(final MetricsReloadedConfig configuration) {
@@ -75,6 +73,7 @@ public class ProfileSelectionPanel {
                 "show.only.results.which.exceed.metrics.thresholds"));
         checkBox.setSelected(configuration.isShowOnlyWarnings());
         checkBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 configuration.setShowOnlyWarnings(checkBox.isSelected());
             }
@@ -92,6 +91,7 @@ public class ProfileSelectionPanel {
         final String currentProfileName = currentProfile.getName();
         comboBox.setSelectedItem(currentProfileName);
         comboBox.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent event) {
                 if (event.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -101,6 +101,7 @@ public class ProfileSelectionPanel {
             }
         });
         comboboxWithBrowseButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 final MetricsConfigurationPanel configurationPanel =
                         new MetricsConfigurationPanel(project, repository);
@@ -113,9 +114,5 @@ public class ProfileSelectionPanel {
             }
         });
         return comboboxWithBrowseButton;
-    }
-
-    public JComponent getPanel() {
-        return panel;
     }
 }
