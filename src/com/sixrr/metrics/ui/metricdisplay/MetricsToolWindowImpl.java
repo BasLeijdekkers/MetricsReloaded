@@ -48,7 +48,8 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private MetricsProfile currentProfile = null;
     private boolean showOnlyWarnings = false;
 
-    public MetricsToolWindowImpl(Project project, MetricsPlugin plugin, MetricsReloadedConfig config) {
+    public MetricsToolWindowImpl(Project project, MetricsPlugin plugin,
+                                 MetricsReloadedConfig config) {
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
@@ -71,8 +72,9 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     @Override
     public void register() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        myToolWindow = toolWindowManager
-                .registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel, ToolWindowAnchor.BOTTOM);
+        myToolWindow =
+                toolWindowManager.registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel,
+                        ToolWindowAnchor.BOTTOM);
         myToolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
         final Icon icon = IconLoader.getIcon(TOOL_WINDOW_ICON_PATH);
         myToolWindow.setIcon(icon);
@@ -80,7 +82,8 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope, boolean showOnlyWarnings) {
+    public void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope,
+                     boolean showOnlyWarnings) {
         currentScope = scope;
         if (showOnlyWarnings) {
             currentResults = results.filterRowsWithoutWarnings(profile);
@@ -89,10 +92,12 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         }
         currentProfile = profile;
         this.showOnlyWarnings = showOnlyWarnings;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification =
+                currentProfile.getDisplaySpecification();
         metricsDisplay.setMetricsResults(displaySpecification, currentResults);
         myToolWindow.setAvailable(true, null);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format", currentResults.getProfileName(),
+        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format",
+                currentResults.getProfileName(),
                 currentScope.getDisplayName(), currentResults.getTimestamp()) );
         myToolWindow.show(null);
     }
@@ -100,7 +105,8 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     @Override
     public void update(MetricsRun results) {
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification =
+                currentProfile.getDisplaySpecification();
         metricsDisplay.updateMetricsResults(results, displaySpecification);
     }
 
@@ -108,26 +114,32 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     public void updateWithDiff(MetricsRun results) {
         final MetricsRun prevResults = currentResults;
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification =
+                currentProfile.getDisplaySpecification();
         metricsDisplay.updateMetricsResultsWithDiff(results, displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message", currentResults.getProfileName(),
-                currentScope.getDisplayName(), prevResults.getTimestamp(), currentResults.getTimestamp()));
+        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message",
+                currentResults.getProfileName(), currentScope.getDisplayName(),
+                prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
     @Override
     public void reloadAsDiff(MetricsRun prevResults) {
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification =
+                currentProfile.getDisplaySpecification();
         metricsDisplay.overlayWithDiff(prevResults, displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message", currentResults.getProfileName(),
-                currentScope.getDisplayName(), prevResults.getTimestamp(), currentResults.getTimestamp()));
+        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message",
+                currentResults.getProfileName(), currentScope.getDisplayName(),
+                prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
     @Override
     public void removeDiffOverlay() {
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification =
+                currentProfile.getDisplaySpecification();
         metricsDisplay.removeDiffOverlay(displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format", currentResults.getProfileName(),
-                currentScope.getDisplayName(), currentResults.getTimestamp()));
+        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format",
+                currentResults.getProfileName(), currentScope.getDisplayName(),
+                currentResults.getTimestamp()));
     }
 
     @Override
