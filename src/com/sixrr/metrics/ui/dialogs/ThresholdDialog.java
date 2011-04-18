@@ -57,4 +57,9 @@ public class ThresholdDialog extends DialogWrapper {
         panel.add(scrollPane, constraints);
         return panel;
     }
+
+    @Override
+    protected String getDimensionServiceKey() {
+        return "MetricsReloaded.ThresholdDialog";
+    }
 }
