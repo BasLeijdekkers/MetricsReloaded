@@ -23,7 +23,7 @@ import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
-import com.sixrr.metrics.ui.metricdisplay.MetricsConfigurationPanel;
+import com.sixrr.metrics.ui.metricdisplay.MetricsConfigurationDialog;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
@@ -103,9 +103,9 @@ public class ProfileSelectionPanel extends JPanel {
         comboboxWithBrowseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final MetricsConfigurationPanel configurationPanel =
-                        new MetricsConfigurationPanel(project, repository);
-                configurationPanel.show();
+                final MetricsConfigurationDialog configurationDialog =
+                        new MetricsConfigurationDialog(project, repository);
+                configurationDialog.show();
                 final String[] profiles = repository.getProfileNames();
                 comboBox.setModel(new DefaultComboBoxModel(profiles));
                 final MetricsProfile currentProfile = repository.getCurrentProfile();

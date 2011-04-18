@@ -65,7 +65,7 @@ import java.util.List;
  * todo default scroll bars
  * todo resizeability
  */
-public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSelectionListener {
+public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
     private JComboBox profilesDropdown;
@@ -97,7 +97,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
     private String currentFilterString = "";
     private String[] filters = new String[0];
 
-    public MetricsConfigurationPanel(Project project, MetricsProfileRepository repository) {
+    public MetricsConfigurationDialog(Project project, MetricsProfileRepository repository) {
         super(project, true);
         this.project = project;
         this.repository = repository;
@@ -595,8 +595,7 @@ public class MetricsConfigurationPanel  extends DialogWrapper implements TreeSel
 
     @NonNls
     protected String getDimensionServiceKey() {
-
-        return "MetricsConfigurationPanel";
+        return "MetricsReloaded.MetricsConfigurationDialog";
     }
 
     private void toggleNode(JTree tree, MetricTreeNode node) {
