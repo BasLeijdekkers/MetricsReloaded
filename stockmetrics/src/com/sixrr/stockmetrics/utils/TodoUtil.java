@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,19 +19,15 @@ package com.sixrr.stockmetrics.utils;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.PsiSearchHelper;
+import com.intellij.psi.search.PsiTodoSearchHelper;
 import com.intellij.psi.search.TodoItem;
 
 public class TodoUtil {
-    private TodoUtil() {
-        super();
-    }
+    private TodoUtil() {}
 
     public static boolean isTodoComment(PsiComment comment) {
         final PsiFile file = comment.getContainingFile();
-        final PsiManager psiManager = comment.getManager();
-        final PsiSearchHelper searchHelper = psiManager.getSearchHelper();
+        final PsiTodoSearchHelper searchHelper = PsiTodoSearchHelper.SERVICE.getInstance(comment.getProject());
         final TodoItem[] todoItems = searchHelper.findTodoItems(file);
         for (final TodoItem todoItem : todoItems) {
             final TextRange commentTextRange = comment.getTextRange();
