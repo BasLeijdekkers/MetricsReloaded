@@ -1,4 +1,3 @@
-<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin version="2" url="http://plugins.intellij.net/plugin/?id=93">
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
@@ -23,7 +22,7 @@
                     interface="com.sixrr.metrics.MetricProvider"/>
   </extensionPoints>
 
-  <extensions xmlns="com.intellij">
+  <extensions defaultExtensionNs="com.intellij">
     <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
   </extensions>
   <extensions defaultExtensionNs="MetricsReloaded">
