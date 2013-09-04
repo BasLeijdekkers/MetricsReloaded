@@ -30,7 +30,9 @@ public class LinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
-            elementsCountPerModule.createBucket(module);
+            if (module != null) {
+                elementsCountPerModule.createBucket(module);
+            }
         }
 
         public void visitJavaFile(PsiJavaFile file) {
