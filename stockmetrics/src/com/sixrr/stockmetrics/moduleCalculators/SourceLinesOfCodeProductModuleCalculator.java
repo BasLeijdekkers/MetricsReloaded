@@ -30,7 +30,7 @@ public class SourceLinesOfCodeProductModuleCalculator extends ElementCountModule
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            if (!TestUtils.isTest(file)) {
+            if (TestUtils.isProduction(file)) {
                 final int lineCount = LineUtil.countLines(file);
                 incrementElementCount(file, lineCount);
             }
@@ -39,7 +39,7 @@ public class SourceLinesOfCodeProductModuleCalculator extends ElementCountModule
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final PsiFile file = comment.getContainingFile();
-            if (!TestUtils.isTest(file)) {
+            if (TestUtils.isProduction(file)) {
                 final int lineCount = LineUtil.countCommentOnlyLines(comment);
                 incrementElementCount(comment, -lineCount);
             }

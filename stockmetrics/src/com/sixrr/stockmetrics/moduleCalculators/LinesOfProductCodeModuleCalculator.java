@@ -31,7 +31,7 @@ public class LinesOfProductCodeModuleCalculator extends ElementCountModuleCalcul
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitJavaFile(PsiJavaFile file) {
             super.visitFile(file);
-            if (!TestUtils.isTest(file)) {
+            if (TestUtils.isProduction(file)) {
                 final int lineCount = LineUtil.countLines(file);
                 incrementElementCount(file, lineCount);
             }

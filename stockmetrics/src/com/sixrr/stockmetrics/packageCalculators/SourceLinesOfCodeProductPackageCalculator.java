@@ -47,7 +47,7 @@ public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator
 
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            if (TestUtils.isTest(file)) {
+            if (!TestUtils.isProduction(file)) {
                 return;
             }
             final PsiPackage aPackage = ClassUtils.findPackage(file);
@@ -61,7 +61,7 @@ public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final PsiFile file = comment.getContainingFile();
-            if (TestUtils.isTest(file)) {
+            if (!TestUtils.isProduction(file)) {
                 return;
             }
             final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
