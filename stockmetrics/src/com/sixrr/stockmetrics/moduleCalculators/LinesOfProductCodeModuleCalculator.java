@@ -39,7 +39,9 @@ public class LinesOfProductCodeModuleCalculator extends ElementCountModuleCalcul
 
         public void visitFile(PsiFile file) {
             final Module module = ClassUtils.calculateModule(file);
-            elementsCountPerModule.createBucket(module);
+            if (module != null) {
+                elementsCountPerModule.createBucket(module);
+            }
         }
     }
 }
