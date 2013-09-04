@@ -17,10 +17,10 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
@@ -31,7 +31,7 @@ import javax.swing.*;
 
 class UpdateMetricsViewAction extends AnAction {
 
-    private static final Icon ICON = IconLoader.getIcon("/actions/refreshUsages.png");
+    private static final Icon ICON = AllIcons.Actions.Refresh;
 
     private final MetricsToolWindow toolWindow;
     private final Project project;

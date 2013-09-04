@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 
@@ -26,6 +27,9 @@ public class LineUtil {
     }
 
     public static int countLines(PsiElement element) {
+        if (element instanceof PsiCompiledElement) {
+            return 0;
+        }
         final String text = element.getText();
         return countLines(text);
     }

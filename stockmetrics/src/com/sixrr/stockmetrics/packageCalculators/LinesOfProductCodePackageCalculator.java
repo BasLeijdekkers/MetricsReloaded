@@ -49,7 +49,7 @@ public class LinesOfProductCodePackageCalculator extends PackageCalculator {
                 return;
             }
             numLinesPerPackage.createBucket(aPackage);
-            if (!TestUtils.isTest(file)) {
+            if (TestUtils.isProduction(file)) {
                 final int lineCount = LineUtil.countLines(file);
                 numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
             }

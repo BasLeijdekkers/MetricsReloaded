@@ -30,7 +30,7 @@ public class LinesOfProductCodeProjectCalculator extends ElementCountProjectCalc
 
     private class Visitor extends JavaRecursiveElementVisitor {
         public void visitJavaFile(PsiJavaFile file) {
-            if (!TestUtils.isTest(file)) {
+            if (TestUtils.isProduction(file)) {
                 numElements += LineUtil.countLines(file);
             }
         }
