@@ -58,11 +58,26 @@ public class TestUtils {
         return fileIndex.isInTestSourceContent(virtualFile);
     }
 
+    public static boolean isProduction(Project project, VirtualFile virtualFile) {
+        if (virtualFile == null) {
+            return false;
+        }
+        final ProjectRootManager rootManager = ProjectRootManager.getInstance(
+                project);
+        final ProjectFileIndex fileIndex = rootManager.getFileIndex();
+        return fileIndex.isInSourceContent(virtualFile) && !fileIndex.isInTestSourceContent(virtualFile);
+    }
+
     public static boolean isTest(PsiFile file) {
         final PsiManager manager = file.getManager();
         final VirtualFile virtualFile = file.getVirtualFile();
         final Project project = manager.getProject();
         return TestUtils.isTest(project, virtualFile);
+    }
+
+    public static boolean isProduction(PsiFile file) {
+        final VirtualFile virtualFile = file.getVirtualFile();
+        return isProduction(file.getProject(), virtualFile);
     }
 
     public static boolean isJUnitTestCase(PsiClass aClass) {

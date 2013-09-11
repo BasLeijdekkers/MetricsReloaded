@@ -48,7 +48,7 @@ public class LinesOfProductCodeRecursivePackageCalculator extends PackageCalcula
             final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(file);
             for (final PsiPackage aPackage : packages) {
                 numLinesPerPackage.createBucket(aPackage);
-                if (!TestUtils.isTest(file)) {
+                if (TestUtils.isProduction(file)) {
                     final int lineCount = LineUtil.countLines(file);
                     numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
                 }
