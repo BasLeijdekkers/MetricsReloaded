@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.intellij.analysis.BaseAnalysisAction;
 import com.intellij.analysis.BaseAnalysisActionDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
@@ -38,8 +37,7 @@ import javax.swing.*;
 public class ProjectMetricsAction extends BaseAnalysisAction {
 
     public ProjectMetricsAction() {
-        super(MetricsReloadedBundle.message("metrics.calculation"),
-                MetricsReloadedBundle.message("metrics"));
+        super(MetricsReloadedBundle.message("metrics.calculation"), MetricsReloadedBundle.message("metrics"));
     }
 
     @Override
@@ -55,10 +53,10 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
             public void onFinish() {
                 final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
                 if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-                    final Icon icon = IconLoader.getIcon("/general/informationDialog.png");
                     Messages.showMessageDialog(project,
                             MetricsReloadedBundle.message("no.metrics.warnings.found"),
-                            MetricsReloadedBundle.message("no.metrics.warnings.found"), icon);
+                            MetricsReloadedBundle.message("no.metrics.warnings.found.title"),
+                            Messages.getInformationIcon());
                     return;
                 }
                 final String profileName = profile.getName();
@@ -72,8 +70,7 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
 
     @Override
     @Nullable
-    protected JComponent getAdditionalActionSettings(
-            Project project, BaseAnalysisActionDialog dialog) {
+    protected JComponent getAdditionalActionSettings(Project project, BaseAnalysisActionDialog dialog) {
         return new ProfileSelectionPanel(project);
     }
 }
