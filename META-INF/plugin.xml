@@ -1,19 +1,18 @@
-<idea-plugin version="2" url="http://plugins.intellij.net/plugin/?id=93">
+<idea-plugin version="2" url="https://github.com/BasLeijdekkers/MetricsReloaded">
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
   <description><![CDATA[
     More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
-    IntelliJ IDEA 9 and 10. Follow further development of
+    IntelliJ IDEA 12. Follow further development of
     <a href="https://github.com/BasLeijdekkers/MetricsReloaded">this plugin on GitHub</a> or follow
     <a href="http://twitter.com/inspectorbas">me on twitter</a> for announcements and other things.
     ]]></description>
   <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
           email="basleijdekkersYour Pants@gmail.com">Bas Leijdekkers (remove Your Pants to mail me;)</vendor>
-  <version>1.0</version>
+  <version>1.0 alpha</version>
   <change-notes><![CDATA[
-    Complete UI overhaul to make it look and behave better.<br>
-    Now calculates metrics in the background instead of using a modal foreground progress window
-   
+    Calculates metrics in the background instead of using a modal foreground progress window.<br>
+    Bug fixes.
   ]]></change-notes>
   <idea-version since-build="8500"/>
   
