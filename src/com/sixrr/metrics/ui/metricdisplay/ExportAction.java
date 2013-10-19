@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.export.CSVExporter;
 import com.sixrr.metrics.export.Exporter;
@@ -38,15 +37,13 @@ import java.io.IOException;
 class ExportAction extends AnAction {
 
     public static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
-    private static final Icon ICON = IconLoader.getIcon("/actions/export.png");
 
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     ExportAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("export.action"),
-                MetricsReloadedBundle.message("export.description"),
-                ICON);
+                MetricsReloadedBundle.message("export.description"), AllIcons.Actions.Export);
         this.toolWindow = toolWindow;
         this.project = project;
     }

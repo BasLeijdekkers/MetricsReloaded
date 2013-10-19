@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,22 +16,18 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
-import javax.swing.*;
-
 class CloseMetricsViewAction extends AnAction {
-
-    private static final Icon ICON = IconLoader.getIcon("/actions/cancel.png");
 
     private final MetricsToolWindow toolWindow;
 
     CloseMetricsViewAction(MetricsToolWindow toolWindow) {
         super(MetricsReloadedBundle.message("close.metrics.action"),
-                MetricsReloadedBundle.message("close.metrics.description"), ICON);
+                MetricsReloadedBundle.message("close.metrics.description"), AllIcons.Actions.Cancel);
         this.toolWindow = toolWindow;
     }
 

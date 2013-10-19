@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,26 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.util.IconLoader;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
-
-import javax.swing.*;
 
 class RemoveDiffAction extends AnAction {
     
-    private static final Icon ICON = IconLoader.getIcon("/actions/reset.png");
-
     private final MetricsToolWindow toolWindow;
 
     RemoveDiffAction(MetricsToolWindow toolWindow) {
         super(MetricsReloadedBundle.message("hide.comparison.action"),
-                MetricsReloadedBundle.message("hide.comparison.description"), ICON);
+                MetricsReloadedBundle.message("hide.comparison.description"), AllIcons.Actions.Reset);
         this.toolWindow = toolWindow;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,27 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
-import com.intellij.openapi.util.IconLoader;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
-
-import javax.swing.*;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 class ToggleAutoscrollAction extends ToggleAction {
-
-    private static final Icon ICON = IconLoader.getIcon("/general/autoscrollToSource.png");
 
     private final MetricsReloadedConfig configuration;
 
     ToggleAutoscrollAction(MetricsReloadedConfig configuration) {
         super(MetricsReloadedBundle.message("autoscroll.to.source.action"),
-                MetricsReloadedBundle.message("autoscroll.to.source.description"),
-                ICON);
+                MetricsReloadedBundle.message("autoscroll.to.source.description"), AllIcons.General.AutoscrollToSource);
         this.configuration = configuration;
     }
 

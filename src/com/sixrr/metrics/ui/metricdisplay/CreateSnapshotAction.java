@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
@@ -32,15 +32,12 @@ import java.io.File;
 
 class CreateSnapshotAction extends AnAction {
     
-    private static final Icon ICON = IconLoader.getIcon("/actions/dump.png");
-
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     CreateSnapshotAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("create.snapshot.action"),
-                MetricsReloadedBundle.message("create.snapshot.description"),
-                ICON);
+                MetricsReloadedBundle.message("create.snapshot.description"), AllIcons.Actions.Dump);
         this.toolWindow = toolWindow;
         this.project = project;
     }

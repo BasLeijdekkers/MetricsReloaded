@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -76,8 +76,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
                 toolWindowManager.registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel,
                         ToolWindowAnchor.BOTTOM);
         myToolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
-        final Icon icon = IconLoader.getIcon(TOOL_WINDOW_ICON_PATH);
-        myToolWindow.setIcon(icon);
+        myToolWindow.setIcon(IconLoader.getIcon(TOOL_WINDOW_ICON_PATH));
         myToolWindow.setAvailable(false, null);
     }
 

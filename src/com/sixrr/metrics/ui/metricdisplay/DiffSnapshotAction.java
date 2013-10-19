@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
@@ -32,14 +31,12 @@ import java.io.File;
 
 class DiffSnapshotAction extends AnAction {
 
-    private static final Icon ICON = IconLoader.getIcon("/diff/Diff.png");
-
     private final MetricsToolWindow toolWindow;
     private final Project project;
 
     DiffSnapshotAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("compare.with.snapshot.action"),
-                MetricsReloadedBundle.message("compare.with.snapshot.description"), ICON);
+                MetricsReloadedBundle.message("compare.with.snapshot.description"), AllIcons.Diff.Diff);
         this.toolWindow = toolWindow;
         this.project = project;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -26,7 +27,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.util.containers.Convertor;
 import com.intellij.util.ui.Tree;
@@ -642,9 +642,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     public void createUIComponents() {
-        final Icon expandIcon = IconLoader.getIcon("/icons/inspector/expandall.png");
         final AnAction expandActon = new AnAction(MetricsReloadedBundle.message("expand.all.action"),
-                MetricsReloadedBundle.message("expand.all.description"), expandIcon) {
+                MetricsReloadedBundle.message("expand.all.description"), AllIcons.Actions.Expandall) {
             public void actionPerformed(AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
@@ -655,10 +654,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final Icon collapseIcon = IconLoader.getIcon("/icons/inspector/collapseall.png");
-
         final AnAction collapseAction = new AnAction(MetricsReloadedBundle.message("collapse.all.action"),
-                MetricsReloadedBundle.message("collapse.all.description"), collapseIcon) {
+                MetricsReloadedBundle.message("collapse.all.description"), AllIcons.Actions.Collapseall) {
             public void actionPerformed(AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
@@ -669,10 +666,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final Icon filterIcon = IconLoader.getIcon("/ant/filter.png");
-
         final AnAction filterAction = new AnAction(MetricsReloadedBundle.message("apply.filter.action"),
-                MetricsReloadedBundle.message("apply.filter.description"), filterIcon) {
+                MetricsReloadedBundle.message("apply.filter.description"), AllIcons.Actions.Filter_small) {
             public void actionPerformed(AnActionEvent anActionEvent) {
                 applyFilter();
             }
