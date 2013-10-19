@@ -4,11 +4,9 @@
 
   <property file="build.properties"/>
 
-  <!-- override these in a build.properties file -->
-  <property name="my.user.dir" value="/Users/bas"/>
-  <property name="idea.dir" value="/Applications/IntelliJ IDEA 10"/>
-  <property name="idea.plugin.dir"
-            value="${my.user.dir}/Library/Application Support/IntelliJIdea10"/>
+  <!-- override these two in a build.properties file -->
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA 13"/>
+  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea13"/>
 
   <property name="src.dir" value="src"/>
   <property name="build.classes.dir" value="build/classes"/>
@@ -54,11 +52,7 @@
   </path>
   <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpath="${idea.dir}/redist/javac2.jar"/>
 
-  <target name="init">
-    <echo message="my.user.dir = ${my.user.dir}"/>
-  </target>
-
-  <target name="prepare" depends="init">
+  <target name="prepare">
     <mkdir dir="${openapi.build.classes.dir}"/>
     <mkdir dir="${stockmetrics.build.classes.dir}"/>
     <mkdir dir="${utils.build.classes.dir}"/>
@@ -182,12 +176,17 @@
     <!--copy file="${help.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/help" overwrite="true"/-->
   </target>
 
-  <target name="clean" depends="init"
-          description="Clean up the distribution">
-    <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
+  <target name="clean" description="Clean up the distribution">
     <delete failonerror="false" dir="${build.classes.dir}"/>
     <delete failonerror="false" file="${jar.file}"/>
+    <delete failonerror="false" file="${resources.jar.file}"/>
+    <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
     <delete failonerror="false" file="${openapi.jar.file}"/>
+    <delete failonerror="false" dir="${stockmetrics.build.classes.dir}"/>
+    <delete failonerror="false" dir="${stockmetrics.jar.file}"/>
+    <delete failonerror="false" dir="${stockmetrics.resources.jar.file}"/>
+    <delete failonerror="false" dir="${utils.build.classes.dir}"/>
+    <delete failonerror="false" dir="${utils.jar.file}"/>
     <!--delete failonerror="false" file="${help.jar.file}"/-->
   </target>
 
