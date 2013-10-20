@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
@@ -28,8 +28,8 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
     private int methodNestingDepth = 0;
     private int complexity = 0;
 
-    private final BuckettedCount<Module> totalComplexityPerModule = new BuckettedCount<Module>();
-    private final BuckettedCount<Module> numMethodsPerModule = new BuckettedCount<Module>();
+    private final BucketedCount<Module> totalComplexityPerModule = new BucketedCount<Module>();
+    private final BucketedCount<Module> numMethodsPerModule = new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {

@@ -20,15 +20,15 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 abstract class ElementCountModuleCalculator extends ModuleCalculator {
 
-    protected final BuckettedCount<Module> elementsCountPerModule =
-            new BuckettedCount<Module>();
+    protected final BucketedCount<Module> elementsCountPerModule =
+            new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {

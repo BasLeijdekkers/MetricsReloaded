@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,17 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 public class AbstractnessCalculator extends PackageCalculator {
 
-    private final BuckettedCount<PsiPackage> numAbstractClassesPerPackage = new BuckettedCount<PsiPackage>();
-    private final BuckettedCount<PsiPackage> numClassesPerPackage = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numAbstractClassesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numClassesPerPackage.getBuckets();
         for (final PsiPackage aPackage : packages) {
@@ -37,12 +38,14 @@ public class AbstractnessCalculator extends PackageCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
         
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (ClassUtils.isAnonymous(aClass)) {

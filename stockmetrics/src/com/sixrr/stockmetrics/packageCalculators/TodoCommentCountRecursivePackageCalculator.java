@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,15 +18,17 @@ package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 import java.util.Set;
 
 public class TodoCommentCountRecursivePackageCalculator extends PackageCalculator {
-    private final BuckettedCount<PsiPackage> numTodoCommentsPerPackage = new BuckettedCount<PsiPackage>();
 
+    private final BucketedCount<PsiPackage> numTodoCommentsPerPackage = new BucketedCount<PsiPackage>();
+
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numTodoCommentsPerPackage.getBuckets();
         for (final PsiPackage aPackage : packages) {
@@ -36,11 +38,14 @@ public class TodoCommentCountRecursivePackageCalculator extends PackageCalculato
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
             final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(file);
@@ -49,6 +54,7 @@ public class TodoCommentCountRecursivePackageCalculator extends PackageCalculato
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);

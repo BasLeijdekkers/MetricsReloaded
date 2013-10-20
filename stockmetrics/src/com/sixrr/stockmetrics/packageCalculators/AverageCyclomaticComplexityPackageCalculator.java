@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
@@ -26,9 +26,10 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
 
     private int methodNestingDepth = 0;
     private int complexity = 0;
-    private final BuckettedCount<PsiPackage> totalComplexityPerPackage = new BuckettedCount<PsiPackage>();
-    private final BuckettedCount<PsiPackage> numMethodsPerPackage = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> totalComplexityPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numMethodsPerPackage = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numMethodsPerPackage.getBuckets();
         for (final PsiPackage aPackage : packages) {
@@ -39,11 +40,14 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitMethod(PsiMethod method) {
             if (method.getBody() != null) {
                 complexity = 1;
@@ -66,31 +70,37 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
             }
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             super.visitForStatement(statement);
             complexity++;
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             super.visitForeachStatement(statement);
             complexity++;
         }
 
+        @Override
         public void visitIfStatement(PsiIfStatement statement) {
             super.visitIfStatement(statement);
             complexity++;
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             super.visitDoWhileStatement(statement);
             complexity++;
         }
 
+        @Override
         public void visitConditionalExpression(PsiConditionalExpression expression) {
             super.visitConditionalExpression(expression);
             complexity++;
         }
 
+        @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
             super.visitSwitchStatement(statement);
             final PsiCodeBlock body = statement.getBody();
@@ -111,6 +121,7 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
             }
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
             complexity++;

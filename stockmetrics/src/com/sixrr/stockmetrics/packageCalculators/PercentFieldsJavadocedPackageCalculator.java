@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@ package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 public class PercentFieldsJavadocedPackageCalculator extends PackageCalculator {
 
-    private final BuckettedCount<PsiPackage> numJavadocedFieldsPerPackage = new BuckettedCount<PsiPackage>();
-    private final BuckettedCount<PsiPackage> numFieldsPerPackage = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numJavadocedFieldsPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numFieldsPerPackage = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numFieldsPerPackage.getBuckets();
         for (final PsiPackage packageName : packages) {
@@ -38,12 +39,14 @@ public class PercentFieldsJavadocedPackageCalculator extends PackageCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitField(PsiField field) {
             super.visitField(field);
             final PsiClass containingClass = field.getContainingClass();

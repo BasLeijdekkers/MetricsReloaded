@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,15 +18,17 @@ package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 public class PercentMethodsJavadocedRecursivePackageCalculator extends PackageCalculator {
-    private final BuckettedCount<PsiPackage> numJavadocedMethodsPerPackage = new BuckettedCount<PsiPackage>();
-    private final BuckettedCount<PsiPackage> numMethodsPerPackage = new BuckettedCount<PsiPackage>();
 
+    private final BucketedCount<PsiPackage> numJavadocedMethodsPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numMethodsPerPackage = new BucketedCount<PsiPackage>();
+
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numMethodsPerPackage.getBuckets();
         for (final PsiPackage packageName : packages) {
@@ -37,11 +39,14 @@ public class PercentMethodsJavadocedRecursivePackageCalculator extends PackageCa
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiClass containingClass = method.getContainingClass();

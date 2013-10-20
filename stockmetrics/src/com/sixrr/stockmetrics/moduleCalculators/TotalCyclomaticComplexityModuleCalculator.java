@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
@@ -27,7 +27,7 @@ public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator 
 
     private int methodNestingDepth = 0;
     private int complexity = 0;
-    private final BuckettedCount<Module> totalComplexityPerModule = new BuckettedCount<Module>();
+    private final BucketedCount<Module> totalComplexityPerModule = new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {
@@ -44,6 +44,7 @@ public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator 
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {

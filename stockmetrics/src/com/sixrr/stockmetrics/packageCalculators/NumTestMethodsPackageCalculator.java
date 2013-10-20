@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 
@@ -25,8 +25,9 @@ import java.util.Set;
 
 public class NumTestMethodsPackageCalculator extends PackageCalculator {
 
-    private final BuckettedCount<PsiPackage> numTestMethodsPerPackages = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numTestMethodsPerPackages = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numTestMethodsPerPackages.getBuckets();
         for (final PsiPackage aPackage : packages) {
@@ -36,11 +37,14 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
             final PsiPackage aPackage = ClassUtils.findPackage(file);
@@ -50,6 +54,7 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
             numTestMethodsPerPackages.createBucket(aPackage);
         }
 
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiClass aClass = method.getContainingClass();

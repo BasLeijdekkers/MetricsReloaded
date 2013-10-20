@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
@@ -27,9 +27,10 @@ import java.util.Set;
 
 public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator {
     
-    private final BuckettedCount<PsiPackage> numLinesPerPackage = new BuckettedCount<PsiPackage>();
-    private final BuckettedCount<PsiPackage> numCommentLinesPerPackage = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numCommentLinesPerPackage = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numLinesPerPackage.getBuckets();
         for (final PsiPackage aPackage : packages) {
@@ -39,12 +40,14 @@ public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
             if (!TestUtils.isProduction(file)) {
@@ -58,6 +61,7 @@ public class SourceLinesOfCodeProductPackageCalculator extends PackageCalculator
             numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final PsiFile file = comment.getContainingFile();

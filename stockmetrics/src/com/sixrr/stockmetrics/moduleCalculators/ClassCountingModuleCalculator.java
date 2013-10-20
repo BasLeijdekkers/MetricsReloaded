@@ -18,14 +18,14 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 abstract class ClassCountingModuleCalculator extends ModuleCalculator {
 
-    private final BuckettedCount<Module> numClassesPerModule = new BuckettedCount<Module>();
+    private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
 
     protected abstract boolean satisfies(PsiClass aClass);
 

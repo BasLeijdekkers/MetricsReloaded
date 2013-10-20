@@ -20,14 +20,14 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
 abstract class ElementRatioModuleCalculator extends ModuleCalculator {
-    protected final BuckettedCount<Module> numeratorPerModule = new BuckettedCount<Module>();
-    protected final BuckettedCount<Module> denominatorPerModule = new BuckettedCount<Module>();
+    protected final BucketedCount<Module> numeratorPerModule = new BucketedCount<Module>();
+    protected final BucketedCount<Module> denominatorPerModule = new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {

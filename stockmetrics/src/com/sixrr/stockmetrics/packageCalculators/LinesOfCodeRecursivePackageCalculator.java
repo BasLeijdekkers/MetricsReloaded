@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BuckettedCount;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -25,8 +25,9 @@ import java.util.Set;
 
 public class LinesOfCodeRecursivePackageCalculator extends PackageCalculator {
 
-    private final BuckettedCount<PsiPackage> numLinesPerPackage = new BuckettedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numLinesPerPackage.getBuckets();
         for (final PsiPackage packageName : packages) {
@@ -35,11 +36,14 @@ public class LinesOfCodeRecursivePackageCalculator extends PackageCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
             final int lineCount = LineUtil.countLines(file);
