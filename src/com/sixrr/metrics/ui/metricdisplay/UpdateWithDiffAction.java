@@ -33,7 +33,7 @@ class UpdateWithDiffAction extends AnAction {
 
     UpdateWithDiffAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("update.with.differences.action"),
-                MetricsReloadedBundle.message("update.with.differences.description"), AllIcons.Actions.Refresh);
+                MetricsReloadedBundle.message("update.with.differences.description"), AllIcons.Actions.Rerun);
         this.toolWindow = toolWindow;
         this.project = project;
     }
