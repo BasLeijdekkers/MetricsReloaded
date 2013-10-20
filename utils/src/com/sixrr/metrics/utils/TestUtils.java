@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,34 +31,31 @@ public class TestUtils {
     private TestUtils() {}
 
     public static boolean isTest(PsiClass aClass) {
-        final PsiManager manager = aClass.getManager();
         final PsiFile file = PsiTreeUtil.getParentOfType(aClass, PsiFile.class);
         if (file == null) {
             return false;
         }
         final VirtualFile virtualFile = file.getVirtualFile();
-        final Project project = manager.getProject();
-        return TestUtils.isTest(project, virtualFile);
+        final Project project = aClass.getProject();
+        return isTest(virtualFile, project);
     }
 
     public static boolean isTest(PsiDirectory directory) {
-        final PsiManager manager = directory.getManager();
         final VirtualFile virtualFile = directory.getVirtualFile();
-        final Project project = manager.getProject();
-        return TestUtils.isTest(project, virtualFile);
+        final Project project = directory.getProject();
+        return isTest(virtualFile, project);
     }
 
-    public static boolean isTest(Project project, VirtualFile virtualFile) {
+    public static boolean isTest(VirtualFile virtualFile, Project project) {
         if (virtualFile == null) {
             return false;
         }
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(
-                project);
+        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
         final ProjectFileIndex fileIndex = rootManager.getFileIndex();
         return fileIndex.isInTestSourceContent(virtualFile);
     }
 
-    public static boolean isProduction(Project project, VirtualFile virtualFile) {
+    public static boolean isProduction(VirtualFile virtualFile, Project project) {
         if (virtualFile == null) {
             return false;
         }
@@ -72,12 +69,21 @@ public class TestUtils {
         final PsiManager manager = file.getManager();
         final VirtualFile virtualFile = file.getVirtualFile();
         final Project project = manager.getProject();
-        return TestUtils.isTest(project, virtualFile);
+        return isTest(virtualFile, project);
+    }
+
+    public static boolean isProduction(PsiClass aClass) {
+        final PsiFile file = PsiTreeUtil.getParentOfType(aClass, PsiFile.class);
+        if (file == null) {
+            return false;
+        }
+        final VirtualFile virtualFile = file.getVirtualFile();
+        return isProduction(virtualFile, aClass.getProject());
     }
 
     public static boolean isProduction(PsiFile file) {
         final VirtualFile virtualFile = file.getVirtualFile();
-        return isProduction(file.getProject(), virtualFile);
+        return isProduction(virtualFile, file.getProject());
     }
 
     public static boolean isJUnitTestCase(PsiClass aClass) {
@@ -119,10 +125,7 @@ public class TestUtils {
             return false;
         }
         final PsiClass containingClass = method.getContainingClass();
-        if (containingClass == null) {
-            return false;
-        }
-        return isJUnitTestCase(containingClass);
+        return containingClass != null && isJUnitTestCase(containingClass);
     }
 
     public static boolean isJUnitAssertCall(PsiMethodCallExpression call) {
@@ -134,10 +137,7 @@ public class TestUtils {
         final PsiReferenceExpression methodExpression =
                 call.getMethodExpression();
         @NonNls final String methodName = methodExpression.getReferenceName();
-        if (methodName != null &&
-                (methodName.startsWith("assert") || "fail".equals(methodName))) {
-            return isJUnitTestMethod(containingMethod);
-        }
-        return false;
+        return methodName != null && (methodName.startsWith("assert") ||
+                "fail".equals(methodName)) && isJUnitTestMethod(containingMethod);
     }
 }
