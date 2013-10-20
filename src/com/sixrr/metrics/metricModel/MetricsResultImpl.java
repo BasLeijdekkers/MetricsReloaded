@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,10 +39,12 @@ public class MetricsResultImpl implements MetricsResult {
     private final Map<String, SmartPsiElementPointer<PsiElement>> elements =
             new HashMap<String, SmartPsiElementPointer<PsiElement>>(1024);
 
+    @Override
     public void postValue(Metric metric, String measured, double value) {
         postValue(metric, measured, value, 1.0);
     }
 
+    @Override
     public void postValue(Metric metric, String measured, double numerator, double denominator) {
         if (measured == null) {
             return;
@@ -57,6 +59,7 @@ public class MetricsResultImpl implements MetricsResult {
         metrics.add(metric);
     }
 
+    @Override
     @Nullable
     public Double getValueForMetric(Metric metric, String measured) {
         final StringToFractionMap metricValues = values.get(metric);
@@ -70,45 +73,59 @@ public class MetricsResultImpl implements MetricsResult {
         }
     }
 
+    @Override
     public String[] getMeasuredObjects() {
         return measuredObjects.toArray(new String[measuredObjects.size()]);
     }
 
+    @Override
     public Metric[] getMetrics() {
         return metrics.toArray(new Metric[metrics.size()]);
     }
 
+    @Override
     @Nullable
     public Double getMinimumForMetric(Metric metric) {
         final StringToFractionMap metricValues = values.get(metric);
+        if (metricValues == null) {
+            return 0.0;
+        }
         return metricValues.getMinimum();
     }
+
+    @Override
     @Nullable
     public Double getMaximumForMetric(Metric metric) {
         final StringToFractionMap metricValues = values.get(metric);
+        if (metricValues == null) {
+            return 0.0;
+        }
         return metricValues.getMaximum();
     }
 
+    @Override
     @Nullable
     public Double getTotalForMetric(Metric metric) {
         final MetricType metricType = metric.getType();
-        if (!metricType.equals(MetricType.Count)) {
+        if (metricType != MetricType.Count) {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
         return metricValues.getTotal();
     }
 
+    @Override
     @Nullable
     public Double getAverageForMetric(Metric metric) {
         final MetricType metricType = metric.getType();
-        if (metricType.equals(MetricType.RecursiveCount) || metricType.equals(MetricType.RecursiveRatio)) {
+        if (metricType == MetricType.RecursiveCount || metricType == MetricType.RecursiveRatio) {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
         return metricValues.getAverage();
     }
 
+    @Override
     public void setElementForMeasuredObject(String measuredObject, PsiElement element) {
         final PsiManager psiManager = element.getManager();
         final Project project = psiManager.getProject();
@@ -117,6 +134,7 @@ public class MetricsResultImpl implements MetricsResult {
         elements.put(measuredObject, pointer);
     }
 
+    @Override
     @Nullable
     public PsiElement getElementForMeasuredObject(String measuredObject) {
         final SmartPsiElementPointer<PsiElement> pointer = elements.get(measuredObject);
@@ -126,6 +144,7 @@ public class MetricsResultImpl implements MetricsResult {
         return pointer.getElement();
     }
 
+    @Override
     public boolean hasWarnings(MetricsProfile profile) {
         for (Metric metric : metrics) {
             final MetricInstance metricInstance = profile.getMetricForClass(metric.getClass());
@@ -146,6 +165,7 @@ public class MetricsResultImpl implements MetricsResult {
         return false;
     }
 
+    @Override
     public MetricsResult filterRowsWithoutWarnings(MetricsProfile profile) {
         final MetricsResultImpl out = new MetricsResultImpl();
         for (String measuredObject : measuredObjects) {
