@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,21 +31,19 @@ public class DependencyMapImpl implements DependencyMap {
     private final Map<PsiClass, Bag<PsiClass>> dependencies = new HashMap<PsiClass, Bag<PsiClass>>(1024);
     private final Map<PsiClass, Set<PsiClass>> transitiveDependencies = new HashMap<PsiClass, Set<PsiClass>>(1024);
     private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependencies =
-            new HashMap<PsiPackage, Set<PsiPackage>>(
-                    1024);
+            new HashMap<PsiPackage, Set<PsiPackage>>(1024);
     private final Map<PsiClass, Set<PsiClass>> stronglyConnectedComponents = new HashMap<PsiClass, Set<PsiClass>>(1024);
     private final Map<PsiClass, Integer> levelOrders = new HashMap<PsiClass, Integer>(1024);
     private final Map<PsiClass, Integer> adjustedLevelOrders = new HashMap<PsiClass, Integer>(1024);
     private final Map<PsiClass, Bag<PsiPackage>> packageDependencies = new HashMap<PsiClass, Bag<PsiPackage>>(1024);
     private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependencies =
-            new HashMap<PsiPackage, Bag<PsiPackage>>(
-                    1024);
+            new HashMap<PsiPackage, Bag<PsiPackage>>(1024);
     private final Map<PsiPackage, Set<PsiPackage>> stronglyConnectedPackageComponents =
-            new HashMap<PsiPackage, Set<PsiPackage>>(
-                    1024);
+            new HashMap<PsiPackage, Set<PsiPackage>>(1024);
     private final Map<PsiPackage, Integer> packageLevelOrders = new HashMap<PsiPackage, Integer>(1024);
     private final Map<PsiPackage, Integer> packageAdjustedLevelOrders = new HashMap<PsiPackage, Integer>(1024);
 
+    @Override
     public Set<PsiClass> calculateDependencies(PsiClass aClass) {
         if (dependencies.containsKey(aClass)) {
             final Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
@@ -55,9 +53,9 @@ public class DependencyMapImpl implements DependencyMap {
         }
     }
 
+    @Override
     public Set<PsiClass> calculateTransitiveDependencies(PsiClass aClass) {
         final Set<PsiClass> out = transitiveDependencies.get(aClass);
-
         if (out != null) {
             return out;
         }
@@ -65,7 +63,7 @@ public class DependencyMapImpl implements DependencyMap {
         final List<PsiClass> pendingClasses = new ArrayList<PsiClass>();
         pendingClasses.add(aClass);
         final Set<PsiClass> allDependencies = new HashSet<PsiClass>();
-        while (pendingClasses.size() > 0) {
+        while (!pendingClasses.isEmpty()) {
             final PsiClass pendingClass = pendingClasses.get(0);
             pendingClasses.remove(0);
             if (!allDependencies.contains(pendingClass)) {
@@ -84,6 +82,7 @@ public class DependencyMapImpl implements DependencyMap {
         return allDependencies;
     }
 
+    @Override
     public Set<PsiClass> calculateStronglyConnectedComponents(PsiClass aClass) {
         final Set<PsiClass> out = stronglyConnectedComponents.get(aClass);
         if (out != null) {
@@ -106,6 +105,7 @@ public class DependencyMapImpl implements DependencyMap {
         return component;
     }
 
+    @Override
     public int calculateLevelOrder(PsiClass aClass) {
         final Integer out = levelOrders.get(aClass);
         if (out != null) {
@@ -129,6 +129,7 @@ public class DependencyMapImpl implements DependencyMap {
         return levelOrder;
     }
 
+    @Override
     public int calculateAdjustedLevelOrder(PsiClass aClass) {
         final Integer out = adjustedLevelOrders.get(aClass);
         if (out != null) {
@@ -152,14 +153,16 @@ public class DependencyMapImpl implements DependencyMap {
         return levelOrder;
     }
 
+    @Override
     public Set<PsiPackage> calculatePackageDependencies(PsiClass aClass) {
-        final Bag<PsiPackage> exisiting = packageDependencies.get(aClass);
-        if (exisiting != null) {
-            return exisiting.getContents();
+        final Bag<PsiPackage> existing = packageDependencies.get(aClass);
+        if (existing != null) {
+            return existing.getContents();
         }
         return Collections.emptySet();
     }
 
+    @Override
     public Set<PsiPackage> calculateTransitivePackageDependencies(PsiPackage packageName) {
         final Set<PsiPackage> out = transitivePackageDependencies.get(packageName);
 
@@ -169,7 +172,7 @@ public class DependencyMapImpl implements DependencyMap {
         final List<PsiPackage> pendingPackages = new ArrayList<PsiPackage>();
         pendingPackages.add(packageName);
         final Set<PsiPackage> allDependencies = new HashSet<PsiPackage>();
-        while (pendingPackages.size() > 0) {
+        while (!pendingPackages.isEmpty()) {
             final PsiPackage dependencyPackageName = pendingPackages.get(0);
             pendingPackages.remove(0);
             if (!allDependencies.contains(dependencyPackageName)) {
@@ -188,6 +191,7 @@ public class DependencyMapImpl implements DependencyMap {
         return allDependencies;
     }
 
+    @Override
     public Set<PsiPackage> calculateStronglyConnectedPackageComponents(PsiPackage name) {
         final Set<PsiPackage> out = stronglyConnectedPackageComponents.get(name);
         if (out != null) {
@@ -208,6 +212,7 @@ public class DependencyMapImpl implements DependencyMap {
         return component;
     }
 
+    @Override
     public int calculatePackageLevelOrder(PsiPackage packageName) {
         final Integer out = packageLevelOrders.get(packageName);
         if (out != null) {
@@ -229,6 +234,7 @@ public class DependencyMapImpl implements DependencyMap {
         return levelOrder;
     }
 
+    @Override
     public int calculatePackageAdjustedLevelOrder(PsiPackage aPackage) {
         final Integer out = packageAdjustedLevelOrders.get(aPackage);
         if (out != null) {
@@ -250,16 +256,19 @@ public class DependencyMapImpl implements DependencyMap {
         return levelOrder;
     }
 
+    @Override
     public int getStrengthForDependency(PsiClass aClass, PsiClass dependencyClass) {
         final Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
         return dependenciesForClass.getCountForObject(dependencyClass);
     }
 
+    @Override
     public int getStrengthForPackageDependency(PsiClass aClass, PsiPackage dependencyPackage) {
         final Bag<PsiPackage> dependenciesForClass = packageDependencies.get(aClass);
         return dependenciesForClass.getCountForObject(dependencyPackage);
     }
 
+    @Override
     public Set<PsiPackage> calculatePackageToPackageDependencies(PsiPackage packageName) {
         if (packageToPackageDependencies.containsKey(packageName)) {
             final Bag<PsiPackage> dependenciesForPackage = packageToPackageDependencies.get(packageName);
@@ -275,9 +284,11 @@ public class DependencyMapImpl implements DependencyMap {
     }
 
     private class DependenciesVisitor extends JavaRecursiveElementVisitor {
+
         private final Stack<PsiClass> classStack = new Stack<PsiClass>();
         private PsiClass currentClass = null;
 
+        @Override
         public void visitClass(PsiClass aClass) {
             if (!ClassUtils.isAnonymous(aClass)) {
                 classStack.push(currentClass);
@@ -297,6 +308,7 @@ public class DependencyMapImpl implements DependencyMap {
             }
         }
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
             final PsiMethod method = expression.resolveMethod();
@@ -318,6 +330,7 @@ public class DependencyMapImpl implements DependencyMap {
             }
         }
 
+        @Override
         public void visitReferenceExpression(PsiReferenceExpression expression) {
             super.visitReferenceExpression(expression);
 
@@ -333,23 +346,17 @@ public class DependencyMapImpl implements DependencyMap {
             }
         }
 
-        public void visitField(PsiField field) {
-            super.visitField(field);
-            final PsiType type = field.getType();
-            addDependencyForType(type);
+        @Override
+        public void visitVariable(PsiVariable variable) {
+            super.visitVariable(variable);
+            addDependencyForType(variable.getType());
         }
 
-        public void visitLocalVariable(PsiLocalVariable var) {
-            super.visitLocalVariable(var);
-            final PsiType type = var.getType();
-            addDependencyForType(type);
-        }
-
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiType returnType = method.getReturnType();
             addDependencyForType(returnType);
-            addDependenciesForParameters(method);
             addDependencyForThrowsClause(method);
         }
 
@@ -361,15 +368,7 @@ public class DependencyMapImpl implements DependencyMap {
             }
         }
 
-        private void addDependenciesForParameters(PsiMethod method) {
-            final PsiParameterList parameterList = method.getParameterList();
-            final PsiParameter[] parameters = parameterList.getParameters();
-            for (final PsiParameter parameter : parameters) {
-                final PsiType paramType = parameter.getType();
-                addDependencyForType(paramType);
-            }
-        }
-
+        @Override
         public void visitNewExpression(PsiNewExpression expression) {
             super.visitNewExpression(expression);
             final PsiType classType = expression.getType();
@@ -380,6 +379,7 @@ public class DependencyMapImpl implements DependencyMap {
             }
         }
 
+        @Override
         public void visitClassObjectAccessExpression(PsiClassObjectAccessExpression exp) {
             super.visitClassObjectAccessExpression(exp);
             final PsiTypeElement operand = exp.getOperand();
@@ -387,15 +387,7 @@ public class DependencyMapImpl implements DependencyMap {
             addDependencyForType(classType);
         }
 
-        public void visitTryStatement(PsiTryStatement statement) {
-            super.visitTryStatement(statement);
-            final PsiParameter[] catchBlockParameters = statement.getCatchBlockParameters();
-            for (final PsiParameter param : catchBlockParameters) {
-                final PsiType catchType = param.getType();
-                addDependencyForType(catchType);
-            }
-        }
-
+        @Override
         public void visitInstanceOfExpression(PsiInstanceOfExpression exp) {
             super.visitInstanceOfExpression(exp);
             final PsiTypeElement checkType = exp.getCheckType();
@@ -406,6 +398,7 @@ public class DependencyMapImpl implements DependencyMap {
             addDependencyForType(classType);
         }
 
+        @Override
         public void visitTypeCastExpression(PsiTypeCastExpression exp) {
             super.visitTypeCastExpression(exp);
             final PsiTypeElement castType = exp.getCastType();
@@ -459,27 +452,26 @@ public class DependencyMapImpl implements DependencyMap {
             final PsiPackage referencedPackage = ClassUtils.findPackage(referencedClass);
             addDependency(currentClass, referencedClass, referencedPackage);
         }
-    }
 
-    private void addDependency(PsiClass aClass, PsiClass dependencyClass, PsiPackage dependencyPackage) {
-
-        Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
-        if (dependenciesForClass == null) {
-            dependenciesForClass = new Bag<PsiClass>();
-            dependencies.put(aClass, dependenciesForClass);
+        private void addDependency(PsiClass aClass, PsiClass dependencyClass, PsiPackage dependencyPackage) {
+            Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
+            if (dependenciesForClass == null) {
+                dependenciesForClass = new Bag<PsiClass>();
+                dependencies.put(aClass, dependenciesForClass);
+            }
+            dependenciesForClass.add(dependencyClass);
+            Bag<PsiPackage> packageDependentsForClass = packageDependencies.get(aClass);
+            if (packageDependentsForClass == null) {
+                packageDependentsForClass = new Bag<PsiPackage>();
+                packageDependencies.put(aClass, packageDependentsForClass);
+            }
+            packageDependentsForClass.add(dependencyPackage);
+            Bag<PsiPackage> packageDependentsForPackage = packageToPackageDependencies.get(dependencyPackage);
+            if (packageDependentsForPackage == null) {
+                packageDependentsForPackage = new Bag<PsiPackage>();
+                packageToPackageDependencies.put(dependencyPackage, packageDependentsForPackage);
+            }
+            packageDependentsForPackage.add(dependencyPackage);
         }
-        dependenciesForClass.add(dependencyClass);
-        Bag<PsiPackage> packageDependentsForClass = packageDependencies.get(aClass);
-        if (packageDependentsForClass == null) {
-            packageDependentsForClass = new Bag<PsiPackage>();
-            packageDependencies.put(aClass, packageDependentsForClass);
-        }
-        packageDependentsForClass.add(dependencyPackage);
-        Bag<PsiPackage> packageDependentsForPackage = packageToPackageDependencies.get(dependencyPackage);
-        if (packageDependentsForPackage == null) {
-            packageDependentsForPackage = new Bag<PsiPackage>();
-            packageToPackageDependencies.put(dependencyPackage, packageDependentsForPackage);
-        }
-        packageDependentsForPackage.add(dependencyPackage);
     }
 }
