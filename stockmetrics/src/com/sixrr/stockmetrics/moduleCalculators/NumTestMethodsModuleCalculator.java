@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,11 +26,14 @@ import com.sixrr.metrics.utils.TestUtils;
 
 public class NumTestMethodsModuleCalculator extends ElementCountModuleCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             if (TestUtils.isJUnitTestMethod(method)) {
@@ -38,9 +41,13 @@ public class NumTestMethodsModuleCalculator extends ElementCountModuleCalculator
             }
         }
 
+        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
+            if (module == null) {
+                return;
+            }
             elementsCountPerModule.createBucket(module);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,23 +72,20 @@ public class ClassUtils {
                 aClass instanceof PsiTypeParameter;
     }
 
+    @Nullable
     public static Module calculateModule(PsiClass aClass) {
         final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
         if (file == null) {
             return null;
         }
-        final VirtualFile virtualFile = file.getVirtualFile();
-        if (virtualFile == null) {
-            return null;
-        }
-        final PsiManager manager = aClass.getManager();
-        final Project project = manager.getProject();
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-        final ProjectFileIndex fileIndex = rootManager.getFileIndex();
-        return fileIndex.getModuleForFile(virtualFile);
+        return calculateModule(file);
     }
 
-    public static Module calculateModule(PsiFile file) {
+    @Nullable
+    public static Module calculateModule(@Nullable PsiFile file) {
+        if (file == null) {
+            return null;
+        }
         final VirtualFile virtualFile = file.getVirtualFile();
         if (virtualFile == null) {
             return null;
@@ -150,7 +147,7 @@ public class ClassUtils {
         }
         final Query<PsiClass> query = DirectClassInheritorsSearch.search(aClass);
         final Collection<PsiClass> subclasses = query.findAll();
-        return subclasses.size() == 0;
+        return subclasses.isEmpty();
     }
 
     @Nullable

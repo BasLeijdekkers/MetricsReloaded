@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,11 +23,14 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 public class PercentMethodsJavadocedModuleCalculator extends ElementRatioModuleCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiClass containingClass = method.getContainingClass();
@@ -40,9 +43,13 @@ public class PercentMethodsJavadocedModuleCalculator extends ElementRatioModuleC
             incrementDenominator(method, 1);
         }
 
+        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
+            if (module == null) {
+                return;
+            }
             numeratorPerModule.createBucket(module);
             denominatorPerModule.createBucket(module);
         }

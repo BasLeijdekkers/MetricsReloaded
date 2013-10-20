@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,10 +26,12 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 abstract class FileCountModuleCalculator extends ModuleCalculator {
+
     private final BuckettedCount<Module> numClassesPerModule = new BuckettedCount<Module>();
 
     protected abstract boolean satisfies(PsiFile file);
 
+    @Override
     public void endMetricsRun() {
         final Set<Module> modules = numClassesPerModule.getBuckets();
         for (final Module module : modules) {
@@ -38,14 +40,19 @@ abstract class FileCountModuleCalculator extends ModuleCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitFile(PsiFile file) {
             final Module module = ClassUtils.calculateModule(file);
-
+            if (module == null) {
+                return;
+            }
             numClassesPerModule.createBucket(module);
             if (satisfies(file)) {
                 numClassesPerModule.incrementBucketValue(module);

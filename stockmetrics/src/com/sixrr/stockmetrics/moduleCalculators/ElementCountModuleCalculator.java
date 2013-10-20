@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,9 +26,11 @@ import com.sixrr.metrics.utils.ClassUtils;
 import java.util.Set;
 
 abstract class ElementCountModuleCalculator extends ModuleCalculator {
+
     protected final BuckettedCount<Module> elementsCountPerModule =
             new BuckettedCount<Module>();
 
+    @Override
     public void endMetricsRun() {
         final Set<Module> modules = elementsCountPerModule.getBuckets();
         for (final Module module : modules) {
@@ -41,6 +43,9 @@ abstract class ElementCountModuleCalculator extends ModuleCalculator {
     protected void incrementElementCount(PsiElement element, int count) {
         final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
         final Module module = ClassUtils.calculateModule(file);
+        if (module == null) {
+            return;
+        }
         elementsCountPerModule.incrementBucketValue(module, count);
     }
 }

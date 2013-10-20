@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BuckettedCount;
 import com.sixrr.metrics.utils.ClassUtils;
@@ -29,6 +29,7 @@ abstract class ElementRatioModuleCalculator extends ModuleCalculator {
     protected final BuckettedCount<Module> numeratorPerModule = new BuckettedCount<Module>();
     protected final BuckettedCount<Module> denominatorPerModule = new BuckettedCount<Module>();
 
+    @Override
     public void endMetricsRun() {
         final Set<Module> modules = numeratorPerModule.getBuckets();
         for (final Module module : modules) {
@@ -44,14 +45,26 @@ abstract class ElementRatioModuleCalculator extends ModuleCalculator {
     }
 
     protected void incrementNumerator(PsiElement element, int count) {
-        final PsiJavaFile file = PsiTreeUtil.getParentOfType(element, PsiJavaFile.class, false);
+        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
+        if (file == null) {
+            return;
+        }
         final Module module = ClassUtils.calculateModule(file);
+        if (module == null) {
+            return;
+        }
         numeratorPerModule.incrementBucketValue(module, count);
     }
 
     protected void incrementDenominator(PsiElement element, int count) {
-        final PsiJavaFile file = PsiTreeUtil.getParentOfType(element, PsiJavaFile.class, false);
+        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
+        if (file == null) {
+            return;
+        }
         final Module module = ClassUtils.calculateModule(file);
+        if (module == null) {
+            return;
+        }
         denominatorPerModule.incrementBucketValue(module, count);
     }
 }

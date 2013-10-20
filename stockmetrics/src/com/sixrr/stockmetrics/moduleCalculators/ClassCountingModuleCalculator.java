@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ abstract class ClassCountingModuleCalculator extends ModuleCalculator {
 
     protected abstract boolean satisfies(PsiClass aClass);
 
+    @Override
     public void endMetricsRun() {
         final Set<Module> modules = numClassesPerModule.getBuckets();
         for (final Module module : modules) {
@@ -37,12 +38,14 @@ abstract class ClassCountingModuleCalculator extends ModuleCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (aClass instanceof PsiTypeParameter ||
@@ -50,7 +53,9 @@ abstract class ClassCountingModuleCalculator extends ModuleCalculator {
                 return;
             }
             final Module module = ClassUtils.calculateModule(aClass);
-
+            if (module == null) {
+                return;
+            }
             numClassesPerModule.createBucket(module);
             if (satisfies(aClass)) {
                 numClassesPerModule.incrementBucketValue(module);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,11 +26,15 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
 
 public class TestRatioModuleCalculator extends ElementRatioModuleCalculator {
+
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitFile(file);
 
@@ -41,9 +45,13 @@ public class TestRatioModuleCalculator extends ElementRatioModuleCalculator {
             }
         }
 
+        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
+            if (module == null) {
+                return;
+            }
             numeratorPerModule.createBucket(module);
             denominatorPerModule.createBucket(module);
         }
