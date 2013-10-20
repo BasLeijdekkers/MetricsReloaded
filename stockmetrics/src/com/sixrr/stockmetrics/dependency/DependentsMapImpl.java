@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.dependency;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.Bag;
 import com.sixrr.metrics.utils.ClassUtils;
@@ -31,13 +30,12 @@ public class DependentsMapImpl implements DependentsMap {
     private final Map<PsiClass, Bag<PsiClass>> dependents = new HashMap<PsiClass, Bag<PsiClass>>(1024);
     private final Map<PsiClass, Bag<PsiPackage>> packageDependents = new HashMap<PsiClass, Bag<PsiPackage>>(1024);
     private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependents =
-            new HashMap<PsiPackage, Bag<PsiPackage>>(
-                    1024);
+            new HashMap<PsiPackage, Bag<PsiPackage>>(1024);
     private final Map<PsiClass, Set<PsiClass>> transitiveDependents = new HashMap<PsiClass, Set<PsiClass>>(1024);
     private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependents =
-            new HashMap<PsiPackage, Set<PsiPackage>>(
-                    1024);
+            new HashMap<PsiPackage, Set<PsiPackage>>(1024);
 
+    @Override
     public Set<PsiClass> calculateDependents(PsiClass aClass) {
         final Bag<PsiClass> existing = dependents.get(aClass);
         if (existing != null) {
@@ -46,11 +44,13 @@ public class DependentsMapImpl implements DependentsMap {
         return Collections.emptySet();
     }
 
+    @Override
     public int getStrengthForDependent(PsiClass aClass, PsiClass dependentClass) {
         final Bag<PsiClass> dependentsForClass = dependents.get(aClass);
         return dependentsForClass.getCountForObject(dependentClass);
     }
 
+    @Override
     public Set<PsiPackage> calculatePackageDependents(PsiClass aClass) {
         final Bag<PsiPackage> existing = packageDependents.get(aClass);
         if (existing == null) {
@@ -59,6 +59,7 @@ public class DependentsMapImpl implements DependentsMap {
         return existing.getContents();
     }
 
+    @Override
     public Set<PsiPackage> calculatePackageToPackageDependents(PsiPackage packageName) {
         final Bag<PsiPackage> existing = packageToPackageDependents.get(packageName);
         if (existing == null) {
@@ -67,14 +68,15 @@ public class DependentsMapImpl implements DependentsMap {
         return existing.getContents();
     }
 
+    @Override
     public int getStrengthForPackageDependent(PsiClass aClass, PsiPackage dependentPackage) {
         final Bag<PsiPackage> dependentsForClass = packageDependents.get(aClass);
         return dependentsForClass.getCountForObject(dependentPackage);
     }
 
+    @Override
     public Set<PsiClass> calculateTransitiveDependents(PsiClass aClass) {
         final Set<PsiClass> out = transitiveDependents.get(aClass);
-
         if (out != null) {
             return out;
         }
@@ -82,7 +84,7 @@ public class DependentsMapImpl implements DependentsMap {
         final List<PsiClass> pendingClasses = new ArrayList<PsiClass>();
         pendingClasses.add(aClass);
         final Set<PsiClass> allDependents = new HashSet<PsiClass>();
-        while (pendingClasses.size() > 0) {
+        while (!pendingClasses.isEmpty()) {
             final PsiClass dependentClass = pendingClasses.get(0);
             pendingClasses.remove(0);
             if (!allDependents.contains(dependentClass)) {
@@ -101,17 +103,7 @@ public class DependentsMapImpl implements DependentsMap {
         return allDependents;
     }
 
-    private PsiClass findClass(PsiManager psiManager, String dependentClassName) {
-        try {
-            final Project project = psiManager.getProject();
-            final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-            final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-            return psiFacade.findClass(dependentClassName, scope);
-        } catch (Exception ignore) {
-            return null;
-        }
-    }
-
+    @Override
     public Set<PsiPackage> calculateTransitivePackageDependents(PsiPackage packageName) {
         final Set<PsiPackage> out = transitivePackageDependents.get(packageName);
         if (out != null) {
@@ -120,7 +112,7 @@ public class DependentsMapImpl implements DependentsMap {
         final List<PsiPackage> pendingPackages = new ArrayList<PsiPackage>();
         pendingPackages.add(packageName);
         final Set<PsiPackage> allDependents = new HashSet<PsiPackage>();
-        while (pendingPackages.size() > 0) {
+        while (!pendingPackages.isEmpty()) {
             final PsiPackage dependentPackage = pendingPackages.get(0);
             pendingPackages.remove(0);
             if (!allDependents.contains(dependentPackage)) {
@@ -142,33 +134,35 @@ public class DependentsMapImpl implements DependentsMap {
         aClass.accept(visitor);
     }
 
-    private void addDependent(PsiClass aClass, PsiClass dependentClass, PsiPackage dependentPackage) {
-        final PsiPackage aPackage = ClassUtils.findPackage(aClass);
-        Bag<PsiClass> dependentsForClass = dependents.get(aClass);
-        if (dependentsForClass == null) {
-            dependentsForClass = new Bag<PsiClass>();
-            dependents.put(aClass, dependentsForClass);
-        }
-        dependentsForClass.add(dependentClass);
-        Bag<PsiPackage> packageDependentsForClass = packageDependents.get(aClass);
-        if (packageDependentsForClass == null) {
-            packageDependentsForClass = new Bag<PsiPackage>();
-            packageDependents.put(aClass, packageDependentsForClass);
-        }
-        packageDependentsForClass.add(dependentPackage);
-        Bag<PsiPackage> packageDependentsForPackage = packageToPackageDependents.get(aPackage);
-        if (packageDependentsForPackage == null) {
-            packageDependentsForPackage = new Bag<PsiPackage>();
-            packageToPackageDependents.put(aPackage, packageDependentsForPackage);
-        }
-        packageDependentsForPackage.add(dependentPackage);
-    }
-
     private class DependenciesVisitor extends JavaRecursiveElementVisitor {
+
         private final Stack<PsiClass> classStack = new Stack<PsiClass>();
         private PsiClass currentClass = null;
         private PsiPackage currentPackage = null;
 
+        private void addDependent(PsiClass aClass, PsiClass dependentClass, PsiPackage dependentPackage) {
+            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            Bag<PsiClass> dependentsForClass = dependents.get(aClass);
+            if (dependentsForClass == null) {
+                dependentsForClass = new Bag<PsiClass>();
+                dependents.put(aClass, dependentsForClass);
+            }
+            dependentsForClass.add(dependentClass);
+            Bag<PsiPackage> packageDependentsForClass = packageDependents.get(aClass);
+            if (packageDependentsForClass == null) {
+                packageDependentsForClass = new Bag<PsiPackage>();
+                packageDependents.put(aClass, packageDependentsForClass);
+            }
+            packageDependentsForClass.add(dependentPackage);
+            Bag<PsiPackage> packageDependentsForPackage = packageToPackageDependents.get(aPackage);
+            if (packageDependentsForPackage == null) {
+                packageDependentsForPackage = new Bag<PsiPackage>();
+                packageToPackageDependents.put(aPackage, packageDependentsForPackage);
+            }
+            packageDependentsForPackage.add(dependentPackage);
+        }
+
+        @Override
         public void visitClass(PsiClass aClass) {
             if (!ClassUtils.isAnonymous(aClass)) {
                 classStack.push(currentClass);
@@ -190,6 +184,7 @@ public class DependentsMapImpl implements DependentsMap {
             }
         }
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
             final PsiMethod method = expression.resolveMethod();
@@ -211,6 +206,7 @@ public class DependentsMapImpl implements DependentsMap {
             }
         }
 
+        @Override
         public void visitReferenceExpression(PsiReferenceExpression expression) {
             super.visitReferenceExpression(expression);
 
@@ -226,23 +222,17 @@ public class DependentsMapImpl implements DependentsMap {
             }
         }
 
-        public void visitField(PsiField field) {
-            super.visitField(field);
-            final PsiType type = field.getType();
-            addDependency(type);
+        @Override
+        public void visitVariable(PsiVariable variable) {
+            super.visitVariable(variable);
+            addDependency(variable.getType());
         }
 
-        public void visitLocalVariable(PsiLocalVariable var) {
-            super.visitLocalVariable(var);
-            final PsiType type = var.getType();
-            addDependency(type);
-        }
-
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             final PsiType returnType = method.getReturnType();
             addDependency(returnType);
-            addDependenciesForParameters(method);
             addDependencyForThrowsClause(method);
         }
 
@@ -254,15 +244,7 @@ public class DependentsMapImpl implements DependentsMap {
             }
         }
 
-        private void addDependenciesForParameters(PsiMethod method) {
-            final PsiParameterList parameterList = method.getParameterList();
-            final PsiParameter[] parameters = parameterList.getParameters();
-            for (final PsiParameter parameter : parameters) {
-                final PsiType paramType = parameter.getType();
-                addDependency(paramType);
-            }
-        }
-
+        @Override
         public void visitNewExpression(PsiNewExpression expression) {
             super.visitNewExpression(expression);
             final PsiType classType = expression.getType();
@@ -273,6 +255,7 @@ public class DependentsMapImpl implements DependentsMap {
             }
         }
 
+        @Override
         public void visitClassObjectAccessExpression(PsiClassObjectAccessExpression exp) {
             super.visitClassObjectAccessExpression(exp);
             final PsiTypeElement operand = exp.getOperand();
@@ -280,15 +263,7 @@ public class DependentsMapImpl implements DependentsMap {
             addDependency(classType);
         }
 
-        public void visitTryStatement(PsiTryStatement statement) {
-            super.visitTryStatement(statement);
-            final PsiParameter[] catchBlockParameters = statement.getCatchBlockParameters();
-            for (final PsiParameter param : catchBlockParameters) {
-                final PsiType catchType = param.getType();
-                addDependency(catchType);
-            }
-        }
-
+        @Override
         public void visitInstanceOfExpression(PsiInstanceOfExpression exp) {
             super.visitInstanceOfExpression(exp);
             final PsiTypeElement checkType = exp.getCheckType();
@@ -299,6 +274,7 @@ public class DependentsMapImpl implements DependentsMap {
             addDependency(classType);
         }
 
+        @Override
         public void visitTypeCastExpression(PsiTypeCastExpression exp) {
             super.visitTypeCastExpression(exp);
             final PsiTypeElement castType = exp.getCastType();
