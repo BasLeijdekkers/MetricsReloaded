@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,23 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.stockmetrics.i18n;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 import org.jetbrains.annotations.PropertyKey;
 
-import java.util.ResourceBundle;
+public class StockMetricsBundle extends AbstractBundle {
 
-public class StockMetricsBundle {
-    private static final ResourceBundle ourBundle =
-            ResourceBundle.getBundle("com.sixrr.stockmetrics.i18n.StockMetricsBundle");
+    public static final String BUNDLE = "com.sixrr.stockmetrics.i18n.StockMetricsBundle";
+    private static final StockMetricsBundle INSTANCE = new StockMetricsBundle();
 
     private StockMetricsBundle() {
+        super(BUNDLE);
     }
 
-    public static String message(@PropertyKey(resourceBundle = "com.sixrr.stockmetrics.i18n.StockMetricsBundle")String key,
-                                 Object... params) {
-        return CommonBundle.message(ourBundle, key, params);
+    public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params) {
+        return INSTANCE.getMessage(key, params);
     }
 }

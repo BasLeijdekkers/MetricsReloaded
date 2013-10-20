@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,21 +16,19 @@
 
 package com.sixrr.metrics.utils;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 import org.jetbrains.annotations.PropertyKey;
 
-import java.util.ResourceBundle;
+public class MetricsReloadedBundle extends AbstractBundle {
 
-public class MetricsReloadedBundle {
+    public static final String BUNDLE_NAME = "com.sixrr.metrics.utils.MetricsReloadedBundle";
+    private static final MetricsReloadedBundle INSTANCE = new MetricsReloadedBundle();
 
-    private static final ResourceBundle ourBundle =
-            ResourceBundle.getBundle("com.sixrr.metrics.utils.MetricsReloadedBundle");
+    private MetricsReloadedBundle() {
+        super(BUNDLE_NAME);
+    }
 
-    private MetricsReloadedBundle() {}
-
-    public static String message(
-            @PropertyKey(resourceBundle = "com.sixrr.metrics.utils.MetricsReloadedBundle") String key,
-            Object... params) {
-        return CommonBundle.message(ourBundle, key, params);
+    public static String message(@PropertyKey(resourceBundle = BUNDLE_NAME) String key, Object... params) {
+        return INSTANCE.getMessage(key, params);
     }
 }
