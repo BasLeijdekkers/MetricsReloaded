@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,11 +27,15 @@ import com.sixrr.metrics.utils.TestUtils;
 import java.util.Collection;
 
 public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalculator {
+
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (!TestUtils.isTest(aClass) && !ClassUtils.isAnonymous(aClass)) {
@@ -41,35 +45,38 @@ public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalcul
                 }
             }
         }
-    }
 
-    private boolean isInternal(PsiClass aClass) {
-        final String moduleName = ClassUtils.calculateModuleName(aClass);
-        final Key<ClassReferenceCache> key = new Key<ClassReferenceCache>("ClassReferenceCache");
+        private boolean isInternal(PsiClass aClass) {
+            final String moduleName = ClassUtils.calculateModuleName(aClass);
+            final Key<ClassReferenceCache> key = new Key<ClassReferenceCache>("ClassReferenceCache");
 
-        ClassReferenceCache classReferenceCache = executionContext.getUserData(key);
-        if (classReferenceCache == null) {
-            classReferenceCache = new ClassReferenceCache();
-            executionContext.putUserData(key, classReferenceCache);
-        }
-        final Collection<PsiReference> references =
-                classReferenceCache.findClassReferences(aClass);
-        for (final PsiReference reference : references) {
-            final PsiElement element = reference.getElement();
-            final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
+            ClassReferenceCache classReferenceCache = executionContext.getUserData(key);
+            if (classReferenceCache == null) {
+                classReferenceCache = new ClassReferenceCache();
+                executionContext.putUserData(key, classReferenceCache);
+            }
+            final Collection<PsiReference> references =
+                    classReferenceCache.findClassReferences(aClass);
+            for (final PsiReference reference : references) {
+                final PsiElement element = reference.getElement();
+                final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
 
-            if (referencingClass != null && !TestUtils.isTest(referencingClass)) {
-                final String referencingModuleName = ClassUtils.calculateModuleName(referencingClass);
-                if (!moduleName.equals(referencingModuleName)) {
-                    return false;
+                if (referencingClass != null && !TestUtils.isTest(referencingClass)) {
+                    final String referencingModuleName = ClassUtils.calculateModuleName(referencingClass);
+                    if (!moduleName.equals(referencingModuleName)) {
+                        return false;
+                    }
                 }
             }
+            return true;
         }
-        return true;
     }
 
     public void visitFile(PsiFile file) {
         final Module module = ClassUtils.calculateModule(file);
+        if (module == null) {
+            return;
+        }
         numeratorPerModule.createBucket(module);
         denominatorPerModule.createBucket(module);
     }
