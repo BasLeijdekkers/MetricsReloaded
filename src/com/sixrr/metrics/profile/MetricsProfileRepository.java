@@ -25,6 +25,7 @@ import com.sixrr.metrics.PrebuiltMetricProfile;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -145,6 +146,7 @@ public class MetricsProfileRepository {
         return names;
     }
 
+    @Nullable
     public MetricsProfile getCurrentProfile() {
         return profiles.get(selectedProfile);
     }
