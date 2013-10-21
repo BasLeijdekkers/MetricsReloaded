@@ -27,7 +27,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.containers.Convertor;
 import com.intellij.util.ui.Tree;
 import com.sixrr.metrics.Metric;
@@ -38,13 +40,13 @@ import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.NumberFormatter;
 import javax.swing.tree.*;
 import java.awt.*;
@@ -53,8 +55,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 /**
  * todo if ok or apply is not pressed do not add or remove profiles!
@@ -62,15 +66,14 @@ import java.util.List;
  * todo fix cce -> use inspection like tree/renderer
  * todo pretty highlighting
  * todo default action buttons
- * todo default scroll bars
- * todo resizeability
+ * todo resizeability/splitter
  */
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
     private JComboBox profilesDropdown;
     private JButton cancelButton;
-    private JButton runButton;
+    private JButton okButton;
     private JTextPane descriptionTextArea;
     private JButton deleteButton;
     private JButton saveAsButton;
@@ -83,23 +86,17 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private JButton resetButton;
     private JButton applyButton;
     private ActionToolbarImpl treeToolbar;
-    private ActionToolbarImpl filterToolbar;
     private MetricInstance selectedMetricInstance = null;
 
-    private MetricsProfileRepository repository;
-    private Project project;
-    private MetricsProfile profile;
+    private final MetricsProfileRepository repository;
+    @Nullable private MetricsProfile profile;
     private boolean currentProfileIsModified = false;
-    private JComboBox filterComboBox;
-    private JTree tree;
-    private JScrollPane treeScrollPane;
+    private JBScrollPane treeScrollPane;
+    private FilterComponent filterComponent;
     private Tree metricsTree;
-    private String currentFilterString = "";
-    private String[] filters = new String[0];
 
     public MetricsConfigurationDialog(Project project, MetricsProfileRepository repository) {
         super(project, true);
-        this.project = project;
         this.repository = repository;
         profile = this.repository.getCurrentProfile();
         setupMetricsTree();
@@ -117,7 +114,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setupUpperThresholdEnabledButton();
         setupUpperThresholdField();
         setupURLLabel();
-        toggleRunButton();
+        toggleOKButton();
         toggleDeleteButton();
         toggleApplyButton();
         toggleResetButton();
@@ -128,22 +125,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         urlLabel.setText("");
         init();
         setTitle(MetricsReloadedBundle.message("metrics.profiles"));
-        //  final JRootPane rootPane = contentPanel.getRootPane();
-      //  rootPane.setDefaultButton(runButton);
-    }
-
-    private void setupFilterComboBox() {
-        filterComboBox = new JComboBox();
-        filterComboBox.setEditable(true);
-        filterComboBox.setEnabled(true);
-        filters = new String[]{""};
-        final MutableComboBoxModel filtersModel = new DefaultComboBoxModel(filters);
-        filterComboBox.setModel(filtersModel);
-        filterComboBox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                applyFilter();
-            }
-        });
     }
 
     private void setupLowerThresholdField() {
@@ -153,14 +134,17 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         lowerThresholdField.setFormatterFactory(formatterFactory);
 
         final DocumentListener listener = new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 textChanged();
             }
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 textChanged();
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 textChanged();
             }
@@ -185,14 +169,17 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         upperThresholdField.setFormatterFactory(formatterFactory);
 
         final DocumentListener listener = new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 textChanged();
             }
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 textChanged();
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 textChanged();
             }
@@ -213,6 +200,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private void setupLowerThresholdEnabledButton() {
         final ButtonModel checkboxModel = lowerThresholdEnabledCheckbox.getModel();
         checkboxModel.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 if (selectedMetricInstance != null) {
                     final boolean selected = checkboxModel.isSelected();
@@ -232,6 +220,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private void setupUpperThresholdEnabledButton() {
         final ButtonModel checkboxModel = upperThresholdEnabledCheckbox.getModel();
         checkboxModel.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 if (selectedMetricInstance != null) {
                     final boolean selected = checkboxModel.isSelected();
@@ -252,7 +241,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
         metricsTree = new MetricsTree();
         treeScrollPane.setViewportView(metricsTree);
-        populateTree();
+        populateTree("");
         final MyTreeCellRenderer renderer = new MyTreeCellRenderer();
         metricsTree.setCellRenderer(renderer);
         metricsTree.setRootVisible(true);
@@ -261,6 +250,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         metricsTree.putClientProperty("JTree.lineStyle", "Angled");
 
         metricsTree.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     final TreePath treePath = metricsTree.getLeadSelectionPath();
@@ -272,6 +262,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         });
         //noinspection ResultOfObjectAllocationIgnored
         new TreeSpeedSearch(metricsTree, new Convertor<TreePath, String>() {
+            @Override
             public String convert(TreePath treePath) {
                 final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                 final Object userObject = node.getUserObject();
@@ -285,7 +276,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         metricsTree.setSelectionRow(0);
     }
 
-    private void populateTree() {
+    private void populateTree(String filter) {
         final MetricTreeNode root =
                 new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
         final Map<MetricCategory, MetricTreeNode> categoryNodes =
@@ -295,7 +286,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             final List<MetricInstance> metrics = profile.getMetrics();
             for (final MetricInstance metricInstance : metrics) {
                 final Metric metric = metricInstance.getMetric();
-                if (!isMetricAccepted(metric)) {
+                if (!isMetricAccepted(metric, filter)) {
                     continue;
                 }
                 final MetricCategory category = metric.getCategory();
@@ -359,6 +350,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         profilesDropdown.setSelectedItem(currentProfile.getName());
         toggleDeleteButton();
         profilesDropdown.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.DESELECTED) {
                     return;
@@ -372,7 +364,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
                 rebindMetricsTree();
                 toggleDeleteButton();
-                toggleRunButton();
+                toggleOKButton();
                 toggleResetButton();
                 toggleApplyButton();
             }
@@ -380,7 +372,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupOkButton() {
-        runButton.addActionListener(new ActionListener() {
+        okButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentProfileIsModified) {
                     MetricsProfileRepository.persistProfile(profile);
@@ -392,6 +385,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupApplyButton() {
         applyButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 MetricsProfileRepository.persistProfile(profile);
                 currentProfileIsModified = false;
@@ -403,6 +397,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupCancelButton() {
         cancelButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 repository.reloadProfileFromStorage(profile);
                 close(0);
@@ -412,6 +407,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupAddButton() {
         saveAsButton.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent event) {
                 super.mousePressed(event);
                 final JPopupMenu popup = new JPopupMenu();
@@ -429,20 +425,23 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         profilesDropdown.setSelectedItem(newProfileName);
         rebindMetricsTree();
         toggleDeleteButton();
-        toggleRunButton();
+        toggleOKButton();
     }
 
     private void setupResetButton() {
         resetButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 repository.reloadProfileFromStorage(profile);
                 currentProfileIsModified = false;
+                populateTree(filterComponent.getFilter());
             }
         });
     }
 
     private void setupURLLabel() {
         urlLabel.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent event) {
                 final String helpURL = selectedMetricInstance.getMetric().getHelpURL();
                 if (helpURL != null) {
@@ -453,13 +452,13 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void toggleDeleteButton() {
-        deleteButton.setEnabled(repository.getProfileNames().length != 0);
-        /*final boolean anyProfilesLeft = repository.getProfileNames().length != 0;
-        if (!anyProfilesLeft) {
-            deleteButton.setEnabled(anyProfilesLeft);
-            return;
-        }
-        deleteButton.setEnabled(!profile.isBuiltIn());*/
+//        deleteButton.setEnabled(repository.getProfileNames().length != 0);
+//        final boolean anyProfilesLeft = repository.getProfileNames().length != 0;
+//        if (!anyProfilesLeft) {
+//            deleteButton.setEnabled(anyProfilesLeft);
+//            return;
+//        }
+        deleteButton.setEnabled(profile != null && !profile.isBuiltIn());
     }
 
     private void toggleResetButton() {
@@ -470,7 +469,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         applyButton.setEnabled(currentProfileIsModified);
     }
 
-    private void toggleRunButton() {
+    private void toggleOKButton() {
         boolean metricEnabled = false;
         final List<MetricInstance> metrics = profile.getMetrics();
         for (final MetricInstance metricInstance : metrics) {
@@ -478,11 +477,12 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 metricEnabled = true;
             }
         }
-        runButton.setEnabled(metricEnabled);
+        okButton.setEnabled(metricEnabled);
     }
 
     private void setupDeleteButton() {
         deleteButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 final String currentProfileName = profile.getName();
                 repository.deleteProfile(profile);
@@ -568,6 +568,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setDescriptionFromResource("/metricsDescriptions/Blank.html");
     }
 
+    @Override
     public void valueChanged(TreeSelectionEvent e) {
         final TreePath selectionPath = e.getPath();
         final MetricTreeNode lastPathComponent = (MetricTreeNode) selectionPath.getLastPathComponent();
@@ -580,19 +581,24 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
 
+    @NotNull
+    @Override
     public Action[] createActions() {
         return new Action[0];
     }
 
+    @Override
     public String getTitle() {
         return MetricsReloadedBundle.message("metrics.configuration.panel.title");
     }
 
+    @Override
     @Nullable
     protected JComponent createCenterPanel() {
         return contentPanel;
     }
 
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.MetricsConfigurationDialog";
@@ -626,7 +632,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 {
                     final Enumeration grandchildren = child.children();
                     while (grandchildren.hasMoreElements()) {
-                        MetricTreeNode grandChild = (MetricTreeNode) grandchildren.nextElement();
+                        final MetricTreeNode grandChild = (MetricTreeNode) grandchildren.nextElement();
                         grandChild.enabled = node.enabled;
                         if (grandChild.getUserObject()instanceof MetricInstance) {
                             ((MetricInstance) grandChild.getUserObject()).setEnabled(node.enabled);
@@ -635,15 +641,17 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         }
-        toggleRunButton();
+        toggleOKButton();
         toggleApplyButton();
         toggleResetButton();
         tree.repaint();
     }
 
     public void createUIComponents() {
+        filterComponent = new MyFilterComponent();
         final AnAction expandActon = new AnAction(MetricsReloadedBundle.message("expand.all.action"),
                 MetricsReloadedBundle.message("expand.all.description"), AllIcons.Actions.Expandall) {
+            @Override
             public void actionPerformed(AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
@@ -656,6 +664,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         };
         final AnAction collapseAction = new AnAction(MetricsReloadedBundle.message("collapse.all.action"),
                 MetricsReloadedBundle.message("collapse.all.description"), AllIcons.Actions.Collapseall) {
+            @Override
             public void actionPerformed(AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
@@ -666,63 +675,34 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final AnAction filterAction = new AnAction(MetricsReloadedBundle.message("apply.filter.action"),
-                MetricsReloadedBundle.message("apply.filter.description"), AllIcons.Actions.Filter_small) {
-            public void actionPerformed(AnActionEvent anActionEvent) {
-                applyFilter();
-            }
-        };
         final ActionManager actionManager = ActionManager.getInstance();
 
         final DefaultActionGroup expandCollapseGroup = new DefaultActionGroup();
         expandCollapseGroup.add(expandActon);
         expandCollapseGroup.add(collapseAction);
 
-        treeToolbar =
-                (ActionToolbarImpl) actionManager
+        treeToolbar = (ActionToolbarImpl) actionManager
                         .createActionToolbar("EXPAND_COLLAPSE_GROUP", expandCollapseGroup, true);
-        final DefaultActionGroup filterGroup = new DefaultActionGroup();
-        filterGroup.add(filterAction);
-        filterToolbar =
-                (ActionToolbarImpl) actionManager.createActionToolbar("FILTER_GROUP", filterGroup, true);
-        setupFilterComboBox();
     }
 
-    private void applyFilter() {
-        final JTextComponent component = (JTextComponent) filterComboBox.getEditor().getEditorComponent();
+    private class MyFilterComponent extends FilterComponent {
 
-        String newFilterString = component.getText();
-        if (newFilterString == null) {
-            newFilterString = "";
+        private MyFilterComponent() {
+            super("METRICS_FILTER_HISTORY", 10);
         }
-        if (currentFilterString.equals(newFilterString)) {
-            return;
+
+        @Override
+        public void filter() {
+            populateTree(getFilter());
         }
-        currentFilterString = newFilterString;
-        boolean found = false;
-        for (String filter : filters) {
-            if (currentFilterString.equals(filter)) {
-                found = true;
-            }
-        }
-        if (!found) {
-            final String[] newFilters = new String[filters.length + 1];
-            System.arraycopy(filters, 0, newFilters, 0, filters.length);
-            newFilters[newFilters.length - 1] = currentFilterString;
-            Arrays.sort(newFilters);
-            filters = newFilters;
-            final MutableComboBoxModel filtersModel = new DefaultComboBoxModel(filters);
-            filterComboBox.setModel(filtersModel);
-        }
-        filterComboBox.setSelectedItem(newFilterString);
-        populateTree();
     }
 
     private static class MyTreeCellRenderer extends JPanel implements TreeCellRenderer {
+
         private final JLabel myLabel;
         private final JCheckBox myCheckbox;
 
-        @SuppressWarnings({"OverridableMethodCallInConstructor"})
+        @SuppressWarnings("OverridableMethodCallInConstructor")
          MyTreeCellRenderer() {
             super(new BorderLayout());
             myCheckbox = new JCheckBox();
@@ -731,7 +711,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             add(myLabel, BorderLayout.CENTER);
         }
 
-        @SuppressWarnings({"HardCodedStringLiteral"})
+        @Override
+        @SuppressWarnings("HardCodedStringLiteral")
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                                                       boolean leaf, int row, boolean hasFocus) {
             final MetricTreeNode node = (MetricTreeNode) value;
@@ -763,12 +744,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private class MetricsTree extends Tree {
+        @Override
         public Dimension getPreferredScrollableViewportSize() {
             Dimension size = super.getPreferredScrollableViewportSize();
             size = new Dimension(size.width + 10, size.height);
             return size;
         }
 
+        @Override
         protected void processMouseEvent(MouseEvent e) {
             if (e.getID() == MouseEvent.MOUSE_PRESSED) {
                 final int row = getRowForLocation(e.getX(), e.getY());
@@ -805,35 +788,42 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
     }
 
-    private boolean isMetricAccepted(Metric metric) {
-        final String lowerCaseFilterString = currentFilterString.toLowerCase();
+    private static boolean isMetricAccepted(Metric metric, String filter) {
+        final String lowerCaseFilterString = filter.toLowerCase();
         if (metric.getDisplayName().toLowerCase().indexOf(lowerCaseFilterString) >= 1) {
             return true;
         }
         @NonNls final String descriptionName = "/metricsDescriptions/" + metric.getID() + ".html";
-        final InputStream resourceStream = metric.getClass().getResourceAsStream(descriptionName);
-        return readStreamContents(resourceStream).toLowerCase().contains(lowerCaseFilterString);
+        try {
+            final InputStream resourceStream = metric.getClass().getResourceAsStream(descriptionName);
+            try {
+                return readStreamContents(resourceStream).toLowerCase().contains(lowerCaseFilterString);
+            } finally {
+                if (resourceStream != null) {
+                    resourceStream.close();
+                } else {
+                    logger.warn("no description found for " + metric.getID());
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("problem reading metric description", e);
+            return false;
+        }
     }
 
-    private static String readStreamContents(InputStream resourceStream) {
+    private static String readStreamContents(InputStream resourceStream) throws IOException {
         if (resourceStream == null) {
             return "";
         }
-        try {
-            final StringBuffer out = new StringBuffer();
-            while (true) {
-                final int c = resourceStream.read();
-                if (c == -1) {
-                    break;
-                }
-                out.append((char) c);
+        final StringBuilder out = new StringBuilder();
+        while (true) {
+            final int c = resourceStream.read();
+            if (c == -1) {
+                break;
             }
-            return out.toString();
+            out.append((char) c);
         }
-        catch (IOException e) {
-            logger.error(e);
-        }
-        return "";
+        return out.toString();
     }
 
     private class CopyProfileAction extends AbstractAction {
@@ -845,6 +835,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             this.repository = repository;
         }
 
+        @Override
         public void actionPerformed(ActionEvent event) {
             final String newProfileName = Messages.showInputDialog(saveAsButton,
                     MetricsReloadedBundle.message("enter.new.profile.name"),
@@ -874,6 +865,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             this.repository = repository;
         }
 
+        @Override
         public void actionPerformed(ActionEvent event) {
             final String newProfileName = Messages.showInputDialog(saveAsButton,
                     MetricsReloadedBundle.message("enter.new.profile.name"),
