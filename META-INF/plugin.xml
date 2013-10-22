@@ -3,22 +3,20 @@
   <id>MetricsReloaded</id>
   <description><![CDATA[
     More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
-    IntelliJ IDEA 12. Follow further development of
+    IntelliJ IDEA 12 and newer. Follow further development of
     <a href="https://github.com/BasLeijdekkers/MetricsReloaded">this plugin on GitHub</a> or follow
     <a href="http://twitter.com/inspectorbas">me on twitter</a> for announcements and other things.
     ]]></description>
   <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
-          email="basleijdekkersYour Pants@gmail.com">Bas Leijdekkers (remove Your Pants to mail me;)</vendor>
-  <version>1.0 alpha</version>
+          email="basleijdekkersYour Hat@gmail.com">Bas Leijdekkers (remove 'Your Hat' to mail me;)</vendor>
+  <version>1.0 alpha 2</version>
   <change-notes><![CDATA[
-    Calculates metrics in the background instead of using a modal foreground progress window.<br>
-    Bug fixes.
+    Improved Metrics Profiles dialog and bug fixes.
   ]]></change-notes>
-  <idea-version since-build="8500"/>
+  <idea-version since-build="123.72"/>
   
   <extensionPoints>
-    <extensionPoint name="metricProvider"
-                    interface="com.sixrr.metrics.MetricProvider"/>
+    <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
