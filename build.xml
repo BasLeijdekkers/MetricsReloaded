@@ -35,7 +35,9 @@
   <property name="build.compiler" value="modern"/>
   <path id="openapi.class.path">
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
-    <pathelement location="${idea.dir}/lib/openAPI.jar"/>
+    <pathelement location="${idea.dir}/lib/openapi.jar"/>
+    <pathelement location="${idea.dir}/lib/util.jar"/>
+    <pathelement location="${idea.dir}/lib/extensions.jar"/>
   </path>
 
   <path id="plugin.class.path">
@@ -46,6 +48,7 @@
     <pathelement location="${idea.dir}/lib/idea.jar"/>
     <pathelement location="${idea.dir}/lib/openAPI.jar"/>
     <pathelement location="${idea.dir}/lib/jdom.jar"/>
+    <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
     <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
@@ -67,8 +70,8 @@
   </target>
 
   <target name="javadoc-openapi" depends="prepare">
-    <javadoc2 sourcepath="${openapi.src.dir}" destdir="${openapi.javadoc.dir}" packagenames="com.sixrr.metrics"
-              classpathref="openapi.class.path"/>
+    <javadoc sourcepath="${openapi.src.dir}" destdir="${openapi.javadoc.dir}" packagenames="com.sixrr.metrics"
+             classpathref="openapi.class.path"/>
   </target>
 
   <target name="create-openapi-jars" depends="compile-openapi">
@@ -112,7 +115,7 @@
   </target>
 
   <target name="compile" depends="prepare, create-openapi-jars, create-utils-jars">
-    <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}"
+    <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}" includeantruntime="false"
             includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
     </javac2>
