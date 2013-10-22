@@ -27,6 +27,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
@@ -72,8 +73,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
     private JComboBox profilesDropdown;
-    private JButton cancelButton;
-    private JButton okButton;
     private JTextPane descriptionTextArea;
     private JButton deleteButton;
     private JButton saveAsButton;
@@ -84,7 +83,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private JCheckBox lowerThresholdEnabledCheckbox;
     @NonNls private JLabel urlLabel;
     private JButton resetButton;
-    private JButton applyButton;
     private ActionToolbarImpl treeToolbar;
     private MetricInstance selectedMetricInstance = null;
 
@@ -94,6 +92,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private JBScrollPane treeScrollPane;
     private FilterComponent filterComponent;
     private Tree metricsTree;
+
+    private final Action applyAction = new ApplyAction();
 
     public MetricsConfigurationDialog(Project project, MetricsProfileRepository repository) {
         super(project, true);
@@ -106,18 +106,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setupDeleteButton();
         setupAddButton();
         setupResetButton();
-        setupCancelButton();
-        setupOkButton();
-        setupApplyButton();
         setupLowerThresholdEnabledButton();
         setupLowerThresholdField();
         setupUpperThresholdEnabledButton();
         setupUpperThresholdField();
         setupURLLabel();
-        toggleOKButton();
         toggleDeleteButton();
-        toggleApplyButton();
-        toggleResetButton();
+        applyAction.setEnabled(false);
+        resetButton.setEnabled(false);
         lowerThresholdField.setEnabled(false);
         upperThresholdField.setEnabled(false);
         lowerThresholdEnabledCheckbox.setEnabled(false);
@@ -364,45 +360,44 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
                 rebindMetricsTree();
                 toggleDeleteButton();
-                toggleOKButton();
                 toggleResetButton();
-                toggleApplyButton();
+                applyAction.setEnabled(true);
             }
         });
     }
 
-    private void setupOkButton() {
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentProfileIsModified) {
-                    MetricsProfileRepository.persistProfile(profile);
-                }
-                close(0);
-            }
-        });
+    @Override
+    protected void doOKAction() {
+        super.doOKAction();
+        if (currentProfileIsModified) {
+            MetricsProfileRepository.persistProfile(profile);
+        }
     }
 
-    private void setupApplyButton() {
-        applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MetricsProfileRepository.persistProfile(profile);
-                currentProfileIsModified = false;
-                toggleApplyButton();
-                toggleResetButton();
-            }
-        });
+    protected class ApplyAction extends DialogWrapperAction {
+
+        private ApplyAction() {
+            super(MetricsReloadedBundle.message("apply"));
+        }
+
+        @Override
+        protected void doAction(ActionEvent e) {
+            doApplyAction();
+        }
     }
 
-    private void setupCancelButton() {
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                repository.reloadProfileFromStorage(profile);
-                close(0);
-            }
-        });
+    protected void doApplyAction() {
+        processDoNotAskOnOk(NEXT_USER_EXIT_CODE);
+        MetricsProfileRepository.persistProfile(profile);
+        currentProfileIsModified = false;
+        applyAction.setEnabled(false);
+        applyAction.setEnabled(false);
+    }
+
+    @Override
+    public void doCancelAction() {
+        super.doCancelAction();
+        repository.reloadProfileFromStorage(profile);
     }
 
     private void setupAddButton() {
@@ -425,7 +420,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         profilesDropdown.setSelectedItem(newProfileName);
         rebindMetricsTree();
         toggleDeleteButton();
-        toggleOKButton();
     }
 
     private void setupResetButton() {
@@ -465,21 +459,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         resetButton.setEnabled(currentProfileIsModified);
     }
 
-    private void toggleApplyButton() {
-        applyButton.setEnabled(currentProfileIsModified);
-    }
-
-    private void toggleOKButton() {
-        boolean metricEnabled = false;
-        final List<MetricInstance> metrics = profile.getMetrics();
-        for (final MetricInstance metricInstance : metrics) {
-            if (metricInstance.isEnabled()) {
-                metricEnabled = true;
-            }
-        }
-        okButton.setEnabled(metricEnabled);
-    }
-
     private void setupDeleteButton() {
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -491,8 +470,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 profilesDropdown.removeItem(currentProfileName);
                 profilesDropdown.setSelectedItem(profile.getName());
                 toggleDeleteButton();
-                toggleResetButton();
-                toggleApplyButton();
+                resetButton.setEnabled(false);
+                applyAction.setEnabled(false);
                 rebindMetricsTree();
             }
         });
@@ -584,7 +563,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     @NotNull
     @Override
     public Action[] createActions() {
-        return new Action[0];
+        if (SystemInfo.isMac) {
+            return new Action[] {getCancelAction(), applyAction, getOKAction()};
+        } else {
+            return new Action[] {getOKAction(), applyAction, getCancelAction()};
+        }
     }
 
     @Override
@@ -619,6 +602,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 tool.setEnabled(false);
             }
             currentProfileIsModified = true;
+            applyAction.setEnabled(true);
+            resetButton.setEnabled(true);
         } else {
             node.enabled = !node.enabled;
             final Enumeration children = node.children();
@@ -641,9 +626,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         }
-        toggleOKButton();
-        toggleApplyButton();
-        toggleResetButton();
         tree.repaint();
     }
 
