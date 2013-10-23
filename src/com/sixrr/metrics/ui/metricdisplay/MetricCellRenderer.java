@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.util.Pair;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.metrics.ui.FormatUtils;
 import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.ui.FormatUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

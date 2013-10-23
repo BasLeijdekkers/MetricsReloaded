@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.JFreeChartConstants;
@@ -35,7 +37,6 @@ import org.jfree.chart.renderer.XYItemRenderer;
 import org.jfree.data.HistogramDataset;
 import org.jfree.data.IntegerHistogramDataset;
 import org.jfree.data.IntervalXYDataset;
-import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,7 +105,7 @@ public class HistogramDialog extends DialogWrapper {
         if (isIntegral) {
             xAxis.setTickUnit(new NumberTickUnit(1.0));
         }
-        if (metricType.equals(MetricType.Ratio) || metricType.equals(MetricType.RecursiveRatio)) {
+        if (metricType == MetricType.Ratio || metricType == MetricType.RecursiveRatio) {
             xAxis.setNumberFormatOverride(new PercentFormatter());
         }
 
@@ -122,18 +123,23 @@ public class HistogramDialog extends DialogWrapper {
         return new JFreeChart(title, JFreeChartConstants.DEFAULT_TITLE_FONT, plot, true);
     }
 
+    @Override
     public JComponent createCenterPanel() {
         return chartPanel;
     }
 
+    @NotNull
+    @Override
     public Action[] createActions() {
         return new Action[0];
     }
 
+    @Override
     public String getTitle() {
         return MetricsReloadedBundle.message("diff.histogram.dialog.title", metricName, metricCategoryName);
     }
 
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.HistogramDialog";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.table.AbstractTableModel;
@@ -148,13 +148,9 @@ class MetricTableModel extends AbstractTableModel {
         final Set<String> allObjects = new HashSet<String>(resultObjects.length);
         if (prevResults != null) {
             final String[] prevResultObjects = prevResults.getMeasuredObjects();
-            for (final String prevResultObject : prevResultObjects) {
-                allObjects.add(prevResultObject);
-            }
+            Collections.addAll(allObjects, prevResultObjects);
         }
-        for (final String resultObject : resultObjects) {
-            allObjects.add(resultObject);
-        }
+        Collections.addAll(allObjects, resultObjects);
         measuredObjects = allObjects.toArray(new String[allObjects.size()]);
     }
 
@@ -162,19 +158,16 @@ class MetricTableModel extends AbstractTableModel {
         final Metric[] currentMetrics = results.getMetrics();
         final MetricInstance[] resultMetrics = findInstances(currentMetrics);
         final Set<MetricInstance> allMetrics = new HashSet<MetricInstance>(resultMetrics.length);
-        for (final MetricInstance resultMetric : resultMetrics) {
-            allMetrics.add(resultMetric);
-        }
+        Collections.addAll(allMetrics, resultMetrics);
         if (prevResults != null) {
             final MetricInstance[] prevResultMetrics = findInstances(prevResults.getMetrics());
-            for (final MetricInstance prevResultMetric : prevResultMetrics) {
-                allMetrics.add(prevResultMetric);
-            }
+            Collections.addAll(allMetrics, prevResultMetrics);
         }
         metricsInstances = allMetrics.toArray(new MetricInstance[allMetrics.size()]);
         Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
     }
 
+    @Override
     public int getRowCount() {
         if (hasSummaryRows()) {
             return measuredObjects.length + 2;
@@ -187,10 +180,12 @@ class MetricTableModel extends AbstractTableModel {
         return measuredObjects.length > 1;
     }
 
+    @Override
     public int getColumnCount() {
         return metricsInstances.length + 1;
     }
 
+    @Override
     public String getColumnName(int column) {
         final int permutedColumn = columnPermutation[column];
         if (permutedColumn == 0) {
@@ -201,6 +196,7 @@ class MetricTableModel extends AbstractTableModel {
         }
     }
 
+    @Override
     @Nullable
     public Object getValueAt(int rowIndex, int columnIndex) {
         final int permutedColumn = columnPermutation[columnIndex];
@@ -263,7 +259,7 @@ class MetricTableModel extends AbstractTableModel {
             tableSpecification.setSortColumn(0);
             sortColumn = 0;
         }
-        final Pair[] tempArray = new Pair[rowPermutation.length];
+        final Pair<Integer, ? extends Comparable<?>>[] tempArray = new Pair[rowPermutation.length];
         final int permutedColumn = columnPermutation[sortColumn];
         if (permutedColumn == 0) {
             for (int i = 0; i < rowPermutation.length; i++) {
@@ -280,7 +276,7 @@ class MetricTableModel extends AbstractTableModel {
         }
         Arrays.sort(tempArray, new PairComparator(tableSpecification));
         for (int i = 0; i < tempArray.length; i++) {
-            rowPermutation[i] = (Integer) tempArray[i].getFirst();
+            rowPermutation[i] = tempArray[i].getFirst();
         }
     }
 
@@ -323,7 +319,6 @@ class MetricTableModel extends AbstractTableModel {
         private final MetricTableSpecification tableSpecification;
 
         private PairComparator(MetricTableSpecification tableSpecification) {
-            super();
             this.tableSpecification = tableSpecification;
         }
 

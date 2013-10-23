@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NonNls;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.JFreeChartConstants;
@@ -32,7 +33,6 @@ import org.jfree.chart.renderer.XYItemRenderer;
 import org.jfree.data.XYDataset;
 import org.jfree.data.XYSeries;
 import org.jfree.data.XYSeriesCollection;
-import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +55,7 @@ public class DistributionDialog extends DialogWrapper {
         final XYDataset dataset = createDistributionSeries();
         final JFreeChart chart = createChart(dataset);
         createChartPanel(chart);
-       init();
+        init();
     }
 
     private void createChartPanel(JFreeChart chart) {
@@ -88,7 +88,7 @@ public class DistributionDialog extends DialogWrapper {
 
         final NumberAxis xAxis = new NumberAxis(metricName);
         xAxis.setAutoRangeIncludesZero(false);
-        if (metricType.equals(MetricType.Ratio) || metricType.equals(MetricType.RecursiveRatio)) {
+        if (metricType == MetricType.Ratio || metricType == MetricType.RecursiveRatio) {
             xAxis.setNumberFormatOverride(new PercentFormatter());
         }
         final NumberAxis yAxis = new NumberAxis("%");
@@ -99,14 +99,17 @@ public class DistributionDialog extends DialogWrapper {
         return new JFreeChart(title, JFreeChartConstants.DEFAULT_TITLE_FONT, plot, true);
     }
 
+    @Override
     public JComponent createCenterPanel() {
         return chartPanel;
     }
 
+    @Override
     public Action[] createActions() {
         return new Action[0];
     }
 
+    @Override
     public String getTitle() {
         if (metricName.startsWith(MetricsReloadedBundle.message("number.of"))) {
             final String shortName = metricName.substring(MetricsReloadedBundle.message("number.of").length());
@@ -116,6 +119,7 @@ public class DistributionDialog extends DialogWrapper {
         }
     }
 
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.DistributionDialog";

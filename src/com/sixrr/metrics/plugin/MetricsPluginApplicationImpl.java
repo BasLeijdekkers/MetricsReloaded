@@ -18,13 +18,11 @@ package com.sixrr.metrics.plugin;
 
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.ExportableApplicationComponent;
-import com.intellij.util.ArrayUtil;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * Allows for exporting metrics profiles.

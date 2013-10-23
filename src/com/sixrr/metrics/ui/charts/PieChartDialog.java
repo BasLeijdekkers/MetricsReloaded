@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.Pair;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.JFreeChartConstants;
@@ -27,7 +29,6 @@ import org.jfree.chart.labels.PieItemLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.DefaultPieDataset;
 import org.jfree.data.PieDataset;
-import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PieChartDialog extends DialogWrapper {
+
     private final ChartPanel chartPanel;
     private final String metricName;
     private final String metricTypeName;
@@ -71,10 +73,9 @@ public class PieChartDialog extends DialogWrapper {
                 total += value;
             }
         }
-        Collections.sort(namedValues, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                final Pair<String, Double> pair1 = (Pair<String, Double>) o1;
-                final Pair<String, Double> pair2 = (Pair<String, Double>) o2;
+        Collections.sort(namedValues, new Comparator<Pair<String, Double>>() {
+            @Override
+            public int compare(Pair<String, Double> pair1, Pair<String, Double> pair2) {
                 final Double value1 = pair1.getSecond();
                 final Double value2 = pair2.getSecond();
                 return -value1.compareTo(value2);
@@ -83,11 +84,10 @@ public class PieChartDialog extends DialogWrapper {
         final DefaultPieDataset dataset = new DefaultPieDataset();
 
         double totalForOther = 0.0;
-        for (final Object namedValue : namedValues) {
-            final Pair<String, Double> pair = (Pair<String, Double>) namedValue;
-            final double value = pair.getSecond();
+        for (final Pair<String, Double> namedValue : namedValues) {
+            final double value = namedValue.getSecond();
             if (value > total * SMALLEST_PIE_PIECE) {
-                dataset.setValue(pair.getFirst(), value);
+                dataset.setValue(namedValue.getFirst(), value);
             } else {
                 totalForOther += value;
             }
@@ -115,19 +115,23 @@ public class PieChartDialog extends DialogWrapper {
                 false);
     }
 
+    @Override
     public JComponent createCenterPanel() {
         return chartPanel;
     }
 
+    @NotNull
+    @Override
     public Action[] createActions() {
         return new Action[0];
     }
 
+    @Override
     public String getTitle() {
         return MetricsReloadedBundle.message("pie.chart.title.message", metricName, metricTypeName);
     }
 
-
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.PieChartDialog";
@@ -142,6 +146,7 @@ public class PieChartDialog extends DialogWrapper {
             this.total = total;
         }
 
+        @Override
         public String generateToolTip(PieDataset pieDataset,
                                       Comparable comparable, int i) {
             final int value = pieDataset.getValue(comparable).intValue();

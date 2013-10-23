@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@ package com.sixrr.metrics.offline;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
+import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileImpl;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
 import com.sixrr.metrics.ui.metricdisplay.SnapshotFileFilter;
-import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewOfflineMetricsResultsAction extends AnAction {
+
+    @Override
     public void actionPerformed(AnActionEvent event) {
         final DataContext dataContext = event.getDataContext();
         final Project project = (Project) dataContext.getData(DataConstants.PROJECT);
@@ -75,6 +77,7 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
         toolWindow.show(results, profile, null, false); //TODO
     }
 
+    @Override
     public void update(AnActionEvent event) {
         super.update(event);
         final Presentation presentation = event.getPresentation();

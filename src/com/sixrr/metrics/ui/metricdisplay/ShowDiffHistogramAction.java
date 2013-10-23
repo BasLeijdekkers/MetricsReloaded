@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import com.sixrr.metrics.ui.charts.DiffHistogramDialog;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,6 +40,7 @@ class ShowDiffHistogramAction extends AbstractAction {
         model = (MetricTableModel) table.getModel();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         int numRows = model.getRowCount();
         if (numRows > 1) {
