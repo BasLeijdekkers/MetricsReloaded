@@ -9,9 +9,10 @@
     ]]></description>
   <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
           email="basleijdekkersYour Hat@gmail.com">Bas Leijdekkers (remove 'Your Hat' to mail me;)</vendor>
-  <version>1.0 alpha 2</version>
+  <version>1.0 alpha 3</version>
   <change-notes><![CDATA[
-    Improved Metrics Profiles dialog and bug fixes.
+  Moved 'Calculate Metrics...' action up in the Analyze menu.
+  Bug fixes.
   ]]></change-notes>
   <idea-version since-build="123.72"/>
   
@@ -53,7 +54,7 @@
               class="com.sixrr.metrics.offline.ViewOfflineMetricsResultsAction"
               text="View Offline Metrics Results...">
       </action-->
-      <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+      <add-to-group group-id="InspectCodeGroup" anchor="last"/>
     </group>
   </actions>
 </idea-plugin>
