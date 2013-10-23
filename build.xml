@@ -148,26 +148,15 @@
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded/license"/>
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded/lib"/>
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded/help"/>
-    <copy file="${openapi.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="${stockmetrics.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="${stockmetrics.resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="${utils.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="${jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="${resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="lib/jcommon-0.9.1.jar"
-          todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy file="lib/jfreechart-0.9.16.jar"
-          todir="${idea.plugin.dir}/MetricsReloaded/lib"
-          overwrite="true"/>
-    <copy todir="${idea.plugin.dir}/MetricsReloaded/license"
-          overwrite="true">
+    <copy file="${openapi.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="${stockmetrics.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="${stockmetrics.resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="${utils.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="${jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="${resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="lib/jcommon-0.9.1.jar" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="lib/jfreechart-0.9.16.jar" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy todir="${idea.plugin.dir}/MetricsReloaded/license" overwrite="true">
       <fileset dir="license">
         <include name="**/**"/>
       </fileset>
