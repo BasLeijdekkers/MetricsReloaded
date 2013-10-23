@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
 import com.sixrr.stockmetrics.classMetrics.*;
-import com.sixrr.stockmetrics.classMetrics.NumTypeParametersMetric;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.interfaceMetrics.*;
 import com.sixrr.stockmetrics.methodMetrics.*;
 import com.sixrr.stockmetrics.moduleMetrics.*;
 import com.sixrr.stockmetrics.packageMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +52,7 @@ public class DefaultMetricProvider implements MetricProvider {
 
     private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
 
+    @NotNull
     @Override
     public List<Class<? extends Metric>> getMetricClasses() {
         if (metricsClasses.isEmpty()) {
@@ -148,7 +149,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(PercentFieldsJavadocedInterfaceMetric.class);
         metricsClasses.add(PercentMethodsJavadocedInterfaceMetric.class);
         metricsClasses.add(TodoCommentCountInterfaceMetric.class);
-        metricsClasses.add(NumTypeParametersClassMetric.class);
+        metricsClasses.add(NumTypeParametersInterfaceMetric.class);
     }
 
     private void initializeMethodMetrics() {
