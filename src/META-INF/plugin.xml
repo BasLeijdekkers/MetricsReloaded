@@ -11,8 +11,9 @@
           email="basleijdekkersYour Hat@gmail.com">Bas Leijdekkers (remove 'Your Hat' to mail me;)</vendor>
   <version>1.0 alpha 3</version>
   <change-notes><![CDATA[
-  Moved 'Calculate Metrics...' action up in the Analyze menu.
-  Bug fixes.
+  Moved 'Calculate Metrics...' action up in the Analyze menu.<br>
+  NTP metric fixed.<br>
+  Bug fixes.<br>
   ]]></change-notes>
   <idea-version since-build="123.72"/>
   
