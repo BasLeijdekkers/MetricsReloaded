@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -106,15 +106,22 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
             stringValue = FormatUtils.formatValue(metric, (Double) value);
         }
 
-        return (JLabel) super.getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
+        return super.getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
     }
 
     private Component getDiffTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                         boolean hasFocus, int row, int column) {
         final Pair<Double, Double> pair = (Pair<Double, Double>) value;
         final Metric metric = metricInstance.getMetric();
-        final Double currentValue = pair.getFirst();
-        final Double prevValue = pair.getSecond();
+        final Double currentValue;
+        final Double prevValue;
+        if (pair != null) {
+            currentValue = pair.getFirst();
+            prevValue = pair.getSecond();
+        } else {
+            currentValue = null;
+            prevValue = null;
+        }
         final StringBuilder stringValue = new StringBuilder(16);
         if (currentValue != null && prevValue != null && prevValue.equals(currentValue)) {
             stringValue.append(FormatUtils.formatValue(metric, currentValue));
