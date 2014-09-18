@@ -195,7 +195,10 @@ public class MetricsResultImpl implements MetricsResult {
                     final double value = valuesForMetric.get(measuredObject);
                     out.postValue(metric, measuredObject, value, 1.0); //not quite right
                 }
-                out.setElementForMeasuredObject(measuredObject, getElementForMeasuredObject(measuredObject));
+                final PsiElement elementForMeasuredObject = getElementForMeasuredObject(measuredObject);
+                if (elementForMeasuredObject != null) {
+                    out.setElementForMeasuredObject(measuredObject, elementForMeasuredObject);
+                }
             }
         }
         return out;
