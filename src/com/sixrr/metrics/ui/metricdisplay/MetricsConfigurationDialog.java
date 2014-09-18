@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2014 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.List;
@@ -63,10 +64,8 @@ import java.util.Map;
 
 /**
  * todo if ok or apply is not pressed do not add or remove profiles!
- * todo sort correctly
- * todo fix cce -> use inspection like tree/renderer
- * todo pretty highlighting
- * todo default action buttons
+ * todo use inspection like tree/renderer
+ * todo pretty highlighting when filtering
  * todo resizeability/splitter
  */
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
@@ -123,10 +122,22 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setTitle(MetricsReloadedBundle.message("metrics.profiles"));
     }
 
+    private void markProfileClean() {
+        currentProfileIsModified = false;
+        resetButton.setEnabled(false);
+        applyAction.setEnabled(false);
+    }
+
+    private void markProfileDirty() {
+        currentProfileIsModified = true;
+        resetButton.setEnabled(true);
+        applyAction.setEnabled(true);
+    }
+
     private void setupLowerThresholdField() {
-        final NumberFormat formatter = NumberFormat.getIntegerInstance();
-        formatter.setParseIntegerOnly(true);
-        final DefaultFormatterFactory formatterFactory = new DefaultFormatterFactory(new NumberFormatter(formatter));
+        final NumberFormat format = NumberFormat.getIntegerInstance();
+        format.setParseIntegerOnly(true);
+        final DefaultFormatterFactory formatterFactory = new DefaultFormatterFactory(new NumberFormatter(format));
         lowerThresholdField.setFormatterFactory(formatterFactory);
 
         final DocumentListener listener = new DocumentListener() {
@@ -146,12 +157,22 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             }
 
             private void textChanged() {
-                final Number value = (Number) lowerThresholdField.getValue();
-                if (value != null) {
-                    final double threshold = value.doubleValue();
-                    selectedMetricInstance.setLowerThreshold(threshold);
-                    currentProfileIsModified = true;
+                try {
+                    lowerThresholdField.commitEdit();
+                } catch (ParseException ignore) {
+                    return;
                 }
+                final Number value = (Number) lowerThresholdField.getValue();
+                if (value == null) {
+                    return;
+                }
+                final double newValue = value.doubleValue();
+                final double currentValue = selectedMetricInstance.getLowerThreshold();
+                if (Math.abs(currentValue - newValue) <= 0.001) {
+                    return;
+                }
+                selectedMetricInstance.setLowerThreshold(newValue);
+                markProfileDirty();
             }
         };
         final Document thresholdDocument = lowerThresholdField.getDocument();
@@ -159,9 +180,9 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupUpperThresholdField() {
-        final NumberFormat formatter = NumberFormat.getIntegerInstance();
-        formatter.setParseIntegerOnly(true);
-        final DefaultFormatterFactory formatterFactory = new DefaultFormatterFactory(new NumberFormatter(formatter));
+        final NumberFormat format = NumberFormat.getIntegerInstance();
+        format.setParseIntegerOnly(true);
+        final DefaultFormatterFactory formatterFactory = new DefaultFormatterFactory(new NumberFormatter(format));
         upperThresholdField.setFormatterFactory(formatterFactory);
 
         final DocumentListener listener = new DocumentListener() {
@@ -181,12 +202,21 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             }
 
             private void textChanged() {
-                final Number value = (Number) upperThresholdField.getValue();
-                if (value != null) {
-                    final double threshold = value.doubleValue();
-                    selectedMetricInstance.setUpperThreshold(threshold);
-                    currentProfileIsModified = true;
+                try {
+                    upperThresholdField.commitEdit();
+                } catch (ParseException ignore) {
+                    return;
                 }
+                final Number value = (Number) upperThresholdField.getValue();
+                if (value == null) {
+                    return;
+                }
+                final double threshold = value.doubleValue();
+                if (Math.abs(selectedMetricInstance.getUpperThreshold() - threshold) <= 0.001) {
+                    return;
+                }
+                selectedMetricInstance.setUpperThreshold(threshold);
+                markProfileDirty();
             }
         };
         final Document thresholdDocument = upperThresholdField.getDocument();
@@ -200,14 +230,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             public void stateChanged(ChangeEvent e) {
                 if (selectedMetricInstance != null) {
                     final boolean selected = checkboxModel.isSelected();
-                    selectedMetricInstance.setLowerThresholdEnabled(selected);
-                    lowerThresholdField.setEnabled(selectedMetricInstance.isLowerThresholdEnabled());
-                    if (selected) {
-                        lowerThresholdField.setText(Double.toString(selectedMetricInstance.getLowerThreshold()));
-                    } else {
-                        lowerThresholdField.setText("");
+                    if (selectedMetricInstance.isLowerThresholdEnabled() != selected) {
+                        selectedMetricInstance.setLowerThresholdEnabled(selected);
+                        markProfileDirty();
                     }
-                    currentProfileIsModified = true;
+                    lowerThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
                 }
             }
         });
@@ -220,15 +247,12 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             public void stateChanged(ChangeEvent e) {
                 if (selectedMetricInstance != null) {
                     final boolean selected = checkboxModel.isSelected();
-                    selectedMetricInstance.setUpperThresholdEnabled(selected);
-                    upperThresholdField.setEnabled(selectedMetricInstance.isUpperThresholdEnabled());
-                    if (selected) {
-                        upperThresholdField.setText(Double.toString(selectedMetricInstance.getUpperThreshold()));
-                    } else {
-                        upperThresholdField.setText("");
+                    if (selectedMetricInstance.isUpperThresholdEnabled() != selected) {
+                        selectedMetricInstance.setUpperThresholdEnabled(selected);
+                        markProfileDirty();
                     }
+                    upperThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
                 }
-                currentProfileIsModified = true;
             }
         });
     }
@@ -356,12 +380,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 if (!selectedProfile.equals(currentProfileName)) {
                     repository.setSelectedProfile(selectedProfile);
                     profile = repository.getCurrentProfile();
-                    currentProfileIsModified = false;
+                    markProfileClean();
                 }
                 rebindMetricsTree();
                 toggleDeleteButton();
-                toggleResetButton();
-                applyAction.setEnabled(true);
             }
         });
     }
@@ -389,9 +411,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     protected void doApplyAction() {
         processDoNotAskOnOk(NEXT_USER_EXIT_CODE);
         MetricsProfileRepository.persistProfile(profile);
-        currentProfileIsModified = false;
-        applyAction.setEnabled(false);
-        applyAction.setEnabled(false);
+        markProfileClean();
     }
 
     @Override
@@ -414,7 +434,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     public void updateSelection(String newProfileName) {
-        currentProfileIsModified = false;
+        markProfileClean();
         profile = repository.getCurrentProfile();
         profilesDropdown.addItem(newProfileName);
         profilesDropdown.setSelectedItem(newProfileName);
@@ -427,7 +447,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             @Override
             public void actionPerformed(ActionEvent e) {
                 repository.reloadProfileFromStorage(profile);
-                currentProfileIsModified = false;
+                markProfileClean();
                 populateTree(filterComponent.getFilter());
             }
         });
@@ -455,10 +475,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         deleteButton.setEnabled(profile != null && !profile.isBuiltIn());
     }
 
-    private void toggleResetButton() {
-        resetButton.setEnabled(currentProfileIsModified);
-    }
-
     private void setupDeleteButton() {
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -466,12 +482,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 final String currentProfileName = profile.getName();
                 repository.deleteProfile(profile);
                 profile = repository.getCurrentProfile();
-                currentProfileIsModified = false;
+                markProfileClean();
                 profilesDropdown.removeItem(currentProfileName);
                 profilesDropdown.setSelectedItem(profile.getName());
                 toggleDeleteButton();
-                resetButton.setEnabled(false);
-                applyAction.setEnabled(false);
                 rebindMetricsTree();
             }
         });
@@ -487,59 +501,48 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         } else {
             urlLabel.setText("");
         }
-        final double threshold = metricInstance.getUpperThreshold();
-        final boolean thresholdEnabled = metricInstance.isUpperThresholdEnabled();
-        upperThresholdEnabledCheckbox.setSelected(thresholdEnabled);
-        upperThresholdEnabledCheckbox.setEnabled(true);
-        final String thresholdString = Double.toString(threshold);
-        upperThresholdField.setEnabled(thresholdEnabled);
-        if (thresholdEnabled) {
-            upperThresholdField.setText(thresholdString);
-        } else {
-            upperThresholdField.setText("");
-        }
+        final boolean metricInstanceEnabled = metricInstance.isEnabled();
+
+        final double upperThreshold = metricInstance.getUpperThreshold();
+        final boolean upperThresholdEnabled = metricInstance.isUpperThresholdEnabled();
+        upperThresholdEnabledCheckbox.setSelected(upperThresholdEnabled);
+        upperThresholdEnabledCheckbox.setEnabled(metricInstanceEnabled);
+        upperThresholdField.setValue(Double.valueOf(upperThreshold));
+        upperThresholdField.setEnabled(upperThresholdEnabled && metricInstanceEnabled);
+
         final double lowerThreshold = metricInstance.getLowerThreshold();
         final boolean lowerThresholdEnabled = metricInstance.isLowerThresholdEnabled();
         lowerThresholdEnabledCheckbox.setSelected(lowerThresholdEnabled);
-        lowerThresholdEnabledCheckbox.setEnabled(true);
-        final String lowerThresholdString = Double.toString(lowerThreshold);
-        lowerThresholdField.setEnabled(thresholdEnabled);
-        if (thresholdEnabled) {
-            lowerThresholdField.setText(lowerThresholdString);
-        } else {
-            lowerThresholdField.setText("");
-        }
+        lowerThresholdEnabledCheckbox.setEnabled(metricInstanceEnabled);
+        lowerThresholdField.setValue(Double.valueOf(lowerThreshold));
+        lowerThresholdField.setEnabled(lowerThresholdEnabled && metricInstanceEnabled);
+
         @NonNls final String descriptionName = "/metricsDescriptions/" + metric.getID() + ".html";
-        final boolean resourceFound = setDescriptionFromResource(descriptionName, metric);
-        if (!resourceFound) {
-            setDescriptionFromResource("/metricsDescriptions/UnderConstruction.html");
-        }
+        setDescriptionFromResource(descriptionName, metric);
     }
 
-    private boolean setDescriptionFromResource(@NonNls String resourceName) {
+    private void setDescriptionFromResource(@NonNls String resourceName) {
         try {
             final URL resourceURL = getClass().getResource(resourceName);
             descriptionTextArea.setPage(resourceURL);
-            return true;
-        } catch (IOException ignore) {
-            return false;
+        } catch (Exception e) {
+            logger.error(e);
         }
     }
 
-    private boolean setDescriptionFromResource(String resourceName, Metric metric) {
+    private void setDescriptionFromResource(String resourceName, Metric metric) {
         try {
             final URL resourceURL = metric.getClass().getResource(resourceName);
             descriptionTextArea.setPage(resourceURL);
-            return true;
-        } catch (IOException ignore) {
-            return false;
+        } catch (Exception ignore) {
+            setDescriptionFromResource("/metricsDescriptions/UnderConstruction.html");
         }
     }
 
     private void clearSelection() {
         selectedMetricInstance = null;
-        lowerThresholdField.setText("");
         lowerThresholdField.setEnabled(false);
+        lowerThresholdField.setText("");
         lowerThresholdEnabledCheckbox.setEnabled(false);
         upperThresholdField.setText("");
         upperThresholdField.setEnabled(false);
@@ -598,12 +601,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                     parent.enabled = true;
                 }
                 tool.setEnabled(true);
+                upperThresholdEnabledCheckbox.setEnabled(true);
+                lowerThresholdEnabledCheckbox.setEnabled(true);
             } else {
                 tool.setEnabled(false);
+                upperThresholdEnabledCheckbox.setEnabled(false);
+                lowerThresholdEnabledCheckbox.setEnabled(false);
             }
-            currentProfileIsModified = true;
-            applyAction.setEnabled(true);
-            resetButton.setEnabled(true);
+            markProfileDirty();
         } else {
             node.enabled = !node.enabled;
             final Enumeration children = node.children();
