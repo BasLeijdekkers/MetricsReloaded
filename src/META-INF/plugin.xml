@@ -12,7 +12,9 @@
   <version>1.0 alpha 3</version>
   <change-notes><![CDATA[
   Moved 'Calculate Metrics...' action up in the Analyze menu.<br>
+  Taught Metrics Profiles dialog some better behaviour.<br>
   NTP metric fixed.<br>
+  Cleaner exported XML.<br>
   Bug fixes.<br>
   ]]></change-notes>
   <idea-version since-build="123.72"/>
