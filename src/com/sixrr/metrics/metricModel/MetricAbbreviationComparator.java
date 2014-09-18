@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2014, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,15 +21,9 @@ import com.sixrr.metrics.Metric;
 import java.util.Comparator;
 
 public class MetricAbbreviationComparator implements Comparator<Metric> {
-    public int compare(Metric o1, Metric o2) {
-        final String abbrev1 = o1.getAbbreviation();
-        final String upperAbbrev1 = abbrev1.toUpperCase();
-        final String abbrev2 = o2.getAbbreviation();
-        final String upperAbbrev2 = abbrev2.toUpperCase();
-        final int caseInsensitiveCompare = upperAbbrev1.compareTo(upperAbbrev2);
-        if (caseInsensitiveCompare != 0) {
-            return caseInsensitiveCompare;
-        }
-        return abbrev1.compareTo(abbrev2);
+
+    @Override
+    public int compare(Metric metric1, Metric metric2) {
+        return metric1.getAbbreviation().compareToIgnoreCase(metric2.getAbbreviation());
     }
 }
