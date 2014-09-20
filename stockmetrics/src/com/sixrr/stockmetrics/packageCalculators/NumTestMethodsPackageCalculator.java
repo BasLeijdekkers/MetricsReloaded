@@ -57,10 +57,10 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            final PsiClass aClass = method.getContainingClass();
             if (!TestUtils.isJUnitTestMethod(method)) {
                 return;
             }
+            final PsiClass aClass = method.getContainingClass();
             final PsiPackage aPackage = ClassUtils.findPackage(aClass);
             if (aPackage == null) {
                 return;
