@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,27 +19,21 @@ package com.sixrr.metrics.utils;
 import com.intellij.psi.*;
 
 public class MethodUtils {
-    private MethodUtils() {
-        super();
-    }
+    private MethodUtils() {}
 
     public static boolean isAbstract(PsiMethod method) {
+        if (method.hasModifierProperty(PsiModifier.STATIC) || method.hasModifierProperty(PsiModifier.DEFAULT)) {
+            return false;
+        }
         if (method.hasModifierProperty(PsiModifier.ABSTRACT)) {
             return true;
         }
         final PsiClass containingClass = method.getContainingClass();
-        if (containingClass == null) {
-            return false;
-        }
-        return containingClass.isInterface();
+        return containingClass != null && containingClass.isInterface();
     }
 
     public static String calculateSignature(PsiMethod method) {
-
         final PsiClass containingClass = method.getContainingClass();
-
-        final PsiParameterList parameterList = method.getParameterList();
-        final PsiParameter[] parameters = parameterList.getParameters();
         final String className;
         if (containingClass != null) {
             className = containingClass.getQualifiedName();
@@ -47,11 +41,13 @@ public class MethodUtils {
             className = "";
         }
         final String methodName = method.getName();
-        final StringBuffer out = new StringBuffer(256);
+        final StringBuilder out = new StringBuilder(50);
         out.append(className);
         out.append('.');
         out.append(methodName);
         out.append('(');
+        final PsiParameterList parameterList = method.getParameterList();
+        final PsiParameter[] parameters = parameterList.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             if (i != 0) {
                 out.append(',');
