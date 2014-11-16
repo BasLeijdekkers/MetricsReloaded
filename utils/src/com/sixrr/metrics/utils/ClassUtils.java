@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ClassUtils {
 
     private ClassUtils() {}
 
+    @NotNull
     public static String calculatePackageName(PsiClass aClass) {
         final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
         if (file == null) {
@@ -156,9 +158,6 @@ public class ClassUtils {
             return null;
         }
         final String referencedPackageName = calculatePackageName(file);
-        if (referencedPackageName == null) {
-            return null;
-        }
         final Project project = file.getProject();
         final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
         return psiFacade.findPackage(referencedPackageName);
@@ -170,9 +169,6 @@ public class ClassUtils {
             return null;
         }
         final String referencedPackageName = calculatePackageName(referencedClass);
-        if (referencedPackageName == null) {
-            return null;
-        }
         final Project project = referencedClass.getProject();
         final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
         return psiFacade.findPackage(referencedPackageName);
