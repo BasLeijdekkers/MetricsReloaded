@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,11 @@
 package com.sixrr.metrics.export;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public interface Exporter {
+
     void export(String fileName) throws IOException;
+
+    void export(PrintWriter writer) throws IOException;
 }

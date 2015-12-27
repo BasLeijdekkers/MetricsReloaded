@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,36 +24,31 @@ import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.ui.FormatUtils;
 import org.jetbrains.annotations.NonNls;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class HTMLExporter implements Exporter {
+
     private final MetricsRun manager;
 
     public HTMLExporter(MetricsRun manager) {
-        super();
         this.manager = manager;
     }
 
     public void export(String fileName) throws IOException {
-        FileOutputStream outputStream = null;
-        PrintWriter writer = null;
+        final PrintWriter writer = new PrintWriter(fileName);
         try {
-            outputStream = new FileOutputStream(fileName);
-            writer = new PrintWriter(outputStream);
-            final MetricCategory[] categories = MetricCategory.values();
-            for (MetricCategory category : categories) {
-                writeResultsForCategory(category, writer);
-            }
+            export(writer);
         } finally {
-            if (writer != null) {
-                writer.close();
-            }
-            if (outputStream != null) {
-                outputStream.close();
-            }
+            writer.close();
+        }
+    }
+
+    @Override
+    public void export(PrintWriter writer) throws IOException {
+        for (MetricCategory category : MetricCategory.values()) {
+            writeResultsForCategory(category, writer);
         }
     }
 

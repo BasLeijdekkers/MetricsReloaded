@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.sixrr.metrics.export;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.openapi.util.text.StringUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricAbbreviationComparator;
@@ -30,6 +31,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class XMLExporter implements Exporter {
+
     private final MetricsRun run;
 
     public XMLExporter(MetricsRun run) {
@@ -40,17 +42,21 @@ public class XMLExporter implements Exporter {
     public void export(String fileName) throws IOException {
         @NonNls final PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
         try {
-            writer.println("<METRICS profile=\"" + run.getProfileName() + "\" timestamp=\"" +
-                    run.getTimestamp() + "\">");
-            writeContext(run.getContext());
-            final MetricCategory[] categories = MetricCategory.values();
-            for (MetricCategory category : categories) {
-                writeResultsForCategory(category, writer);
-            }
-            writer.println("</METRICS>");
+            export(writer);
         } finally {
             writer.close();
         }
+    }
+
+    @Override
+    public void export(PrintWriter writer) throws IOException {
+        writer.println("<METRICS profile=\"" + StringUtil.escapeXml(run.getProfileName()) + "\" timestamp=\"" +
+                run.getTimestamp() + "\">");
+        writeContext(run.getContext());
+        for (MetricCategory category : MetricCategory.values()) {
+            writeResultsForCategory(category, writer);
+        }
+        writer.println("</METRICS>");
     }
 
     private void writeContext(AnalysisScope context) {
@@ -67,10 +73,9 @@ public class XMLExporter implements Exporter {
 
     private static void writeResultsForMetric(MetricCategory category, Metric metric, MetricsResult results,
                                               @NonNls PrintWriter writer) {
-        final String[] measuredObjects = results.getMeasuredObjects();
         writer.println("\t<METRIC category=\"" + category.name() + "\" name=\"" +
                 metric.getDisplayName() + "\" abbreviation=\"" + metric.getAbbreviation() + "\">");
-        for (final String measuredObject : measuredObjects) {
+        for (final String measuredObject : results.getMeasuredObjects()) {
             writeValue(results, metric, measuredObject, writer);
         }
         writer.println("\t</METRIC>");
@@ -80,37 +85,7 @@ public class XMLExporter implements Exporter {
                                    @NonNls PrintWriter writer) {
         final Double value = results.getValueForMetric(metric, measuredObject);
         if (value != null) {
-            writer.println("\t\t<VALUE measured=\"" + escape(measuredObject) + "\" value=\"" + value + "\"/>");
+            writer.println("\t\t<VALUE measured=\"" + StringUtil.escapeXml(measuredObject) + "\" value=\"" + value + "\"/>");
         }
-    }
-
-    private static String escape(String measuredObject) {
-        @NonNls final StringBuilder sb = new StringBuilder(measuredObject.length());
-
-        for (int idx = 0; idx < measuredObject.length(); idx++) {
-            final char c = measuredObject.charAt(idx);
-
-            switch (c) {
-                case '<':
-                    sb.append("&lt;");
-                    break;
-                case '>':
-                    sb.append("&gt;");
-                    break;
-                case '"':
-                    sb.append("&quot;");
-                    break;
-                case '\'':
-                    sb.append("&apos;");
-                    break;
-                case '&':
-                    sb.append("&amp;");
-                    break;
-                default:
-                    sb.append(c);
-            }
-        }
-
-        return sb.toString();
     }
 }
