@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public class MetricsProfileImpl implements MetricsProfile {
         Collections.sort(metrics);
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public MetricsProfileImpl clone() throws CloneNotSupportedException {
         final MetricsProfileImpl out = (MetricsProfileImpl) super.clone();
         out.metrics = new ArrayList<MetricInstance>(metrics.size());
         for (MetricInstance metric : metrics) {

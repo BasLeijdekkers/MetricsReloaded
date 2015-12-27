@@ -180,9 +180,10 @@ public class MetricsProfileRepository {
 
     public void duplicateCurrentProfile(String newProfileName) {
         final MetricsProfile currentProfile = getCurrentProfile();
+        assert currentProfile != null;
         final MetricsProfile newProfile;
         try {
-            newProfile = (MetricsProfile) ((MetricsProfileImpl) currentProfile).clone();
+            newProfile = currentProfile.clone();
         } catch (CloneNotSupportedException ignore) {
             return;
         }
