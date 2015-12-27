@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -45,16 +45,6 @@ public class MetricsProfileRepository {
     private final MetricsProfileTemplate template;
     private String selectedProfile = "";
     private final MetricsReloadedConfig configuration;
-
-    public static void main(String[] args) {
-        final MetricsProfileRepository repository = new MetricsProfileRepository(null);
-        repository.initialize();
-        repository.printMetricsDescriptions();
-    }
-
-    private void printMetricsDescriptions() {
-        template.printMetricsDescriptions();
-    }
 
     public MetricsProfileRepository(MetricsReloadedConfig configuration) {
         this.configuration = configuration;
