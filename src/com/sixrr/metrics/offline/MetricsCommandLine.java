@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,10 +17,27 @@
 package com.sixrr.metrics.offline;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.ide.impl.PatchProjectUtil;
+import com.intellij.ide.impl.ProjectUtil;
+import com.intellij.openapi.application.ApplicationInfo;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ApplicationStarter;
+import com.intellij.openapi.application.ex.ApplicationEx;
+import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.GlobalSearchScopesCore;
+import com.intellij.psi.search.scope.packageSet.NamedScope;
+import com.intellij.psi.search.scope.packageSet.NamedScopesHolder;
+import com.sixrr.metrics.export.Exporter;
 import com.sixrr.metrics.export.XMLExporter;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
@@ -28,102 +45,220 @@ import com.sixrr.metrics.metricModel.TimeStamp;
 import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
+import org.jetbrains.annotations.Contract;
+import org.kohsuke.args4j.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
 public class MetricsCommandLine implements ApplicationStarter {
-    
-    private static final Logger logger = Logger.getInstance("MetricsReloaded");
+
+    private static final Logger LOG = Logger.getInstance("MetricsReloaded");
+
+    @Argument(index = 0, required = true, metaVar = "<project_path>", usage = "the project to calculate metrics for")
+    private String projectPath = null;
+
+    @Argument(index = 1, required = true, metaVar = "<metrics_profile_name>",
+            usage = "name of the metrics profile to use")
+    private String metricsProfileName = "";
+
+    @Argument(index = 2, metaVar = "<output_path>",
+            usage = "the path to write the output xml to, default writes to STDOUT")
+    private String outputXmlPath = null;
+
+    @Option(name = "-d", aliases = "--directory", metaVar = "<path>", forbids = "-s",
+            usage = "directory to calculate metrics for, default is the whole project")
+    private String directory = null;
+
+    @Option(name = "-s", aliases = "--scope", metaVar = "<scope_name>", forbids = "-d",
+            usage = "name of scope to calculate metrics for, default is the whole project")
+    private String scope = null;
+
+    @Option(name = "-v", aliases = "--verbose", usage = "show more progress information", forbids = "-q")
+    private boolean verbose = false;
+
+    @Option(name = "-q", aliases = "--quiet", usage = "show less information", forbids = "-v")
+    private boolean quiet = false;
+
+    @Option(name = "-h", aliases = "--help", usage = "show this message", help = true)
+    private boolean help = false;
 
     @Override
     public String getCommandName() {
         return "metrics";
     }
 
+    private static void printUsage(CmdLineParser parser, PrintStream out) {
+        final String scriptName = ApplicationNamesInfo.getInstance().getScriptName();
+        out.println("Usage: " + scriptName +
+                " metrics [options] <project_path> <metrics_profile_name> [<output_xml_file>]");
+        parser.printUsage(out);
+    }
+
     @Override
     public void premain(String[] args) {
-        if (args.length != 4) {
-            usage(args);
-        }
-    }
-
-    @SuppressWarnings("HardCodedStringLiteral")
-    private static void usage(String[] args) {
-        System.err.println("MetricsReloaded command line error " + Arrays.toString(args));
-        System.err
-                .println("Expected parameters : " + "<project_filename> <metrics_profile_name> <output_xml_filename>");
-        System.exit(1);
-    }
-
-    /**
-     * <pre>
-     * args[0] : metrics
-     * args[1] : project_file (.ipr)
-     * args[2] : metrics_profile_name
-     * args[2] : output_file  (.xml)
-     * </pre>
-     *
-     * @param args
-     */
-    public void main(String[] args) {
-        int exitCode = 0;
-
+        final ParserProperties properties = ParserProperties.defaults()
+                .withShowDefaults(false)
+                .withOptionSorter(null);
+        final CmdLineParser parser = new CmdLineParser(this, properties);
         try {
-            final String projectFileName = args[1];
-            final String metricsProfileName = args[2];
-
-            final String outputXMLFileName = args[3];
-
-            logger.info("MetricsReloaded command line");
-            logger.info("  project file         : " + projectFileName);
-            logger.info("  metrics profile      : " + metricsProfileName);
-            logger.info("  output XML file name : " + outputXMLFileName);
-
-            final Project project = ProjectManager.getInstance().loadAndOpenProject(projectFileName);
-            final MetricsProfile profile = getMetricsProfile(project, metricsProfileName);
-            final AnalysisScope scope = new AnalysisScope(project);
-            final MetricsRunImpl metricsRun = new MetricsRunImpl();
-            new MetricsExecutionContextImpl(project, scope) {
-                @Override
-                public void onFinish() {
-                    metricsRun.setProfileName(profile.getName());
-                    metricsRun.setTimestamp(new TimeStamp());
-                    metricsRun.setContext(scope);
-                    final XMLExporter exporter = new XMLExporter(metricsRun);
-                    try {
-                        exporter.export(outputXMLFileName);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }.execute(profile, metricsRun);
-        } catch (Exception ex) {
-            logger.info("Unexpected exception", ex);
-            // logger.error() activate the IDEA fatal error dialog stuff (?)
-
-            ex.printStackTrace(System.err);
-
-            exitCode = 1;
+            parser.parseArgument(Arrays.copyOfRange(args, 1, args.length));
+            if (help) {
+                printUsage(parser, System.out);
+                System.exit(0);
+            }
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            printUsage(parser, System.err);
+            System.exit(1);
         }
+    }
 
-        logger.info("EXIT CODE :: " + exitCode);
-        System.exit(exitCode);
+    public void main(String[] args) {
+        if (outputXmlPath != null) {
+            final File file = new File(outputXmlPath);
+            final File parentFile = file.getParentFile();
+            if (parentFile != null && !parentFile.exists()) {
+                error("Could not find directory " + parentFile.getAbsolutePath());
+            }
+        }
+        final ApplicationEx application = (ApplicationEx) ApplicationManager.getApplication();
+        try {
+            final ApplicationInfoEx applicationInfo = (ApplicationInfoEx) ApplicationInfo.getInstance();
+            info("MetricsReloaded running on " + applicationInfo.getFullApplicationName());
+            application.doNotSave();
+            try {
+                info("Opening project...");
+                if (projectPath == null) {
+                    projectPath = new File("").getAbsolutePath();
+                }
+                projectPath = projectPath.replace(File.separatorChar, '/');
+                final Project project = ProjectUtil.openOrImport(projectPath, null, false);
+                if (project == null) {
+                    error("Unable to open project: " + projectPath);
+                }
+
+                application.runWriteAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+                    }
+                });
+                PatchProjectUtil.patchProject(project);
+                info("Project " + project.getName() + " opened.");
+
+                final MetricsProfile profile = getMetricsProfile(project, metricsProfileName);
+                if (profile == null) {
+                    error("Profile not found: " + metricsProfileName);
+                }
+                info("Calculating metrics");
+                final AnalysisScope analysisScope;
+                if (scope != null) {
+                    final NamedScope namedScope = NamedScopesHolder.getScope(project, scope);
+                    if (namedScope == null) {
+                        error("Scope not found: " + scope);
+                    }
+                    analysisScope = new AnalysisScope(GlobalSearchScopesCore.filterScope(project, namedScope), project);
+                } else if (directory != null) {
+                    directory = directory.replace(File.separatorChar, '/');
+
+                    final VirtualFile vfsDir = LocalFileSystem.getInstance().findFileByPath(directory);
+                    if (vfsDir == null) {
+                        error("Directory not found: " + directory);
+                    }
+                    final PsiDirectory psiDirectory = PsiManager.getInstance(project).findDirectory(vfsDir);
+                    if (psiDirectory == null) {
+                        error("Directory not found: " + directory);
+                    }
+                    analysisScope = new AnalysisScope(psiDirectory);
+                } else {
+                    analysisScope = new AnalysisScope(project);
+                }
+                ProgressManager.getInstance().runProcess(new Runnable() {
+                    @Override
+                    public void run() {
+                        final MetricsRunImpl metricsRun = new MetricsRunImpl();
+                        metricsRun.setProfileName(profile.getName());
+                        metricsRun.setTimestamp(new TimeStamp());
+                        metricsRun.setContext(analysisScope);
+                        final MetricsExecutionContextImpl metricsExecutionContext =
+                                new MetricsExecutionContextImpl(project, analysisScope);
+                        metricsExecutionContext.calculateMetrics(profile, metricsRun);
+                        final Exporter exporter = new XMLExporter(metricsRun);
+                        try {
+                            if (outputXmlPath == null) {
+                                final PrintWriter writer = new PrintWriter(System.out, true);
+                                exporter.export(writer);
+                            } else {
+                                exporter.export(outputXmlPath);
+                            }
+                        } catch (IOException e) {
+                            error(e.getMessage());
+                        }
+                    }
+                }, new ProgressIndicatorBase() {
+                    private int lastPercent = 0;
+
+                    @Override
+                    public void setFraction(double fraction) {
+                        final int percent = (int)(fraction * 100);
+                        if (lastPercent != percent && !isIndeterminate()) {
+                            lastPercent = percent;
+                            trace("Calculating metrics " + lastPercent + "%");
+                        }
+                    }
+                });
+                info("Finished.");
+            } catch (Exception ex) {
+                error(ex);
+            }
+            application.exit(true, true);
+        } catch (Exception e) {
+            LOG.error(e);
+            error(e);
+        }
     }
 
     private static MetricsProfile getMetricsProfile(Project project, String profileName) {
         final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
         final MetricsProfileRepository repository = plugin.getProfileRepository();
-
         final List<String> metricsProfileNames = Arrays.asList(repository.getProfileNames());
         if (!metricsProfileNames.contains(profileName)) {
-            throw new RuntimeException("The metrics profile [" + profileName + "] does not exist!");
+            return null;
         }
-
         repository.setSelectedProfile(profileName);
-
         return repository.getCurrentProfile();
+    }
+
+    @Contract("_ -> fail")
+    private static void error(Throwable throwable) {
+        System.err.println(throwable.getMessage());
+        LOG.error(throwable);
+        System.exit(1);
+    }
+
+    @Contract("_ -> fail")
+    private static void error(String message) {
+        System.err.println(message);
+        System.exit(1);
+    }
+
+    private void info(String message) {
+        if (quiet) {
+            return;
+        }
+        System.out.println(message);
+    }
+
+    private void trace(String message) {
+        if (!verbose) {
+            return;
+        }
+        System.out.println(message);
     }
 }
 

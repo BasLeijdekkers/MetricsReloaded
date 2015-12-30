@@ -43,6 +43,7 @@
   <path id="plugin.class.path">
     <pathelement location="lib/jcommon-0.9.1.jar"/>
     <pathelement location="lib/jfreechart-0.9.16.jar"/>
+    <pathelement location="lib/args4j-2.32.jar"/>
     <pathelement location="${openapi.jar.file}"/>
     <pathelement location="${utils.jar.file}"/>
     <pathelement location="${idea.dir}/lib/idea.jar"/>
@@ -53,7 +54,12 @@
     <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
   </path>
-  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpath="${idea.dir}/redist/javac2.jar"/>
+
+  <path id="javac2.classpath">
+    <pathelement location="${idea.dir}/lib/javac2.jar"/>
+    <pathelement location="${idea.dir}/lib/asm-all.jar"/>
+  </path>
+  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
 
   <target name="prepare">
     <mkdir dir="${openapi.build.classes.dir}"/>
@@ -124,19 +130,12 @@
   <target name="create_jars" depends="compile">
     <jar jarfile="${jar.file}">
       <fileset dir="${build.classes.dir}"/>
-      <fileset dir=".">
-        <include name="META-INF/plugin.xml"/>
-      </fileset>
+      <fileset dir="src" includes="META-INF/plugin.xml" />
     </jar>
     <jar jarfile="${resources.jar.file}">
-      <fileset dir="src">
-        <include name="**/*.properties"/>
-      </fileset>
-      <fileset dir="resources">
-        <include name="**/**"/>
-      </fileset>
+      <fileset dir="src" includes="**/*.properties"/>
+      <fileset dir="resources"/>
     </jar>
-
   </target>
 
   <target name="deploy" depends="clean,create_jars,create-stockmetrics-jars,create-utils-jars, javadoc-openapi"
@@ -156,6 +155,7 @@
     <copy file="${resources.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
     <copy file="lib/jcommon-0.9.1.jar" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
     <copy file="lib/jfreechart-0.9.16.jar" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
+    <copy file="lib/args4j-2.32.jar" todir="${idea.plugin.dir}/MetricsReloaded/lib" overwrite="true"/>
     <copy todir="${idea.plugin.dir}/MetricsReloaded/license" overwrite="true">
       <fileset dir="license">
         <include name="**/**"/>
@@ -193,6 +193,7 @@
       <zipfileset file="${stockmetrics.resources.jar.file}" prefix="MetricsReloaded/lib"/>
       <zipfileset file="lib/jcommon-0.9.1.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset file="lib/jfreechart-0.9.16.jar" prefix="MetricsReloaded/lib"/>
+      <zipfileset file="lib/args4j-2.32.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset dir="license" prefix="MetricsReloaded/license"/>
     </zip>
   </target>
