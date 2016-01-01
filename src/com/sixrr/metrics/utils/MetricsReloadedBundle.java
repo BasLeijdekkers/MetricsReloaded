@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,22 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.sixrr.metrics.utils;
 
-import com.intellij.AbstractBundle;
+import com.intellij.CommonBundle;
+import com.intellij.reference.SoftReference;
 import org.jetbrains.annotations.PropertyKey;
 
-public class MetricsReloadedBundle extends AbstractBundle {
+import java.lang.ref.Reference;
+import java.util.ResourceBundle;
 
-    public static final String BUNDLE_NAME = "com.sixrr.metrics.utils.MetricsReloadedBundle";
-    private static final MetricsReloadedBundle INSTANCE = new MetricsReloadedBundle();
+public final class MetricsReloadedBundle {
 
-    private MetricsReloadedBundle() {
-        super(BUNDLE_NAME);
+    public static final String BUNDLE = "com.sixrr.metrics.utils.MetricsReloadedBundle";
+    private static Reference<ResourceBundle> INSTANCE;
+
+    private MetricsReloadedBundle() {}
+
+    public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params) {
+        return CommonBundle.message(getBundle(), key, params);
     }
 
-    public static String message(@PropertyKey(resourceBundle = BUNDLE_NAME) String key, Object... params) {
-        return INSTANCE.getMessage(key, params);
+    private static ResourceBundle getBundle() {
+        ResourceBundle bundle = SoftReference.dereference(INSTANCE);
+        if (bundle == null) {
+            bundle = ResourceBundle.getBundle(BUNDLE);
+            INSTANCE = new SoftReference<ResourceBundle>(bundle);
+        }
+        return bundle;
     }
 }
