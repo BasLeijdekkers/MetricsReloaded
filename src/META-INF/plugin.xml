@@ -37,9 +37,6 @@
       <interface-class>com.sixrr.metrics.plugin.MetricsPluginApplication</interface-class>
       <implementation-class>com.sixrr.metrics.plugin.MetricsPluginApplicationImpl</implementation-class>
     </component>
-    <component>
-      <implementation-class>com.sixrr.stockmetrics.DefaultMetricProvider</implementation-class>
-    </component>
   </application-components>
 
   <project-components>
