@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private MetricsRun currentResults = null;
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
-    private boolean showOnlyWarnings = false;
 
     public MetricsToolWindowImpl(Project project, MetricsPlugin plugin,
                                  MetricsReloadedConfig config) {
@@ -90,7 +89,6 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
             currentResults = results;
         }
         currentProfile = profile;
-        this.showOnlyWarnings = showOnlyWarnings;
         final MetricDisplaySpecification displaySpecification =
                 currentProfile.getDisplaySpecification();
         metricsDisplay.setMetricsResults(displaySpecification, currentResults);

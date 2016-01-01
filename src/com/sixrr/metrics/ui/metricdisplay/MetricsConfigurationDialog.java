@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2015 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -266,7 +266,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         metricsTree.setCellRenderer(renderer);
         metricsTree.setRootVisible(true);
         metricsTree.setShowsRootHandles(false);
-        //noinspection HardCodedStringLiteral
         metricsTree.putClientProperty("JTree.lineStyle", "Angled");
 
         metricsTree.addKeyListener(new KeyAdapter() {
@@ -699,7 +698,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
 
         @Override
-        @SuppressWarnings("HardCodedStringLiteral")
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                                                       boolean leaf, int row, boolean hasFocus) {
             final MetricTreeNode node = (MetricTreeNode) value;
