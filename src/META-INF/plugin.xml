@@ -2,22 +2,24 @@
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
   <description><![CDATA[
-    More than 250 automated code metrics for IntelliJ IDEA. This version is compatible with
-    IntelliJ IDEA 12 and newer. Follow further development of
-    <a href="https://github.com/BasLeijdekkers/MetricsReloaded">this plugin on GitHub</a> or follow
-    <a href="http://twitter.com/inspectorbas">me on twitter</a> for announcements and other things.
+    More than 250 automated code metrics for IntelliJ IDEA. This version of MetricsReloaded is
+    compatible with IntelliJ IDEA 14 and newer. Follow further development of this plugin
+    <a href="https://github.com/BasLeijdekkers/MetricsReloaded">on GitHub</a> or follow
+    me <a href="http://twitter.com/inspectorbas">on twitter</a> for announcements and other things.
+
+    <h4>Getting started</h4>
+    <p>Select the menu item <code>Analyze | Calculate Metrics...</code>
+    <p>Metrics can also be calculated from the command line for integration into build servers.
+    Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must not be running.
     ]]></description>
   <vendor url="https://github.com/BasLeijdekkers/MetricsReloaded"
           email="basleijdekkersYour Hat@gmail.com">Bas Leijdekkers (remove 'Your Hat' to mail me;)</vendor>
-  <version>1.0 alpha 3</version>
+  <version>1.1</version>
   <change-notes><![CDATA[
-  Moved 'Calculate Metrics...' action up in the Analyze menu.<br>
-  Taught Metrics Profiles dialog some better behaviour.<br>
-  NTP metric fixed.<br>
-  Cleaner exported XML.<br>
-  Bug fixes.<br>
+  -Improved command line experience.<br>
+  -Cyclomatic complexity metric fixed.<br>
   ]]></change-notes>
-  <idea-version since-build="123.72"/>
+  <idea-version since-build="139"/>
   
   <extensionPoints>
     <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider"/>
