@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ package com.sixrr.stockmetrics.i18n;
 import org.jetbrains.annotations.NonNls;
 
 public interface HelpURLs {
-    @NonNls String COMPLEXITY_URL =
-            "www.sei.cmu.edu/str/descriptions/cyclomatic_body.html";
-    @NonNls String HALSTEAD_URL = "www.sei.cmu.edu/str/descriptions/halstead.html";
+    @NonNls String COMPLEXITY_URL = "en.wikipedia.org/wiki/Cyclomatic_complexity";
+    @NonNls String HALSTEAD_URL = "en.wikipedia.org/wiki/Halstead_complexity_measures";
     @NonNls String JUNIT_URL = "www.junit.org";
     @NonNls String MARTIN_URL = "www.objectmentor.com/resources/articles/oodmetrc.pdf";
     @NonNls String LAYERING_URL =
@@ -31,8 +30,8 @@ public interface HelpURLs {
     @NonNls String MOOD_URL =
             "ctp.di.fct.unl.pt/QUASAR/Resources/Papers/Metrics/TOOLS96.pdf";
 
-    @NonNls String COMPLEXITY_DISPLAY_STRING = "www.sei.cmu.edu";
-    @NonNls String HALSTEAD_DISPLAY_STRING = "www.sei.cmu.edu";
+    @NonNls String COMPLEXITY_DISPLAY_STRING = "Wikipedia";
+    @NonNls String HALSTEAD_DISPLAY_STRING = "Wikipedia";
     @NonNls String JUNIT_DISPLAY_STRING = "www.junit.org";
     @NonNls String MARTIN_DISPLAY_STRING = "www.objectmentor.com";
     @NonNls String LAYERING_DISPLAY_STRING = "Large Scale C++ Software Development";
