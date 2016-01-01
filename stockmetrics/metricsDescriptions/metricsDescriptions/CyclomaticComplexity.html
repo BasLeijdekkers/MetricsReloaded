@@ -2,9 +2,11 @@
 <body>
 <table><tr><td valign="top" height="150">
     <font face="verdana" size="-1">
-        This metric reports the cyclomatic complexity of each non-abstract method. Cyclomatic complexity
-        is a graph-theoretic measure of the number of distinct paths through each method.
-        In practice, it is basically 1 + the number of branch points in the method.
+        Calculates the cyclomatic complexity of each non-abstract method. Cyclomatic complexity
+        is a measure of the number of distinct execution paths through each method.
+        This can also be considered as the minimal number of tests necessary to completely exercise a method's control flow.
+        In practice, this is 1 + the number of if's, while's, for's, do's, switch cases, catches,
+        conditional expressions, &&'s and ||'s in the method.
     </font></td></tr>
     <tr><td height="50"><font face="verdana" size="-1">Abbreviation: <b>V(g) </b></font></td></tr>
     <tr><td height="20"><font face="verdana" size="-2">Powered by MetricsReloaded </font></td></tr>

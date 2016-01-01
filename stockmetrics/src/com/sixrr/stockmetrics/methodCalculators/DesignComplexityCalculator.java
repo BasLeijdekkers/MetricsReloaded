@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,28 +20,30 @@ import com.intellij.psi.*;
 
 public class DesignComplexityCalculator extends ComplexityCalculator {
 
-    public boolean statementIsReducible(PsiStatement statement) {
-        if (statement == null) {
+    public boolean isReducible(PsiElement element) {
+        if (element == null) {
             return true;
         }
-        if (statement instanceof PsiIfStatement) {
-            return ifStatementIsReducible((PsiIfStatement) statement);
-        } else if (statement instanceof PsiWhileStatement) {
-            return whileStatementIsReducible((PsiWhileStatement) statement);
-        } else if (statement instanceof PsiDoWhileStatement) {
-            return doWhileStatementIsReducible((PsiDoWhileStatement) statement);
-        } else if (statement instanceof PsiForStatement) {
-            return forStatementIsReducible((PsiForStatement) statement);
-        } else if (statement instanceof PsiForeachStatement) {
-            return foreachStatementIsReducible((PsiForeachStatement) statement);
-        } else if (statement instanceof PsiSynchronizedStatement) {
-            return synchronizedStatementIsReducible((PsiSynchronizedStatement) statement);
-        } else if (statement instanceof PsiTryStatement) {
-            return tryStatementIsReducible((PsiTryStatement) statement);
-        } else if (statement instanceof PsiSwitchStatement) {
-            return switchStatementIsReducible((PsiSwitchStatement) statement);
-        } else if (statement instanceof PsiBlockStatement) {
-            return blockStatementIsReducible((PsiBlockStatement) statement);
+        if (element instanceof PsiIfStatement) {
+            return ifStatementIsReducible((PsiIfStatement) element);
+        } else if (element instanceof PsiWhileStatement) {
+            return whileStatementIsReducible((PsiWhileStatement) element);
+        } else if (element instanceof PsiDoWhileStatement) {
+            return doWhileStatementIsReducible((PsiDoWhileStatement) element);
+        } else if (element instanceof PsiForStatement) {
+            return forStatementIsReducible((PsiForStatement) element);
+        } else if (element instanceof PsiForeachStatement) {
+            return foreachStatementIsReducible((PsiForeachStatement) element);
+        } else if (element instanceof PsiSynchronizedStatement) {
+            return synchronizedStatementIsReducible((PsiSynchronizedStatement) element);
+        } else if (element instanceof PsiTryStatement) {
+            return tryStatementIsReducible((PsiTryStatement) element);
+        } else if (element instanceof PsiSwitchStatement) {
+            return switchStatementIsReducible((PsiSwitchStatement) element);
+        } else if (element instanceof PsiBlockStatement) {
+            return blockStatementIsReducible((PsiBlockStatement) element);
+        } else if (element instanceof PsiConditionalExpression) {
+            return isConditionalExpressionReducible((PsiConditionalExpression) element);
         }
         return true;
     }
@@ -101,6 +103,12 @@ public class DesignComplexityCalculator extends ComplexityCalculator {
         final PsiStatement thenBranch = statement.getThenBranch();
         return !containsMethodCall(thenBranch) &&
                 !containsMethodCall(elseBranch);
+    }
+
+    private static boolean isConditionalExpressionReducible(PsiConditionalExpression expression) {
+        final PsiExpression thenExpression = expression.getThenExpression();
+        final PsiExpression elseExpression = expression.getElseExpression();
+        return !containsMethodCall(thenExpression) && !containsMethodCall(elseExpression);
     }
 
     private static boolean containsMethodCall(PsiElement element) {

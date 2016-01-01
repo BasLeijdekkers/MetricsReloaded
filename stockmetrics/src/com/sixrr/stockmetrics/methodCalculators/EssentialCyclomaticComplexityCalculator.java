@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,33 +20,33 @@ import com.intellij.psi.*;
 
 public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculator {
 
-    public boolean statementIsReducible(PsiStatement statement) {
-        if (statement == null) {
+    public boolean isReducible(PsiElement element) {
+        if (element == null) {
             return true;
         }
-        if (statement instanceof PsiReturnStatement ||
-                statement instanceof PsiThrowStatement ||
-                statement instanceof PsiContinueStatement ||
-                statement instanceof PsiBreakStatement) {
+        if (element instanceof PsiReturnStatement ||
+                element instanceof PsiThrowStatement ||
+                element instanceof PsiContinueStatement ||
+                element instanceof PsiBreakStatement) {
             return false;
-        } else if (statement instanceof PsiIfStatement) {
-            return ifStatementIsReducible((PsiIfStatement) statement);
-        } else if (statement instanceof PsiWhileStatement) {
-            return whileStatementIsReducible((PsiWhileStatement) statement);
-        } else if (statement instanceof PsiDoWhileStatement) {
-            return doWhileStatementIsReducible((PsiDoWhileStatement) statement);
-        } else if (statement instanceof PsiForStatement) {
-            return forStatementIsReducible((PsiForStatement) statement);
-        } else if (statement instanceof PsiForeachStatement) {
-            return foreachStatementIsReducible((PsiForeachStatement) statement);
-        } else if (statement instanceof PsiSynchronizedStatement) {
-            return synchronizedStatementIsReducible((PsiSynchronizedStatement) statement);
-        } else if (statement instanceof PsiTryStatement) {
-            return tryStatementIsReducible((PsiTryStatement) statement);
-        } else if (statement instanceof PsiSwitchStatement) {
-            return switchStatementIsReducible((PsiSwitchStatement) statement);
-        } else if (statement instanceof PsiBlockStatement) {
-            return blockStatementIsReducible((PsiBlockStatement) statement);
+        } else if (element instanceof PsiIfStatement) {
+            return ifStatementIsReducible((PsiIfStatement) element);
+        } else if (element instanceof PsiWhileStatement) {
+            return whileStatementIsReducible((PsiWhileStatement) element);
+        } else if (element instanceof PsiDoWhileStatement) {
+            return doWhileStatementIsReducible((PsiDoWhileStatement) element);
+        } else if (element instanceof PsiForStatement) {
+            return forStatementIsReducible((PsiForStatement) element);
+        } else if (element instanceof PsiForeachStatement) {
+            return foreachStatementIsReducible((PsiForeachStatement) element);
+        } else if (element instanceof PsiSynchronizedStatement) {
+            return synchronizedStatementIsReducible((PsiSynchronizedStatement) element);
+        } else if (element instanceof PsiTryStatement) {
+            return tryStatementIsReducible((PsiTryStatement) element);
+        } else if (element instanceof PsiSwitchStatement) {
+            return switchStatementIsReducible((PsiSwitchStatement) element);
+        } else if (element instanceof PsiBlockStatement) {
+            return blockStatementIsReducible((PsiBlockStatement) element);
         }
         return true;
     }
@@ -62,8 +62,8 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
                 return false;
             }
         }
-        final PsiCodeBlock finalyBlock = statement.getFinallyBlock();
-        return codeBlockIsReducible(finalyBlock);
+        final PsiCodeBlock finallyBlock = statement.getFinallyBlock();
+        return codeBlockIsReducible(finallyBlock);
     }
 
     private boolean blockStatementIsReducible(PsiBlockStatement statement) {
@@ -78,7 +78,7 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
         final PsiStatement[] statements = codeBlock.getStatements();
 
         for (PsiStatement statement : statements) {
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 return false;
             }
         }
@@ -105,7 +105,7 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
                 }
                 pendingLabel = true;
             } else {
-                if (!statementIsReducible(child)) {
+                if (!isReducible(child)) {
                     return false;
                 }
                 pendingLabel = false;
@@ -121,28 +121,28 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
 
     private boolean foreachStatementIsReducible(PsiForeachStatement statement) {
         final PsiStatement body = statement.getBody();
-        return statementIsReducible(body);
+        return isReducible(body);
     }
 
     private boolean forStatementIsReducible(PsiForStatement statement) {
         final PsiStatement body = statement.getBody();
-        return statementIsReducible(body);
+        return isReducible(body);
     }
 
     private boolean doWhileStatementIsReducible(PsiDoWhileStatement statement) {
         final PsiStatement body = statement.getBody();
-        return statementIsReducible(body);
+        return isReducible(body);
     }
 
     private boolean whileStatementIsReducible(PsiWhileStatement statement) {
         final PsiStatement body = statement.getBody();
-        return statementIsReducible(body);
+        return isReducible(body);
     }
 
     private boolean ifStatementIsReducible(PsiIfStatement statement) {
         final PsiStatement elseBranch = statement.getElseBranch();
         final PsiStatement thenBranch = statement.getThenBranch();
-        return statementIsReducible(thenBranch) &&
-                statementIsReducible(elseBranch);
+        return isReducible(thenBranch) &&
+                isReducible(elseBranch);
     }
 }

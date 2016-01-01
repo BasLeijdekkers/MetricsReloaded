@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package com.sixrr.stockmetrics.methodCalculators;
 
-import com.intellij.psi.PsiStatement;
+import com.intellij.psi.PsiElement;
 
 public class CyclomaticComplexityCalculator extends ComplexityCalculator {
 
-    public boolean statementIsReducible(PsiStatement statement) {
+    @Override
+    public boolean isReducible(PsiElement element) {
         return false;
     }
 }

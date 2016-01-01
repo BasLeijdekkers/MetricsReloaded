@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
+import com.intellij.psi.tree.IElementType;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -51,6 +52,9 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
 
         @Override
         public void visitMethod(PsiMethod method) {
+            if (method.getBody() == null) {
+                return;
+            }
             if (methodNestingDepth == 0) {
                 if (method.getBody() != null) {
                     complexity = 1;
@@ -127,6 +131,21 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
             complexity++;
+        }
+
+        @Override
+        public void visitCatchSection(PsiCatchSection section) {
+            super.visitCatchSection(section);
+            complexity++;
+        }
+
+        @Override
+        public void visitPolyadicExpression(PsiPolyadicExpression expression) {
+            super.visitPolyadicExpression(expression);
+            final IElementType token = expression.getOperationTokenType();
+            if (token.equals(JavaTokenType.ANDAND) || token.equals(JavaTokenType.OROR)) {
+                complexity += expression.getOperands().length - 1;
+            }
         }
     }
 }

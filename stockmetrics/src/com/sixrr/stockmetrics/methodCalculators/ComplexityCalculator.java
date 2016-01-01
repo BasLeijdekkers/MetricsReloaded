@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2015, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,67 +18,71 @@ package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
-import com.sixrr.metrics.utils.MethodUtils;
 
 abstract class ComplexityCalculator extends MethodCalculator {
     private int complexity = 1;
     private int methodNestingDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
+            final PsiCodeBlock body = method.getBody();
+            if (body == null) {
+                return;
+            }
             if (methodNestingDepth == 0) {
-                complexity = 0;
+                complexity = 1;
             }
             methodNestingDepth++;
-
-            if (!MethodUtils.isAbstract(method)) {
-                complexity++;
-            }
             super.visitMethod(method);
             methodNestingDepth--;
             if (methodNestingDepth <= 0) {
-                if (!MethodUtils.isAbstract(method)) {
-                    postMetric(method, complexity);
-                }
+                postMetric(method, complexity);
             }
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             super.visitForStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 complexity++;
             }
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             super.visitForeachStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 complexity++;
             }
         }
 
+        @Override
         public void visitIfStatement(PsiIfStatement statement) {
             super.visitIfStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 complexity++;
             }
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             super.visitDoWhileStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 complexity++;
             }
         }
 
+        @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
             super.visitSwitchStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 final PsiCodeBlock body = statement.getBody();
                 if (body == null) {
                     return;
@@ -98,28 +102,37 @@ abstract class ComplexityCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
-            if (!statementIsReducible(statement)) {
+            if (!isReducible(statement)) {
                 complexity++;
             }
         }
 
-        public void visitBinaryExpression(PsiBinaryExpression expression) {
-            super.visitBinaryExpression(expression);
-            if (countShortCircuitExpressions()) {
-                final PsiJavaToken sign = expression.getOperationSign();
-                final IElementType token = sign.getTokenType();
-                if (token.equals(JavaTokenType.ANDAND) || token.equals(JavaTokenType.OROR)) {
-                    complexity++;
-                }
+        @Override
+        public void visitCatchSection(PsiCatchSection section) {
+            super.visitCatchSection(section);
+            if (!isReducible(section)) {
+                complexity ++;
             }
+        }
+
+        @Override
+        public void visitPolyadicExpression(PsiPolyadicExpression expression) {
+            super.visitPolyadicExpression(expression);
+            final IElementType token = expression.getOperationTokenType();
+            if (token.equals(JavaTokenType.ANDAND) || token.equals(JavaTokenType.OROR)) {
+                complexity += expression.getOperands().length - 1;
+            }
+        }
+
+        @Override
+        public void visitConditionalExpression(PsiConditionalExpression expression) {
+            super.visitConditionalExpression(expression);
+            complexity++;
         }
     }
 
-    protected boolean countShortCircuitExpressions() {
-        return false;
-    }
-
-    protected abstract boolean statementIsReducible(PsiStatement statement);
+    protected abstract boolean isReducible(PsiElement element);
 }
