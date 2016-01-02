@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
 class MetricTableModel extends AbstractTableModel {
-    private MetricsResult results;
+    private final int[] columnPermutation;
+    private final MetricsProfileRepository profileRepository;
     private final MetricTableSpecification tableSpecification;
-    private MetricsResult prevResults;
+    private final String type;
     private String[] measuredObjects;
     private MetricInstance[] metricsInstances;
-    private final int[] columnPermutation;
+    private MetricsResult prevResults;
+    private MetricsResult results;
     private int[] rowPermutation;
-    private final String type;
-    private final MetricsProfileRepository profileRepository;
 
     MetricTableModel(MetricsResult results, String type, MetricTableSpecification tableSpecification,
                      MetricsProfileRepository profileRepository) {
@@ -114,6 +114,14 @@ class MetricTableModel extends AbstractTableModel {
         sort();
     }
 
+    public void changeSort(int column, boolean ascending) {
+        tableSpecification.setSortColumn(column);
+        tableSpecification.setAscending(ascending);
+        sort();
+        fireTableDataChanged();
+        profileRepository.persistCurrentProfile();
+    }
+
     private MetricInstance[] findInstances(Metric[] metrics) {
         final MetricsProfile profile = profileRepository.getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
@@ -121,63 +129,6 @@ class MetricTableModel extends AbstractTableModel {
             metricInstances[i] = profile.getMetricForClass(metrics[i].getClass());
         }
         return metricInstances;
-    }
-
-    public void setResults(MetricsResult newResults) {
-        results = newResults;
-        tabulateMetrics();
-        tabulateMeasuredObjects();
-        rowPermutation = new int[measuredObjects.length];
-        sort();
-        fireTableStructureChanged();
-        fireTableDataChanged();
-    }
-
-    public void setPrevResults(MetricsResult newResults) {
-        prevResults = newResults;
-        tabulateMetrics();
-        tabulateMeasuredObjects();
-        rowPermutation = new int[measuredObjects.length];
-        sort();
-        fireTableStructureChanged();
-        fireTableDataChanged();
-    }
-
-    private void tabulateMeasuredObjects() {
-        final String[] resultObjects = results.getMeasuredObjects();
-        final Set<String> allObjects = new HashSet<String>(resultObjects.length);
-        if (prevResults != null) {
-            final String[] prevResultObjects = prevResults.getMeasuredObjects();
-            Collections.addAll(allObjects, prevResultObjects);
-        }
-        Collections.addAll(allObjects, resultObjects);
-        measuredObjects = allObjects.toArray(new String[allObjects.size()]);
-    }
-
-    private void tabulateMetrics() {
-        final Metric[] currentMetrics = results.getMetrics();
-        final MetricInstance[] resultMetrics = findInstances(currentMetrics);
-        final Set<MetricInstance> allMetrics = new HashSet<MetricInstance>(resultMetrics.length);
-        Collections.addAll(allMetrics, resultMetrics);
-        if (prevResults != null) {
-            final MetricInstance[] prevResultMetrics = findInstances(prevResults.getMetrics());
-            Collections.addAll(allMetrics, prevResultMetrics);
-        }
-        metricsInstances = allMetrics.toArray(new MetricInstance[allMetrics.size()]);
-        Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
-    }
-
-    @Override
-    public int getRowCount() {
-        if (hasSummaryRows()) {
-            return measuredObjects.length + 2;
-        } else {
-            return measuredObjects.length;
-        }
-    }
-
-    public boolean hasSummaryRows() {
-        return measuredObjects.length > 1;
     }
 
     @Override
@@ -194,6 +145,52 @@ class MetricTableModel extends AbstractTableModel {
             final MetricInstance metricInstance = metricsInstances[permutedColumn - 1];
             return metricInstance.getMetric().getAbbreviation();
         }
+    }
+
+    @Nullable
+    public PsiElement getElementAtRow(int row) {
+        if (row >= rowPermutation.length) {
+            return null;
+        }
+        final String measuredObject = measuredObjects[rowPermutation[row]];
+
+        return results.getElementForMeasuredObject(measuredObject);
+    }
+
+    public MetricInstance getMetricForColumn(int column) {
+        final int permutedColumn = columnPermutation[column];
+        return metricsInstances[permutedColumn - 1];
+    }
+
+    public MetricInstance[] getMetricsInstances() {
+        return metricsInstances.clone();
+    }
+
+    public MetricsResult getResults() {
+        return results;
+    }
+
+    public void setResults(MetricsResult newResults) {
+        results = newResults;
+        tabulateMetrics();
+        tabulateMeasuredObjects();
+        rowPermutation = new int[measuredObjects.length];
+        sort();
+        fireTableStructureChanged();
+        fireTableDataChanged();
+    }
+
+    @Override
+    public int getRowCount() {
+        if (hasSummaryRows()) {
+            return measuredObjects.length + 2;
+        } else {
+            return measuredObjects.length;
+        }
+    }
+
+    public int getSortColumn() {
+        return tableSpecification.getSortColumn();
     }
 
     @Override
@@ -243,12 +240,26 @@ class MetricTableModel extends AbstractTableModel {
         }
     }
 
-    public void changeSort(int column, boolean ascending) {
-        tableSpecification.setSortColumn(column);
-        tableSpecification.setAscending(ascending);
+    public boolean hasDiff() {
+        return prevResults != null;
+    }
+
+    public boolean hasSummaryRows() {
+        return measuredObjects.length > 1;
+    }
+
+    public boolean isAscending() {
+        return tableSpecification.isAscending();
+    }
+
+    public void setPrevResults(MetricsResult newResults) {
+        prevResults = newResults;
+        tabulateMetrics();
+        tabulateMeasuredObjects();
+        rowPermutation = new int[measuredObjects.length];
         sort();
+        fireTableStructureChanged();
         fireTableDataChanged();
-        profileRepository.persistCurrentProfile();
     }
 
     private void sort() {
@@ -280,39 +291,28 @@ class MetricTableModel extends AbstractTableModel {
         }
     }
 
-    public MetricInstance getMetricForColumn(int column) {
-        final int permutedColumn = columnPermutation[column];
-        return metricsInstances[permutedColumn - 1];
-    }
-
-    public int getSortColumn() {
-        return tableSpecification.getSortColumn();
-    }
-
-    public boolean isAscending() {
-        return tableSpecification.isAscending();
-    }
-
-    public boolean hasDiff() {
-        return prevResults != null;
-    }
-
-    public MetricInstance[] getMetricsInstances() {
-        return metricsInstances.clone();
-    }
-
-    public MetricsResult getResults() {
-        return results;
-    }
-
-    @Nullable
-    public PsiElement getElementAtRow(int row) {
-        if (row >= rowPermutation.length) {
-            return null;
+    private void tabulateMeasuredObjects() {
+        final String[] resultObjects = results.getMeasuredObjects();
+        final Set<String> allObjects = new HashSet<String>(resultObjects.length);
+        if (prevResults != null) {
+            final String[] prevResultObjects = prevResults.getMeasuredObjects();
+            Collections.addAll(allObjects, prevResultObjects);
         }
-        final String measuredObject = measuredObjects[rowPermutation[row]];
+        Collections.addAll(allObjects, resultObjects);
+        measuredObjects = allObjects.toArray(new String[allObjects.size()]);
+    }
 
-        return results.getElementForMeasuredObject(measuredObject);
+    private void tabulateMetrics() {
+        final Metric[] currentMetrics = results.getMetrics();
+        final MetricInstance[] resultMetrics = findInstances(currentMetrics);
+        final Set<MetricInstance> allMetrics = new HashSet<MetricInstance>(resultMetrics.length);
+        Collections.addAll(allMetrics, resultMetrics);
+        if (prevResults != null) {
+            final MetricInstance[] prevResultMetrics = findInstances(prevResults.getMetrics());
+            Collections.addAll(allMetrics, prevResultMetrics);
+        }
+        metricsInstances = allMetrics.toArray(new MetricInstance[allMetrics.size()]);
+        Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
     }
 
     private static class PairComparator implements Comparator<Pair> {
