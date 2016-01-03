@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,57 +16,60 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
-import org.jfree.ui.BevelArrowIcon;
+import com.intellij.icons.AllIcons;
+import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 class HeaderRenderer extends DefaultTableCellRenderer {
-    private static final Icon UP_ARROW = new BevelArrowIcon(BevelArrowIcon.UP,
-            false, false);
-    private static final Icon DOWN_ARROW = new BevelArrowIcon(BevelArrowIcon.DOWN, false, false);
+
+    private static final Icon UP_ARROW = AllIcons.Actions.UP;
+    private static final Icon DOWN_ARROW = AllIcons.Actions.Down;
     private final String toolTipText;
     private final MetricTableModel model;
+    private final int alignment;
 
-    HeaderRenderer(String toolTipText, MetricTableModel model) {
-        super();
+    HeaderRenderer(String toolTipText, MetricTableModel model,
+                   @MagicConstant(intValues = {LEFT, RIGHT, CENTER}) int alignment) {
         this.toolTipText = toolTipText;
         this.model = model;
+        this.alignment = alignment;
     }
 
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus, int row,
-                                                   int column) {
-        final JLabel label =
-                (JLabel) super.getTableCellRendererComponent(table, value,
-                        isSelected,
-                        hasFocus, row,
-                        column);
-        if (toolTipText != null) {
-            label.setToolTipText(toolTipText);
-        } else {
-            label.setToolTipText("");
-        }
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
+        setToolTipText(toolTipText);
+        setHorizontalAlignment(alignment);
+        setHorizontalTextPosition(alignment);
         //noinspection HardCodedStringLiteral
-        label.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+        setBorder(UIManager.getBorder("TableHeader.cellBorder"));
         if (!isSelected) {
-            label.setBackground(table.getTableHeader().getBackground());
+            setBackground(table.getTableHeader().getBackground());
         }
         final int sortColumn = model.getSortColumn();
         final int modelColumn = table.convertColumnIndexToModel(column);
         if (sortColumn == modelColumn) {
-            if (model.isAscending()) {
-                label.setIcon(DOWN_ARROW);
-            } else {
-                label.setIcon(UP_ARROW);
-            }
+            setIcon(model.isAscending() ? DOWN_ARROW : UP_ARROW);
         } else {
-            label.setIcon(null);
+            setIcon(null);
         }
-        label.setFont(table.getTableHeader().getFont());
-        return label;
+        setFont(table.getTableHeader().getFont());
+        setText(value.toString());
+        return this;
+    }
+
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
+        if (getIcon() != null) {
+            final int textWidth = getFontMetrics(getFont()).stringWidth(getText());
+            final Insets insets = getInsets();
+            final int iconTextGap = width - textWidth - getIcon().getIconWidth() - insets.left - insets.right;
+            setIconTextGap(iconTextGap);
+        } else {
+            setIconTextGap(0);
+        }
     }
 }

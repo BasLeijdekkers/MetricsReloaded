@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.openapi.editor.colors.EditorColors;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.util.Pair;
+import com.intellij.ui.JBColor;
+import com.intellij.util.ui.UIUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.metricModel.MetricInstance;
@@ -28,10 +33,6 @@ import java.awt.*;
 import java.text.NumberFormat;
 
 class MetricCellRenderer extends DefaultTableCellRenderer {
-    private static final Color UNCHANGED_COLOR = Color.white;
-    private static final Color CHANGED_COLOR = new Color(189, 207, 255);
-    private static final Color DELETED_COLOR = new Color(206, 203, 206);
-    private static final Color INSERTED_COLOR = new Color(189, 239, 189);
     private static final NumberFormat numberFormatter = NumberFormat.getNumberInstance();
 
     static {
@@ -48,6 +49,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
+        setHorizontalAlignment(RIGHT);
         final MetricTableModel model = (MetricTableModel) table.getModel();
         if (model.hasDiff()) {
             if (model.hasSummaryRows() && row >= model.getRowCount() - 2) {
@@ -66,12 +68,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
 
     private Component getDoubleTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                           boolean hasFocus, int row, int column) {
-        double doubleValue;
-        if (value != null) {
-            doubleValue = (Double) value;
-        } else {
-            doubleValue = 0.0;
-        }
+        double doubleValue = value != null ? ((Double) value).doubleValue() : 0.0;
         final Metric metric = metricInstance.getMetric();
         final MetricType metricType = metric.getType();
         if (metricType == MetricType.Ratio || metricType == MetricType.RecursiveRatio) {
@@ -81,16 +78,14 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
         final JLabel label = (JLabel) super
                 .getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
         if (value != null) {
-            if (metricInstance.isUpperThresholdEnabled() && doubleValue > metricInstance.getUpperThreshold()) {
-                label.setForeground(Color.red);
-            } else if (metricInstance.isLowerThresholdEnabled() && doubleValue < metricInstance.getLowerThreshold()) {
-                label.setForeground(Color.red);
+            if (metricInstance.isUpperThresholdEnabled() && doubleValue > metricInstance.getUpperThreshold() ||
+                    metricInstance.isLowerThresholdEnabled() && doubleValue < metricInstance.getLowerThreshold()) {
+                label.setForeground(JBColor.RED);
             } else {
-                label.setForeground(Color.black);
+                label.setForeground(UIUtil.getTableForeground(isSelected));
             }
-        }    else
-        {
-            label.setForeground(Color.black);
+        } else {
+            label.setForeground(UIUtil.getTableForeground(isSelected));
         }
         return label;
     }
@@ -111,17 +106,13 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
 
     private Component getDiffTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                         boolean hasFocus, int row, int column) {
+        if (!(value instanceof Pair)) {
+            return super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
+        }
         final Pair<Double, Double> pair = (Pair<Double, Double>) value;
         final Metric metric = metricInstance.getMetric();
-        final Double currentValue;
-        final Double prevValue;
-        if (pair != null) {
-            currentValue = pair.getFirst();
-            prevValue = pair.getSecond();
-        } else {
-            currentValue = null;
-            prevValue = null;
-        }
+        final Double currentValue = pair.getFirst();
+        final Double prevValue = pair.getSecond();
         final StringBuilder stringValue = new StringBuilder(16);
         if (currentValue != null && prevValue != null && prevValue.equals(currentValue)) {
             stringValue.append(FormatUtils.formatValue(metric, currentValue));
@@ -138,6 +129,7 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
         }
         final JLabel label = (JLabel) super
                 .getTableCellRendererComponent(table, stringValue, isSelected, hasFocus, row, column);
+        final EditorColorsScheme colorsScheme = EditorColorsManager.getInstance().getGlobalScheme();
         //noinspection IfStatementWithTooManyBranches
         if (isSelected) {
             label.setBackground(table.getSelectionBackground());
@@ -145,22 +137,25 @@ class MetricCellRenderer extends DefaultTableCellRenderer {
             final String formattedCurrentVal = FormatUtils.formatValue(metric, currentValue);
             final String formattedPrevVal = FormatUtils.formatValue(metric, prevValue);
             if (formattedPrevVal.equals(formattedCurrentVal)) {
-                label.setBackground(UNCHANGED_COLOR);
+                label.setBackground(UIUtil.getTableBackground());
             } else {
-                label.setBackground(CHANGED_COLOR);
+                label.setBackground(colorsScheme.getColor(EditorColors.MODIFIED_LINES_COLOR));
             }
         } else if (prevValue == null && currentValue != null) {
-            label.setBackground(INSERTED_COLOR);
+            label.setBackground(colorsScheme.getColor(EditorColors.ADDED_LINES_COLOR));
         } else if (prevValue != null) {
-            label.setBackground(DELETED_COLOR);
+            label.setBackground(colorsScheme.getColor(EditorColors.DELETED_LINES_COLOR));
         } else {
-            label.setBackground(UNCHANGED_COLOR);
+            label.setBackground(UIUtil.getTableBackground());
         }
         return label;
     }
 
     private Component getDiffTableSummaryCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                                boolean hasFocus, int row, int column) {
+        if (!(value instanceof Pair)) {
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
         final Metric metric = metricInstance.getMetric();
         final Pair<Double, Double> pair = (Pair<Double, Double>) value;
         final Double currentValue = pair.getFirst();

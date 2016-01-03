@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -271,18 +271,15 @@ public class MetricsDisplay {
             final String columnName = model.getColumnName(i);
             final TableColumn column = columnModel.getColumn(i);
             if (columnName.equals(type)) {
-                final TableCellRenderer renderer = new DefaultTableCellRenderer();
-                column.setCellRenderer(renderer);
-                final HeaderRenderer headerRenderer = new HeaderRenderer(null, model);
-                column.setHeaderRenderer(headerRenderer);
+                column.setCellRenderer(new DefaultTableCellRenderer());
+                column.setHeaderRenderer(new HeaderRenderer(null, model, SwingConstants.LEFT));
             } else {
                 final MetricInstance metricInstance = model.getMetricForColumn(i);
                 final TableCellRenderer renderer = new MetricCellRenderer(metricInstance);
                 column.setCellRenderer(renderer);
                 final Metric metric = metricInstance.getMetric();
                 final String displayName = metric.getDisplayName();
-                final HeaderRenderer headerRenderer = new HeaderRenderer(displayName, model);
-                column.setHeaderRenderer(headerRenderer);
+                column.setHeaderRenderer(new HeaderRenderer(displayName, model, SwingConstants.RIGHT));
             }
         }
     }
