@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -279,9 +279,9 @@ public class MetricsProfileImpl implements MetricsProfile {
         final List<String> columnOrder = projectSpec.getColumnOrder();
         final List<Integer> columnWidths = projectSpec.getColumnWidths();
         final String tag = category.name().toUpperCase();
-        writer.println("\t\t<" + tag + ' ' + "ascending = \"" + projectSpec.isAscending() + "\" " + "sort_column = \"" +
-                projectSpec.getSortColumn() + "\" " + "column_order = \"" + writeListAsString(columnOrder) + "\" " +
-                "column_widths = \"" + writeListAsString(columnWidths) + "\" " + "/>");
+        writer.println("\t\t<" + tag + " ascending = \"" + projectSpec.isAscending() + "\" sort_column = \"" +
+                projectSpec.getSortColumn() + "\" " + "column_order = \"" + writeListAsString(columnOrder) +
+                "\" column_widths = \"" + writeListAsString(columnWidths) + "\" />");
     }
 
     private static String writeListAsString(List<?> list) {
@@ -300,10 +300,15 @@ public class MetricsProfileImpl implements MetricsProfile {
     @SuppressWarnings({"HardCodedStringLiteral"})
     private static void writeMetric(MetricInstance metric, PrintWriter writer) {
         final Class<? extends Metric> metricClass = metric.getMetric().getClass();
-        writer.println("\t<METRIC className = \"" + metricClass.getName() + "\" " + "enabled = \"" +
-                metric.isEnabled() + "\" " + "lowerThreshold = \"" + metric.getLowerThreshold() + "\" " +
-                "lowerThresholdEnabled = \"" + metric.isLowerThresholdEnabled() + "\" " + "upperThreshold = \"" +
+        writer.println("\t<METRIC className = \"" + metricClass.getName() + "\" enabled = \"" +
+                metric.isEnabled() + "\" lowerThreshold = \"" + metric.getLowerThreshold() + "\" " +
+                "lowerThresholdEnabled = \"" + metric.isLowerThresholdEnabled() + "\" upperThreshold = \"" +
                 metric.getUpperThreshold() + "\" " + "upperThresholdEnabled = \"" + metric.isUpperThresholdEnabled() +
-                "\" " + "/>");
+                "\" />");
+    }
+
+    @Override
+    public String toString() {
+        return name + (builtIn ? " (built-in)" : "");
     }
 }
