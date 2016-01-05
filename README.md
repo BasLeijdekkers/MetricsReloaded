@@ -16,7 +16,7 @@ Metrics can also be calculated from the command line, for integration into build
 Installation
 ------------
 
-Find and install MetricsReloaded from IntelliJ IDEA's plugin manager. Alternatively you can download the binaries [manually][1].
+Find and install MetricsReloaded from IntelliJ IDEA's plugin manager. Alternatively you can download [the zip file][1] manually and unpack it in IntelliJ IDEA's plugin directory.
 
 [1]: http://plugins.jetbrains.com/plugin/93
 [2]: http://blog.jetbrains.com/idea/2014/09/touring-plugins-issue-1/
