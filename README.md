@@ -1,7 +1,12 @@
 MetricsReloaded
 ===============
 
-Automated code metrics plugin for IntelliJ IDEA. Adds a *Calculate Metrics...* menu item to the *Analyze* menu. You can find a nice description of MetricsReloaded on [the IntelliJ IDEA Blog][2].
+Automated code metrics plugin for IntelliJ IDEA. You can find a nice description of MetricsReloaded on [the IntelliJ IDEA Blog][2].
+
+Getting started
+---------------
+
+Select the *Calculate Metrics...* menu item in the *Analyze* menu.
 
 Command line
 ------------
