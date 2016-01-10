@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.Metric;
@@ -76,21 +77,20 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         final int numFiles = scope.getFileCount();
         final int numMetrics = metrics.size();
         final List<MetricCalculator> calculators = new ArrayList<MetricCalculator>(numMetrics);
+        for (final MetricInstance metricInstance : metrics) {
+            indicator.checkCanceled();
+            final Metric metric = metricInstance.getMetric();
+            if (metricInstance.isEnabled()) {
+                final MetricCalculator calculator = metric.createCalculator();
+
+                if (calculator != null) {
+                    calculators.add(calculator);
+                    calculator.beginMetricsRun(metricInstance.getMetric(), resultsHolder, this);
+                }
+            }
+        }
         ApplicationManager.getApplication().runReadAction(new Runnable() {
             public void run() {
-                for (final MetricInstance metricInstance : metrics) {
-                    indicator.checkCanceled();
-                    final Metric metric = metricInstance.getMetric();
-                    if (metricInstance.isEnabled()) {
-                        final MetricCalculator calculator = metric.createCalculator();
-
-                        if (calculator != null) {
-                            calculators.add(calculator);
-                            calculator.beginMetricsRun(metricInstance.getMetric(), resultsHolder,
-                                    MetricsExecutionContextImpl.this);
-                        }
-                    }
-                }
 
                 scope.accept(new PsiElementVisitor() {
                     private int mainTraversalProgress = 0;
@@ -98,6 +98,9 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
                     @Override
                     public void visitFile(PsiFile psiFile) {
                         super.visitFile(psiFile);
+                        if (psiFile instanceof PsiCompiledElement) {
+                            return;
+                        }
                         final String fileName = psiFile.getName();
                         indicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
                         mainTraversalProgress++;
