@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.jsp.JspFile;
+import com.intellij.psi.jsp.BaseJspFile;
 
 public class NumJSPFilesModuleCalculator extends FileCountModuleCalculator {
+
     protected boolean satisfies(PsiFile file) {
-        return file instanceof JspFile;
+        return file instanceof BaseJspFile;
     }
 }

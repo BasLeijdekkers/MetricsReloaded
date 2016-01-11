@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,16 +19,17 @@ package com.sixrr.stockmetrics.projectCalculators;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.jsp.JspFile;
+import com.intellij.psi.jsp.BaseJspFile;
 
 public class NumJSPFilesProjectCalculator extends ElementCountProjectCalculator {
+
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends PsiRecursiveElementVisitor {
         public void visitFile(PsiFile file) {
-            if (file instanceof JspFile) {
+            if (file instanceof BaseJspFile) {
                 numElements++;
             }
         }
