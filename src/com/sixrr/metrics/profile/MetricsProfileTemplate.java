@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,13 +25,14 @@ import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"HardCodedStringLiteral"})
 class MetricsProfileTemplate {
-    public static final Logger logger = Logger.getInstance("MetricsReloaded");
+    private static final Logger LOGGER = Logger.getInstance(MetricsProfileTemplate.class);
 
     private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>(200);
 
@@ -53,14 +54,9 @@ class MetricsProfileTemplate {
                 }
             }
             if (!found) {
-                try {
-                    final Metric newMetric = metricsClass.newInstance();
-                    final MetricInstance newMetricInstance = new MetricInstanceImpl(newMetric);
-                    newMetrics.add(newMetricInstance);
-                } catch (InstantiationException e) {
-                    logger.error(e);
-                } catch (IllegalAccessException e) {
-                    logger.error(e);
+                final MetricInstance metric = instantiateMetric(metricsClass);
+                if (metric != null) {
+                    newMetrics.add(metric);
                 }
             }
         }
@@ -87,23 +83,30 @@ class MetricsProfileTemplate {
         final int numMetrics = metricsClasses.size();
         final List<MetricInstance> metrics = new ArrayList<MetricInstance>(numMetrics);
         for (final Class<? extends Metric> metricsClass : metricsClasses) {
-            try {
-                final Metric metric = metricsClass.newInstance();
-                final MetricInstance metricInstance = new MetricInstanceImpl(metric);
-                metrics.add(metricInstance);
-            } catch (InstantiationException e) {
-                // don't do anything
-            } catch (IllegalAccessException e) {
-                // don't do anything
+            final MetricInstance metric = instantiateMetric(metricsClass);
+            if (metric != null) {
+                metrics.add(metric);
             }
         }
         return metrics;
     }
 
+    @Nullable
+    private static MetricInstance instantiateMetric(Class<? extends Metric> metricsClass) {
+        try {
+            final Metric metric = metricsClass.newInstance();
+            return new MetricInstanceImpl(metric);
+        } catch (InstantiationException e) {
+            LOGGER.error(e);
+        } catch (IllegalAccessException e) {
+            LOGGER.error(e);
+        }
+        return null;
+    }
+
     public void loadMetricsFromProviders() {
         final Application application = ApplicationManager.getApplication();
-        final MetricProvider[] metricProviders =
-                application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
+        final MetricProvider[] metricProviders = application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
         for (MetricProvider provider : metricProviders) {
             final List<Class<? extends Metric>> classesForProvider = provider.getMetricClasses();
             metricsClasses.addAll(classesForProvider);

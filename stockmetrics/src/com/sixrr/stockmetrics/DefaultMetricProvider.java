@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -281,7 +281,6 @@ public class DefaultMetricProvider implements MetricProvider {
     private void initializeModuleMetrics() {
         metricsClasses.add(NumAbstractClassesModuleMetric.class);
         metricsClasses.add(NumClassesModuleMetric.class);
-        metricsClasses.add(NumJSPFilesModuleMetric.class);
         metricsClasses.add(NumHTMLFilesModuleMetric.class);
         metricsClasses.add(NumXMLFilesModuleMetric.class);
         metricsClasses.add(NumProductClassesModuleMetric.class);
@@ -296,7 +295,6 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(LinesOfCodeModuleMetric.class);
         metricsClasses.add(LinesOfTestCodeModuleMetric.class);
         metricsClasses.add(LinesOfProductCodeModuleMetric.class);
-        metricsClasses.add(LinesOfJSPModuleMetric.class);
         metricsClasses.add(LinesOfHTMLModuleMetric.class);
         metricsClasses.add(LinesOfXMLModuleMetric.class);
         metricsClasses.add(CommentLinesOfCodeModuleMetric.class);
@@ -324,7 +322,6 @@ public class DefaultMetricProvider implements MetricProvider {
     private void initializeProjectMetrics() {
         metricsClasses.add(NumAbstractClassesProjectMetric.class);
         metricsClasses.add(NumClassesProjectMetric.class);
-        metricsClasses.add(NumJSPFilesProjectMetric.class);
         metricsClasses.add(NumHTMLFilesProjectMetric.class);
         metricsClasses.add(NumXMLFilesProjectMetric.class);
         metricsClasses.add(NumConcreteClassesProjectMetric.class);
@@ -348,7 +345,6 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(NumProductClassesProjectMetric.class);
         metricsClasses.add(LinesOfProductCodeProjectMetric.class);
         metricsClasses.add(LinesOfTestCodeProjectMetric.class);
-        metricsClasses.add(LinesOfJSPProjectMetric.class);
         metricsClasses.add(LinesOfHTMLProjectMetric.class);
         metricsClasses.add(LinesOfXMLProjectMetric.class);
         metricsClasses.add(TestRatioProjectMetric.class);
