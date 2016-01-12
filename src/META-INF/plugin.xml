@@ -2,7 +2,7 @@
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
   <description><![CDATA[
-    More than 250 automated Java, HTML & XML code metrics for IntelliJ IDEA. This version of MetricsReloaded is
+    More than 250 automated Java, JSP, HTML, CSS & XML code metrics for IntelliJ IDEA. This version of MetricsReloaded is
     compatible with IntelliJ IDEA 14 and newer.
 
     <h4>Getting started</h4>
@@ -13,12 +13,13 @@
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
   <version>1.2</version>
   <change-notes><![CDATA[
-  -Improved command line experience.<br>
-  -Cyclomatic complexity metric fixed.<br>
+  -Added CSS line and file count metrics.<br>
+  -Fixed JSP metrics and only load them when <i>Java Server Pages Integration</i> plugin is enabled.<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
   <depends optional="true" config-file="jsp-metrics.xml">com.intellij.jsp</depends>
+  <depends optional="true" config-file="css-metrics.xml">com.intellij.css</depends>
 
   <extensionPoints>
     <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider"/>
