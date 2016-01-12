@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 
-public class LineUtil {
-    private LineUtil() {
-        super();
-    }
+public final class LineUtil {
+
+    private LineUtil() {}
 
     public static int countLines(PsiElement element) {
         if (element instanceof PsiCompiledElement) {
@@ -96,7 +95,7 @@ public class LineUtil {
         return totalLines;
     }
 
-    private static boolean endsInLineBreak(PsiComment element) {
+    private static boolean endsInLineBreak(PsiElement element) {
         if (element == null) {
             return false;
         }
@@ -113,9 +112,6 @@ public class LineUtil {
             return false;
         }
         final String text = element.getText();
-        if (text == null) {
-            return false;
-        }
-        return text.indexOf("\n") >= 0 || text.indexOf("\r") >= 0;
+        return text != null && (text.contains("\n") || text.contains("\r"));
     }
 }
