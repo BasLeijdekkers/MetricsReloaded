@@ -103,6 +103,22 @@ public class MetricsProfileRepository {
         profiles.put(name, profile);
     }
 
+    public String generateNewProfileName() {
+        final String baseName =
+                (selectedProfile == null || selectedProfile.isEmpty()) ? "Metrics" : selectedProfile;
+        return generateNewProfileName(baseName);
+    }
+
+    public String generateNewProfileName(@NotNull String baseName) {
+        int index = 1;
+        String newName = baseName;
+        while (profiles.containsKey(newName)) {
+            index++;
+            newName = baseName + " (" + index + ")";
+        }
+        return newName;
+    }
+
     private void loadProfiles() {
         final File metricsDir = new File(METRIC_PROFILE_DIR);
         if (!metricsDir.exists()) {

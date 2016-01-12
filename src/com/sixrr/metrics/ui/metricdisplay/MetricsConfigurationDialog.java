@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.containers.Convertor;
-import com.intellij.util.ui.Tree;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricInstance;
@@ -97,7 +97,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     public MetricsConfigurationDialog(Project project, MetricsProfileRepository repository) {
         super(project, true);
         this.repository = repository;
-        profile = this.repository.getCurrentProfile();
+        profile = repository.getCurrentProfile();
         setupMetricsTree();
 
         setDescriptionFromResource("/metricsDescriptions/Blank.html");
@@ -258,7 +258,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupMetricsTree() {
-
         metricsTree = new MetricsTree();
         treeScrollPane.setViewportView(metricsTree);
         populateTree("");
@@ -286,7 +285,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                 final Object userObject = node.getUserObject();
                 if (userObject instanceof MetricInstance) {
-                    return ((MetricInstance) userObject).getMetric().getDisplayName();
+                    final MetricInstance metricInstance = (MetricInstance) userObject;
+                    return metricInstance.getMetric().getDisplayName();
                 } else {
                     return userObject.toString();
                 }
@@ -729,6 +729,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private class MetricsTree extends Tree {
+
         @Override
         public Dimension getPreferredScrollableViewportSize() {
             Dimension size = super.getPreferredScrollableViewportSize();
@@ -825,7 +826,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             final String newProfileName = Messages.showInputDialog(saveAsButton,
                     MetricsReloadedBundle.message("enter.new.profile.name"),
                     MetricsReloadedBundle.message("create.new.metrics.profile"),
-                    Messages.getQuestionIcon());
+                    Messages.getQuestionIcon(), repository.generateNewProfileName(), null);
             if (newProfileName == null) {
                 return;
             }
@@ -855,7 +856,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             final String newProfileName = Messages.showInputDialog(saveAsButton,
                     MetricsReloadedBundle.message("enter.new.profile.name"),
                     MetricsReloadedBundle.message("create.new.metrics.profile"),
-                    Messages.getQuestionIcon());
+                    Messages.getQuestionIcon(), repository.generateNewProfileName("Metrics"), null);
             if (newProfileName == null) {
                 return;
             }
