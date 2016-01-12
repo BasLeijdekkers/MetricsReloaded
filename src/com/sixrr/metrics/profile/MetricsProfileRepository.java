@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,21 +25,19 @@ import com.sixrr.metrics.PrebuiltMetricProfile;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings({"OverlyComplexMethod", "OverlyCoupledMethod", "OverlyComplexClass",
-        "OverlyCoupledClass", "ClassWithTooManyMethods"})
 public class MetricsProfileRepository {
 
-    private static final Logger LOG =
-            Logger.getInstance("#com.sixrr.metrics.profile.MetricsProfileRepository");
+    private static final Logger LOG = Logger.getInstance("#com.sixrr.metrics.profile.MetricsProfileRepository");
 
-    @NonNls public static final String METRIC_PROFILE_DIR =
-            PathManager.getConfigPath() + File.separator + "metrics";
+    @NonNls
+    private static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";
 
     private final Map<String, MetricsProfile> profiles = new LinkedHashMap<String, MetricsProfile>(20);
     private final MetricsProfileTemplate template;
@@ -68,8 +66,7 @@ public class MetricsProfileRepository {
 
     private void addPrebuiltProfiles() {
         final Application application = ApplicationManager.getApplication();
-        final MetricProvider[] metricProviders =
-                application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
+        final MetricProvider[] metricProviders = application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
         for (MetricProvider provider : metricProviders) {
             final List<PrebuiltMetricProfile> prebuiltProfiles = provider.getPrebuiltProfiles();
             for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {
@@ -95,11 +92,11 @@ public class MetricsProfileRepository {
             final Double upperThreshold = builtInProfile.getUpperThresholdForMetric(metricName);
             if (lowerThreshold != null) {
                 instance.setLowerThresholdEnabled(true);
-                instance.setLowerThreshold(lowerThreshold);
+                instance.setLowerThreshold(lowerThreshold.doubleValue());
             }
             if (upperThreshold != null) {
                 instance.setUpperThresholdEnabled(true);
-                instance.setUpperThreshold(upperThreshold);
+                instance.setUpperThreshold(upperThreshold.doubleValue());
             }
         }
         profile.setBuiltIn(true);
@@ -109,9 +106,12 @@ public class MetricsProfileRepository {
     private void loadProfiles() {
         final File metricsDir = new File(METRIC_PROFILE_DIR);
         if (!metricsDir.exists()) {
-            metricsDir.mkdir();
+            return;
         }
         final File[] files = metricsDir.listFiles();
+        if (files == null) {
+            return;
+        }
         for (File file : files) {
             final MetricsProfile profile = MetricsProfileImpl.loadFromFile(file);
             if (profile != null) {
