@@ -103,15 +103,15 @@ public class MetricsDisplay {
             final MetricTableSpecification tableSpecification =
                     displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
+            final Container tab = table.getParent().getParent();
+            if (results.getMeasuredObjects().length == 0) {
+                tabbedPane.remove(tab);
+                continue;
+            }
             final MetricTableModel model =
                     new MetricTableModel(results, type, tableSpecification,
                             metricsPlugin.getProfileRepository());
             table.setModel(model);
-            final Container tab = table.getParent().getParent();
-            if (model.getRowCount() == 0) {
-                tabbedPane.remove(tab);
-                continue;
-            }
             final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
             tabbedPane.add(tab, longName);
             table.setCellSelectionEnabled(false);
@@ -235,7 +235,7 @@ public class MetricsDisplay {
                 if (index != -1) {
                     final Integer width = columnWidths.get(index);
                     final TableColumn column = columnModel.getColumn(i);
-                    column.setPreferredWidth(width);
+                    column.setPreferredWidth(width.intValue());
                 }
             }
         } else {
@@ -308,7 +308,7 @@ public class MetricsDisplay {
         private final MetricTableSpecification tableSpecification;
         private final JTable table;
 
-        private MyColumnListener(MetricTableSpecification tableSpecification, JTable table) {
+        MyColumnListener(MetricTableSpecification tableSpecification, JTable table) {
             this.tableSpecification = tableSpecification;
             this.table = table;
         }
@@ -353,7 +353,7 @@ public class MetricsDisplay {
                 columns.add(columnName);
                 final TableColumn column = columnModel.getColumn(i);
                 final int columnWidth = column.getWidth();
-                columnWidths.add(columnWidth);
+                columnWidths.add(Integer.valueOf(columnWidth));
             }
             tableSpecification.setColumnOrder(columns);
             tableSpecification.setColumnWidths(columnWidths);
