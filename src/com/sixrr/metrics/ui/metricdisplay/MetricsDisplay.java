@@ -103,15 +103,15 @@ public class MetricsDisplay {
             final MetricTableSpecification tableSpecification =
                     displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
-            final Container tab = table.getParent().getParent();
-            if (results.getMeasuredObjects().length == 0) {
-                tabbedPane.remove(tab);
-                continue;
-            }
             final MetricTableModel model =
                     new MetricTableModel(results, type, tableSpecification,
                             metricsPlugin.getProfileRepository());
             table.setModel(model);
+            final Container tab = table.getParent().getParent();
+            if (model.getRowCount() == 0) {
+                tabbedPane.remove(tab);
+                continue;
+            }
             final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
             tabbedPane.add(tab, longName);
             table.setCellSelectionEnabled(false);
