@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.*;
 
-abstract class ClassCountingProjectCalculator extends ProjectCalculator {
+public abstract class ClassCountingProjectCalculator extends ProjectCalculator {
 
     private int numElements = 0;
 

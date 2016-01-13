@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package com.sixrr.stockmetrics.methodCalculators;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 
-abstract class ComplexityCalculator extends MethodCalculator {
+public abstract class ComplexityCalculator extends MethodCalculator {
+
     private int complexity = 1;
     private int methodNestingDepth = 0;
 
@@ -130,7 +131,9 @@ abstract class ComplexityCalculator extends MethodCalculator {
         @Override
         public void visitConditionalExpression(PsiConditionalExpression expression) {
             super.visitConditionalExpression(expression);
-            complexity++;
+            if (!isReducible(expression)) {
+                complexity++;
+            }
         }
     }
 

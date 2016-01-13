@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
-abstract class ElementRatioModuleCalculator extends ModuleCalculator {
+public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
+
     protected final BucketedCount<Module> numeratorPerModule = new BucketedCount<Module>();
     protected final BucketedCount<Module> denominatorPerModule = new BucketedCount<Module>();
 
@@ -45,18 +46,14 @@ abstract class ElementRatioModuleCalculator extends ModuleCalculator {
     }
 
     protected void incrementNumerator(PsiElement element, int count) {
-        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
-        if (file == null) {
-            return;
-        }
-        final Module module = ClassUtils.calculateModule(file);
-        if (module == null) {
-            return;
-        }
-        numeratorPerModule.incrementBucketValue(module, count);
+        increment(element, count, numeratorPerModule);
     }
 
     protected void incrementDenominator(PsiElement element, int count) {
+        increment(element, count, denominatorPerModule);
+    }
+
+    private static void increment(PsiElement element, int count, BucketedCount<Module> result) {
         final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
         if (file == null) {
             return;
@@ -65,6 +62,6 @@ abstract class ElementRatioModuleCalculator extends ModuleCalculator {
         if (module == null) {
             return;
         }
-        denominatorPerModule.incrementBucketValue(module, count);
+        result.incrementBucketValue(module, count);
     }
 }

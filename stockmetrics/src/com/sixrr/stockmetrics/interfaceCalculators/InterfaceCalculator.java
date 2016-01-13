@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package com.sixrr.stockmetrics.interfaceCalculators;
 import com.intellij.psi.PsiClass;
 import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
-abstract class InterfaceCalculator extends BaseMetricsCalculator {
+public abstract class InterfaceCalculator extends BaseMetricsCalculator {
+
     void postMetric(PsiClass aClass, int value) {
         resultsHolder.postInterfaceMetric(metric, aClass, (double) value);
     }

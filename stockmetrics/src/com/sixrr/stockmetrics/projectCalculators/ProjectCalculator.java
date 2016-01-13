@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.projectCalculators;
 
 import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
-abstract class ProjectCalculator extends BaseMetricsCalculator {
+public abstract class ProjectCalculator extends BaseMetricsCalculator {
 
     void postMetric(int numerator, int denominator) {
         resultsHolder.postProjectMetric(metric, (double) numerator, (double) denominator);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package com.sixrr.stockmetrics.moduleCalculators;
 import com.intellij.openapi.module.Module;
 import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
-abstract class ModuleCalculator extends BaseMetricsCalculator {
+public abstract class ModuleCalculator extends BaseMetricsCalculator {
+
     void postMetric(Module module, int numerator, int denominator) {
         resultsHolder.postModuleMetric(metric, module, (double) numerator, (double) denominator);
     }

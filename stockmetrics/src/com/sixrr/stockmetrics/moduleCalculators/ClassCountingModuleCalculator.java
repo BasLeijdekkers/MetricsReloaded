@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
-abstract class ClassCountingModuleCalculator extends ModuleCalculator {
+public abstract class ClassCountingModuleCalculator extends ModuleCalculator {
 
     private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
 

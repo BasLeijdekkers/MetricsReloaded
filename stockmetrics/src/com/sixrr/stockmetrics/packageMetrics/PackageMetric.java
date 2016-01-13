@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package com.sixrr.stockmetrics.packageMetrics;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.stockmetrics.metricModel.BaseMetric;
 
-abstract class PackageMetric extends BaseMetric {
+public abstract class PackageMetric extends BaseMetric {
+
     public MetricCategory getCategory() {
         return MetricCategory.Package;
     }

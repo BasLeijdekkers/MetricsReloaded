@@ -19,7 +19,7 @@ package com.sixrr.stockmetrics.projectMetrics;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.stockmetrics.metricModel.BaseMetric;
 
-abstract class ProjectMetric extends BaseMetric {
+public abstract class ProjectMetric extends BaseMetric {
     public MetricCategory getCategory() {
         return MetricCategory.Project;
     }

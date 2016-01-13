@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.utils.BucketedCount;
@@ -25,7 +24,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
-abstract class FileCountModuleCalculator extends ModuleCalculator {
+public abstract class FileCountModuleCalculator extends ModuleCalculator {
 
     private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
 
@@ -45,10 +44,11 @@ abstract class FileCountModuleCalculator extends ModuleCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiElementVisitor {
 
         @Override
         public void visitFile(PsiFile file) {
+            super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
             if (module == null) {
                 return;

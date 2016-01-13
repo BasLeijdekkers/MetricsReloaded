@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.intellij.psi.PsiClass;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
-abstract class ClassCalculator extends BaseMetricsCalculator {
+public abstract class ClassCalculator extends BaseMetricsCalculator {
 
     void postMetric(PsiClass aClass, int numerator, int denominator) {
         resultsHolder.postClassMetric(metric, aClass, (double) numerator, (double) denominator);
