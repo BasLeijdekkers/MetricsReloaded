@@ -51,7 +51,7 @@ class HeaderRenderer extends DefaultTableCellRenderer {
         final int sortColumn = model.getSortColumn();
         final int modelColumn = table.convertColumnIndexToModel(column);
         if (sortColumn == modelColumn) {
-            setIcon(model.isAscending() ? DOWN_ARROW : UP_ARROW);
+            setIcon(model.isAscending() ? UP_ARROW : DOWN_ARROW);
         } else {
             setIcon(null);
         }
