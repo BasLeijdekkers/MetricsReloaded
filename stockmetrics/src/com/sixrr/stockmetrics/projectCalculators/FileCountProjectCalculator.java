@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,25 +16,27 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.xml.XmlFile;
 
-public class NumXMLFilesProjectCalculator extends ElementCountProjectCalculator {
+public class FileCountProjectCalculator extends ElementCountProjectCalculator {
+
+    private final FileType fileType;
+
+    public FileCountProjectCalculator(FileType fileType) {
+        this.fileType = fileType;
+    }
 
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    private class Visitor extends PsiRecursiveElementVisitor {
+    private class Visitor extends PsiElementVisitor {
+
         public void visitFile(PsiFile file) {
-            if (!(file instanceof XmlFile)) {
-                return;
-            }
-            final String fileName = file.getName();
-            //noinspection HardCodedStringLiteral
-            if (!fileName.endsWith(".htm") && !fileName.endsWith(".html")) {
+            super.visitFile(file);
+            if (file.getFileType() == fileType) {
                 numElements++;
             }
         }

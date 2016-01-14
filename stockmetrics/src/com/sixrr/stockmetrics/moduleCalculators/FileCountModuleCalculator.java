@@ -16,6 +16,7 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
@@ -24,11 +25,22 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Set;
 
-public abstract class FileCountModuleCalculator extends ModuleCalculator {
+public class FileCountModuleCalculator extends ModuleCalculator {
 
+    private final FileType fileType;
     private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
 
-    protected abstract boolean satisfies(PsiFile file);
+    public FileCountModuleCalculator(FileType fileType) {
+        this.fileType = fileType;
+    }
+
+    public FileCountModuleCalculator() {
+        this(null);
+    }
+
+    protected boolean satisfies(PsiFile file) {
+        return file.getFileType() == fileType;
+    }
 
     @Override
     public void endMetricsRun() {

@@ -16,8 +16,12 @@
 
 package com.sixrr.stockmetrics.projectMetrics;
 
+import com.intellij.psi.css.CssFileType;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.projectCalculators.FileCountProjectCalculator;
+import org.jetbrains.annotations.Nullable;
 
 public class NumCSSFilesProjectMetric extends ProjectMetric {
 
@@ -31,5 +35,11 @@ public class NumCSSFilesProjectMetric extends ProjectMetric {
 
     public MetricType getType() {
         return MetricType.Count;
+    }
+
+    @Nullable
+    @Override
+    public MetricCalculator createCalculator() {
+        return new FileCountProjectCalculator(CssFileType.INSTANCE);
     }
 }

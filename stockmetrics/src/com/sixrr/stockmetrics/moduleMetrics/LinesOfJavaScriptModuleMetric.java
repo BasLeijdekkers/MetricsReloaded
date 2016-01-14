@@ -17,13 +17,10 @@
 package com.sixrr.stockmetrics.moduleMetrics;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.moduleCalculators.ElementCountModuleCalculator;
-import com.sixrr.stockmetrics.utils.LineUtil;
+import com.sixrr.stockmetrics.moduleCalculators.LinesOfCodeModuleCalculator;
 import org.jetbrains.annotations.Nullable;
 
 public class LinesOfJavaScriptModuleMetric extends ModuleMetric {
@@ -43,23 +40,6 @@ public class LinesOfJavaScriptModuleMetric extends ModuleMetric {
     @Nullable
     @Override
     public MetricCalculator createCalculator() {
-        return new LinesOfJavaScriptModuleCalculator();
-    }
-
-    private static class LinesOfJavaScriptModuleCalculator extends ElementCountModuleCalculator {
-
-        protected PsiElementVisitor createVisitor() {
-            return new PsiElementVisitor() {
-
-                public void visitFile(PsiFile file) {
-                    super.visitFile(file);
-                    if (file.getFileType() == JavaScriptFileType.INSTANCE) {
-                        final int lineCount = LineUtil.countLines(file);
-                        incrementElementCount(file, lineCount);
-                    }
-                }
-            };
-        }
-
+        return new LinesOfCodeModuleCalculator(JavaScriptFileType.INSTANCE);
     }
 }

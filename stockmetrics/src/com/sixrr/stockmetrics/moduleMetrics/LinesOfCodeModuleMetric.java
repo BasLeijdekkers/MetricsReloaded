@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,15 @@
 
 package com.sixrr.stockmetrics.moduleMetrics;
 
+import com.intellij.ide.highlighter.JavaFileType;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.moduleCalculators.LinesOfCodeModuleCalculator;
+import org.jetbrains.annotations.Nullable;
 
 public class LinesOfCodeModuleMetric extends ModuleMetric {
+
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.code.display.name");
     }
@@ -30,5 +35,11 @@ public class LinesOfCodeModuleMetric extends ModuleMetric {
 
     public MetricType getType() {
         return MetricType.Count;
+    }
+
+    @Nullable
+    @Override
+    public MetricCalculator createCalculator() {
+        return new LinesOfCodeModuleCalculator(JavaFileType.INSTANCE);
     }
 }

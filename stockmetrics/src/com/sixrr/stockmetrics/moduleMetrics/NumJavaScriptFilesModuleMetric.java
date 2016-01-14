@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.moduleMetrics;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
-import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
@@ -41,13 +40,6 @@ public class NumJavaScriptFilesModuleMetric extends ModuleMetric {
     @Nullable
     @Override
     public MetricCalculator createCalculator() {
-        return new NumJavaScriptFilesModuleCalculator();
-    }
-
-    private static class NumJavaScriptFilesModuleCalculator extends FileCountModuleCalculator {
-
-        protected boolean satisfies(PsiFile file) {
-            return file.getFileType() == JavaScriptFileType.INSTANCE;
-        }
+        return new FileCountModuleCalculator(JavaScriptFileType.INSTANCE);
     }
 }

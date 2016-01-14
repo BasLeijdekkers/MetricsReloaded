@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +16,12 @@
 
 package com.sixrr.stockmetrics.projectMetrics;
 
+import com.intellij.ide.highlighter.NewJspFileType;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.projectCalculators.FileCountProjectCalculator;
+import org.jetbrains.annotations.Nullable;
 
 public class NumJSPFilesProjectMetric extends ProjectMetric {
 
@@ -31,5 +35,11 @@ public class NumJSPFilesProjectMetric extends ProjectMetric {
 
     public MetricType getType() {
         return MetricType.Count;
+    }
+
+    @Nullable
+    @Override
+    public MetricCalculator createCalculator() {
+        return new FileCountProjectCalculator(NewJspFileType.INSTANCE);
     }
 }
