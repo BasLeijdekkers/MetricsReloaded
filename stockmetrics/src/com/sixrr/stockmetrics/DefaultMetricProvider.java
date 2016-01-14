@@ -282,6 +282,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(NumAbstractClassesModuleMetric.class);
         metricsClasses.add(NumClassesModuleMetric.class);
         metricsClasses.add(NumHTMLFilesModuleMetric.class);
+        metricsClasses.add(NumJavaFilesModuleMetric.class);
         metricsClasses.add(NumXMLFilesModuleMetric.class);
         metricsClasses.add(NumProductClassesModuleMetric.class);
         metricsClasses.add(NumTestClassesModuleMetric.class);
@@ -323,6 +324,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(NumAbstractClassesProjectMetric.class);
         metricsClasses.add(NumClassesProjectMetric.class);
         metricsClasses.add(NumHTMLFilesProjectMetric.class);
+        metricsClasses.add(NumJavaFilesProjectMetric.class);
         metricsClasses.add(NumXMLFilesProjectMetric.class);
         metricsClasses.add(NumConcreteClassesProjectMetric.class);
         metricsClasses.add(NumInterfacesProjectMetric.class);
