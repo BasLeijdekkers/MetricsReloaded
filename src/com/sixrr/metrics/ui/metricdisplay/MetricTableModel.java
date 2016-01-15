@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
 class MetricTableModel extends AbstractTableModel {
+
     private final int[] columnPermutation;
     private final MetricsProfileRepository profileRepository;
     private final MetricTableSpecification tableSpecification;
@@ -44,7 +45,6 @@ class MetricTableModel extends AbstractTableModel {
 
     MetricTableModel(MetricsResult results, String type, MetricTableSpecification tableSpecification,
                      MetricsProfileRepository profileRepository) {
-        super();
         this.results = results;
         this.type = type;
         this.profileRepository = profileRepository;
@@ -56,11 +56,11 @@ class MetricTableModel extends AbstractTableModel {
         final Map<MetricInstance, Integer> remainingMetrics = new LinkedHashMap<MetricInstance, Integer>();
         for (int i = 0; i < metricsInstances.length; i++) {
             final MetricInstance metric = metricsInstances[i];
-            remainingMetrics.put(metric, i + 1);
+            remainingMetrics.put(metric, Integer.valueOf(i + 1));
         }
         columnPermutation = new int[metricsInstances.length + 1];
         final List<String> columnOrder = tableSpecification.getColumnOrder();
-        final List<String> strippedColumnOrder = new ArrayList<String>();
+        final Set<String> strippedColumnOrder = new LinkedHashSet<String>();
         for (final String columnName : columnOrder) {
             boolean found = false;
             if (columnName.equals(type)) {
@@ -209,7 +209,7 @@ class MetricTableModel extends AbstractTableModel {
                     final MetricInstance metricInstance = metricsInstances[permutedColumn - 1];
                     final Double value = results.getTotalForMetric(metricInstance.getMetric());
                     final Double prevValue = prevResults.getTotalForMetric(metricInstance.getMetric());
-                    return new Pair<Double, Double>(value, prevValue);
+                    return Pair.create(value, prevValue);
                 }
             }
             if (rowIndex == measuredObjects.length + 1) {
@@ -222,7 +222,7 @@ class MetricTableModel extends AbstractTableModel {
                     final MetricInstance metricInstance = metricsInstances[permutedColumn - 1];
                     final Double value = results.getAverageForMetric(metricInstance.getMetric());
                     final Double prevValue = prevResults.getAverageForMetric(metricInstance.getMetric());
-                    return new Pair<Double, Double>(value, prevValue);
+                    return Pair.create(value, prevValue);
                 }
             }
         }
@@ -236,7 +236,7 @@ class MetricTableModel extends AbstractTableModel {
             final MetricInstance metric = metricsInstances[permutedColumn - 1];
             final Double value = results.getValueForMetric(metric.getMetric(), measuredObject);
             final Double prevValue = prevResults.getValueForMetric(metric.getMetric(), measuredObject);
-            return new Pair<Double, Double>(value, prevValue);
+            return Pair.create(value, prevValue);
         }
     }
 
@@ -275,19 +275,19 @@ class MetricTableModel extends AbstractTableModel {
         if (permutedColumn == 0) {
             for (int i = 0; i < rowPermutation.length; i++) {
                 final String name = measuredObjects[i];
-                tempArray[i] = new Pair<Integer, String>(i, name);
+                tempArray[i] = Pair.create(Integer.valueOf(i), name);
             }
         } else {
             for (int i = 0; i < rowPermutation.length; i++) {
                 final String name = measuredObjects[i];
                 final MetricInstance metricInstance = metricsInstances[permutedColumn - 1];
                 final Double value = results.getValueForMetric(metricInstance.getMetric(), name);
-                tempArray[i] = new Pair<Integer, Double>(i, value);
+                tempArray[i] = Pair.create(Integer.valueOf(i), value);
             }
         }
-        Arrays.sort(tempArray, new PairComparator(tableSpecification));
+        Arrays.sort(tempArray, new PairComparator(tableSpecification.isAscending()));
         for (int i = 0; i < tempArray.length; i++) {
-            rowPermutation[i] = tempArray[i].getFirst();
+            rowPermutation[i] = tempArray[i].getFirst().intValue();
         }
     }
 
@@ -316,10 +316,10 @@ class MetricTableModel extends AbstractTableModel {
     }
 
     private static class PairComparator implements Comparator<Pair> {
-        private final MetricTableSpecification tableSpecification;
+        private final boolean ascending;
 
-        private PairComparator(MetricTableSpecification tableSpecification) {
-            this.tableSpecification = tableSpecification;
+        PairComparator(boolean ascending) {
+            this.ascending = ascending;
         }
 
         public int compare(Pair pair1, Pair pair2) {
@@ -334,13 +334,9 @@ class MetricTableModel extends AbstractTableModel {
             } else if (value2 == null) {
                 comparison = 1;
             } else {
-                comparison = ((Comparable) value1).compareTo(value2);
+                comparison = ((Comparable)value1).compareTo(value2);
             }
-            if (tableSpecification.isAscending()) {
-                return comparison;
-            } else {
-                return -comparison;
-            }
+            return ascending ? comparison : -comparison;
         }
     }
 }
