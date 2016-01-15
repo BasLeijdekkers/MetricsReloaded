@@ -34,22 +34,6 @@ import java.util.List;
 
 public class DefaultMetricProvider implements MetricProvider {
 
-    private static final String COMPLEXITY_PROFILE_NAME = StockMetricsBundle.message("complexity.metrics.profile.name");
-    private static final String JAVADOC_PROFILE_NAME =
-            StockMetricsBundle.message("javadoc.coverage.metrics.profile.name");
-    private static final String CODE_SIZE_PROFILE_NAME =
-            StockMetricsBundle.message("lines.of.code.metrics.profile.name");
-    private static final String MARTIN_PROFILE_NAME =
-            StockMetricsBundle.message("martin.packaging.metrics.profile.name");
-    private static final String DEPENDENCY_PROFILE_NAME =
-            StockMetricsBundle.message("dependency.metrics.profile.name");
-    private static final String MOOD_PROFILE_NAME = StockMetricsBundle.message("mood.metrics.profile.name");
-    private static final String TEST_PROFILE_NAME = StockMetricsBundle.message("junit.testing.metrics.profile.name");
-    private static final String CLASS_COUNT_PROFILE_NAME =
-            StockMetricsBundle.message("class.count.metrics.profile.name");
-    private static final String CHIDAMBER_KEMERER_PROFILE_NAME =
-            StockMetricsBundle.message("chidamber.kemerer.metrics.profile.name");
-
     private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
 
     @NotNull
@@ -384,7 +368,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createComplexityProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(COMPLEXITY_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("complexity.metrics.profile.name"));
         profile.addMetric("CyclomaticComplexity", null, 10.0);
         profile.addMetric("DesignComplexity", null, 8.0);
         profile.addMetric("ExtendedCyclomaticComplexity", null, 10.0);
@@ -395,7 +380,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createCodeSizeProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CODE_SIZE_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
         profile.addMetric("LinesOfCodeProject");
         profile.addMetric("LinesOfCodeModule");
         profile.addMetric("LinesOfCodePackage");
@@ -418,7 +404,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createClassCountProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CLASS_COUNT_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("class.count.metrics.profile.name"));
         profile.addMetric("NumClassesProject");
         profile.addMetric("NumClassesModule");
         profile.addMetric("NumClassesPackage");
@@ -435,7 +422,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createDependencyProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(DEPENDENCY_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("dependency.metrics.profile.name"));
         profile.addMetric("NumDependenciesClass");
         profile.addMetric("NumDependentsClass");
         profile.addMetric("NumTransitiveDependenciesClass");
@@ -452,7 +440,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createMoodProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(MOOD_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("mood.metrics.profile.name"));
         profile.addMetric("MethodHidingFactorProject");
         profile.addMetric("MethodInheritanceFactorProject");
         profile.addMetric("AttributeHidingFactorProject");
@@ -463,7 +452,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createMartinProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(MARTIN_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("martin.packaging.metrics.profile.name"));
         profile.addMetric("AfferentCoupling");
         profile.addMetric("EfferentCoupling");
         profile.addMetric("Abstractness");
@@ -473,7 +463,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createTestProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(TEST_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("junit.testing.metrics.profile.name"));
         profile.addMetric("NumTestCasesProject");
         profile.addMetric("NumTestAssertsProject");
         profile.addMetric("NumTestMethodsProject");
@@ -489,7 +480,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(CHIDAMBER_KEMERER_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("chidamber.kemerer.metrics.profile.name"));
         profile.addMetric("ResponseForClass");
         profile.addMetric("CouplingBetweenObjectsClass");
         profile.addMetric("DepthOfInheritance");
@@ -500,7 +492,8 @@ public class DefaultMetricProvider implements MetricProvider {
     }
 
     private static PrebuiltMetricProfile createJavadocProfile() {
-        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(JAVADOC_PROFILE_NAME);
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("javadoc.coverage.metrics.profile.name"));
         profile.addMetric("JavadocLinesOfCodeMethod");
         profile.addMetric("JavadocLinesOfCodeClass");
         profile.addMetric("JavadocLinesOfCodeInterface");
