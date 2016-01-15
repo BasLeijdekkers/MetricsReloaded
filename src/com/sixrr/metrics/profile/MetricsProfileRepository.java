@@ -77,10 +77,8 @@ public class MetricsProfileRepository {
 
     private void addPrebuiltProfile(PrebuiltMetricProfile builtInProfile) {
         final String name = builtInProfile.getProfileName();
-        if (profiles.containsKey(name)) {
-            return;
-        }
-        final MetricsProfile profile = template.instantiate(name);
+        final MetricsProfile existingProfile = profiles.get(name);
+        final MetricsProfile profile = (existingProfile != null) ? existingProfile : template.instantiate(name);
         final Set<String> metricNames = builtInProfile.getMetricIDs();
         for (String metricName : metricNames) {
             final MetricInstance instance = profile.getMetricForName(metricName);

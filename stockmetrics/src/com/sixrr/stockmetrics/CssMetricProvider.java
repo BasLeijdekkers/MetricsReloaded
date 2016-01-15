@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
+import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleMetrics.LinesOfCSSModuleMetric;
 import com.sixrr.stockmetrics.moduleMetrics.NumCSSFilesModuleMetric;
 import com.sixrr.stockmetrics.projectMetrics.LinesOfCSSProjectMetric;
@@ -49,6 +50,25 @@ public class CssMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        return Collections.emptyList();
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>();
+        out.add(createCodeSizeProfile());
+        out.add(createFileCountProfile());
+        return out;
+    }
+
+    private static PrebuiltMetricProfile createCodeSizeProfile() {
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
+        profile.addMetric("LinesOfCSSProject");
+        profile.addMetric("LinesOfCSSModule");
+        return profile;
+    }
+
+    private static  PrebuiltMetricProfile createFileCountProfile() {
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
+        profile.addMetric("NumCSSFilesProject");
+        profile.addMetric("NumCSSFilesModule");
+        return profile;
     }
 }

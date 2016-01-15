@@ -360,6 +360,7 @@ public class DefaultMetricProvider implements MetricProvider {
         out.add(createChidamberKemererProfile());
         out.add(createClassCountProfile());
         out.add(createDependencyProfile());
+        out.add(createFileCountProfile());
         out.add(createJavadocProfile());
         out.add(createMartinProfile());
         out.add(createMoodProfile());
@@ -396,10 +397,20 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric("LinesOfTestCodeRecursivePackage");
         profile.addMetric("LinesOfHTMLProject");
         profile.addMetric("LinesOfHTMLModule");
-        profile.addMetric("LinesOfJSPProject");
-        profile.addMetric("LinesOfJSPModule");
         profile.addMetric("LinesOfXMLProject");
         profile.addMetric("LinesOfXMLModule");
+        return profile;
+    }
+
+    private static  PrebuiltMetricProfile createFileCountProfile() {
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
+        profile.addMetric("NumHTMLFilesProject");
+        profile.addMetric("NumHTMLFilesModule");
+        profile.addMetric("NumJavaFilesProject");
+        profile.addMetric("NumJavaFilesModule");
+        profile.addMetric("NumXMLFilesProject");
+        profile.addMetric("NumXMLFilesModule");
         return profile;
     }
 
