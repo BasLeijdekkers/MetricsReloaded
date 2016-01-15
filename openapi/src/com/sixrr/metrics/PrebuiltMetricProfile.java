@@ -1,6 +1,22 @@
+/*
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.sixrr.metrics;
 
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -10,17 +26,17 @@ import java.util.*;
  * interact.
  */
 public class PrebuiltMetricProfile {
-    private String profileName;
-    private Set<String> metricNames = new HashSet<String>();
-    private Map<String, Double> lowerThresholds = new HashMap<String, Double>();
-    private Map<String, Double> upperThresholds = new HashMap<String, Double>();
+    private final String profileName;
+    private final Set<String> metricNames = new HashSet<String>();
+    private final Map<String, Double> lowerThresholds = new HashMap<String, Double>();
+    private final Map<String, Double> upperThresholds = new HashMap<String, Double>();
 
     /**
      * Create a prebuilt metric profile.
      *
      * @param profileName the name of the profile.
      */
-    public PrebuiltMetricProfile(String profileName) {
+    public PrebuiltMetricProfile(@NotNull String profileName) {
         this.profileName = profileName;
     }
 
@@ -30,7 +46,7 @@ public class PrebuiltMetricProfile {
      *
      * @param metricID the ID of the metric to add.
      */
-    public void addMetric(@NonNls String metricID) {
+    public void addMetric(@NotNull @NonNls String metricID) {
         addMetric(metricID, null, null);
     }
 
@@ -41,7 +57,7 @@ public class PrebuiltMetricProfile {
      * @param lowerThreshold The lower threshold of acceptable values for the metric, or null if there isn't any.
      * @param upperThreshold The upper threshold of acceptable values for the metric, or null if there isn't any.
      */
-    public void addMetric(@NonNls String metricID, Double lowerThreshold, Double upperThreshold) {
+    public void addMetric(@NotNull @NonNls String metricID, Double lowerThreshold, Double upperThreshold) {
         metricNames.add(metricID);
         if (lowerThreshold != null) {
             lowerThresholds.put(metricID, lowerThreshold);
