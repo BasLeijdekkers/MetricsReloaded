@@ -146,27 +146,21 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void parseDisplaySpec(Element displaySpecElement,
-                                         MetricDisplaySpecification spec) {
+    private static void parseDisplaySpec(Element displaySpecElement, MetricDisplaySpecification spec) {
         final MetricCategory[] categories = MetricCategory.values();
         for (MetricCategory category : categories) {
             final String tag = category.name();
-            final Element projectElement = displaySpecElement.getChild(tag.toUpperCase());
-            final MetricTableSpecification projectDisplaySpecification =
-                    spec.getSpecification(category);
-            projectDisplaySpecification.setAscending("true".equals(
-                    projectElement.getAttributeValue("ascending")));
-            projectDisplaySpecification.setSortColumn(
-                    Integer.parseInt(projectElement.getAttributeValue("sort_column")));
-            projectDisplaySpecification.setColumnOrder(
-                    parseStringList(projectElement.getAttributeValue("column_order")));
-            projectDisplaySpecification.setColumnWidths(
-                    parseIntList(projectElement.getAttributeValue("column_widths")));
+            final Element element = displaySpecElement.getChild(tag.toUpperCase());
+            final MetricTableSpecification projectDisplaySpecification = spec.getSpecification(category);
+            projectDisplaySpecification.setAscending("true".equals(element.getAttributeValue("ascending")));
+            projectDisplaySpecification.setSortColumn(Integer.parseInt(element.getAttributeValue("sort_column")));
+            projectDisplaySpecification.setColumnOrder(parseStringList(element.getAttributeValue("column_order")));
+            projectDisplaySpecification.setColumnWidths(parseIntList(element.getAttributeValue("column_widths")));
         }
     }
 
     private static List<Integer> parseIntList(String value) {
-        if (value != null && value.length() != 0) {
+        if (value != null && !value.isEmpty()) {
             final StringTokenizer tokenizer = new StringTokenizer(value, "|");
             final List<Integer> out = new ArrayList<Integer>(32);
             while (tokenizer.hasMoreTokens()) {
@@ -176,12 +170,12 @@ public class MetricsProfileImpl implements MetricsProfile {
             }
             return out;
         } else {
-            return new ArrayList<Integer>(0);
+            return Collections.emptyList();
         }
     }
 
     private static List<String> parseStringList(String value) {
-        if (value != null && value.length() != 0) {
+        if (value != null && !value.isEmpty()) {
             final StringTokenizer tokenizer = new StringTokenizer(value, "|");
             final List<String> out = new ArrayList<String>(32);
             while (tokenizer.hasMoreTokens()) {
@@ -190,7 +184,7 @@ public class MetricsProfileImpl implements MetricsProfile {
             }
             return out;
         } else {
-            return new ArrayList<String>(0);
+            return Collections.emptyList();
         }
     }
 

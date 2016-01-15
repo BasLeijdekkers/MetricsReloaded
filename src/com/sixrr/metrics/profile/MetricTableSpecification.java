@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.sixrr.metrics.profile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MetricTableSpecification {
@@ -42,7 +43,7 @@ public class MetricTableSpecification {
     }
 
     public List<String> getColumnOrder() {
-        return columnOrder;
+        return Collections.unmodifiableList(columnOrder);
     }
 
     public void setColumnOrder(List<String> columnOrder) {
@@ -50,7 +51,7 @@ public class MetricTableSpecification {
     }
 
     public List<Integer> getColumnWidths() {
-        return columnWidths;
+        return Collections.unmodifiableList(columnWidths);
     }
 
     public void setColumnWidths(List<Integer> columnWidths) {
