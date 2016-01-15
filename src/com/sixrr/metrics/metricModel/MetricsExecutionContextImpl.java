@@ -89,28 +89,24 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
                 }
             }
         }
-        ApplicationManager.getApplication().runReadAction(new Runnable() {
-            public void run() {
 
-                scope.accept(new PsiElementVisitor() {
-                    private int mainTraversalProgress = 0;
+        scope.accept(new PsiElementVisitor() {
+            private int mainTraversalProgress = 0;
 
-                    @Override
-                    public void visitFile(PsiFile psiFile) {
-                        super.visitFile(psiFile);
-                        if (psiFile instanceof PsiCompiledElement) {
-                            return;
-                        }
-                        final String fileName = psiFile.getName();
-                        indicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
-                        mainTraversalProgress++;
+            @Override
+            public void visitFile(PsiFile psiFile) {
+                super.visitFile(psiFile);
+                if (psiFile instanceof PsiCompiledElement) {
+                    return;
+                }
+                final String fileName = psiFile.getName();
+                indicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
+                mainTraversalProgress++;
 
-                        for (MetricCalculator calculator : calculators) {
-                            calculator.processFile(psiFile);
-                        }
-                        indicator.setFraction((double) mainTraversalProgress / (double) numFiles);
-                    }
-                });
+                for (MetricCalculator calculator : calculators) {
+                    calculator.processFile(psiFile);
+                }
+                indicator.setFraction((double) mainTraversalProgress / (double) numFiles);
             }
         });
 
