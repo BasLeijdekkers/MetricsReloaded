@@ -140,7 +140,6 @@ public class DefaultMetricProvider implements MetricProvider {
         metricsClasses.add(CyclomaticComplexityMetric.class);
         metricsClasses.add(DesignComplexityMetric.class);
         metricsClasses.add(EssentialCyclomaticComplexityMetric.class);
-        metricsClasses.add(ExtendedCyclomaticComplexityMetric.class);
         metricsClasses.add(NestingDepthMetric.class);
         metricsClasses.add(NumOverridesMethodMetric.class);
         metricsClasses.add(NumImplementationsMethodMetric.class);
@@ -373,7 +372,6 @@ public class DefaultMetricProvider implements MetricProvider {
                 new PrebuiltMetricProfile(StockMetricsBundle.message("complexity.metrics.profile.name"));
         profile.addMetric("CyclomaticComplexity", null, 10.0);
         profile.addMetric("DesignComplexity", null, 8.0);
-        profile.addMetric("ExtendedCyclomaticComplexity", null, 10.0);
         profile.addMetric("EssentialCyclomaticComplexity", null, 3.0);
         profile.addMetric("WeightedMethodComplexity", null, 30.0);
         profile.addMetric("AverageOperationComplexity", null, 3.0);
