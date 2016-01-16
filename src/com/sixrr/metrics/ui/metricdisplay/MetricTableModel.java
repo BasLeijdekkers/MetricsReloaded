@@ -17,6 +17,7 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.metricModel.MetricInstance;
@@ -334,7 +335,13 @@ class MetricTableModel extends AbstractTableModel {
             } else if (value2 == null) {
                 comparison = 1;
             } else {
-                comparison = ((Comparable)value1).compareTo(value2);
+                if (value1 instanceof String && value2 instanceof String) {
+                    final String s1 = (String) value1;
+                    final String s2 = (String) value2;
+                    comparison = StringUtil.naturalCompare(s1, s2);
+                } else {
+                    comparison = ((Comparable) value1).compareTo(value2);
+                }
             }
             return ascending ? comparison : -comparison;
         }
