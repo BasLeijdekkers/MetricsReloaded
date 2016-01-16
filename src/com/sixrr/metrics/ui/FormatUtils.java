@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,44 +21,34 @@ import com.sixrr.metrics.MetricType;
 
 import java.text.NumberFormat;
 
-public class FormatUtils {
+public final class FormatUtils {
+
     private static final NumberFormat numberFormatter = NumberFormat.getNumberInstance();
+    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
 
     static {
         numberFormatter.setMaximumFractionDigits(2);
         numberFormatter.setMinimumFractionDigits(2);
     }
 
+    private FormatUtils() {}
+
     public static String formatValue(Metric metric, Double value) {
-        if (value == null) {
-            return "";
-        }
-        final MetricType metricType = metric.getType();
-        if (metricType.equals(MetricType.Count) || metricType.equals(MetricType.Score) ||
-                metricType.equals(MetricType.RecursiveCount)) {
-            final int intValue = value.intValue();
-            return Integer.toString(intValue);
-        }  else if(metricType.equals(MetricType.Average))
-        {
-            return numberFormatter.format(value) ;
-        } else //it's a ratio or recursive ratio
-        {
-            return numberFormatter.format(value * 100.0) + '%';
-        }
+        return formatValue(metric, value, false);
     }
 
-    public static String formatAverageValue(Metric metric, Double value) {
+    public static String formatValue(Metric metric, Double value, boolean average) {
         if (value == null) {
             return "";
         }
         final MetricType metricType = metric.getType();
-        if (metricType.equals(MetricType.Count) || metricType.equals(MetricType.Score) ) {
-            return numberFormatter.format((double) value);
-        } else if (metricType.equals(MetricType.Average)) {
-            return numberFormatter.format(value);
-        }else //it's a ratio
-        {
-            return numberFormatter.format(value * 100.0) + '%';
+        if (metricType == MetricType.Count || metricType == MetricType.Score ||
+                metricType == MetricType.RecursiveCount) {
+            return average ? numberFormatter.format(value.doubleValue()) : intFormatter.format(value.longValue());
+        }  else if(metricType == MetricType.Average) {
+            return numberFormatter.format(value) ;
+        } else { //it's a ratio or recursive ratio
+            return numberFormatter.format(value.doubleValue() * 100.0) + '%';
         }
     }
 }

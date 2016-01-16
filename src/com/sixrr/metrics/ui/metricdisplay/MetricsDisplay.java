@@ -271,7 +271,7 @@ public class MetricsDisplay {
             final String columnName = model.getColumnName(i);
             final TableColumn column = columnModel.getColumn(i);
             if (columnName.equals(type)) {
-                column.setCellRenderer(new DefaultTableCellRenderer());
+                column.setCellRenderer(new MetricCellRenderer(null));
                 column.setHeaderRenderer(new HeaderRenderer(null, model, SwingConstants.LEFT));
             } else {
                 final MetricInstance metricInstance = model.getMetricForColumn(i);
