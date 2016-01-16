@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@
 
 package com.sixrr.stockmetrics.execution;
 
+import com.intellij.analysis.AnalysisScope;
+import com.intellij.ide.highlighter.JavaFileType;
+import com.intellij.openapi.application.AccessToken;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.AllClassesSearch;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
 import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricsExecutionContext;
@@ -77,45 +77,39 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         return executionContext.getUserData(dependentsMapKey);
     }
 
-    public void calculateDependencies() {
+    private void calculateDependencies() {
         final DependentsMapImpl dependentsMap = new DependentsMapImpl();
         final DependencyMapImpl dependencyMap = new DependencyMapImpl();
         final ProgressManager progressManager = ProgressManager.getInstance();
         final ProgressIndicator progressIndicator = progressManager.getProgressIndicator();
 
         final Project project = executionContext.getProject();
-        final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-        final Query<PsiClass> query = AllClassesSearch.search(scope, project);
-        final int[] count = {0};
-        query.forEach(new Processor<PsiClass>() {
-            public boolean process(PsiClass aClass) {
-                count[0]++;
-                return true;
-            }
-        });
-        final int allFilesCount = count[0];
-        final PsiElementVisitor visitor = new JavaRecursiveElementVisitor() {
+        final AnalysisScope analysisScope = new AnalysisScope(project);
+        final int allFilesCount = analysisScope.getFileCount();
+        final PsiManager psiManager = PsiManager.getInstance(project);
+        final Application application = ApplicationManager.getApplication();
 
-            @Override
-            public void visitClass(PsiClass aClass) {
-                super.visitClass(aClass);
-                dependencyMap.build(aClass);
-                dependentsMap.build(aClass);
-            }
-        };
+        analysisScope.accept(new Processor<VirtualFile>() {
 
-
-        query.forEach(new Processor<PsiClass>() {
             private int dependencyProgress = 0;
 
-            public boolean process(PsiClass aClass) {
-                final String fileName = aClass.getName();
+            @Override
+            public boolean process(VirtualFile virtualFile) {
+                final String fileName = virtualFile.getName();
                 progressIndicator.setText(
-                        StockMetricsBundle.message("building.dependency.structure.progress.string",
-                                fileName));
+                        StockMetricsBundle.message("building.dependency.structure.progress.string", fileName));
                 progressIndicator.setFraction((double) dependencyProgress / (double) allFilesCount);
                 dependencyProgress++;
-                aClass.accept(visitor);
+                if (virtualFile.getFileType() != JavaFileType.INSTANCE) return true;
+                final AccessToken token = application.acquireReadActionLock();
+                try {
+                    final PsiFile file = psiManager.findFile(virtualFile);
+                    if (!(file instanceof PsiJavaFile)) return true;
+                    dependencyMap.build(file);
+                    dependentsMap.build(file);
+                } finally {
+                    token.finish();
+                }
                 return true;
             }
         });

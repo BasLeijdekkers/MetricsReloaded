@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -129,9 +129,9 @@ public class DependentsMapImpl implements DependentsMap {
         return allDependents;
     }
 
-    public void build(PsiClass aClass) {
+    public void build(PsiElement element) {
         final DependenciesVisitor visitor = new DependenciesVisitor();
-        aClass.accept(visitor);
+        element.accept(visitor);
     }
 
     private class DependenciesVisitor extends JavaRecursiveElementVisitor {
