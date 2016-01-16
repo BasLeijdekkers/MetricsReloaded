@@ -14,9 +14,10 @@
   <version>1.2</version>
   <change-notes><![CDATA[
   - Added CSS & JavaScript line and file count metrics.<br>
-  - Fixed JSP metrics and only load them when <i>Java Server Pages Integration</i> plugin is enabled.<br>
+  - Fixed JSP metrics and only load them only when <i>Java Server Pages Integration</i> plugin is enabled.<br>
   - Improve results table rendering.<br>
   - Fixed an exception that could happen after reordering the columns of a results table.<br>
+  - Fixed an UI freeze that could happen during a long running metrics calculation.<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
