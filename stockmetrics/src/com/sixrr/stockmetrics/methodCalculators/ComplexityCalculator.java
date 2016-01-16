@@ -16,13 +16,15 @@
 
 package com.sixrr.stockmetrics.methodCalculators;
 
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.util.PsiElementFilter;
+import com.sixrr.metrics.utils.MethodUtils;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
 public abstract class ComplexityCalculator extends MethodCalculator {
-
-    private int complexity = 1;
-    private int methodNestingDepth = 0;
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -33,107 +35,16 @@ public abstract class ComplexityCalculator extends MethodCalculator {
 
         @Override
         public void visitMethod(PsiMethod method) {
-            final PsiCodeBlock body = method.getBody();
-            if (body == null) {
+            if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            if (methodNestingDepth == 0) {
-                complexity = 1;
-            }
-            methodNestingDepth++;
-            super.visitMethod(method);
-            methodNestingDepth--;
-            if (methodNestingDepth <= 0) {
-                postMetric(method, complexity);
-            }
-        }
-
-        @Override
-        public void visitForStatement(PsiForStatement statement) {
-            super.visitForStatement(statement);
-            if (!isReducible(statement)) {
-                complexity++;
-            }
-        }
-
-        @Override
-        public void visitForeachStatement(PsiForeachStatement statement) {
-            super.visitForeachStatement(statement);
-            if (!isReducible(statement)) {
-                complexity++;
-            }
-        }
-
-        @Override
-        public void visitIfStatement(PsiIfStatement statement) {
-            super.visitIfStatement(statement);
-            if (!isReducible(statement)) {
-                complexity++;
-            }
-        }
-
-        @Override
-        public void visitDoWhileStatement(PsiDoWhileStatement statement) {
-            super.visitDoWhileStatement(statement);
-            if (!isReducible(statement)) {
-                complexity++;
-            }
-        }
-
-        @Override
-        public void visitSwitchStatement(PsiSwitchStatement statement) {
-            super.visitSwitchStatement(statement);
-            if (!isReducible(statement)) {
-                final PsiCodeBlock body = statement.getBody();
-                if (body == null) {
-                    return;
+            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method,  new PsiElementFilter() {
+                @Override
+                public boolean isAccepted(PsiElement element) {
+                    return !isReducible(element);
                 }
-                final PsiStatement[] statements = body.getStatements();
-                boolean pendingLabel = false;
-                for (final PsiStatement child : statements) {
-                    if (child instanceof PsiSwitchLabelStatement) {
-                        if (!pendingLabel) {
-                            complexity++;
-                        }
-                        pendingLabel = true;
-                    } else {
-                        pendingLabel = false;
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void visitWhileStatement(PsiWhileStatement statement) {
-            super.visitWhileStatement(statement);
-            if (!isReducible(statement)) {
-                complexity++;
-            }
-        }
-
-        @Override
-        public void visitCatchSection(PsiCatchSection section) {
-            super.visitCatchSection(section);
-            if (!isReducible(section)) {
-                complexity ++;
-            }
-        }
-
-        @Override
-        public void visitPolyadicExpression(PsiPolyadicExpression expression) {
-            super.visitPolyadicExpression(expression);
-            final IElementType token = expression.getOperationTokenType();
-            if (token.equals(JavaTokenType.ANDAND) || token.equals(JavaTokenType.OROR)) {
-                complexity += expression.getOperands().length - 1;
-            }
-        }
-
-        @Override
-        public void visitConditionalExpression(PsiConditionalExpression expression) {
-            super.visitConditionalExpression(expression);
-            if (!isReducible(expression)) {
-                complexity++;
-            }
+            });
+            postMetric(method, complexity);
         }
     }
 

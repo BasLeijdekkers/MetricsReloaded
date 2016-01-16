@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,90 +25,27 @@ public class DesignComplexityCalculator extends ComplexityCalculator {
             return true;
         }
         if (element instanceof PsiIfStatement) {
-            return ifStatementIsReducible((PsiIfStatement) element);
-        } else if (element instanceof PsiWhileStatement) {
-            return whileStatementIsReducible((PsiWhileStatement) element);
-        } else if (element instanceof PsiDoWhileStatement) {
-            return doWhileStatementIsReducible((PsiDoWhileStatement) element);
-        } else if (element instanceof PsiForStatement) {
-            return forStatementIsReducible((PsiForStatement) element);
-        } else if (element instanceof PsiForeachStatement) {
-            return foreachStatementIsReducible((PsiForeachStatement) element);
-        } else if (element instanceof PsiSynchronizedStatement) {
-            return synchronizedStatementIsReducible((PsiSynchronizedStatement) element);
-        } else if (element instanceof PsiTryStatement) {
-            return tryStatementIsReducible((PsiTryStatement) element);
-        } else if (element instanceof PsiSwitchStatement) {
-            return switchStatementIsReducible((PsiSwitchStatement) element);
+            final PsiIfStatement ifStatement = (PsiIfStatement) element;
+            return !containsMethodCall(ifStatement.getThenBranch()) && !containsMethodCall(ifStatement.getElseBranch());
+        } else if (element instanceof PsiLoopStatement) {
+            final PsiLoopStatement loopStatement = (PsiLoopStatement) element;
+            return !containsMethodCall(loopStatement.getBody());
+        } else if (element instanceof PsiCatchSection) {
+            final PsiCatchSection catchSection = (PsiCatchSection) element;
+            return !containsMethodCall(catchSection.getCatchBlock());
         } else if (element instanceof PsiBlockStatement) {
             return blockStatementIsReducible((PsiBlockStatement) element);
         } else if (element instanceof PsiConditionalExpression) {
-            return isConditionalExpressionReducible((PsiConditionalExpression) element);
+            final PsiConditionalExpression conditionalExpression = (PsiConditionalExpression) element;
+            return !containsMethodCall(conditionalExpression.getThenExpression()) &&
+                    !containsMethodCall(conditionalExpression.getElseExpression());
+        } else {
+            return !containsMethodCall(element);
         }
-        return true;
-    }
-
-    private static boolean tryStatementIsReducible(PsiTryStatement statement) {
-        final PsiCodeBlock tryBlock = statement.getTryBlock();
-        if (containsMethodCall(tryBlock)) {
-            return false;
-        }
-        final PsiCodeBlock[] catchBlocks = statement.getCatchBlocks();
-        for (final PsiCodeBlock catchBlock : catchBlocks) {
-            if (containsMethodCall(catchBlock)) {
-                return false;
-            }
-        }
-        final PsiCodeBlock finallyBlock = statement.getFinallyBlock();
-        return !containsMethodCall(finallyBlock);
     }
 
     private static boolean blockStatementIsReducible(PsiBlockStatement statement) {
-        final PsiCodeBlock codeBlock = statement.getCodeBlock();
-        return !containsMethodCall(codeBlock);
-    }
-
-    private static boolean switchStatementIsReducible(PsiSwitchStatement statement) {
-        final PsiCodeBlock body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean synchronizedStatementIsReducible(PsiSynchronizedStatement statement) {
-        final PsiCodeBlock body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean foreachStatementIsReducible(PsiForeachStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean forStatementIsReducible(PsiForStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean doWhileStatementIsReducible(PsiDoWhileStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean whileStatementIsReducible(PsiWhileStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return !containsMethodCall(body);
-    }
-
-    private static boolean ifStatementIsReducible(PsiIfStatement statement) {
-        final PsiStatement elseBranch = statement.getElseBranch();
-        final PsiStatement thenBranch = statement.getThenBranch();
-        return !containsMethodCall(thenBranch) &&
-                !containsMethodCall(elseBranch);
-    }
-
-    private static boolean isConditionalExpressionReducible(PsiConditionalExpression expression) {
-        final PsiExpression thenExpression = expression.getThenExpression();
-        final PsiExpression elseExpression = expression.getElseExpression();
-        return !containsMethodCall(thenExpression) && !containsMethodCall(elseExpression);
+        return !containsMethodCall(statement.getCodeBlock());
     }
 
     private static boolean containsMethodCall(PsiElement element) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,18 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
+import com.sixrr.metrics.utils.MethodUtils;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
 import java.util.Set;
 
 public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator {
 
-    private int methodNestingDepth = 0;
-    private int complexity = 0;
     private final BucketedCount<Module> totalComplexityPerModule = new BucketedCount<Module>();
 
     @Override
@@ -47,83 +49,15 @@ public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator 
 
         @Override
         public void visitMethod(PsiMethod method) {
-            if (methodNestingDepth == 0) {
-                if (method.getBody() != null) {
-                    complexity = 1;
-                }
-            }
-            methodNestingDepth++;
-            super.visitMethod(method);
-            methodNestingDepth--;
-            if (methodNestingDepth != 0) {
+            if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            final PsiClass containingClass = method.getContainingClass();
-            if (containingClass == null) {
-                return;
-            }
-            final Module module = ClassUtils.calculateModule(containingClass);
+            final Module module = ClassUtils.calculateModule(method);
             if (module == null) {
                 return;
             }
+            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method);
             totalComplexityPerModule.incrementBucketValue(module, complexity);
-        }
-
-        @Override
-        public void visitForStatement(PsiForStatement statement) {
-            super.visitForStatement(statement);
-            complexity++;
-        }
-
-        @Override
-        public void visitForeachStatement(PsiForeachStatement statement) {
-            super.visitForeachStatement(statement);
-            complexity++;
-        }
-
-        @Override
-        public void visitIfStatement(PsiIfStatement statement) {
-            super.visitIfStatement(statement);
-            complexity++;
-        }
-
-        @Override
-        public void visitDoWhileStatement(PsiDoWhileStatement statement) {
-            super.visitDoWhileStatement(statement);
-            complexity++;
-        }
-
-        @Override
-        public void visitConditionalExpression(PsiConditionalExpression expression) {
-            super.visitConditionalExpression(expression);
-            complexity++;
-        }
-
-        @Override
-        public void visitSwitchStatement(PsiSwitchStatement statement) {
-            super.visitSwitchStatement(statement);
-            final PsiCodeBlock body = statement.getBody();
-            if (body == null) {
-                return;
-            }
-            final PsiStatement[] statements = body.getStatements();
-            boolean pendingLabel = false;
-            for (final PsiStatement child : statements) {
-                if (child instanceof PsiSwitchLabelStatement) {
-                    if (!pendingLabel) {
-                        complexity++;
-                    }
-                    pendingLabel = true;
-                } else {
-                    pendingLabel = false;
-                }
-            }
-        }
-
-        @Override
-        public void visitWhileStatement(PsiWhileStatement statement) {
-            super.visitWhileStatement(statement);
-            complexity++;
         }
     }
 }

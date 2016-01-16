@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+   * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,51 +24,56 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
         if (element == null) {
             return true;
         }
-        if (element instanceof PsiReturnStatement ||
-                element instanceof PsiThrowStatement ||
-                element instanceof PsiContinueStatement ||
-                element instanceof PsiBreakStatement) {
+        if (element instanceof PsiReturnStatement || element instanceof PsiThrowStatement ||
+                element instanceof PsiContinueStatement) {
             return false;
+        } else if (element instanceof PsiBreakStatement) {
+            final PsiBreakStatement breakStatement = (PsiBreakStatement) element;
+            return isBreakStatementReducible(breakStatement);
         } else if (element instanceof PsiIfStatement) {
-            return ifStatementIsReducible((PsiIfStatement) element);
-        } else if (element instanceof PsiWhileStatement) {
-            return whileStatementIsReducible((PsiWhileStatement) element);
-        } else if (element instanceof PsiDoWhileStatement) {
-            return doWhileStatementIsReducible((PsiDoWhileStatement) element);
-        } else if (element instanceof PsiForStatement) {
-            return forStatementIsReducible((PsiForStatement) element);
-        } else if (element instanceof PsiForeachStatement) {
-            return foreachStatementIsReducible((PsiForeachStatement) element);
+            final PsiIfStatement ifStatement = (PsiIfStatement) element;
+            return isReducible(ifStatement.getThenBranch()) && isReducible(ifStatement.getElseBranch());
+        } else if (element instanceof PsiLoopStatement) {
+            final PsiLoopStatement whileStatement = (PsiLoopStatement) element;
+            return isReducible(whileStatement.getBody());
         } else if (element instanceof PsiSynchronizedStatement) {
-            return synchronizedStatementIsReducible((PsiSynchronizedStatement) element);
+            final PsiSynchronizedStatement synchronizedStatement = (PsiSynchronizedStatement) element;
+            return isReducible(synchronizedStatement.getBody());
         } else if (element instanceof PsiTryStatement) {
-            return tryStatementIsReducible((PsiTryStatement) element);
+            final PsiTryStatement tryStatement = (PsiTryStatement) element;
+            return tryStatementIsReducible(tryStatement);
         } else if (element instanceof PsiSwitchStatement) {
-            return switchStatementIsReducible((PsiSwitchStatement) element);
+            final PsiSwitchStatement switchStatement = (PsiSwitchStatement) element;
+            return isReducible(switchStatement.getBody());
         } else if (element instanceof PsiBlockStatement) {
-            return blockStatementIsReducible((PsiBlockStatement) element);
+            final PsiBlockStatement blockStatement = (PsiBlockStatement) element;
+            return isReducible(blockStatement.getCodeBlock());
+        } else if (element instanceof PsiCodeBlock) {
+            return codeBlockIsReducible((PsiCodeBlock) element);
         }
         return true;
     }
 
+    private static boolean isBreakStatementReducible(PsiBreakStatement breakStatement) {
+        if (breakStatement.getLabelIdentifier() != null) {
+            return false;
+        }
+        return breakStatement.findExitedStatement() instanceof PsiSwitchStatement;
+    }
+
     private boolean tryStatementIsReducible(PsiTryStatement statement) {
         final PsiCodeBlock tryBlock = statement.getTryBlock();
-        if (!codeBlockIsReducible(tryBlock)) {
+        if (!isReducible(tryBlock)) {
             return false;
         }
         final PsiCodeBlock[] catchBlocks = statement.getCatchBlocks();
         for (final PsiCodeBlock catchBlock : catchBlocks) {
-            if (!codeBlockIsReducible(catchBlock)) {
+            if (!isReducible(catchBlock)) {
                 return false;
             }
         }
         final PsiCodeBlock finallyBlock = statement.getFinallyBlock();
-        return codeBlockIsReducible(finallyBlock);
-    }
-
-    private boolean blockStatementIsReducible(PsiBlockStatement statement) {
-        final PsiCodeBlock codeBlock = statement.getCodeBlock();
-        return codeBlockIsReducible(codeBlock);
+        return isReducible(finallyBlock);
     }
 
     private boolean codeBlockIsReducible(PsiCodeBlock codeBlock) {
@@ -83,66 +88,5 @@ public class EssentialCyclomaticComplexityCalculator extends ComplexityCalculato
             }
         }
         return true;
-    }
-
-    private boolean switchStatementIsReducible(PsiSwitchStatement statement) {
-        final PsiCodeBlock body = statement.getBody();
-        if (body == null) {
-            return true;
-        }
-        final PsiStatement[] statements = body.getStatements();
-        boolean pendingLabel = true;
-        for (final PsiStatement child : statements) {
-            if (child instanceof PsiBreakStatement) {
-                final PsiBreakStatement breakStatement = (PsiBreakStatement) child;
-                final PsiStatement exitedStatement = breakStatement.findExitedStatement();
-                if (statement.equals(exitedStatement)) {
-                    pendingLabel = true;
-                }
-            } else if (child instanceof PsiSwitchLabelStatement) {
-                if (!pendingLabel) {
-                    return false;
-                }
-                pendingLabel = true;
-            } else {
-                if (!isReducible(child)) {
-                    return false;
-                }
-                pendingLabel = false;
-            }
-        }
-        return true;
-    }
-
-    private boolean synchronizedStatementIsReducible(PsiSynchronizedStatement statement) {
-        final PsiCodeBlock body = statement.getBody();
-        return codeBlockIsReducible(body);
-    }
-
-    private boolean foreachStatementIsReducible(PsiForeachStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return isReducible(body);
-    }
-
-    private boolean forStatementIsReducible(PsiForStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return isReducible(body);
-    }
-
-    private boolean doWhileStatementIsReducible(PsiDoWhileStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return isReducible(body);
-    }
-
-    private boolean whileStatementIsReducible(PsiWhileStatement statement) {
-        final PsiStatement body = statement.getBody();
-        return isReducible(body);
-    }
-
-    private boolean ifStatementIsReducible(PsiIfStatement statement) {
-        final PsiStatement elseBranch = statement.getElseBranch();
-        final PsiStatement thenBranch = statement.getThenBranch();
-        return isReducible(thenBranch) &&
-                isReducible(elseBranch);
     }
 }
