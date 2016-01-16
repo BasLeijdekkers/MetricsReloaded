@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -55,9 +55,8 @@ public class NumTestMethodsRecursivePackageCalculator extends PackageCalculator 
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            final PsiClass aClass = method.getContainingClass();
             if (TestUtils.isJUnitTestMethod(method)) {
-                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(aClass);
+                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(method);
                 for (PsiPackage aPackage : packages) {
                     numTestMethodsPerPackage.incrementBucketValue(aPackage, 1);
                 }

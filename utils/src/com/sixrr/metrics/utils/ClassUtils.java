@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,50 +17,34 @@
 package com.sixrr.metrics.utils;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Query;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class ClassUtils {
+public final class ClassUtils {
 
     private ClassUtils() {}
 
     @NotNull
-    public static String calculatePackageName(PsiClass aClass) {
-        final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
-        if (file == null) {
+    public static String calculatePackageName(PsiElement element) {
+        final PsiFile file = element.getContainingFile();
+        if (!(file instanceof PsiJavaFile)) {
             return "";
         }
-        return file.getPackageName();
+        final PsiJavaFile javaFile = (PsiJavaFile) file;
+        return javaFile.getPackageName();
     }
 
-    public static PsiPackage[] calculatePackagesRecursive(PsiClass aClass) {
-        PsiPackage aPackage = findPackage(aClass);
-        final List<PsiPackage> out = new ArrayList<PsiPackage>();
-        while (aPackage != null) {
-            out.add(aPackage);
-            aPackage = aPackage.getParentPackage();
-        }
-        return out.toArray(new PsiPackage[out.size()]);
-    }
-
-    public static String calculatePackageName(PsiJavaFile file) {
-        return file.getPackageName();
-    }
-
-    public static PsiPackage[] calculatePackagesRecursive(PsiJavaFile file) {
-        PsiPackage aPackage = findPackage(file);
+    public static PsiPackage[] calculatePackagesRecursive(PsiElement element) {
+        PsiPackage aPackage = findPackage(element);
         final List<PsiPackage> out = new ArrayList<PsiPackage>();
         while (aPackage != null) {
             out.add(aPackage);
@@ -70,21 +54,15 @@ public class ClassUtils {
     }
 
     public static boolean isAnonymous(PsiClass aClass) {
-        return aClass instanceof PsiAnonymousClass ||
-                aClass instanceof PsiTypeParameter;
+        return aClass instanceof PsiAnonymousClass || aClass instanceof PsiTypeParameter;
     }
 
     @Nullable
-    public static Module calculateModule(PsiClass aClass) {
-        final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
-        if (file == null) {
+    public static Module calculateModule(@Nullable PsiElement element) {
+        if (element == null) {
             return null;
         }
-        return calculateModule(file);
-    }
-
-    @Nullable
-    public static Module calculateModule(@Nullable PsiFile file) {
+        final PsiFile file = element.getContainingFile();
         if (file == null) {
             return null;
         }
@@ -92,31 +70,13 @@ public class ClassUtils {
         if (virtualFile == null) {
             return null;
         }
-        final PsiManager manager = file.getManager();
-        final Project project = manager.getProject();
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
+        final ProjectRootManager rootManager = ProjectRootManager.getInstance(file.getProject());
         final ProjectFileIndex fileIndex = rootManager.getFileIndex();
         return fileIndex.getModuleForFile(virtualFile);
     }
 
-    public static String calculateModuleName(PsiClass aClass) {
-        final PsiJavaFile file = PsiTreeUtil.getParentOfType(aClass, PsiJavaFile.class);
-        return calculateModuleName(file);
-    }
-
-    public static String calculateModuleName(PsiFile file) {
-        if (file == null) {
-            return "";
-        }
-        final VirtualFile virtualFile = file.getVirtualFile();
-        if (virtualFile == null) {
-            return "";
-        }
-        final PsiManager manager = file.getManager();
-        final Project project = manager.getProject();
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-        final ProjectFileIndex fileIndex = rootManager.getFileIndex();
-        final Module module = fileIndex.getModuleForFile(virtualFile);
+    public static String calculateModuleName(PsiElement element) {
+        final Module module = calculateModule(element);
         if (module == null) {
             return "";
         }
@@ -147,30 +107,16 @@ public class ClassUtils {
         if (aClass.isInterface()) {
             return false;
         }
-        final Query<PsiClass> query = DirectClassInheritorsSearch.search(aClass);
-        final Collection<PsiClass> subclasses = query.findAll();
-        return subclasses.isEmpty();
+        return DirectClassInheritorsSearch.search(aClass).findFirst() == null;
     }
 
     @Nullable
-    public static PsiPackage findPackage(PsiJavaFile file) {
-        if (file == null) {
+    public static PsiPackage findPackage(PsiElement element) {
+        if (element == null) {
             return null;
         }
-        final String referencedPackageName = calculatePackageName(file);
-        final Project project = file.getProject();
-        final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-        return psiFacade.findPackage(referencedPackageName);
-    }
-
-    @Nullable
-    public static PsiPackage findPackage(PsiClass referencedClass) {
-        if (referencedClass == null) {
-            return null;
-        }
-        final String referencedPackageName = calculatePackageName(referencedClass);
-        final Project project = referencedClass.getProject();
-        final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-        return psiFacade.findPackage(referencedPackageName);
+        final PsiFile file = element.getContainingFile();
+        final PsiDirectory directory = file.getContainingDirectory();
+        return JavaDirectoryService.getInstance().getPackage(directory);
     }
 }

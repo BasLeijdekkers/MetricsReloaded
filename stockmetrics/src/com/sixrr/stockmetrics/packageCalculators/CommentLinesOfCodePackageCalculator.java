@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -56,8 +55,7 @@ public class CommentLinesOfCodePackageCalculator extends PackageCalculator {
 
         @Override
         public void visitComment(PsiComment comment) {
-            final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
-            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            final PsiPackage aPackage = ClassUtils.findPackage(comment);
             if (aPackage == null) {
                 return;
             }

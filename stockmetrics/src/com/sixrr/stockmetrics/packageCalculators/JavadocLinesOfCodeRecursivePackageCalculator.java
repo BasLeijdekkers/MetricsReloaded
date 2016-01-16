@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiPackage;
 import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -59,9 +61,8 @@ public class JavadocLinesOfCodeRecursivePackageCalculator extends PackageCalcula
         @Override
         public void visitDocComment(PsiDocComment comment) {
             super.visitDocComment(comment);
-            final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
             final int lineCount = LineUtil.countLines(comment);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(aClass);
+            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(comment);
             for (final PsiPackage aPackage : packages) {
                 numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
             }

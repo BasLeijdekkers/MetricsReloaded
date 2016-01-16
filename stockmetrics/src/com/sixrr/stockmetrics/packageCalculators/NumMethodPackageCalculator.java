@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -55,11 +55,7 @@ public class NumMethodPackageCalculator extends PackageCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            final PsiClass containingClass = method.getContainingClass();
-            if (containingClass == null) {
-                return;
-            }
-            final PsiPackage aPackage = ClassUtils.findPackage(containingClass);
+            final PsiPackage aPackage = ClassUtils.findPackage(method);
             if (aPackage == null) {
                 return;
             }

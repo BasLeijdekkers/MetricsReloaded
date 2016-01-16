@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,8 +60,7 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
             if (!TestUtils.isJUnitTestMethod(method)) {
                 return;
             }
-            final PsiClass aClass = method.getContainingClass();
-            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            final PsiPackage aPackage = ClassUtils.findPackage(method);
             if (aPackage == null) {
                 return;
             }

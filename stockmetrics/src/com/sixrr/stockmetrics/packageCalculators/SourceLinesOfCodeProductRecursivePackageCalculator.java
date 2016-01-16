@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.stockmetrics.utils.LineUtil;
 
 import java.util.Set;
 
@@ -64,9 +63,8 @@ public class SourceLinesOfCodeProductRecursivePackageCalculator extends PackageC
             super.visitComment(comment);
             final PsiFile file = comment.getContainingFile();
             if (TestUtils.isProduction(file)) {
-                final PsiClass aClass = PsiTreeUtil.getParentOfType(comment, PsiClass.class);
                 final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(aClass);
+                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(comment);
                 for (final PsiPackage aPackage : packages) {
                     numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
                 }

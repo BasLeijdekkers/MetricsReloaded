@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
@@ -61,8 +60,7 @@ public class NumTestAssertsPackageCalculator extends PackageCalculator {
             if (!TestUtils.isJUnitAssertCall(expression)) {
                 return;
             }
-            final PsiClass aClass = PsiTreeUtil.getParentOfType(expression, PsiClass.class);
-            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
+            final PsiPackage aPackage = ClassUtils.findPackage(expression);
             if (aPackage == null) {
                 return;
             }

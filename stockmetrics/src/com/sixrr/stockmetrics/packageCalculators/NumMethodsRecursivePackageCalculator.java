@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -54,12 +54,9 @@ public class NumMethodsRecursivePackageCalculator extends PackageCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            final PsiClass containingClass = method.getContainingClass();
-            if (containingClass != null) {
-                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(containingClass);
-                for (final PsiPackage aPackage : packages) {
-                    numMethodsPerPackage.incrementBucketValue(aPackage);
-                }
+            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(method);
+            for (final PsiPackage aPackage : packages) {
+                numMethodsPerPackage.incrementBucketValue(aPackage);
             }
         }
     }
