@@ -375,6 +375,12 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric("EssentialCyclomaticComplexity", null, 3.0);
         profile.addMetric("WeightedMethodComplexity", null, 30.0);
         profile.addMetric("AverageOperationComplexity", null, 3.0);
+        profile.addMetric("AverageCyclomaticComplexityProject", null, null);
+        profile.addMetric("TotalCyclomaticComplexityProject", null, null);
+        profile.addMetric("AverageCyclomaticComplexityModule", null, null);
+        profile.addMetric("TotalCyclomaticComplexityModule", null, null);
+        profile.addMetric("AverageCyclomaticComplexityPackage", null, null);
+        profile.addMetric("TotalCyclomaticComplexityPackage", null, null);
         return profile;
     }
 
