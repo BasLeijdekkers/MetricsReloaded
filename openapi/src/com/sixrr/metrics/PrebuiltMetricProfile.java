@@ -40,6 +40,14 @@ public class PrebuiltMetricProfile {
         this.profileName = profileName;
     }
 
+    public void addMetric(@NotNull Class<? extends Metric> metricClass) {
+        addMetric(metricClass, null, null);
+    }
+
+    public void addMetric(@NotNull Class<? extends Metric> metricClass, Double lowerThreshold, Double upperThreshold) {
+        addMetric(calculateName(metricClass), lowerThreshold, upperThreshold);
+    }
+
     /**
      * Add a metric to the profile, with no upper or lower threshold specified.
      * This is equivalent to add(metricID, null, null)
@@ -103,5 +111,14 @@ public class PrebuiltMetricProfile {
      */
     public Double getUpperThresholdForMetric(String id) {
         return upperThresholds.get(id);
+    }
+
+    private static String calculateName(@NotNull Class<? extends Metric> metricClass) {
+        final String className = metricClass.getSimpleName();
+        if (!className.endsWith("Metric")) {
+            throw new IllegalArgumentException("class name must end with Metric");
+        }
+        @NonNls final int endIndex = className.length() - "Metric".length();
+        return className.substring(0, endIndex);
     }
 }
