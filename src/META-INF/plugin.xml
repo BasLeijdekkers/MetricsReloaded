@@ -2,7 +2,7 @@
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
   <description><![CDATA[
-    Many automated Java, Groovy, JSP, HTML, CSS, JavaScript & XML code metrics for IntelliJ IDEA.
+    Many automated Java, Groovy, Kotlin, JSP, HTML, CSS, JavaScript & XML code metrics for IntelliJ IDEA.
     This version of MetricsReloaded is compatible with IntelliJ IDEA 14 and newer.
 
     <h4>Getting started</h4>
@@ -13,7 +13,7 @@
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
   <version>1.2</version>
   <change-notes><![CDATA[
-  - Added CSS & JavaScript line and file count metrics.<br>
+  - Added Groovy, Kotlin, CSS & JavaScript line and file count metrics.<br>
   - Fixed JSP metrics and only load them only when <i>Java Server Pages Integration</i> plugin is enabled.<br>
   - Improve results table rendering.<br>
   - Fixed an exception that could happen after reordering the columns of a results table.<br>
