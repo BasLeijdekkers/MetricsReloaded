@@ -80,26 +80,26 @@
              classpathref="openapi.class.path"/>
   </target>
 
-  <target name="create-openapi-jars" depends="compile-openapi">
+  <target name="create-openapi-jar" depends="compile-openapi">
     <jar jarfile="${openapi.jar.file}">
       <fileset dir="${openapi.build.classes.dir}"/>
     </jar>
   </target>
 
-  <target name="compile-utils" depends="prepare, create-openapi-jars">
+  <target name="compile-utils" depends="prepare, create-openapi-jar">
     <javac srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
     </javac>
   </target>
 
-  <target name="create-utils-jars" depends="compile-utils">
+  <target name="create-utils-jar" depends="compile-utils">
     <jar jarfile="${utils.jar.file}">
       <fileset dir="${utils.build.classes.dir}"/>
     </jar>
   </target>
   
-  <target name="compile-stockmetrics" depends="prepare, create-openapi-jars, create-utils-jars">
+  <target name="compile-stockmetrics" depends="prepare, create-openapi-jar, create-utils-jar">
     <javac srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
@@ -120,17 +120,17 @@
     </jar>
   </target>
 
-  <target name="compile" depends="prepare, create-openapi-jars, create-utils-jars">
+  <target name="compile" depends="prepare, create-openapi-jar, create-utils-jar">
     <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}" includeantruntime="false"
             includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
     </javac2>
   </target>
 
-  <target name="create_jars" depends="compile">
+  <target name="create-jars" depends="compile">
     <jar jarfile="${jar.file}">
       <fileset dir="${build.classes.dir}"/>
-      <fileset dir="src" includes="META-INF/plugin.xml" />
+      <fileset dir="src" includes="META-INF/*.xml" />
     </jar>
     <jar jarfile="${resources.jar.file}">
       <fileset dir="src" includes="**/*.properties"/>
@@ -138,8 +138,8 @@
     </jar>
   </target>
 
-  <target name="deploy" depends="clean,create_jars,create-stockmetrics-jars,create-utils-jars, javadoc-openapi"
-          description="deploy the plugin">
+  <target name="deploy" depends="clean,create-jars,create-stockmetrics-jars,create-utils-jar"
+          description="deploy the plugin to the plugin directory">
 
     <mkdir dir="${idea.plugin.dir}"/>
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded"/>
@@ -161,11 +161,6 @@
         <include name="**/**"/>
       </fileset>
     </copy>
-    <copy todir="${idea.plugin.dir}/MetricsReloaded/doc"
-          overwrite="true">
-      <fileset dir="${openapi.javadoc.dir}"/>
-    </copy>
-    <!--copy file="${help.jar.file}" todir="${idea.plugin.dir}/MetricsReloaded/help" overwrite="true"/-->
   </target>
 
   <target name="clean" description="Clean up the distribution">
@@ -179,10 +174,9 @@
     <delete failonerror="false" dir="${stockmetrics.resources.jar.file}"/>
     <delete failonerror="false" dir="${utils.build.classes.dir}"/>
     <delete failonerror="false" dir="${utils.jar.file}"/>
-    <!--delete failonerror="false" file="${help.jar.file}"/-->
   </target>
 
-  <target name="package" depends="create_jars"
+  <target name="package" depends="create-jars"
           description="create zipfile for uploading to plugins.intellij.net">
     <zip destfile="${dist.zip.file}">
       <zipfileset file="${jar.file}" prefix="MetricsReloaded/lib"/>
