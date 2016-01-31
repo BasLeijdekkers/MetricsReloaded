@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,21 +34,24 @@ public class DistanceCalculator extends PackageCalculator {
     @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numExternalDependentsPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final double numClasses = (double)
-                    numClassesPerPackage.getBucketValue(aPackage);
-            final double numAbstractClasses = (double)
-                    numAbstractClassesPerPackage.getBucketValue(aPackage);
-            final double numExternalDependents = (double)
-                    numExternalDependentsPerPackage.getBucketValue(aPackage);
-            final double numExternalDependencies = (double)
-                    numExternalDependenciesPerPackage.getBucketValue(aPackage);
+        for (PsiPackage aPackage : packages) {
+            final double numClasses = (double) numClassesPerPackage.getBucketValue(aPackage);
+            final double numAbstractClasses = (double) numAbstractClassesPerPackage.getBucketValue(aPackage);
+            final double numExternalDependents = (double) numExternalDependentsPerPackage.getBucketValue(aPackage);
+            final double numExternalDependencies = (double) numExternalDependenciesPerPackage.getBucketValue(aPackage);
             final double instability =
-                    numExternalDependencies / (numExternalDependencies + numExternalDependents);
-            final double abstractness = numAbstractClasses / numClasses;
+                    calculateFraction(numExternalDependencies, numExternalDependencies + numExternalDependents);
+            final double abstractness = calculateFraction(numAbstractClasses, numClasses);
             final double distance = Math.abs(1.0 - instability - abstractness);
             postMetric(aPackage, distance);
         }
+    }
+
+    private static double calculateFraction(double numerator, double denominator) {
+        if (denominator == 0.0) {
+            return 1.0;
+        }
+        return numerator / denominator;
     }
 
     @Override
