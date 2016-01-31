@@ -77,22 +77,12 @@ public class DistanceCalculator extends PackageCalculator {
             numClassesPerPackage.incrementBucketValue(currentPackage);
             numExternalDependentsPerPackage.createBucket(currentPackage);
             final DependentsMap dependentsMap = getDependentsMap();
-            final Set<PsiPackage> packageDependents =
-                    dependentsMap.calculatePackageDependents(aClass);
-            for (final PsiPackage referencingPackage : packageDependents) {
-                final int strength =
-                        dependentsMap.getStrengthForPackageDependent(aClass, referencingPackage);
-                numExternalDependentsPerPackage.incrementBucketValue(currentPackage, strength);
-            }
+            final Set<PsiPackage> packageDependents = dependentsMap.calculatePackageDependents(aClass);
+            numExternalDependentsPerPackage.incrementBucketValue(currentPackage, packageDependents.size());
             numExternalDependenciesPerPackage.createBucket(currentPackage);
             final DependencyMap dependencyMap = getDependencyMap();
-            final Set<PsiPackage> packageDependencies =
-                    dependencyMap.calculatePackageDependencies(aClass);
-            for (final PsiPackage referencedPackage : packageDependencies) {
-                final int strength =
-                        dependencyMap.getStrengthForPackageDependency(aClass, referencedPackage);
-                numExternalDependenciesPerPackage.incrementBucketValue(currentPackage, strength);
-            }
+            final Set<PsiPackage> packageDependencies = dependencyMap.calculatePackageDependencies(aClass);
+            numExternalDependenciesPerPackage.incrementBucketValue(currentPackage, packageDependencies.size());
         }
     }
 }

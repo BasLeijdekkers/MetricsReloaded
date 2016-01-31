@@ -33,9 +33,8 @@ public class EfferentCouplingCalculator extends PackageCalculator {
     @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numExternalDependenciesPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numExternalDependencies =
-                    numExternalDependenciesPerPackage.getBucketValue(aPackage);
+        for (PsiPackage aPackage : packages) {
+            final int numExternalDependencies = numExternalDependenciesPerPackage.getBucketValue(aPackage);
             postMetric(aPackage, numExternalDependencies);
         }
     }
@@ -59,13 +58,8 @@ public class EfferentCouplingCalculator extends PackageCalculator {
             }
             numExternalDependenciesPerPackage.createBucket(referencingPackage);
             final DependencyMap dependencyMap = getDependencyMap();
-            final Set<PsiPackage> packageDependencies =
-                    dependencyMap.calculatePackageDependencies(aClass);
-            for (final PsiPackage referencedPackage : packageDependencies) {
-                final int strength =
-                        dependencyMap.getStrengthForPackageDependency(aClass, referencedPackage);
-                numExternalDependenciesPerPackage.incrementBucketValue(referencingPackage, strength);
-            }
+            final Set<PsiPackage> packageDependencies = dependencyMap.calculatePackageDependencies(aClass);
+            numExternalDependenciesPerPackage.incrementBucketValue(referencingPackage, packageDependencies.size());
         }
     }
 }
