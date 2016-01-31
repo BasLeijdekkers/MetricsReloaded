@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <idea-plugin version="2" url="https://github.com/BasLeijdekkers/MetricsReloaded">
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
@@ -11,13 +27,10 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must not be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.2</version>
+  <version>1.2.1</version>
   <change-notes><![CDATA[
-  - Added Groovy, Kotlin, CSS & JavaScript line and file count metrics.<br>
-  - Fixed JSP metrics and only load them only when <i>Java Server Pages Integration</i> plugin is enabled.<br>
-  - Improve results table rendering.<br>
-  - Fixed an exception that could happen after reordering the columns of a results table.<br>
-  - Fixed an UI freeze that could happen during a long running metrics calculation.<br>
+  - Fixed some issues with the Martin packaging metrics.<br>
+  - Some fixes & changes in the metric abbreviations.<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
