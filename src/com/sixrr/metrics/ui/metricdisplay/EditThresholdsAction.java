@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class EditThresholdsAction extends AnAction {
         final MetricCategory category = toolWindow.getSelectedCategory();
         final MetricsProfile profile = toolWindow.getCurrentProfile();
         final List<MetricInstance> metrics = new ArrayList<MetricInstance>();
-        for (MetricInstance instance : profile.getMetrics()) {
+        for (MetricInstance instance : profile.getMetricInstances()) {
             if (!instance.isEnabled()) {
                 continue;
             }

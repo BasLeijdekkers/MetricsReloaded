@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,13 +34,13 @@ public interface MetricsProfile extends Cloneable {
 
     String getName();
 
-    List<MetricInstance> getMetrics();
+    List<MetricInstance> getMetricInstances();
 
-    void replaceMetrics(List<MetricInstance> newMetrics);
+    void replaceMetricInstances(List<MetricInstance> metricInstances);
 
-    @Nullable MetricInstance getMetricForClass(Class<? extends Metric> aClass);
+    @Nullable MetricInstance getMetricInstance(Metric metric);
 
-    @Nullable MetricInstance getMetricForName(String metricName);
+    @Nullable MetricInstance getMetricInstance(String metricID);
 
     void writeToFile(File profileFile) throws IOException;
 

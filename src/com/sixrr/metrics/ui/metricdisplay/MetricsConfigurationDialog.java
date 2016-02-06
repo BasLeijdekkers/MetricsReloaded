@@ -302,7 +302,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 new EnumMap<MetricCategory, MetricTreeNode>(MetricCategory.class);
 
         if (profile != null) {
-            final List<MetricInstance> metrics = profile.getMetrics();
+            final List<MetricInstance> metrics = profile.getMetricInstances();
             for (final MetricInstance metricInstance : metrics) {
                 final Metric metric = metricInstance.getMetric();
                 if (!isMetricAccepted(metric, filter)) {
@@ -351,8 +351,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             for (int j = 0; j < numMetrics; j++) {
                 final MetricTreeNode metricNode = (MetricTreeNode) category.getChildAt(j);
                 final MetricInstance currentMetricInstance = (MetricInstance) metricNode.getUserObject();
-                final MetricInstance newMetric =
-                        profile.getMetricForClass(currentMetricInstance.getMetric().getClass());
+                final MetricInstance newMetric = profile.getMetricInstance(currentMetricInstance.getMetric());
                 metricNode.setUserObject(newMetric);
                 assert newMetric != null;
                 metricNode.enabled = newMetric.isEnabled();

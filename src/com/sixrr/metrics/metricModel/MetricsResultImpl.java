@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -66,11 +66,7 @@ public class MetricsResultImpl implements MetricsResult {
         if (metricValues == null) {
             return null;
         }
-        if (metricValues.containsKey(measured)) {
-            return metricValues.get(measured);
-        } else {
-            return null;
-        }
+        return metricValues.containsKey(measured) ? metricValues.get(measured) : null;
     }
 
     @Override
@@ -147,7 +143,7 @@ public class MetricsResultImpl implements MetricsResult {
     @Override
     public boolean hasWarnings(MetricsProfile profile) {
         for (Metric metric : metrics) {
-            final MetricInstance metricInstance = profile.getMetricForClass(metric.getClass());
+            final MetricInstance metricInstance = profile.getMetricInstance(metric);
             if (metricInstance == null) {
                 continue;
             }
@@ -171,7 +167,7 @@ public class MetricsResultImpl implements MetricsResult {
         for (String measuredObject : measuredObjects) {
             boolean found = false;
             for (Metric metric : metrics) {
-                final MetricInstance metricInstance = profile.getMetricForClass(metric.getClass());
+                final MetricInstance metricInstance = profile.getMetricInstance(metric);
                 if (metricInstance == null || !metricInstance.isEnabled()) {
                     continue;
                 }

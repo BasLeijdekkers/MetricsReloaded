@@ -52,7 +52,7 @@ class MetricTableModel extends AbstractTableModel {
         this.tableSpecification = tableSpecification;
         prevResults = null;
         measuredObjects = results.getMeasuredObjects();
-        metricsInstances = findInstances(results.getMetrics());
+        metricsInstances = findMetricInstances(results.getMetrics());
         Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
         final Map<MetricInstance, Integer> remainingMetrics = new LinkedHashMap<MetricInstance, Integer>();
         for (int i = 0; i < metricsInstances.length; i++) {
@@ -123,11 +123,11 @@ class MetricTableModel extends AbstractTableModel {
         profileRepository.persistCurrentProfile();
     }
 
-    private MetricInstance[] findInstances(Metric[] metrics) {
+    private MetricInstance[] findMetricInstances(Metric[] metrics) {
         final MetricsProfile profile = profileRepository.getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
-            metricInstances[i] = profile.getMetricForClass(metrics[i].getClass());
+            metricInstances[i] = profile.getMetricInstance(metrics[i]);
         }
         return metricInstances;
     }
@@ -305,11 +305,11 @@ class MetricTableModel extends AbstractTableModel {
 
     private void tabulateMetrics() {
         final Metric[] currentMetrics = results.getMetrics();
-        final MetricInstance[] resultMetrics = findInstances(currentMetrics);
+        final MetricInstance[] resultMetrics = findMetricInstances(currentMetrics);
         final Set<MetricInstance> allMetrics = new HashSet<MetricInstance>(resultMetrics.length);
         Collections.addAll(allMetrics, resultMetrics);
         if (prevResults != null) {
-            final MetricInstance[] prevResultMetrics = findInstances(prevResults.getMetrics());
+            final MetricInstance[] prevResultMetrics = findMetricInstances(prevResults.getMetrics());
             Collections.addAll(allMetrics, prevResultMetrics);
         }
         metricsInstances = allMetrics.toArray(new MetricInstance[allMetrics.size()]);

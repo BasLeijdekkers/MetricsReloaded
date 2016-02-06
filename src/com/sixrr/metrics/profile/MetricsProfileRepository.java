@@ -81,7 +81,7 @@ public class MetricsProfileRepository {
         final MetricsProfile profile = (existingProfile != null) ? existingProfile : template.instantiate(name);
         final Set<String> metricNames = builtInProfile.getMetricIDs();
         for (String metricName : metricNames) {
-            final MetricInstance instance = profile.getMetricForName(metricName);
+            final MetricInstance instance = profile.getMetricInstance(metricName);
             if (instance == null) {
                 continue;
             }

@@ -35,12 +35,16 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     private String name;
     private List<MetricInstance> metrics = new ArrayList<MetricInstance>();
+    private Map<String, MetricInstance> name2instance = new HashMap<String, MetricInstance>();
     private MetricDisplaySpecification displaySpecification = new MetricDisplaySpecification();
     private boolean builtIn = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
         this.name = name;
         this.metrics.addAll(metrics);
+        for (MetricInstance metricInstance : metrics) {
+            name2instance.put(metricInstance.getMetric().getID(), metricInstance);
+        }
         Collections.sort(this.metrics);
     }
 
@@ -75,13 +79,13 @@ public class MetricsProfileImpl implements MetricsProfile {
         return name;
     }
 
-    public List<MetricInstance> getMetrics() {
+    public List<MetricInstance> getMetricInstances() {
         return Collections.unmodifiableList(metrics);
     }
 
-    public void replaceMetrics(List<MetricInstance> newMetrics) {
+    public void replaceMetricInstances(List<MetricInstance> metricInstances) {
         metrics.clear();
-        metrics.addAll(newMetrics);
+        metrics.addAll(metricInstances);
         Collections.sort(metrics);
     }
 
@@ -96,25 +100,13 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @Nullable
-    public MetricInstance getMetricForClass(Class<? extends Metric> aClass) {
-        for (final MetricInstance metric : metrics) {
-            final Class<? extends Metric> metricClass = metric.getMetric().getClass();
-            if (metricClass.equals(aClass)) {
-                return metric;
-            }
-        }
-        return null;
+    public MetricInstance getMetricInstance(Metric metric) {
+        return getMetricInstance(metric.getID());
     }
 
     @Nullable
-    public MetricInstance getMetricForName(String name) {
-        for (final MetricInstance metric : metrics) {
-            final String metricName = metric.getMetric().getID();
-            if (metricName.equals(name)) {
-                return metric;
-            }
-        }
-        return null;
+    public MetricInstance getMetricInstance(String metricID) {
+        return name2instance.get(metricID);
     }
 
     @SuppressWarnings("HardCodedStringLiteral")

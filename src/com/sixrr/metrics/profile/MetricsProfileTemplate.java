@@ -42,7 +42,7 @@ class MetricsProfileTemplate {
     }
 
     public void reconcile(MetricsProfile profile) {
-        final List<MetricInstance> metrics = profile.getMetrics();
+        final List<MetricInstance> metrics = profile.getMetricInstances();
         final List<MetricInstance> newMetrics = new ArrayList<MetricInstance>();
         for (final Class<? extends Metric> metricsClass : metricsClasses) {
             boolean found = false;
@@ -60,7 +60,7 @@ class MetricsProfileTemplate {
                 }
             }
         }
-        profile.replaceMetrics(newMetrics);
+        profile.replaceMetricInstances(newMetrics);
     }
 
     public void printMetricsDescriptions() {

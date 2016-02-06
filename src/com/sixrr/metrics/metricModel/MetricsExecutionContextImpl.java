@@ -17,7 +17,6 @@
 package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -72,21 +71,22 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
 
     public void calculateMetrics(MetricsProfile profile, final MetricsResultsHolder resultsHolder) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-        final List<MetricInstance> metrics = profile.getMetrics();
+        final List<MetricInstance> metrics = profile.getMetricInstances();
         indicator.setText(MetricsReloadedBundle.message("initializing.progress.string"));
         final int numFiles = scope.getFileCount();
         final int numMetrics = metrics.size();
         final List<MetricCalculator> calculators = new ArrayList<MetricCalculator>(numMetrics);
         for (final MetricInstance metricInstance : metrics) {
             indicator.checkCanceled();
+            if (!metricInstance.isEnabled()) {
+                continue;
+            }
             final Metric metric = metricInstance.getMetric();
-            if (metricInstance.isEnabled()) {
-                final MetricCalculator calculator = metric.createCalculator();
+            final MetricCalculator calculator = metric.createCalculator();
 
-                if (calculator != null) {
-                    calculators.add(calculator);
-                    calculator.beginMetricsRun(metricInstance.getMetric(), resultsHolder, this);
-                }
+            if (calculator != null) {
+                calculators.add(calculator);
+                calculator.beginMetricsRun(metric, resultsHolder, this);
             }
         }
 
