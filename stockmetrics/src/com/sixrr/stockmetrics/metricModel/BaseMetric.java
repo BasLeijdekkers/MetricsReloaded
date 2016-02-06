@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 200-2016 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import com.sixrr.metrics.MetricCalculator;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BaseMetric implements Cloneable, Metric {
+public abstract class BaseMetric implements Metric {
 
     protected BaseMetric() {
-        super();
         final Class<?> aClass = getClass();
         final String className = aClass.getName();
         final int startIndex = className.lastIndexOf((int) '.') + 1;
@@ -34,20 +33,15 @@ public abstract class BaseMetric implements Cloneable, Metric {
 
     private final String name;
 
-    public Metric clone() throws CloneNotSupportedException {
-        return (Metric) super.clone();
-    }
-
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof BaseMetric)) {
+        if (!(obj instanceof Metric)) {
             return false;
         }
 
-        final BaseMetric baseMetric = (BaseMetric) obj;
-
+        final Metric baseMetric = (Metric) obj;
         return name.equals(baseMetric.getID());
     }
 
