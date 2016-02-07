@@ -127,7 +127,9 @@ class MetricTableModel extends AbstractTableModel {
         final MetricsProfile profile = profileRepository.getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
-            metricInstances[i] = profile.getMetricInstance(metrics[i]);
+            final MetricInstance metricInstance = profile.getMetricInstance(metrics[i]);
+            assert metricInstance != null;
+            metricInstances[i] = metricInstance;
         }
         return metricInstances;
     }

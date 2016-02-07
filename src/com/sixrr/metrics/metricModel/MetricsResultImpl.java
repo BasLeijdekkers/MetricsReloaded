@@ -66,7 +66,7 @@ public class MetricsResultImpl implements MetricsResult {
         if (metricValues == null) {
             return null;
         }
-        return metricValues.containsKey(measured) ? metricValues.get(measured) : null;
+        return metricValues.containsKey(measured) ? Double.valueOf(metricValues.get(measured)) : null;
     }
 
     @Override
@@ -84,9 +84,9 @@ public class MetricsResultImpl implements MetricsResult {
     public Double getMinimumForMetric(Metric metric) {
         final StringToFractionMap metricValues = values.get(metric);
         if (metricValues == null) {
-            return 0.0;
+            return Double.valueOf(0.0);
         }
-        return metricValues.getMinimum();
+        return Double.valueOf(metricValues.getMinimum());
     }
 
     @Override
@@ -94,9 +94,9 @@ public class MetricsResultImpl implements MetricsResult {
     public Double getMaximumForMetric(Metric metric) {
         final StringToFractionMap metricValues = values.get(metric);
         if (metricValues == null) {
-            return 0.0;
+            return Double.valueOf(0.0);
         }
-        return metricValues.getMaximum();
+        return Double.valueOf(metricValues.getMaximum());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MetricsResultImpl implements MetricsResult {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
-        return metricValues.getTotal();
+        return Double.valueOf(metricValues.getTotal());
     }
 
     @Override
@@ -118,7 +118,7 @@ public class MetricsResultImpl implements MetricsResult {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
-        return metricValues.getAverage();
+        return Double.valueOf(metricValues.getAverage());
     }
 
     @Override
@@ -144,9 +144,7 @@ public class MetricsResultImpl implements MetricsResult {
     public boolean hasWarnings(MetricsProfile profile) {
         for (Metric metric : metrics) {
             final MetricInstance metricInstance = profile.getMetricInstance(metric);
-            if (metricInstance == null) {
-                continue;
-            }
+            assert metricInstance != null : "no instance found for " + metric.getID();
             final StringToFractionMap valuesForMetric = values.get(metric);
             for (String measuredObject : measuredObjects) {
                 final double value = valuesForMetric.get(measuredObject);
@@ -163,12 +161,13 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public MetricsResult filterRowsWithoutWarnings(MetricsProfile profile) {
-        final MetricsResultImpl out = new MetricsResultImpl();
+        final MetricsResult out = new MetricsResultImpl();
         for (String measuredObject : measuredObjects) {
             boolean found = false;
             for (Metric metric : metrics) {
                 final MetricInstance metricInstance = profile.getMetricInstance(metric);
-                if (metricInstance == null || !metricInstance.isEnabled()) {
+                assert metricInstance != null : "no instance found for " + metric.getID();
+                if (!metricInstance.isEnabled()) {
                     continue;
                 }
                 final StringToFractionMap valuesForMetric = values.get(metric);

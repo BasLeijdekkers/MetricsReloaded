@@ -47,10 +47,10 @@ public class MetricsProfileRepository {
     public MetricsProfileRepository(MetricsReloadedConfig configuration) {
         this.configuration = configuration;
         template = new MetricsProfileTemplate();
-        template.loadMetricsFromProviders();
     }
 
     public void initialize() {
+        template.loadMetricsFromProviders();
         loadProfiles();
         reconcileProfiles();
         addPrebuiltProfiles();
@@ -79,15 +79,13 @@ public class MetricsProfileRepository {
         final String name = builtInProfile.getProfileName();
         final MetricsProfile existingProfile = profiles.get(name);
         final MetricsProfile profile = (existingProfile != null) ? existingProfile : template.instantiate(name);
-        final Set<String> metricNames = builtInProfile.getMetricIDs();
-        for (String metricName : metricNames) {
-            final MetricInstance instance = profile.getMetricInstance(metricName);
-            if (instance == null) {
-                continue;
-            }
+        final Set<String> metricIDs = builtInProfile.getMetricIDs();
+        for (String metricID : metricIDs) {
+            final MetricInstance instance = profile.getMetricInstance(metricID);
+            assert instance != null : "no instance found for " + metricID;
             instance.setEnabled(true);
-            final Double lowerThreshold = builtInProfile.getLowerThresholdForMetric(metricName);
-            final Double upperThreshold = builtInProfile.getUpperThresholdForMetric(metricName);
+            final Double lowerThreshold = builtInProfile.getLowerThresholdForMetric(metricID);
+            final Double upperThreshold = builtInProfile.getUpperThresholdForMetric(metricID);
             if (lowerThreshold != null) {
                 instance.setLowerThresholdEnabled(true);
                 instance.setLowerThreshold(lowerThreshold.doubleValue());
