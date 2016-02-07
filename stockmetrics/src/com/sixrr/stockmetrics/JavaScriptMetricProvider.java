@@ -26,7 +26,6 @@ import com.sixrr.stockmetrics.projectMetrics.NumJavaScriptFilesProjectMetric;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,23 +33,21 @@ import java.util.List;
  */
 public class JavaScriptMetricProvider implements MetricProvider {
 
-    private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
-
     @NotNull
     @Override
-    public List<Class<? extends Metric>> getMetricClasses() {
-        if (metricsClasses.isEmpty()) {
-            metricsClasses.add(NumJavaScriptFilesProjectMetric.class);
-            metricsClasses.add(NumJavaScriptFilesModuleMetric.class);
-            metricsClasses.add(LinesOfJavaScriptProjectMetric.class);
-            metricsClasses.add(LinesOfJavaScriptModuleMetric.class);
-        }
-        return Collections.unmodifiableList(metricsClasses);    }
+    public List<Metric> getMetrics() {
+        final List<Metric> metricsClasses = new ArrayList<Metric>(4);
+        metricsClasses.add(new NumJavaScriptFilesProjectMetric());
+        metricsClasses.add(new NumJavaScriptFilesModuleMetric());
+        metricsClasses.add(new LinesOfJavaScriptProjectMetric());
+        metricsClasses.add(new LinesOfJavaScriptModuleMetric());
+        return metricsClasses;
+    }
 
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>();
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(2);
         out.add(createCodeSizeProfile());
         out.add(createFileCountProfile());
         return out;

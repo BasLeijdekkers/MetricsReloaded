@@ -18,23 +18,20 @@ package com.sixrr.metrics.profile;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"HardCodedStringLiteral"})
 class MetricsProfileTemplate {
-    private static final Logger LOGGER = Logger.getInstance(MetricsProfileTemplate.class);
 
-    private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>(200);
+    private final List<Metric> metrics = new ArrayList<Metric>(200);
 
     public MetricsProfile instantiate(String name) {
         final List<MetricInstance> metrics = instantiateMetrics();
@@ -42,25 +39,11 @@ class MetricsProfileTemplate {
     }
 
     public void reconcile(MetricsProfile profile) {
-        final List<MetricInstance> metrics = profile.getMetricInstances();
-        final List<MetricInstance> newMetrics = new ArrayList<MetricInstance>();
-        for (final Class<? extends Metric> metricsClass : metricsClasses) {
-            boolean found = false;
-            for (final MetricInstance metric : metrics) {
-                if (metric.getMetric().getClass().equals(metricsClass)) {
-                    newMetrics.add(metric);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                final MetricInstance metric = instantiateMetric(metricsClass);
-                if (metric != null) {
-                    newMetrics.add(metric);
-                }
+        for (final Metric metric : metrics) {
+            if (profile.getMetricInstance(metric) == null) {
+                profile.addMetricInstance(new MetricInstanceImpl(metric));
             }
         }
-        profile.replaceMetricInstances(newMetrics);
     }
 
     public void printMetricsDescriptions() {
@@ -80,36 +63,19 @@ class MetricsProfileTemplate {
     }
 
     private List<MetricInstance> instantiateMetrics() {
-        final int numMetrics = metricsClasses.size();
-        final List<MetricInstance> metrics = new ArrayList<MetricInstance>(numMetrics);
-        for (final Class<? extends Metric> metricsClass : metricsClasses) {
-            final MetricInstance metric = instantiateMetric(metricsClass);
-            if (metric != null) {
-                metrics.add(metric);
-            }
+        final List<MetricInstance> result = new ArrayList<MetricInstance>(metrics.size());
+        for (final Metric metric : metrics) {
+            result.add(new MetricInstanceImpl(metric));
         }
-        return metrics;
-    }
-
-    @Nullable
-    private static MetricInstance instantiateMetric(Class<? extends Metric> metricsClass) {
-        try {
-            final Metric metric = metricsClass.newInstance();
-            return new MetricInstanceImpl(metric);
-        } catch (InstantiationException e) {
-            LOGGER.error(e);
-        } catch (IllegalAccessException e) {
-            LOGGER.error(e);
-        }
-        return null;
+        return result;
     }
 
     public void loadMetricsFromProviders() {
         final Application application = ApplicationManager.getApplication();
         final MetricProvider[] metricProviders = application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
         for (MetricProvider provider : metricProviders) {
-            final List<Class<? extends Metric>> classesForProvider = provider.getMetricClasses();
-            metricsClasses.addAll(classesForProvider);
+            final List<Metric> metrics = provider.getMetrics();
+            this.metrics.addAll(metrics);
         }
     }
 }

@@ -26,6 +26,8 @@ import java.util.List;
 
 public interface MetricsProfile extends Cloneable {
 
+    void addMetricInstance(MetricInstance metricInstance);
+
     MetricsProfile clone() throws CloneNotSupportedException;
 
     void copyFrom(List<MetricInstance> metrics);
@@ -35,8 +37,6 @@ public interface MetricsProfile extends Cloneable {
     String getName();
 
     List<MetricInstance> getMetricInstances();
-
-    void replaceMetricInstances(List<MetricInstance> metricInstances);
 
     @Nullable MetricInstance getMetricInstance(Metric metric);
 

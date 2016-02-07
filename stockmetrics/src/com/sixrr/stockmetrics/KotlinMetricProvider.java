@@ -26,7 +26,6 @@ import com.sixrr.stockmetrics.projectMetrics.NumKotlinFilesProjectMetric;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,23 +33,21 @@ import java.util.List;
  */
 public class KotlinMetricProvider implements MetricProvider {
 
-    private final List<Class<? extends Metric>> metricsClasses = new ArrayList<Class<? extends Metric>>();
-
     @NotNull
     @Override
-    public List<Class<? extends Metric>> getMetricClasses() {
-        if (metricsClasses.isEmpty()) {
-            metricsClasses.add(NumKotlinFilesProjectMetric.class);
-            metricsClasses.add(NumKotlinFilesModuleMetric.class);
-            metricsClasses.add(LinesOfKotlinProjectMetric.class);
-            metricsClasses.add(LinesOfKotlinModuleMetric.class);
-        }
-        return Collections.unmodifiableList(metricsClasses);    }
+    public List<Metric> getMetrics() {
+        final List<Metric> metrics = new ArrayList<Metric>(4);
+        metrics.add(new NumKotlinFilesProjectMetric());
+        metrics.add(new NumKotlinFilesModuleMetric());
+        metrics.add(new LinesOfKotlinProjectMetric());
+        metrics.add(new LinesOfKotlinModuleMetric());
+        return metrics;
+    }
 
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>();
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(2);
         out.add(createCodeSizeProfile());
         out.add(createFileCountProfile());
         return out;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,22 +22,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * To add metrics to IntellIJ IDEA, you first create the Metric classes for them, and then bind them into IDEA using a
- * MetricsProvider component.  Create an implementation of MetricsProvider which lists the metrics classes you wish to add.
+ * To add metrics to IntelliJ IDEA, you first create the Metric classes for them, and then bind them into IDEA using a
+ * MetricsProvider component.  Create an implementation of MetricsProvider which lists the metrics you wish to add.
  * Additionally, you can specify a list of pre-built metrics profiles, which may make it easier for new users to use your
  * metrics.
  */
 public interface MetricProvider {
 
-    ExtensionPointName<MetricProvider> EXTENSION_POINT_NAME = 
+    ExtensionPointName<MetricProvider> EXTENSION_POINT_NAME =
             ExtensionPointName.create("MetricsReloaded.metricProvider");
 
     /**
-     * Returns the list of metrics classes provided by this provider.
-     * @return the metrics classes for this provider
+     * Returns the list of metrics provided by this provider.
+     * @return the metrics for this provider
      */
     @NotNull
-    List<Class<? extends Metric>> getMetricClasses();
+    List<Metric> getMetrics();
 
     /**
      * Returns the list of prebuilt metrics profiles provided by this provider.
