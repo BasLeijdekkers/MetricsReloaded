@@ -48,6 +48,7 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
     protected Metric metric = null;
     protected MetricsResultsHolder resultsHolder = null;
     protected MetricsExecutionContext executionContext = null;
+    private PsiElementVisitor visitor;
 
     public void beginMetricsRun(Metric metric, MetricsResultsHolder resultsHolder,
                                 MetricsExecutionContext executionContext) {
@@ -57,17 +58,16 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         if (((BaseMetric)metric).requiresDependents() && getDependencyMap() == null) {
             calculateDependencies();
         }
+        visitor = createVisitor();
     }
 
     public void processFile(PsiFile file) {
-        final PsiElementVisitor visitor = createVisitor();
         file.accept(visitor);
     }
 
     protected abstract PsiElementVisitor createVisitor();
 
-    public void endMetricsRun() {
-    }
+    public void endMetricsRun() {}
 
     public DependencyMap getDependencyMap() {
         return executionContext.getUserData(dependencyMapKey);
