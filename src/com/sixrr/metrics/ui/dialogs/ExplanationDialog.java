@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ public class ExplanationDialog extends DialogWrapper {
 
     private final JTextPane textPane = new JTextPane();
     private final HyperlinkLabel urlLabel = new HyperlinkLabel();
-    private final JLabel moreInformationLabel = new JLabel(MetricsReloadedBundle.message(
-            "for.more.information.go.to"));
+    private final JLabel moreInformationLabel = new JLabel(MetricsReloadedBundle.message("for.more.information.go.to"));
 
     public ExplanationDialog(Project project) {
         super(project, false);
@@ -55,7 +54,7 @@ public class ExplanationDialog extends DialogWrapper {
         if (!resourceFound) {
             setDescriptionFromResource("/metricsDescriptions/UnderConstruction.html", metric);
         }
-        setTitle(MetricsReloadedBundle.message("explanation.dialog.title", metric.getDisplayName()));
+        setTitle(metric.getDisplayName());
         final String helpString = metric.getHelpDisplayString();
         final String helpURL = metric.getHelpURL();
         if (helpString == null) {
