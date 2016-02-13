@@ -17,11 +17,15 @@
 package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
@@ -94,17 +98,27 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
             private int mainTraversalProgress = 0;
 
             @Override
-            public void visitFile(PsiFile psiFile) {
-                super.visitFile(psiFile);
-                if (psiFile instanceof PsiCompiledElement) {
+            public void visitFile(PsiFile file) {
+                super.visitFile(file);
+                if (file instanceof PsiCompiledElement) {
                     return;
                 }
-                final String fileName = psiFile.getName();
+                final FileType fileType = file.getFileType();
+                if (fileType.isBinary()) {
+                    return;
+                }
+                final VirtualFile virtualFile = file.getVirtualFile();
+                final ProjectRootManager rootManager = ProjectRootManager.getInstance(file.getProject());
+                final ProjectFileIndex fileIndex = rootManager.getFileIndex();
+                if (fileIndex.isExcluded(virtualFile) || !fileIndex.isInSource(virtualFile)) {
+                    return;
+                }
+                final String fileName = file.getName();
                 indicator.setText(MetricsReloadedBundle.message("analyzing.progress.string", fileName));
                 mainTraversalProgress++;
 
                 for (MetricCalculator calculator : calculators) {
-                    calculator.processFile(psiFile);
+                    calculator.processFile(file);
                 }
                 indicator.setFraction((double) mainTraversalProgress / (double) numFiles);
             }
