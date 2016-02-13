@@ -88,9 +88,6 @@ public class MetricsDisplay {
 
     private void setupTable(JTable table, Project project) {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setRowSelectionAllowed(false);
-        table.setColumnSelectionAllowed(true);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.addMouseListener(new MetricTableMouseListener(project, table, configuration));
         final JTableHeader tableHeader = table.getTableHeader();
         tableHeader.addMouseListener(new MetricTableHeaderMouseListener(project, table));
@@ -115,10 +112,6 @@ public class MetricsDisplay {
             }
             final String longName = MetricsCategoryNameUtil.getLongNameForCategory(category);
             tabbedPane.add(tab, longName);
-            table.setCellSelectionEnabled(false);
-            table.setRowSelectionAllowed(false);
-            table.setColumnSelectionAllowed(true);
-            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             final MyColumnListener columnListener = new MyColumnListener(tableSpecification, table);
             final TableColumnModel columnModel = table.getColumnModel();
             columnModel.addColumnModelListener(columnListener);
@@ -139,10 +132,6 @@ public class MetricsDisplay {
             final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setResults(run.getResultsForCategory(category));
-            table.setCellSelectionEnabled(false);
-            table.setRowSelectionAllowed(false);
-            table.setColumnSelectionAllowed(true);
-            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
             final MetricTableSpecification specification =
