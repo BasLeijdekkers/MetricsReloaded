@@ -26,11 +26,11 @@ import org.jetbrains.kotlin.idea.KotlinFileType;
 public class LinesOfKotlinModuleMetric extends ModuleMetric {
 
     public String getDisplayName() {
-        return StockMetricsBundle.message("lines.of.groovy.display.name");
+        return StockMetricsBundle.message("lines.of.kotlin.display.name");
     }
 
     public String getAbbreviation() {
-        return StockMetricsBundle.message("lines.of.groovy.abbreviation");
+        return StockMetricsBundle.message("lines.of.kotlin.abbreviation");
     }
 
     public MetricType getType() {
