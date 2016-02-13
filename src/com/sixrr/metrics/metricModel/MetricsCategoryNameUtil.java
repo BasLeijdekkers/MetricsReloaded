@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package com.sixrr.metrics.metricModel;
 
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
-public class MetricsCategoryNameUtil {
+public final class MetricsCategoryNameUtil {
 
     private MetricsCategoryNameUtil() {}
 
-    public static String getLongNameForCategory(MetricCategory category) {
+    public static String getLongNameForCategory(@NotNull MetricCategory category) {
         switch (category) {
             case Class:
                 return MetricsReloadedBundle.message("class.metrics.long.name");
@@ -37,11 +38,12 @@ public class MetricsCategoryNameUtil {
                 return MetricsReloadedBundle.message("package.metrics.long.name");
             case Project:
                 return MetricsReloadedBundle.message("project.metrics.long.name");
+            default:
+                throw new AssertionError("unknown category: " + category);
         }
-        return null;
     }
 
-    public static String getShortNameForCategory(MetricCategory category) {
+    public static String getShortNameForCategory(@NotNull MetricCategory category) {
         switch (category) {
             case Class:
                 return MetricsReloadedBundle.message("class.metrics.short.name");
@@ -55,7 +57,8 @@ public class MetricsCategoryNameUtil {
                 return MetricsReloadedBundle.message("package.metrics.short.name");
             case Project:
                 return MetricsReloadedBundle.message("project.metrics.short.name");
+            default:
+                throw new AssertionError("unknown category: " + category);
         }
-        return null;
     }
 }

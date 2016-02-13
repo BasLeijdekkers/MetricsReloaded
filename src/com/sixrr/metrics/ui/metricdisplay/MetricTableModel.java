@@ -27,6 +27,7 @@ import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.table.AbstractTableModel;
@@ -44,8 +45,9 @@ class MetricTableModel extends AbstractTableModel {
     private MetricsResult results;
     private int[] rowPermutation;
 
-    MetricTableModel(MetricsResult results, String type, MetricTableSpecification tableSpecification,
-                     MetricsProfileRepository profileRepository) {
+    MetricTableModel(@NotNull MetricsResult results, @NotNull String type,
+                     @NotNull MetricTableSpecification tableSpecification,
+                     @NotNull MetricsProfileRepository profileRepository) {
         this.results = results;
         this.type = type;
         this.profileRepository = profileRepository;
@@ -123,7 +125,7 @@ class MetricTableModel extends AbstractTableModel {
         profileRepository.persistCurrentProfile();
     }
 
-    private MetricInstance[] findMetricInstances(Metric[] metrics) {
+    private MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
         final MetricsProfile profile = profileRepository.getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
@@ -146,7 +148,8 @@ class MetricTableModel extends AbstractTableModel {
             return type;
         } else {
             final MetricInstance metricInstance = metricsInstances[permutedColumn - 1];
-            return metricInstance.getMetric().getAbbreviation();
+            final Metric metric = metricInstance.getMetric();
+            return metric.getAbbreviation();
         }
     }
 
@@ -185,11 +188,7 @@ class MetricTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        if (hasSummaryRows()) {
-            return measuredObjects.length + 2;
-        } else {
-            return measuredObjects.length;
-        }
+        return hasSummaryRows() ? measuredObjects.length + 2 : measuredObjects.length;
     }
 
     public int getSortColumn() {
@@ -325,6 +324,7 @@ class MetricTableModel extends AbstractTableModel {
             this.ascending = ascending;
         }
 
+        @Override
         public int compare(Pair pair1, Pair pair2) {
             final Object value1 = pair1.getSecond();
             final Object value2 = pair2.getSecond();

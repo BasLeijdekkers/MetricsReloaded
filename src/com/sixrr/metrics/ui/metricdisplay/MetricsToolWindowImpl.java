@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,8 +48,8 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
 
-    public MetricsToolWindowImpl(Project project, MetricsPlugin plugin,
-                                 MetricsReloadedConfig config) {
+    public MetricsToolWindowImpl(@NotNull Project project, @NotNull MetricsPlugin plugin,
+                                 @NotNull MetricsReloadedConfig config) {
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
@@ -80,17 +81,12 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope,
+    public void show(@NotNull MetricsRun results, @NotNull MetricsProfile profile, @NotNull AnalysisScope scope,
                      boolean showOnlyWarnings) {
         currentScope = scope;
-        if (showOnlyWarnings) {
-            currentResults = results.filterRowsWithoutWarnings(profile);
-        } else {
-            currentResults = results;
-        }
+        currentResults = showOnlyWarnings ? results.filterRowsWithoutWarnings(profile) : results;
         currentProfile = profile;
-        final MetricDisplaySpecification displaySpecification =
-                currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.setMetricsResults(displaySpecification, currentResults);
         myToolWindow.setAvailable(true, null);
         myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format",
@@ -100,7 +96,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void update(MetricsRun results) {
+    public void update(@NotNull MetricsRun results) {
         currentResults = results;
         final MetricDisplaySpecification displaySpecification =
                 currentProfile.getDisplaySpecification();
@@ -108,7 +104,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void updateWithDiff(MetricsRun results) {
+    public void updateWithDiff(@NotNull MetricsRun results) {
         final MetricsRun prevResults = currentResults;
         currentResults = results;
         final MetricDisplaySpecification displaySpecification =
@@ -120,7 +116,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void reloadAsDiff(MetricsRun prevResults) {
+    public void reloadAsDiff(@NotNull MetricsRun prevResults) {
         final MetricDisplaySpecification displaySpecification =
                 currentProfile.getDisplaySpecification();
         metricsDisplay.overlayWithDiff(prevResults, displaySpecification);

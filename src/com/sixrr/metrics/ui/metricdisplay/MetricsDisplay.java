@@ -27,6 +27,7 @@ import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -49,8 +50,8 @@ public class MetricsDisplay {
     private final MetricsReloadedConfig configuration;
     private final MetricsPlugin metricsPlugin;
 
-    public MetricsDisplay(Project project, MetricsReloadedConfig configuration,
-                          MetricsPlugin metricsPlugin) {
+    public MetricsDisplay(@NotNull Project project, @NotNull MetricsReloadedConfig configuration,
+                          @NotNull MetricsPlugin metricsPlugin) {
         this.configuration = configuration;
         this.metricsPlugin = metricsPlugin;
         final JTable projectMetricsTable = new JBTable();
