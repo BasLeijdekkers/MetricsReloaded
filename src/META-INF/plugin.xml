@@ -39,6 +39,7 @@
   <depends optional="true" config-file="js-metrics.xml">JavaScript</depends>
   <depends optional="true" config-file="groovy-metrics.xml">org.intellij.groovy</depends>
   <depends optional="true" config-file="kotlin-metrics.xml">org.jetbrains.kotlin</depends>
+  <depends optional="true" config-file="scala-metrics.xml">org.intellij.scala</depends>
 
   <extensionPoints>
     <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider"/>
