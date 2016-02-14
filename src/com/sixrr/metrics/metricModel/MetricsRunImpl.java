@@ -67,45 +67,24 @@ public class MetricsRunImpl implements MetricsRun {
 
     @Override
     public void postProjectMetric(@NotNull Metric metric, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Project) {
-            logger.error("Posting a project metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Project);
         results.postValue(metric, "project", value);
     }
 
     @Override
     public void postModuleMetric(@NotNull Metric metric, @NotNull Module module, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Module) {
-            logger.error("Posting a module metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Module);
         results.postValue(metric, module.getName(), value);
     }
 
     @Override
     public void postPackageMetric(@NotNull Metric metric, @NotNull PsiPackage aPackage, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Package) {
-            logger.error("Posting a package metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Package);
-        final String packageName = aPackage.getQualifiedName();
-        results.postValue(metric, packageName, value);
+        results.postValue(metric, aPackage.getQualifiedName(), value);
     }
 
     @Override
     public void postClassMetric(@NotNull Metric metric, @NotNull PsiClass aClass, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Class) {
-            logger.error("Posting a class metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Class);
         final String qualifiedName = aClass.getQualifiedName();
         results.postValue(metric, qualifiedName, value);
@@ -114,11 +93,6 @@ public class MetricsRunImpl implements MetricsRun {
 
     @Override
     public void postInterfaceMetric(@NotNull Metric metric, @NotNull PsiClass anInterface, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Interface) {
-            logger.error("Posting an interface metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Interface);
         final String qualifiedName = anInterface.getQualifiedName();
         results.postValue(metric, qualifiedName, value);
@@ -127,11 +101,6 @@ public class MetricsRunImpl implements MetricsRun {
 
     @Override
     public void postMethodMetric(@NotNull Metric metric, @NotNull PsiMethod method, double value) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Method) {
-            logger.error("Posting a method metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Method);
         final String signature = MethodUtils.calculateSignature(method);
         results.postValue(metric, signature, value);
@@ -140,22 +109,12 @@ public class MetricsRunImpl implements MetricsRun {
 
     @Override
     public void postProjectMetric(@NotNull Metric metric, double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Project) {
-            logger.error("Posting a project metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Project);
         results.postValue(metric, "project", numerator, denominator);
     }
 
     @Override
     public void postModuleMetric(@NotNull Metric metric, @NotNull Module module, double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Module) {
-            logger.error("Posting a module metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Module);
         results.postValue(metric, module.getName(), numerator, denominator);
     }
@@ -163,11 +122,6 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postPackageMetric(@NotNull Metric metric, @NotNull PsiPackage aPackage,
                                   double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Package) {
-            logger.error("Posting a package metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Package);
         results.postValue(metric, aPackage.getQualifiedName(), numerator, denominator);
     }
@@ -175,11 +129,6 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postClassMetric(@NotNull Metric metric, @NotNull PsiClass aClass,
                                 double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Class) {
-            logger.error("Posting a class metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Class);
         results.postValue(metric, aClass.getQualifiedName(), numerator, denominator);
     }
@@ -187,11 +136,6 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postInterfaceMetric(@NotNull Metric metric, @NotNull PsiClass anInterface,
                                     double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Interface) {
-            logger.error("Posting an interface metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Interface);
         results.postValue(metric, anInterface.getQualifiedName(), numerator, denominator);
     }
@@ -199,11 +143,6 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postMethodMetric(@NotNull Metric metric, @NotNull PsiMethod method,
                                  double numerator, double denominator) {
-        final MetricCategory category = metric.getCategory();
-        if (category != MetricCategory.Method) {
-            logger.error("Posting a method metric result from a " + MetricsCategoryNameUtil
-                    .getShortNameForCategory(category) + " metric");
-        }
         final MetricsResult results = getResultsForCategory(MetricCategory.Method);
         final String signature = MethodUtils.calculateSignature(method);
         results.postValue(metric, signature, numerator, denominator);
