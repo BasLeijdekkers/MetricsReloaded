@@ -36,6 +36,8 @@ public final class MetricsCategoryNameUtil {
                 return MetricsReloadedBundle.message("module.metrics.long.name");
             case Package:
                 return MetricsReloadedBundle.message("package.metrics.long.name");
+            case FileType:
+                return MetricsReloadedBundle.message("file.type.metrics.long.name");
             case Project:
                 return MetricsReloadedBundle.message("project.metrics.long.name");
             default:
@@ -55,6 +57,8 @@ public final class MetricsCategoryNameUtil {
                 return MetricsReloadedBundle.message("module.metrics.short.name");
             case Package:
                 return MetricsReloadedBundle.message("package.metrics.short.name");
+            case FileType:
+                return MetricsReloadedBundle.message("file.type.metrics.short.name");
             case Project:
                 return MetricsReloadedBundle.message("project.metrics.short.name");
             default:

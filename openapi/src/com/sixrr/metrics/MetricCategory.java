@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,31 +17,42 @@
 package com.sixrr.metrics;
 
 /**
- * The MetricsCategory for a metric determines just what sort of program objects a metric is calculated for.
+ * The metric category for a metric determines just what sort of program objects a metric is calculated for.
  */
 public enum MetricCategory {
+
     /**
-     *  The metric is calculated for each method.
+     * The metric is calculated for each method.
      */
     Method,
+
     /**
-     *  The metric is calculated for each concrete or abstract class.
+     * The metric is calculated for each concrete or abstract class.
      */
     Class,
+
     /**
-     *  The metric is calculated for each interface.
+     * The metric is calculated for each interface.
      */
     Interface,
+
     /**
-     *   The metric is calculated for each package.
+     * The metric is calculated for each package.
      */
     Package,
+
     /**
-     *   The metric is calculated for each module.
+     * The metric is calculated for each module.
      */
     Module,
+
     /**
-     *  Tbe metric is calculated once for the project as a whole.
+     * The metrics is calculated for each file type.
+     */
+    FileType,
+
+    /**
+     * Tbe metric is calculated once for the project as a whole.
      */
     Project
 }

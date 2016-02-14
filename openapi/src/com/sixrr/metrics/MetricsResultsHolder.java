@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -34,6 +35,15 @@ public interface MetricsResultsHolder {
      * @param value  the value to post.
      */
     void postProjectMetric(Metric metric, double value);
+
+    /**
+     * Post a simple value for a file type metric.
+     *
+     * @param metric   the metric to post the value for.
+     * @param fileType the file type for which the metric value is calculated.
+     * @param value    the value to post.
+     */
+    void postFileTypeMetric(Metric metric, FileType fileType, double value);
 
     /**
      * Post a simple value for a module metric.

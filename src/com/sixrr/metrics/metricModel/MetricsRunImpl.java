@@ -18,6 +18,7 @@ package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -69,6 +70,12 @@ public class MetricsRunImpl implements MetricsRun {
     public void postProjectMetric(@NotNull Metric metric, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Project);
         results.postValue(metric, "project", value);
+    }
+
+    @Override
+    public void postFileTypeMetric(Metric metric, FileType fileType, double value) {
+        final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
+        results.postValue(metric, fileType.getDescription(), value);
     }
 
     @Override

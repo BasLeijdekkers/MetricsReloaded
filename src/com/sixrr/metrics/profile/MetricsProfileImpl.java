@@ -136,15 +136,17 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     @SuppressWarnings({"HardCodedStringLiteral"})
     private static void parseDisplaySpec(Element displaySpecElement, MetricDisplaySpecification spec) {
-        final MetricCategory[] categories = MetricCategory.values();
-        for (MetricCategory category : categories) {
+        for (MetricCategory category : MetricCategory.values()) {
             final String tag = category.name();
             final Element element = displaySpecElement.getChild(tag.toUpperCase());
-            final MetricTableSpecification projectDisplaySpecification = spec.getSpecification(category);
-            projectDisplaySpecification.setAscending("true".equals(element.getAttributeValue("ascending")));
-            projectDisplaySpecification.setSortColumn(Integer.parseInt(element.getAttributeValue("sort_column")));
-            projectDisplaySpecification.setColumnOrder(parseStringList(element.getAttributeValue("column_order")));
-            projectDisplaySpecification.setColumnWidths(parseIntList(element.getAttributeValue("column_widths")));
+            if (element == null) {
+                continue;
+            }
+            final MetricTableSpecification specification = spec.getSpecification(category);
+            specification.setAscending("true".equals(element.getAttributeValue("ascending")));
+            specification.setSortColumn(Integer.parseInt(element.getAttributeValue("sort_column")));
+            specification.setColumnOrder(parseStringList(element.getAttributeValue("column_order")));
+            specification.setColumnWidths(parseIntList(element.getAttributeValue("column_widths")));
         }
     }
 

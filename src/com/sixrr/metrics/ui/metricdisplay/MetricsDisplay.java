@@ -56,6 +56,8 @@ public class MetricsDisplay {
         this.metricsPlugin = metricsPlugin;
         final JTable projectMetricsTable = new JBTable();
         tables.put(MetricCategory.Project, projectMetricsTable);
+        final JTable fileTypeMetricsTable = new JBTable();
+        tables.put(MetricCategory.FileType, fileTypeMetricsTable);
         final JTable moduleMetricsTable = new JBTable();
         tables.put(MetricCategory.Module, moduleMetricsTable);
         final JTable packageMetricsTable = new JBTable();
@@ -67,6 +69,7 @@ public class MetricsDisplay {
         final JTable methodMetricsTable = new JBTable();
         tables.put(MetricCategory.Method, methodMetricsTable);
         setupTable(projectMetricsTable, project);
+        setupTable(fileTypeMetricsTable, project);
         setupTable(moduleMetricsTable, project);
         setupTable(packageMetricsTable, project);
         setupTable(classMetricsTable, project);
@@ -74,6 +77,8 @@ public class MetricsDisplay {
         setupTable(methodMetricsTable, project);
         tabbedPane.add(MetricsReloadedBundle.message("project.metrics"),
                 ScrollPaneFactory.createScrollPane(projectMetricsTable));
+        tabbedPane.add(MetricsReloadedBundle.message("file.type.metrics"),
+                ScrollPaneFactory.createScrollPane(fileTypeMetricsTable));
         tabbedPane.add(MetricsReloadedBundle.message("module.metrics"),
                 ScrollPaneFactory.createScrollPane(moduleMetricsTable));
         tabbedPane.add(MetricsReloadedBundle.message("package.metrics"),
