@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,11 +22,15 @@ import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 public class TodoCommentCountProjectCalculator extends ElementCountProjectCalculator {
+
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends PsiRecursiveElementVisitor {
+
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             if (TodoUtil.isTodoComment(comment)) {

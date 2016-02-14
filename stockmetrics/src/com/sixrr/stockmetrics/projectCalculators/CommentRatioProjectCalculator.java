@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,16 +21,20 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class CommentRatioProjectCalculator extends ElementRatioProjectCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitJavaFile(file);
+    private class Visitor extends PsiRecursiveElementVisitor {
+
+        @Override
+        public void visitFile(PsiFile file) {
+            super.visitFile(file);
             denominator += LineUtil.countLines(file);
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             numerator += LineUtil.countLines(comment);

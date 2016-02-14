@@ -17,9 +17,9 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class LinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
@@ -35,7 +35,7 @@ public class LinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
         public void visitFile(PsiFile file) {

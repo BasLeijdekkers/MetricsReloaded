@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -28,14 +31,7 @@ public class SourceLinesOfCodeModuleCalculator extends ElementCountModuleCalcula
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
-
-        @Override
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitJavaFile(file);
-            final int lineCount = LineUtil.countLines(file);
-            incrementElementCount(file, lineCount);
-        }
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
         public void visitComment(PsiComment comment) {
@@ -52,6 +48,8 @@ public class SourceLinesOfCodeModuleCalculator extends ElementCountModuleCalcula
                 return;
             }
             elementsCountPerModule.createBucket(module);
+            final int lineCount = LineUtil.countLines(file);
+            incrementElementCount(file, lineCount);
         }
     }
 }

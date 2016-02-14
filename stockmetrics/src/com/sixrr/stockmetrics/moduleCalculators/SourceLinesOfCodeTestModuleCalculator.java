@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCal
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
         public void visitFile(PsiFile file) {
@@ -39,11 +39,6 @@ public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCal
                 return;
             }
             elementsCountPerModule.createBucket(module);
-        }
-
-        @Override
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitJavaFile(file);
             if (TestUtils.isTest(file)) {
                 final int lineCount = LineUtil.countLines(file);
                 incrementElementCount(file, lineCount);

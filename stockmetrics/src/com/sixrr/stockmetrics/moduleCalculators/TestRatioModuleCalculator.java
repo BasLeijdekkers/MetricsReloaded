@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class TestRatioModuleCalculator extends ElementRatioModuleCalculator {
 
@@ -32,18 +31,7 @@ public class TestRatioModuleCalculator extends ElementRatioModuleCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
-
-        @Override
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitFile(file);
-
-            final int lineCount = LineUtil.countLines(file);
-            incrementDenominator(file, lineCount);
-            if (TestUtils.isTest(file)) {
-                incrementNumerator(file, lineCount);
-            }
-        }
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
         public void visitFile(PsiFile file) {
@@ -54,6 +42,11 @@ public class TestRatioModuleCalculator extends ElementRatioModuleCalculator {
             }
             numeratorPerModule.createBucket(module);
             denominatorPerModule.createBucket(module);
+            final int lineCount = LineUtil.countLines(file);
+            incrementDenominator(file, lineCount);
+            if (TestUtils.isTest(file)) {
+                incrementNumerator(file, lineCount);
+            }
         }
     }
 }

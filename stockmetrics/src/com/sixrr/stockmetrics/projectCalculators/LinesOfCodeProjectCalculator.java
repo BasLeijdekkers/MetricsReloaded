@@ -29,12 +29,14 @@ public class LinesOfCodeProjectCalculator extends ElementCountProjectCalculator 
         this.fileType = fileType;
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends PsiElementVisitor {
 
+        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             if (file.getFileType() == fileType) {

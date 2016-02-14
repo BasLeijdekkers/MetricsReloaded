@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,30 +17,32 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class LinesOfProductCodeModuleCalculator extends ElementCountModuleCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitFile(file);
-            if (TestUtils.isProduction(file)) {
-                final int lineCount = LineUtil.countLines(file);
-                incrementElementCount(file, lineCount);
-            }
-        }
+    private class Visitor extends PsiRecursiveElementVisitor {
 
+        @Override
         public void visitFile(PsiFile file) {
+            super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
             if (module != null) {
                 elementsCountPerModule.createBucket(module);
+            }
+            if (TestUtils.isProduction(file)) {
+                final int lineCount = LineUtil.countLines(file);
+                incrementElementCount(file, lineCount);
             }
         }
     }
