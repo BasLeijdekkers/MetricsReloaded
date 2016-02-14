@@ -16,7 +16,6 @@
 
 package com.sixrr.stockmetrics.moduleMetrics;
 
-import com.intellij.ide.highlighter.JavaFileType;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
@@ -25,14 +24,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class LinesOfCodeModuleMetric extends ModuleMetric {
 
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.code.display.name");
     }
 
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("lines.of.code.abbreviation");
     }
 
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }
@@ -40,6 +42,6 @@ public class LinesOfCodeModuleMetric extends ModuleMetric {
     @Nullable
     @Override
     public MetricCalculator createCalculator() {
-        return new LinesOfCodeModuleCalculator(JavaFileType.INSTANCE);
+        return new LinesOfCodeModuleCalculator(null);
     }
 }

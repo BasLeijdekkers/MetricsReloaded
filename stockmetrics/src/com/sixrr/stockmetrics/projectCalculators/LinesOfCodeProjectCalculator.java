@@ -39,7 +39,7 @@ public class LinesOfCodeProjectCalculator extends ElementCountProjectCalculator 
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            if (file.getFileType() == fileType) {
+            if (fileType == null || file.getFileType() == fileType) {
                 numElements += LineUtil.countLines(file);
             }
         }

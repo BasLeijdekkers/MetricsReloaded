@@ -40,7 +40,7 @@ public class LinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            if (file.getFileType() == fileType) {
+            if (fileType == null || file.getFileType() == fileType) {
                 final int lineCount = LineUtil.countLines(file);
                 incrementElementCount(file, lineCount);
             }

@@ -274,6 +274,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new NumTopLevelClassesModuleMetric());
         metrics.add(new NumTopLevelInterfacesModuleMetric());
         metrics.add(new LinesOfCodeModuleMetric());
+        metrics.add(new LinesOfJavaModuleMetric());
         metrics.add(new LinesOfTestCodeModuleMetric());
         metrics.add(new LinesOfProductCodeModuleMetric());
         metrics.add(new LinesOfHTMLModuleMetric());
@@ -328,6 +329,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new LinesOfProductCodeProjectMetric());
         metrics.add(new LinesOfTestCodeProjectMetric());
         metrics.add(new LinesOfHTMLProjectMetric());
+        metrics.add(new LinesOfJavaProjectMetric());
         metrics.add(new LinesOfXMLProjectMetric());
         metrics.add(new TestRatioProjectMetric());
         metrics.add(new PercentClassesJavadocedProjectMetric());
