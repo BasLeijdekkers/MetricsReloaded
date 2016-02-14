@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class MethodCallMapImpl implements MethodCallMap {
                         allCalls.add(reference);
                         if (TestUtils.isTest(referencingClass)) {
                             testCalls.add(reference);
-                        } else {
+                        } else if (TestUtils.isProduction(referencingClass)) {
                             productCalls.add(reference);
                         }
                     }
