@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class MetricInstanceImpl implements MetricInstance {
         upperThreshold = o.getUpperThreshold();
         lowerThresholdEnabled = o.isLowerThresholdEnabled();
         lowerThreshold = o.getLowerThreshold();
+        enabled = o.isEnabled();
     }
 
     public int compareTo(MetricInstance o) {
