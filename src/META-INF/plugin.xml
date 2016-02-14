@@ -17,20 +17,26 @@
 <idea-plugin version="2" url="https://github.com/BasLeijdekkers/MetricsReloaded">
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
+  <!--<depends>com.intellij.modules.lang</depends>-->
   <description><![CDATA[
-    Many automated Java, Groovy, Kotlin, JSP, HTML, CSS, JavaScript & XML code metrics for IntelliJ IDEA.
-    This version of MetricsReloaded is compatible with IntelliJ IDEA 14 and newer.
+    Many automated Java, Groovy, Kotlin, Scala, JSP, HTML, CSS, JavaScript & XML code metrics for IntelliJ IDEA.
 
     <h4>Getting started</h4>
-    <p>Select the menu item <code>Analyze | Calculate Metrics...</code>
+    <p>Select the menu item <code>Analyze | Calculate Metrics...</code>.
+    Try the <i>Lines of code metrics</i> profile first, if you have't used MetricsReloaded before.
     <p>Metrics can also be calculated from the command line for integration into build servers.
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must not be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.2.1</version>
+  <version>1.3</version>
   <change-notes><![CDATA[
-  - Fixed some issues with the Martin packaging metrics.<br>
-  - Some fixes & changes in the metric abbreviations.<br>
+  - Added Scala lines of code metrics.<br>
+  - Several metrics that previously counted only Java code, now no longer have that restriction.
+  This includes the several of the <i>Comment ratio</i>, <i>Test ratio</i>, <i>Non-comment lines of code</i> and
+  <i>Lines of code</i> metrics.<br>
+  - Metrics are no longer calculated if the code is excluded or is located in test data.<br>
+  - Improved results table selection behaviour.<br>
+  - Some more bug fixes, performance and memory usage improvements.<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
