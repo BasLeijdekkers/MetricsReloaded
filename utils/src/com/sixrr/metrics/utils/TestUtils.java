@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.codeInsight.AnnotationUtil;
 import org.jetbrains.annotations.NonNls;
 
-public class TestUtils {
+public final class TestUtils {
 
     private TestUtils() {}
 
@@ -59,16 +59,14 @@ public class TestUtils {
         if (virtualFile == null) {
             return false;
         }
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(
-                project);
+        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
         final ProjectFileIndex fileIndex = rootManager.getFileIndex();
         return fileIndex.isInSourceContent(virtualFile) && !fileIndex.isInTestSourceContent(virtualFile);
     }
 
     public static boolean isTest(PsiFile file) {
-        final PsiManager manager = file.getManager();
         final VirtualFile virtualFile = file.getVirtualFile();
-        final Project project = manager.getProject();
+        final Project project = file.getProject();
         return isTest(virtualFile, project);
     }
 
@@ -127,13 +125,11 @@ public class TestUtils {
     }
 
     public static boolean isJUnitAssertCall(PsiMethodCallExpression call) {
-        final PsiMethod containingMethod = PsiTreeUtil.getParentOfType(call,
-                                                                     PsiMethod.class);
+        final PsiMethod containingMethod = PsiTreeUtil.getParentOfType(call, PsiMethod.class);
         if (containingMethod == null) {
             return false;
         }
-        final PsiReferenceExpression methodExpression =
-                call.getMethodExpression();
+        final PsiReferenceExpression methodExpression = call.getMethodExpression();
         @NonNls final String methodName = methodExpression.getReferenceName();
         return methodName != null && (methodName.startsWith("assert") ||
                 "fail".equals(methodName)) && isJUnitTestMethod(containingMethod);
