@@ -23,13 +23,16 @@
 
     <h4>Getting started</h4>
     <p>Select the menu item <code>Analyze | Calculate Metrics...</code>.
-    Try the <i>Lines of code metrics</i> profile first, if you have't used MetricsReloaded before.
+    Try the <i>Lines of code metrics</i> profile first, if you haven't used MetricsReloaded before.
     <p>Metrics can also be calculated from the command line for integration into build servers.
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must not be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.3</version>
+  <version>1.3.1</version>
   <change-notes><![CDATA[
+  - Apparently I uploaded a broken version 1.3 of MetricsReloaded. Version 1.3.1 should unbreak it.
+   It contains no other changes. Apologies!<br>
+  Changes in 1.3:<br>
   - Added Scala lines of code metrics.<br>
   - Several metrics that previously counted only Java code, now no longer have that restriction.
   This includes the several of the <i>Comment ratio</i>, <i>Test ratio</i>, <i>Non-comment lines of code</i> and
