@@ -5,14 +5,13 @@
   <property file="build.properties"/>
 
   <!-- override these two in a build.properties file -->
-  <property name="idea.dir" value="/Applications/IntelliJ IDEA 13"/>
-  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea13"/>
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA 14.1"/>
+  <property name="idea.plugin.dir"
+            value="${user.home}/Library/Application Support/IntelliJIdea14"/>
 
   <property name="src.dir" value="src"/>
   <property name="build.classes.dir" value="build/classes"/>
   <property name="debug" value="true"/>
-  <property name="optimize" value="off"/>
-  <property name="deprecation" value="off"/>
   <property name="jar.file" value="build/MetricsReloaded.jar"/>
   <property name="resources.jar.file" value="build/resources_en.jar"/>
   <property name="project.fullname" value="MetricsReloaded"/>
@@ -62,6 +61,10 @@
   <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
 
   <target name="prepare">
+    <loadfile property="version" srcFile="${src.dir}/version.txt"/>
+    <replaceregexp file="${src.dir}/META-INF/plugin.xml"
+                   match="&lt;version&gt;[\d\.]+&lt;/version&gt;"
+                   replace="&lt;version&gt;${version}&lt;/version&gt;"/>
     <mkdir dir="${openapi.build.classes.dir}"/>
     <mkdir dir="${stockmetrics.build.classes.dir}"/>
     <mkdir dir="${utils.build.classes.dir}"/>
@@ -189,6 +192,7 @@
       <zipfileset file="lib/jfreechart-0.9.16.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset file="lib/args4j-2.32.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset dir="license" prefix="MetricsReloaded/license"/>
+      <zipfileset file="${src.dir}/version.txt"/>
     </zip>
   </target>
 </project>
