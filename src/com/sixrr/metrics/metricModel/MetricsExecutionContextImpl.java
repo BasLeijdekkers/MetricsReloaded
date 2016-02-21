@@ -110,7 +110,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
                 final VirtualFile virtualFile = file.getVirtualFile();
                 final ProjectRootManager rootManager = ProjectRootManager.getInstance(file.getProject());
                 final ProjectFileIndex fileIndex = rootManager.getFileIndex();
-                if (fileIndex.isExcluded(virtualFile) || !fileIndex.isInSource(virtualFile)) {
+                if (fileIndex.isExcluded(virtualFile) || !fileIndex.isInContent(virtualFile)) {
                     return;
                 }
                 final String fileName = file.getName();
