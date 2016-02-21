@@ -1,0 +1,5 @@
+<idea-plugin version="2">
+  <extensions defaultExtensionNs="MetricsReloaded">
+    <metricProvider implementation="com.sixrr.stockmetrics.JavaMetricProvider"/>
+  </extensions>
+</idea-plugin>
