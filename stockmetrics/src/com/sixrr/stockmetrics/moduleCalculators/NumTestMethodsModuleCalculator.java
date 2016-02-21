@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.metrics.utils.JavaTestUtils;
 
 public class NumTestMethodsModuleCalculator extends ElementCountModuleCalculator {
 
@@ -36,7 +36,7 @@ public class NumTestMethodsModuleCalculator extends ElementCountModuleCalculator
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            if (TestUtils.isJUnitTestMethod(method)) {
+            if (JavaTestUtils.isJUnitTestMethod(method)) {
                 incrementElementCount(method, 1);
             }
         }

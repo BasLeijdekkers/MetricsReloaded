@@ -19,7 +19,7 @@ package com.sixrr.stockmetrics.packageCalculators;
 import com.intellij.psi.*;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.metrics.utils.JavaTestUtils;
 
 import java.util.Set;
 
@@ -55,7 +55,7 @@ public class NumTestAssertsRecursivePackageCalculator extends PackageCalculator 
         @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
-            if (TestUtils.isJUnitAssertCall(expression)) {
+            if (JavaTestUtils.isJUnitAssertCall(expression)) {
                 final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(expression);
                 for (PsiPackage aPackage : packages) {
                     numTestAssertsPerPackage.incrementBucketValue(aPackage, 1);

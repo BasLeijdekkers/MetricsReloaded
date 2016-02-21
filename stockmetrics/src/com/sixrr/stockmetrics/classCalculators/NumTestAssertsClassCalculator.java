@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,17 +21,19 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.metrics.utils.JavaTestUtils;
 
 public class NumTestAssertsClassCalculator extends ClassCalculator {
     private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             final int prevElementCount = elementCount;
             if (!ClassUtils.isAnonymous(aClass)) {
@@ -46,9 +48,10 @@ public class NumTestAssertsClassCalculator extends ClassCalculator {
             }
         }
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
-            if (TestUtils.isJUnitAssertCall(expression)) {
+            if (JavaTestUtils.isJUnitAssertCall(expression)) {
                 elementCount++;
             }
         }

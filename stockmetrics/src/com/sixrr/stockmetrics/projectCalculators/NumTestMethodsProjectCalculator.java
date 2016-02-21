@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,18 +19,21 @@ package com.sixrr.stockmetrics.projectCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.metrics.utils.JavaTestUtils;
 
 public class NumTestMethodsProjectCalculator extends ElementCountProjectCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            if (TestUtils.isJUnitTestMethod(method)) {
+            if (JavaTestUtils.isJUnitTestMethod(method)) {
                 numElements++;
             }
         }

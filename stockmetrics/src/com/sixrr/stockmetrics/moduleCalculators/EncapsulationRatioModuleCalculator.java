@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.ClassReferenceCache;
 import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.metrics.utils.TestUtils;
 
 import java.util.Collection;
 
