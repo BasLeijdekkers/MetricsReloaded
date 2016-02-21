@@ -19,6 +19,8 @@ package com.sixrr.stockmetrics;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
+import com.sixrr.stockmetrics.fileTypeMetrics.LinesOfCodeFileTypeMetric;
+import com.sixrr.stockmetrics.fileTypeMetrics.NumFilesFileTypeMetric;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
@@ -33,10 +35,16 @@ public class DefaultMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(30);
+        final List<Metric> metrics = new ArrayList<Metric>(34);
+        initializeFileTypeMetrics(metrics);
         initializeModuleMetrics(metrics);
         initializeProjectMetrics(metrics);
         return metrics;
+    }
+
+    private static void initializeFileTypeMetrics(Collection<Metric> metrics) {
+        metrics.add(new LinesOfCodeFileTypeMetric());
+        metrics.add(new NumFilesFileTypeMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
@@ -47,6 +55,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new LinesOfProductCodeModuleMetric());
         metrics.add(new LinesOfTestCodeModuleMetric());
         metrics.add(new LinesOfXMLModuleMetric());
+        metrics.add(new NumFilesModuleMetric());
         metrics.add(new NumHTMLFilesModuleMetric());
         metrics.add(new NumXMLFilesModuleMetric());
         metrics.add(new SourceLinesOfCodeModuleMetric());
@@ -65,6 +74,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new LinesOfProductCodeProjectMetric());
         metrics.add(new LinesOfTestCodeProjectMetric());
         metrics.add(new LinesOfXMLProjectMetric());
+        metrics.add(new NumFilesProjectMetric());
         metrics.add(new NumHTMLFilesProjectMetric());
         metrics.add(new NumXMLFilesProjectMetric());
         metrics.add(new SourceLinesOfCodeProductProjectMetric());
@@ -87,6 +97,7 @@ public class DefaultMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
+        profile.addMetric(LinesOfCodeFileTypeMetric.class);
         profile.addMetric(LinesOfCodeModuleMetric.class);
         profile.addMetric(LinesOfCodeProjectMetric.class);
         profile.addMetric(LinesOfHTMLModuleMetric.class);
@@ -103,6 +114,9 @@ public class DefaultMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createFileCountProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
+        profile.addMetric(NumFilesFileTypeMetric.class);
+        profile.addMetric(NumFilesModuleMetric.class);
+        profile.addMetric(NumFilesProjectMetric.class);
         profile.addMetric(NumHTMLFilesModuleMetric.class);
         profile.addMetric(NumHTMLFilesProjectMetric.class);
         profile.addMetric(NumXMLFilesModuleMetric.class);

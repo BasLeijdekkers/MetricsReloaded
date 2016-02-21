@@ -34,10 +34,6 @@ public class FileCountModuleCalculator extends ModuleCalculator {
         this.fileType = fileType;
     }
 
-    public FileCountModuleCalculator() {
-        this(null);
-    }
-
     protected boolean satisfies(PsiFile file) {
         return file.getFileType() == fileType;
     }

@@ -20,6 +20,7 @@ import com.intellij.analysis.AnalysisScope;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPackage;
@@ -75,7 +76,11 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postFileTypeMetric(Metric metric, FileType fileType, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
-        results.postValue(metric, fileType.getDescription(), value);
+        final String description = fileType.getDescription();
+        final String trimmedDescription =
+                StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(description,
+                        " (syntax highlighting only)"), " files"), " source");
+        results.postValue(metric, trimmedDescription, value);
     }
 
     @Override

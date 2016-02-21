@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,15 +28,17 @@ public class FileCountProjectCalculator extends ElementCountProjectCalculator {
         this.fileType = fileType;
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends PsiElementVisitor {
 
+        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            if (file.getFileType() == fileType) {
+            if (fileType == null || file.getFileType() == fileType) {
                 numElements++;
             }
         }
