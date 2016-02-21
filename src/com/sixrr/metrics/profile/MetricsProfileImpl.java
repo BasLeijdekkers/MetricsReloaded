@@ -35,20 +35,20 @@ import java.util.*;
 public class MetricsProfileImpl implements MetricsProfile {
 
     private String name;
-    private Map<String, MetricInstance> name2instance = new HashMap<String, MetricInstance>();
+    private final Map<String, MetricInstance> id2instance = new HashMap<String, MetricInstance>();
     private MetricDisplaySpecification displaySpecification = new MetricDisplaySpecification();
     private boolean builtIn = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
         this.name = name;
         for (MetricInstance metricInstance : metrics) {
-            name2instance.put(metricInstance.getMetric().getID(), metricInstance);
+            id2instance.put(metricInstance.getMetric().getID(), metricInstance);
         }
     }
 
     @Override
     public void addMetricInstance(@NotNull MetricInstance metricInstance) {
-        name2instance.put(metricInstance.getMetric().getID(), metricInstance);
+        id2instance.put(metricInstance.getMetric().getID(), metricInstance);
     }
 
     public MetricDisplaySpecification getDisplaySpecification() {
@@ -81,16 +81,16 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     public List<MetricInstance> getMetricInstances() {
-        final ArrayList<MetricInstance> result = new ArrayList<MetricInstance>(name2instance.values());
+        final ArrayList<MetricInstance> result = new ArrayList<MetricInstance>(id2instance.values());
         Collections.sort(result);
         return result;
     }
 
     public MetricsProfileImpl clone() throws CloneNotSupportedException {
         final MetricsProfileImpl out = (MetricsProfileImpl) super.clone();
-        out.name2instance.clear();
-        for (Map.Entry<String, MetricInstance> entry : name2instance.entrySet()) {
-            out.name2instance.put(entry.getKey(), entry.getValue().clone());
+        out.id2instance.clear();
+        for (Map.Entry<String, MetricInstance> entry : id2instance.entrySet()) {
+            out.id2instance.put(entry.getKey(), entry.getValue().clone());
         }
         out.displaySpecification = new MetricDisplaySpecification();
         return out;
@@ -103,12 +103,12 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     @Nullable
     public MetricInstance getMetricInstance(String metricID) {
-        return name2instance.get(metricID);
+        return id2instance.get(metricID);
     }
 
     @SuppressWarnings("HardCodedStringLiteral")
     @Nullable
-    public static MetricsProfile loadFromFile(File file) {
+    public static MetricsProfile loadFromFile(File file, MetricRepository metrics) {
         final Document doc;
         try {
             final SAXBuilder builder = new SAXBuilder();
@@ -121,7 +121,7 @@ public class MetricsProfileImpl implements MetricsProfile {
         final List<Element> children = profileRoot.getChildren("METRIC");
         final List<MetricInstance> profileMetrics = new ArrayList<MetricInstance>(200);
         for (final Element metricElement : children) {
-            final MetricInstance metric = parseMetric(metricElement);
+            final MetricInstance metric = parseMetric(metricElement, metrics);
             if (metric != null) {
                 profileMetrics.add(metric);
             }
@@ -181,7 +181,7 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     @SuppressWarnings({"HardCodedStringLiteral"})
     @Nullable
-    private static MetricInstance parseMetric(Element metricElement) {
+    private static MetricInstance parseMetric(Element metricElement, MetricRepository metrics) {
         final String className = metricElement.getAttributeValue("className");
 
         final String lowerThresholdEnabledString =
@@ -212,12 +212,8 @@ public class MetricsProfileImpl implements MetricsProfile {
         if (enabledString != null) {
             enabled = "true".equals(enabledString);
         }
-        final Metric metric;
-        try {
-            final Class<? extends Metric> metricClass =
-                    (Class<? extends Metric>) Class.forName(className);
-            metric = metricClass.newInstance();
-        } catch (Exception e) {
+        final Metric metric = metrics.getMetric(className);
+        if (metric == null) {
             return null;
         }
         final MetricInstance metricInstance = new MetricInstanceImpl(metric);
