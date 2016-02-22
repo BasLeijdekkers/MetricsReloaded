@@ -89,7 +89,7 @@
     <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
   </target>
 
-  <target name="compile-utils" depends="prepare, create-openapi-jar">
+  <target name="compile-utils" depends="prepare, compile-openapi">
     <javac srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
@@ -103,7 +103,7 @@
     <delete failonerror="false" dir="${utils.build.classes.dir}"/>
   </target>
   
-  <target name="compile-stockmetrics" depends="prepare, create-openapi-jar, create-utils-jar">
+  <target name="compile-stockmetrics" depends="prepare, compile-openapi, compile-utils">
     <javac srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
@@ -124,7 +124,7 @@
     </jar>
   </target>
 
-  <target name="compile" depends="prepare, create-openapi-jar, create-utils-jar">
+  <target name="compile" depends="prepare, compile-openapi, compile-utils">
     <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}" includeantruntime="false"
             includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
@@ -144,9 +144,8 @@
     <delete failonerror="false" dir="${build.classes.dir}"/>
   </target>
 
-  <target name="deploy" depends="clean,create-jars,create-stockmetrics-jars,create-utils-jar"
+  <target name="deploy" depends="create-utils-jar, create-openapi-jar, create-jars, create-stockmetrics-jars"
           description="deploy the plugin to the plugin directory">
-
     <mkdir dir="${idea.plugin.dir}"/>
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded"/>
     <mkdir dir="${idea.plugin.dir}/MetricsReloaded/doc"/>
@@ -182,7 +181,7 @@
     <delete failonerror="false" dir="${utils.jar.file}"/>
   </target>
 
-  <target name="package" depends="create-jars"
+  <target name="package" depends="create-openapi-jar, create-utils-jar, create-stockmetrics-jars, create-jars"
           description="create zipfile for uploading to plugins.intellij.net">
     <zip destfile="${dist.zip.file}">
       <zipfileset file="${jar.file}" prefix="MetricsReloaded/lib"/>
@@ -195,7 +194,7 @@
       <zipfileset file="lib/jfreechart-0.9.16.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset file="lib/args4j-2.32.jar" prefix="MetricsReloaded/lib"/>
       <zipfileset dir="license" prefix="MetricsReloaded/license"/>
-      <zipfileset file="${src.dir}/version.txt"/>
+      <zipfileset file="${src.dir}/version.txt" prefix="MetricsReloaded"/>
     </zip>
   </target>
 </project>
