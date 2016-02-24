@@ -28,6 +28,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.util.io.StreamUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
@@ -39,6 +41,7 @@ import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
+import com.sixrr.metrics.ui.SearchUtil;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -296,28 +299,26 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void populateTree(String filter) {
-        final MetricTreeNode root =
-                new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
+        final MetricTreeNode root = new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
         final Map<MetricCategory, MetricTreeNode> categoryNodes =
                 new EnumMap<MetricCategory, MetricTreeNode>(MetricCategory.class);
 
         if (profile != null) {
             final List<MetricInstance> metrics = profile.getMetricInstances();
+            final List<String> filterTokens = SearchUtil.tokenizeFilter(filter);
             for (final MetricInstance metricInstance : metrics) {
                 final Metric metric = metricInstance.getMetric();
-                if (!isMetricAccepted(metric, filter)) {
+                if (!isMetricAccepted(metric, filterTokens)) {
                     continue;
                 }
                 final MetricCategory category = metric.getCategory();
                 MetricTreeNode categoryNode = categoryNodes.get(category);
                 if (categoryNode == null) {
-                    categoryNode = new MetricTreeNode(
-                            MetricsCategoryNameUtil.getLongNameForCategory(category), true);
+                    categoryNode = new MetricTreeNode(MetricsCategoryNameUtil.getLongNameForCategory(category), true);
                     root.add(categoryNode);
                     categoryNodes.put(category, categoryNode);
                 }
-                final MetricTreeNode metricNode =
-                        new MetricTreeNode(metricInstance, metricInstance.isEnabled());
+                final MetricTreeNode metricNode = new MetricTreeNode(metricInstance, metricInstance.isEnabled());
                 categoryNode.add(metricNode);
             }
         }
@@ -773,42 +774,47 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
     }
 
-    private static boolean isMetricAccepted(Metric metric, String filter) {
-        final String lowerCaseFilterString = filter.toLowerCase();
-        if (metric.getDisplayName().toLowerCase().indexOf(lowerCaseFilterString) >= 1) {
-            return true;
-        }
-        @NonNls final String descriptionName = "/metricsDescriptions/" + metric.getID() + ".html";
-        try {
-            final InputStream resourceStream = metric.getClass().getResourceAsStream(descriptionName);
-            try {
-                return readStreamContents(resourceStream).toLowerCase().contains(lowerCaseFilterString);
-            } finally {
-                if (resourceStream != null) {
-                    resourceStream.close();
-                } else {
-                    logger.warn("no description found for " + metric.getID());
+    private static boolean isMetricAccepted(Metric metric, List<String> filterTokens) {
+        String description = null;
+        for (String filterToken : filterTokens) {
+            if (StringUtil.containsIgnoreCase(metric.getAbbreviation(), filterToken)) {
+                continue;
+            }
+            if (StringUtil.containsIgnoreCase(metric.getDisplayName(), filterToken)) {
+                continue;
+            }
+            if (StringUtil.containsIgnoreCase(MetricsCategoryNameUtil.getLongNameForCategory(metric.getCategory()), filterToken)) {
+                continue;
+            }
+            if (description == null) {
+                @NonNls final String descriptionName = "/metricsDescriptions/" + metric.getID() + ".html";
+                try {
+                    final InputStream resourceStream = metric.getClass().getResourceAsStream(descriptionName);
+                    try {
+                        if (resourceStream == null) {
+                            description = "";
+                        }
+                        else {
+                            description = StringUtil.stripHtml(StreamUtil.readText(resourceStream, "UTF-8"), false);
+                        }
+                    } finally {
+                        if (resourceStream != null) {
+                            resourceStream.close();
+                        } else {
+                            logger.warn("no description found for " + metric.getID());
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.warn("problem reading metric description", e);
+                    return false;
                 }
             }
-        } catch (IOException e) {
-            logger.warn("problem reading metric description", e);
+            if (StringUtil.containsIgnoreCase(description, filterToken)) {
+                continue;
+            }
             return false;
         }
-    }
-
-    private static String readStreamContents(InputStream resourceStream) throws IOException {
-        if (resourceStream == null) {
-            return "";
-        }
-        final StringBuilder out = new StringBuilder();
-        while (true) {
-            final int c = resourceStream.read();
-            if (c == -1) {
-                break;
-            }
-            out.append((char) c);
-        }
-        return out.toString();
+        return true;
     }
 
     private class CopyProfileAction extends AbstractAction {
