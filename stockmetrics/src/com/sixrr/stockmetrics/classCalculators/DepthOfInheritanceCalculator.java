@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,27 +22,25 @@ import com.intellij.psi.PsiElementVisitor;
 
 public class DepthOfInheritanceCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (isConcreteClass(aClass)) {
+            if (isConcreteClass(aClass) && !aClass.isEnum()) {
                 final int depth = getInheritanceDepth(aClass);
                 postMetric(aClass, depth);
             }
         }
-    }
 
-    private static int getInheritanceDepth(PsiClass aClass) {
-        final PsiClass superClass = aClass.getSuperClass();
-        if (superClass == null) {
-            return 0;
-        } else {
-            return getInheritanceDepth(superClass) + 1;
+        private int getInheritanceDepth(PsiClass aClass) {
+            final PsiClass superClass = aClass.getSuperClass();
+            return superClass == null ? 0 : getInheritanceDepth(superClass) + 1;
         }
     }
 }
