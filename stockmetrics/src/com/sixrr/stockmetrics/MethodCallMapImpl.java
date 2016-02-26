@@ -16,17 +16,16 @@
 
 package com.sixrr.stockmetrics;
 
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.sixrr.metrics.utils.TestUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MethodCallMapImpl implements MethodCallMap {
     private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToCallPointMap =
@@ -36,6 +35,7 @@ public class MethodCallMapImpl implements MethodCallMap {
     private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToProductCallPointMap =
             new HashMap<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>>(1024);
 
+    @Override
     public Set<PsiReference> calculateMethodCallPoints(PsiMethod method) {
         final SmartPointerManager manager = SmartPointerManager.getInstance(method.getProject());
         final SmartPsiElementPointer<PsiMethod> pointer = manager.createSmartPsiElementPointer(method);
@@ -45,6 +45,7 @@ public class MethodCallMapImpl implements MethodCallMap {
         return methodToCallPointMap.get(pointer);
     }
 
+    @Override
     public Set<PsiReference> calculateTestMethodCallPoints(PsiMethod method) {
         final SmartPointerManager manager = SmartPointerManager.getInstance(method.getProject());
         final SmartPsiElementPointer<PsiMethod> pointer = manager.createSmartPsiElementPointer(method);
@@ -54,8 +55,8 @@ public class MethodCallMapImpl implements MethodCallMap {
         return methodToTestCallPointMap.get(pointer);
     }
 
-    public Set<PsiReference> calculateProductMethodCallPoints(
-            PsiMethod method) {
+    @Override
+    public Set<PsiReference> calculateProductMethodCallPoints(PsiMethod method) {
         final SmartPointerManager manager = SmartPointerManager.getInstance(method.getProject());
         final SmartPsiElementPointer<PsiMethod> pointer = manager.createSmartPsiElementPointer(method);
         if (!methodToProductCallPointMap.containsKey(pointer)) {
@@ -68,38 +69,25 @@ public class MethodCallMapImpl implements MethodCallMap {
         final Set<PsiReference> allCalls = new HashSet<PsiReference>(4);
         final Set<PsiReference> testCalls = new HashSet<PsiReference>(4);
         final Set<PsiReference> productCalls = new HashSet<PsiReference>(4);
-        final PsiManager psiManager = method.getManager();
-        final Project project = psiManager.getProject();
-        final SearchScope scope = GlobalSearchScope.projectScope(project);
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                final Query<PsiReference> query =
-                        ReferencesSearch.search(method, scope, false);
-                final Collection<PsiReference> calls = query.findAll();
-                for (final PsiReference reference : calls) {
-                    final PsiElement element = reference.getElement();
 
-                    final PsiClass referencingClass =
-                            PsiTreeUtil.getParentOfType(element,
-                                    PsiClass.class);
+        final Query<PsiReference> query = ReferencesSearch.search(method);
+        for (final PsiReference reference : query) {
+            final PsiElement element = reference.getElement();
 
-                    if (referencingClass != null) {
-                        allCalls.add(reference);
-                        if (TestUtils.isTest(referencingClass)) {
-                            testCalls.add(reference);
-                        } else if (TestUtils.isProduction(referencingClass)) {
-                            productCalls.add(reference);
-                        }
-                    }
+            final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
+            if (referencingClass != null) {
+                allCalls.add(reference);
+                if (TestUtils.isTest(referencingClass)) {
+                    testCalls.add(reference);
+                } else if (TestUtils.isProduction(referencingClass)) {
+                    productCalls.add(reference);
                 }
             }
-        };
-        final ProgressManager progressManager = ProgressManager.getInstance();
-        progressManager.runProcess(runnable, null);
+        }
+
         final PsiMethod[] ancestorMethods = method.findSuperMethods();
         for (PsiMethod ancestorMethod : ancestorMethods) {
-            final Set<PsiReference> ancestorCalls = calculateMethodCallPoints(
-                    ancestorMethod);
+            final Set<PsiReference> ancestorCalls = calculateMethodCallPoints(ancestorMethod);
             allCalls.addAll(ancestorCalls);
             final Set<PsiReference> ancestorTestCalls =
                     calculateTestMethodCallPoints(ancestorMethod);
