@@ -21,6 +21,7 @@ import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -50,6 +51,7 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
     protected MetricsExecutionContext executionContext = null;
     private PsiElementVisitor visitor;
 
+    @Override
     public void beginMetricsRun(Metric metric, MetricsResultsHolder resultsHolder,
                                 MetricsExecutionContext executionContext) {
         this.metric = metric;
@@ -61,12 +63,19 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         visitor = createVisitor();
     }
 
-    public void processFile(PsiFile file) {
-        file.accept(visitor);
+    @Override
+    public void processFile(final PsiFile file) {
+        ProgressManager.getInstance().runProcess(new Runnable() {
+            @Override
+            public void run() {
+                file.accept(visitor);
+            }
+        }, new EmptyProgressIndicator());
     }
 
     protected abstract PsiElementVisitor createVisitor();
 
+    @Override
     public void endMetricsRun() {}
 
     public DependencyMap getDependencyMap() {
@@ -100,11 +109,15 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
                         StockMetricsBundle.message("building.dependency.structure.progress.string", fileName));
                 progressIndicator.setFraction((double) dependencyProgress / (double) allFilesCount);
                 dependencyProgress++;
-                if (virtualFile.getFileType() != JavaFileType.INSTANCE) return true;
+                if (virtualFile.getFileType() != JavaFileType.INSTANCE) {
+                    return true;
+                }
                 final AccessToken token = application.acquireReadActionLock();
                 try {
                     final PsiFile file = psiManager.findFile(virtualFile);
-                    if (!(file instanceof PsiJavaFile)) return true;
+                    if (!(file instanceof PsiJavaFile)) {
+                        return true;
+                    }
                     dependencyMap.build(file);
                     dependentsMap.build(file);
                 } finally {
