@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,106 +20,52 @@ import com.intellij.psi.*;
 import com.sixrr.metrics.utils.MethodUtils;
 
 public class NestingDepthCalculator extends MethodCalculator {
+
     private int methodNestingCount = 0;
     private int maximumDepth = 0;
     private int currentDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
-            if (methodNestingCount == 0) {
-                maximumDepth = 0;
-                currentDepth = 0;
-            }
             methodNestingCount++;
             super.visitMethod(method);
             methodNestingCount--;
             if (methodNestingCount == 0) {
                 if (!MethodUtils.isAbstract(method)) {
-                    postMetric(method, maximumDepth);
+                    postMetric(method, maximumDepth - 1);
                 }
+                maximumDepth = 0;
+                currentDepth = 0;
             }
         }
 
-        public void visitBlockStatement(PsiBlockStatement statement) {
-            final PsiElement parent = statement.getParent();
-            final boolean isAlreadyCounted = parent instanceof PsiDoWhileStatement ||
-                    parent instanceof PsiWhileStatement || parent instanceof PsiForStatement ||
-                    parent instanceof PsiForeachStatement || parent instanceof PsiIfStatement ||
-                    parent instanceof PsiSynchronizedStatement || parent instanceof PsiTryStatement;
-            if (!isAlreadyCounted) {
+        @Override
+        public void visitCodeBlock(PsiCodeBlock block) {
+            if (methodNestingCount != 0) {
                 enterScope();
             }
-            super.visitBlockStatement(statement);
-
-            if (!isAlreadyCounted) {
+            super.visitCodeBlock(block);
+            if (methodNestingCount != 0) {
                 exitScope();
             }
         }
 
-        public void visitDoWhileStatement(PsiDoWhileStatement statement) {
-            enterScope();
-            super.visitDoWhileStatement(statement);
-            enterScope();
-        }
-
-        public void visitForStatement(PsiForStatement statement) {
-            enterScope();
-            super.visitForStatement(statement);
-            enterScope();
-        }
-
-        public void visitForeachStatement(PsiForeachStatement statement) {
-            enterScope();
-            super.visitForeachStatement(statement);
-            enterScope();
-        }
-
-        public void visitIfStatement(PsiIfStatement statement) {
-            boolean isAlreadyCounted = false;
-            if (statement.getParent()instanceof PsiIfStatement) {
-                final PsiIfStatement parent = (PsiIfStatement) statement.getParent();
-                final PsiStatement elseBranch = parent.getElseBranch();
-                if (statement.equals(elseBranch)) {
-                    isAlreadyCounted = true;
-                }
-            }
-            if (!isAlreadyCounted) {
+        @Override
+        public void visitClass(PsiClass aClass) {
+            if (methodNestingCount != 0) {
                 enterScope();
             }
-            super.visitIfStatement(statement);
-
-            if (!isAlreadyCounted) {
+            super.visitClass(aClass);
+            if (methodNestingCount != 0) {
                 exitScope();
             }
-        }
-
-        public void visitSynchronizedStatement(PsiSynchronizedStatement statement) {
-            enterScope();
-            super.visitSynchronizedStatement(statement);
-            exitScope();
-        }
-
-        public void visitTryStatement(PsiTryStatement statement) {
-            enterScope();
-            super.visitTryStatement(statement);
-            exitScope();
-        }
-
-        public void visitSwitchStatement(PsiSwitchStatement statement) {
-            enterScope();
-            super.visitSwitchStatement(statement);
-            exitScope();
-        }
-
-        public void visitWhileStatement(PsiWhileStatement statement) {
-            enterScope();
-            super.visitWhileStatement(statement);
-            exitScope();
         }
 
         private void enterScope() {
