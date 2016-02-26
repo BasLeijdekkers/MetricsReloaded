@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * (c) 2016 Silent Forest AB
- * created: 20 February 2016
- */
 package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
@@ -25,7 +20,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.utils.LineUtil;
 import gnu.trove.TObjectIntHashMap;
@@ -58,7 +52,7 @@ public class LinesOfCodeFileTypeMetric extends FileTypeMetric {
         return new LinesOfCodeFileTypeCalculator();
     }
 
-    private class LinesOfCodeFileTypeCalculator extends BaseMetricsCalculator {
+    private static class LinesOfCodeFileTypeCalculator extends FileTypeCalculator {
 
         private final TObjectIntHashMap<FileType> locMap = new TObjectIntHashMap<FileType>();
 
@@ -67,7 +61,7 @@ public class LinesOfCodeFileTypeMetric extends FileTypeMetric {
             locMap.forEachEntry(new TObjectIntProcedure<FileType>() {
                 @Override
                 public boolean execute(FileType measured, int value) {
-                    resultsHolder.postFileTypeMetric(LinesOfCodeFileTypeMetric.this, measured, (double) value);
+                    postMetric(measured, (double) value);
                     return true;
                 }
             });

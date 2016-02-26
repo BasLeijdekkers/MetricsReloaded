@@ -18,8 +18,8 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.sixrr.metrics.*;
-import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
+import com.sixrr.metrics.MetricCalculator;
+import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import gnu.trove.TObjectIntHashMap;
 import gnu.trove.TObjectIntProcedure;
@@ -51,7 +51,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
         return new NumFilesFileTypeCalculator();
     }
 
-    private class NumFilesFileTypeCalculator extends BaseMetricsCalculator {
+    private static class NumFilesFileTypeCalculator extends FileTypeCalculator {
 
         private final TObjectIntHashMap<FileType> countMap = new TObjectIntHashMap<FileType>();
 
@@ -60,7 +60,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
             countMap.forEachEntry(new TObjectIntProcedure<FileType>() {
                 @Override
                 public boolean execute(FileType measured, int value) {
-                    resultsHolder.postFileTypeMetric(NumFilesFileTypeMetric.this, measured, (double) value);
+                    postMetric(measured, (double) value);
                     return true;
                 }
             });
