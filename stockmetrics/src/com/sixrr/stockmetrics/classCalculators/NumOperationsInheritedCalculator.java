@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,27 +20,38 @@ import com.intellij.psi.*;
 
 public class NumOperationsInheritedCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (isConcreteClass(aClass)) {
-                final PsiMethod[] allMethods = aClass.getAllMethods();
-                int numInheritedMethods = 0;
-                for (final PsiMethod method : allMethods) {
-                    final PsiClass containingClass = method.getContainingClass();
-                    if (containingClass != null && !containingClass.equals(aClass) &&
-                            !method.hasModifierProperty(PsiModifier.STATIC)) {
-                        numInheritedMethods++;
-                    }
-                }
-
-                postMetric(aClass, numInheritedMethods);
+            if (!isConcreteClass(aClass)) {
+                return;
             }
+            final PsiMethod[] allMethods = aClass.getAllMethods();
+            int numInheritedMethods = 0;
+            for (final PsiMethod method : allMethods) {
+                if (method.isConstructor() || method.hasModifierProperty(PsiModifier.PRIVATE) ||
+                        method.hasModifierProperty(PsiModifier.STATIC) ||
+                        method.hasModifierProperty(PsiModifier.ABSTRACT)) {
+                    continue;
+                }
+                final PsiClass containingClass = method.getContainingClass();
+                if (containingClass == null || containingClass.equals(aClass)) {
+                    continue;
+                }
+                final PsiMethod localMethod = aClass.findMethodBySignature(method, false);
+                if (localMethod == null) {
+                    numInheritedMethods++;
+                }
+            }
+
+            postMetric(aClass, numInheritedMethods);
         }
     }
 }
