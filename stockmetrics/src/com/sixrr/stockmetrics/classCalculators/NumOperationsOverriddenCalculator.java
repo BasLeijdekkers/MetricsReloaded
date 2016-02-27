@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,55 +16,50 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
+import com.intellij.psi.*;
+import com.intellij.psi.search.searches.SuperMethodsSearch;
+import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
 
-import java.util.Collection;
-
 public class NumOperationsOverriddenCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(final PsiClass aClass) {
             super.visitClass(aClass);
-            final Runnable runnable = new Runnable() {
-                public void run() {
-                    if (!ClassUtils.isAnonymous(aClass) && !aClass.isInterface()) {
-                        final PsiMethod[] methods = aClass.getMethods();
-                        final Project project = executionContext.getProject();
-                        final GlobalSearchScope globalScope = GlobalSearchScope.allScope(project);
-                        int numOverriddenMethods = 0;
-                        for (final PsiMethod method : methods) {
-                            final Collection<PsiMethod> overrides = OverridingMethodsSearch
-                                    .search(method, globalScope, true).findAll();
-                            boolean overrideFound = false;
-                            for (final PsiMethod override : overrides) {
-                                if (!MethodUtils.isAbstract(override)) {
-                                    overrideFound = true;
-                                }
-                            }
-                            if (overrideFound) {
-                                numOverriddenMethods++;
-                            }
-                        }
-                        postMetric(aClass, numOverriddenMethods);
-                    }
+            if (ClassUtils.isAnonymous(aClass) || aClass.isInterface()) {
+                return;
+            }
+            final PsiMethod[] methods = aClass.getMethods();
+            int numOverriddenMethods = 0;
+            for (final PsiMethod method : methods) {
+                if (method.isConstructor() || method.hasModifierProperty(PsiModifier.STATIC) ||
+                        method.hasModifierProperty(PsiModifier.PRIVATE)) {
+                    continue;
                 }
-            };
-            final ProgressManager progressManager = ProgressManager.getInstance();
-            progressManager.runProcess(runnable, null);
+                final Query<MethodSignatureBackedByPsiMethod> query =
+                        SuperMethodsSearch.search(method, null, true, false);
+                final boolean superMethodFound = !query.forEach(new Processor<MethodSignatureBackedByPsiMethod>() {
+
+                    @Override
+                    public boolean process(MethodSignatureBackedByPsiMethod superMethod) {
+                        return MethodUtils.isAbstract(superMethod.getMethod());
+                    }
+                });
+                if (superMethodFound) {
+                    numOverriddenMethods++;
+                }
+            }
+            postMetric(aClass, numOverriddenMethods);
         }
     }
 }

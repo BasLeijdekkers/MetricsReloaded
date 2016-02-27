@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,20 +16,32 @@
 
 package com.sixrr.stockmetrics.classMetrics;
 
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.classCalculators.NumOperationsOverriddenCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import org.jetbrains.annotations.Nullable;
 
 public class NumOperationsOverriddenMetric extends ClassMetric {
 
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.operations.overridden.display.name");
     }
 
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.operations.overridden.abbreviation");
     }
 
+    @Override
     public MetricType getType() {
         return MetricType.Count;
+    }
+
+    @Nullable
+    @Override
+    public MetricCalculator createCalculator() {
+        return new NumOperationsOverriddenCalculator();
     }
 }
