@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,20 +16,32 @@
 
 package com.sixrr.stockmetrics.interfaceMetrics;
 
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.interfaceCalculators.NumSubinterfacesCalculator;
+import org.jetbrains.annotations.Nullable;
 
 public class NumSubinterfacesMetric extends InterfaceMetric {
 
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.subinterfaces");
     }
 
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.subinterfaces.abbreviation");
     }
 
+    @Override
     public MetricType getType() {
         return MetricType.Score;
+    }
+
+    @Nullable
+    @Override
+    public MetricCalculator createCalculator() {
+        return new NumSubinterfacesCalculator();
     }
 }

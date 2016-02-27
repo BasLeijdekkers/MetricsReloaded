@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,45 +16,35 @@
 
 package com.sixrr.stockmetrics.interfaceCalculators;
 
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.Query;
 
 public class NumSubinterfacesCalculator extends InterfaceCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(final PsiClass aClass) {
             super.visitClass(aClass);
-            if (isInterface(aClass)) {
-                final Runnable runnable = new Runnable() {
-                    public void run() {
-                        final Project project = executionContext.getProject();
-                        final GlobalSearchScope globalScope = GlobalSearchScope.projectScope(project);
-                        final Query<PsiClass> query =
-                                ClassInheritorsSearch.search(aClass,
-                                        globalScope, true, true, true);
-                        int numSubInterfaces = 0;
-                        for (final PsiClass inheritor : query) {
-                            if (inheritor.isInterface()) {
-                                numSubInterfaces++;
-                            }
-                        }
-                        postMetric(aClass, numSubInterfaces);
-                    }
-                };
-                final ProgressManager progressManager = ProgressManager.getInstance();
-                progressManager.runProcess(runnable, null);
+            if (!isInterface(aClass)) {
+                return;
             }
+            final Query<PsiClass> query = ClassInheritorsSearch.search(aClass);
+            int numSubInterfaces = 0;
+            for (final PsiClass inheritor : query) {
+                if (inheritor.isInterface()) {
+                    numSubInterfaces++;
+                }
+            }
+            postMetric(aClass, numSubInterfaces);
         }
     }
 }
