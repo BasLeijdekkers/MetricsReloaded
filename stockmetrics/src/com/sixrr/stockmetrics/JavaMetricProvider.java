@@ -76,6 +76,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new MessagePassingCouplingClassMetric());
         metrics.add(new NumAttributesAddedMetric());
         metrics.add(new NumAttributesInheritedMetric());
+        metrics.add(new NumChildrenMetric());
         metrics.add(new NumCommandsClassMetric());
         metrics.add(new NumConstructorsMetric());
         metrics.add(new NumCyclicDependenciesClassMetric());
@@ -342,12 +343,12 @@ public class JavaMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("chidamber.kemerer.metrics.profile.name"));
-        profile.addMetric(ResponseForClassMetric.class);
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);
         profile.addMetric(DepthOfInheritanceMetric.class);
-        profile.addMetric(WeightedMethodComplexityMetric.class);
-        profile.addMetric(NumSubclassesMetric.class);
         profile.addMetric(LackOfCohesionOfMethodsClassMetric.class);
+        profile.addMetric(NumChildrenMetric.class);
+        profile.addMetric(ResponseForClassMetric.class);
+        profile.addMetric(WeightedMethodComplexityMetric.class);
         return profile;
     }
 

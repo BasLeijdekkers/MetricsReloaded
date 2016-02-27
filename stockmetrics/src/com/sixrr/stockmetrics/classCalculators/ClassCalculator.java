@@ -22,15 +22,15 @@ import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
 public abstract class ClassCalculator extends BaseMetricsCalculator {
 
-    void postMetric(PsiClass aClass, int numerator, int denominator) {
+    protected void postMetric(PsiClass aClass, int numerator, int denominator) {
         resultsHolder.postClassMetric(metric, aClass, (double) numerator, (double) denominator);
     }
 
-    void postMetric(PsiClass aClass, int value) {
+    protected void postMetric(PsiClass aClass, int value) {
         resultsHolder.postClassMetric(metric, aClass, (double) value);
     }
 
-    void postMetric(PsiClass aClass, double value) {
+    protected void postMetric(PsiClass aClass, double value) {
         resultsHolder.postClassMetric(metric, aClass, value);
     }
 
