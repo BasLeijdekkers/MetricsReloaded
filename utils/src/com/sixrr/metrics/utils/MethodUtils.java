@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2014 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,9 +17,30 @@
 package com.sixrr.metrics.utils;
 
 import com.intellij.psi.*;
+import com.intellij.psi.search.searches.SuperMethodsSearch;
+import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
 
-public class MethodUtils {
+public final class MethodUtils {
+
     private MethodUtils() {}
+
+    public static boolean isConcreteMethod(PsiMethod method) {
+        return method != null && !method.isConstructor() && !method.hasModifierProperty(PsiModifier.ABSTRACT) &&
+                !method.hasModifierProperty(PsiModifier.STATIC) && !method.hasModifierProperty(PsiModifier.PRIVATE);
+    }
+
+    public static boolean hasConcreteSuperMethod(PsiMethod method) {
+        final Query<MethodSignatureBackedByPsiMethod> search = SuperMethodsSearch.search(method, null, true, false);
+        return !search.forEach(new Processor<MethodSignatureBackedByPsiMethod>() {
+
+            @Override
+            public boolean process(MethodSignatureBackedByPsiMethod superMethod) {
+                return isAbstract(superMethod.getMethod());
+            }
+        });
+    }
 
     public static boolean isAbstract(PsiMethod method) {
         if (method.hasModifierProperty(PsiModifier.STATIC) || method.hasModifierProperty(PsiModifier.DEFAULT)) {

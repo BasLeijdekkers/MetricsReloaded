@@ -19,8 +19,10 @@ package com.sixrr.metrics.utils;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
+import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +33,23 @@ import java.util.List;
 
 public final class ClassUtils {
 
+    private static final Key<Integer> SUBCLASS_COUNT = new Key<Integer>("MetricsReloadedSubclassCount");
+
     private ClassUtils() {}
+
+    public static int calculateSubclassCount(final PsiClass aClass) {
+        final Integer subclassCount = aClass.getUserData(SUBCLASS_COUNT);
+        if (subclassCount != null) {
+            return subclassCount.intValue();
+        }
+        if (aClass.hasModifierProperty(PsiModifier.FINAL)) {
+            aClass.putUserData(SUBCLASS_COUNT, Integer.valueOf(0));
+            return 0;
+        }
+        final int size = ClassInheritorsSearch.search(aClass).findAll().size();
+        aClass.putUserData(SUBCLASS_COUNT, Integer.valueOf(size));
+        return size;
+    }
 
     @NotNull
     public static String calculatePackageName(PsiElement element) {

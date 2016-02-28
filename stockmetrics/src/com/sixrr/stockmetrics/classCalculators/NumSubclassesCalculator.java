@@ -19,8 +19,7 @@ package com.sixrr.stockmetrics.classCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.search.searches.ClassInheritorsSearch;
+import com.sixrr.metrics.utils.ClassUtils;
 
 public class NumSubclassesCalculator extends ClassCalculator {
 
@@ -37,14 +36,7 @@ public class NumSubclassesCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass) || aClass.isEnum()) {
                 return;
             }
-            postMetric(aClass, calculateNumberOfSubclasses(aClass));
-        }
-
-        private int calculateNumberOfSubclasses(final PsiClass aClass) {
-            if (aClass.hasModifierProperty(PsiModifier.FINAL)) {
-                return 0;
-            }
-            return ClassInheritorsSearch.search(aClass).findAll().size();
+            postMetric(aClass, ClassUtils.calculateSubclassCount(aClass));
         }
     }
 }

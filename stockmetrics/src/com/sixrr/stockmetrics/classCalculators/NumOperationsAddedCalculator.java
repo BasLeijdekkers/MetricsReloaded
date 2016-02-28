@@ -17,10 +17,6 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.search.searches.SuperMethodsSearch;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
 
@@ -42,22 +38,14 @@ public class NumOperationsAddedCalculator extends ClassCalculator {
             final PsiMethod[] methods = aClass.getMethods();
             int numAddedMethods = 0;
             for (final PsiMethod method : methods) {
-                if (method.isConstructor()) {
+                if (method.isConstructor() || method.hasModifierProperty(PsiModifier.ABSTRACT)) {
                     continue;
                 }
                 if (method.hasModifierProperty(PsiModifier.PRIVATE) || method.hasModifierProperty(PsiModifier.STATIC)) {
                     numAddedMethods++;
                     continue;
                 }
-                final Query<MethodSignatureBackedByPsiMethod> query =
-                        SuperMethodsSearch.search(method, null, true, false);
-                final boolean overrideFound = !query.forEach(new Processor<MethodSignatureBackedByPsiMethod>() {
-                    @Override
-                    public boolean process(MethodSignatureBackedByPsiMethod signature) {
-                        return MethodUtils.isAbstract(signature.getMethod());
-                    }
-                });
-                if (!overrideFound) {
+                if (!MethodUtils.hasConcreteSuperMethod(method)) {
                     numAddedMethods++;
                 }
             }
