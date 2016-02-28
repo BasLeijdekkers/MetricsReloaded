@@ -33,9 +33,11 @@
   <version>1.4</version>
   <change-notes><![CDATA[
   - MetricsReloaded is now also available for RubyMine, PhpStorm, WebStorm, PyCharm and AppCode.<br>
-  - New "Lines of code" metric which reports per file type.<br>
-  - New "Number of files" metrics for project, module and file type.<br>
+  - New "Lines of code" & "Number of files" file type metrics.<br>
+  - New "Number of children" Java metric (part of Chidamber-Kemerer metrics).<br>
+  - Fixed metrics dialog filter problems and improved filtering.<br>
   - Projects without src directory are now measured correctly.<br>
+  - Fixed "Number of operations added/overridden/inherited" Java metrics.<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
