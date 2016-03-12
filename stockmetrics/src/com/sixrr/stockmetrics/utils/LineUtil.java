@@ -33,9 +33,9 @@ public final class LineUtil {
         return countLines(text);
     }
 
-    private static int countLines(String text) {
-        int lines = 1;
-        boolean onEmptyLine = false;
+    static int countLines(String text) {
+        int lines = 0;
+        boolean onEmptyLine = true;
         final char[] chars = text.toCharArray();
         for (final char aChar : chars) {
             if (aChar == '\n' || aChar == '\r') {
@@ -48,6 +48,9 @@ public final class LineUtil {
             } else {
                 onEmptyLine = false;
             }
+        }
+        if (!onEmptyLine) {
+            lines++;
         }
         return lines;
     }
