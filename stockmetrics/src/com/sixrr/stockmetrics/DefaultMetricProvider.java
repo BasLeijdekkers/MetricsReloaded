@@ -19,10 +19,7 @@ package com.sixrr.stockmetrics;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
-import com.sixrr.stockmetrics.fileTypeMetrics.CommentLinesOfCodeFileTypeMetric;
-import com.sixrr.stockmetrics.fileTypeMetrics.LinesOfCodeFileTypeMetric;
-import com.sixrr.stockmetrics.fileTypeMetrics.NonCommentLinesOfCodeFileTypeMetric;
-import com.sixrr.stockmetrics.fileTypeMetrics.NumFilesFileTypeMetric;
+import com.sixrr.stockmetrics.fileTypeMetrics.*;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
@@ -37,7 +34,7 @@ public class DefaultMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(36);
+        final List<Metric> metrics = new ArrayList<Metric>(37);
         initializeFileTypeMetrics(metrics);
         initializeModuleMetrics(metrics);
         initializeProjectMetrics(metrics);
@@ -49,6 +46,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new LinesOfCodeFileTypeMetric());
         metrics.add(new NonCommentLinesOfCodeFileTypeMetric());
         metrics.add(new NumFilesFileTypeMetric());
+        metrics.add(new TodoCommentCountFileTypeMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
