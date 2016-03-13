@@ -15,15 +15,12 @@
  */
 package com.sixrr.stockmetrics.fileTypeMetrics;
 
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.utils.LineUtil;
-import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectIntProcedure;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -52,20 +49,7 @@ public class LinesOfCodeFileTypeMetric extends FileTypeMetric {
         return new LinesOfCodeFileTypeCalculator();
     }
 
-    private static class LinesOfCodeFileTypeCalculator extends FileTypeCalculator {
-
-        private final TObjectIntHashMap<FileType> locMap = new TObjectIntHashMap<FileType>();
-
-        @Override
-        public void endMetricsRun() {
-            locMap.forEachEntry(new TObjectIntProcedure<FileType>() {
-                @Override
-                public boolean execute(FileType measured, int value) {
-                    postMetric(measured, (double) value);
-                    return true;
-                }
-            });
-        }
+    private static class LinesOfCodeFileTypeCalculator extends ElementCountFileTypeCalculator {
 
         @Override
         protected PsiElementVisitor createVisitor() {
@@ -78,13 +62,7 @@ public class LinesOfCodeFileTypeMetric extends FileTypeMetric {
             public void visitFile(PsiFile file) {
                 super.visitFile(file);
                 final int lines = LineUtil.countLines(file);
-                final FileType fileType = file.getFileType();
-                if (locMap.containsKey(fileType)) {
-                    locMap.adjustValue(fileType, lines);
-                }
-                else {
-                    locMap.put(fileType, lines);
-                }
+                incrementElementCount(file, lines);
             }
         }
     }

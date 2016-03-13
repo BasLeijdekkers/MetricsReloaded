@@ -15,14 +15,11 @@
  */
 package com.sixrr.stockmetrics.fileTypeMetrics;
 
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectIntProcedure;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,20 +48,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
         return new NumFilesFileTypeCalculator();
     }
 
-    private static class NumFilesFileTypeCalculator extends FileTypeCalculator {
-
-        private final TObjectIntHashMap<FileType> countMap = new TObjectIntHashMap<FileType>();
-
-        @Override
-        public void endMetricsRun() {
-            countMap.forEachEntry(new TObjectIntProcedure<FileType>() {
-                @Override
-                public boolean execute(FileType measured, int value) {
-                    postMetric(measured, (double) value);
-                    return true;
-                }
-            });
-        }
+    private static class NumFilesFileTypeCalculator extends ElementCountFileTypeCalculator {
 
         @Override
         protected PsiElementVisitor createVisitor() {
@@ -76,13 +60,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
             @Override
             public void visitFile(PsiFile file) {
                 super.visitFile(file);
-                final FileType fileType = file.getFileType();
-                if (countMap.containsKey(fileType)) {
-                    countMap.increment(fileType);
-                }
-                else {
-                    countMap.put(fileType, 1);
-                }
+                incrementElementCount(file, 1);
             }
         }
     }
