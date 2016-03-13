@@ -16,10 +16,7 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class TrueCommentRatioProjectCalculator extends ElementRatioProjectCalculator {
@@ -38,10 +35,13 @@ public class TrueCommentRatioProjectCalculator extends ElementRatioProjectCalcul
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            numerator += LineUtil.countLines(comment);
-            denominator -= LineUtil.countCommentOnlyLines(comment);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                numerator += LineUtil.countLines(comment);
+                denominator -= LineUtil.countCommentOnlyLines(comment);
+            }
         }
     }
 }

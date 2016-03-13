@@ -16,10 +16,7 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -41,11 +38,14 @@ public class SourceLinesOfCodeProductProjectCalculator extends ElementCountProje
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final PsiFile file = comment.getContainingFile();
-            if (TestUtils.isProduction(file)) {
-                numElements -= LineUtil.countCommentOnlyLines(comment);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                final PsiFile file = comment.getContainingFile();
+                if (TestUtils.isProduction(file)) {
+                    numElements -= LineUtil.countCommentOnlyLines(comment);
+                }
             }
         }
     }

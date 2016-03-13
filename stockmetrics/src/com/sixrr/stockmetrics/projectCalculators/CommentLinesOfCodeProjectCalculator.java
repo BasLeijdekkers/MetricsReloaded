@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -31,9 +32,11 @@ public class CommentLinesOfCodeProjectCalculator extends ElementCountProjectCalc
     private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            numElements += LineUtil.countLines(comment);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                numElements += LineUtil.countLines(element);
+            }
         }
     }
 }

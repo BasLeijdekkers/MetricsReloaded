@@ -17,10 +17,7 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -34,13 +31,6 @@ public class SourceLinesOfCodeModuleCalculator extends ElementCountModuleCalcula
     private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final int lineCount = LineUtil.countCommentOnlyLines(comment);
-            incrementElementCount(comment, -lineCount);
-        }
-
-        @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             final Module module = ClassUtils.calculateModule(file);
@@ -50,6 +40,16 @@ public class SourceLinesOfCodeModuleCalculator extends ElementCountModuleCalcula
             elementsCountPerModule.createBucket(module);
             final int lineCount = LineUtil.countLines(file);
             incrementElementCount(file, lineCount);
+        }
+
+        @Override
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                final int lineCount = LineUtil.countCommentOnlyLines(comment);
+                incrementElementCount(comment, -lineCount);
+            }
         }
     }
 }

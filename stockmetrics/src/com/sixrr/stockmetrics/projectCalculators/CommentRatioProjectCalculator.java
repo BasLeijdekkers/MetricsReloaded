@@ -35,9 +35,11 @@ public class CommentRatioProjectCalculator extends ElementRatioProjectCalculator
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            numerator += LineUtil.countLines(comment);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                numerator += LineUtil.countLines(element);
+            }
         }
     }
 }

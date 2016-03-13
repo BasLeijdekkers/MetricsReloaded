@@ -44,12 +44,15 @@ public class TrueCommentRatioModuleCalculator extends ElementRatioModuleCalculat
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final int commentOnlyLineCount = LineUtil.countCommentOnlyLines(comment);
-            incrementDenominator(comment, -commentOnlyLineCount);
-            final int lineCount = LineUtil.countLines(comment);
-            incrementNumerator(comment, lineCount);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                final int commentOnlyLineCount = LineUtil.countCommentOnlyLines(comment);
+                incrementDenominator(comment, -commentOnlyLineCount);
+                final int lineCount = LineUtil.countLines(comment);
+                incrementNumerator(comment, lineCount);
+            }
         }
     }
 }

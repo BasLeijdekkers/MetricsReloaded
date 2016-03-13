@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,10 +17,7 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
@@ -44,10 +41,13 @@ public class TodoCommentCountModuleCalculator extends ElementCountModuleCalculat
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            if (TodoUtil.isTodoComment(comment)) {
-                incrementElementCount(comment, 1);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                if (TodoUtil.isTodoComment(comment)) {
+                    incrementElementCount(comment, 1);
+                }
             }
         }
     }

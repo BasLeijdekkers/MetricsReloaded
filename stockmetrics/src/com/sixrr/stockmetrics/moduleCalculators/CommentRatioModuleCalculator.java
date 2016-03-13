@@ -16,10 +16,7 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -46,10 +43,12 @@ public class CommentRatioModuleCalculator extends ElementRatioModuleCalculator {
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final int lineCount = LineUtil.countLines(comment);
-            incrementNumerator(comment, lineCount);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final int lineCount = LineUtil.countLines(element);
+                incrementNumerator(element, lineCount);
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ public class SourceLinesOfCodeProjectCalculator extends ElementCountProjectCalcu
     }
 
     private class Visitor extends PsiRecursiveElementVisitor {
+
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
@@ -33,9 +34,12 @@ public class SourceLinesOfCodeProjectCalculator extends ElementCountProjectCalcu
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            numElements -= LineUtil.countCommentOnlyLines(comment);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                numElements -= LineUtil.countCommentOnlyLines(comment);
+            }
         }
     }
 }

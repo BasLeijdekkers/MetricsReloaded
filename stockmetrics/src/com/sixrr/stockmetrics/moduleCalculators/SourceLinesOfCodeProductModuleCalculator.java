@@ -17,10 +17,7 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -35,12 +32,15 @@ public class SourceLinesOfCodeProductModuleCalculator extends ElementCountModule
     private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final PsiFile file = comment.getContainingFile();
-            if (TestUtils.isProduction(file)) {
-                final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                incrementElementCount(comment, -lineCount);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                final PsiFile file = comment.getContainingFile();
+                if (TestUtils.isProduction(file)) {
+                    final int lineCount = LineUtil.countCommentOnlyLines(comment);
+                    incrementElementCount(comment, -lineCount);
+                }
             }
         }
 

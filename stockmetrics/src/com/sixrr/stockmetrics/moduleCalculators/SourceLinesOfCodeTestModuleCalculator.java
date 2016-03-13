@@ -46,12 +46,15 @@ public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCal
         }
 
         @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final PsiFile file = comment.getContainingFile();
-            if (TestUtils.isTest(file)) {
-                final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                incrementElementCount(comment, -lineCount);
+        public void visitElement(PsiElement element) {
+            super.visitElement(element);
+            if (element instanceof PsiComment) {
+                final PsiComment comment = (PsiComment) element;
+                final PsiFile file = comment.getContainingFile();
+                if (TestUtils.isTest(file)) {
+                    final int lineCount = LineUtil.countCommentOnlyLines(comment);
+                    incrementElementCount(comment, -lineCount);
+                }
             }
         }
     }
