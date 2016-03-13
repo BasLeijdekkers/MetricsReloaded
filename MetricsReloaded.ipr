@@ -77,7 +77,12 @@
       </profile>
     </annotationProcessing>
   </component>
-  <component name="CopyrightManager" default="" />
+  <component name="CopyrightManager" default="MetricsReloaded">
+    <copyright>
+      <option name="myName" value="MetricsReloaded" />
+      <option name="notice" value="Copyright 2005-&amp;#36;today.year Sixth and Red River Software, Bas Leijdekkers&#10;&#10; Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);&#10; you may not use this file except in compliance with the License.&#10; You may obtain a copy of the License at&#10;&#10; http://www.apache.org/licenses/LICENSE-2.0&#10;&#10; Unless required by applicable law or agreed to in writing, software&#10; distributed under the License is distributed on an &quot;AS IS&quot; BASIS,&#10; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.&#10; See the License for the specific language governing permissions and&#10; limitations under the License." />
+    </copyright>
+  </component>
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -100,7 +105,8 @@
     <profile version="1.0">
       <option name="myName" value="Project Default" />
       <option name="myLocal" value="true" />
-      <inspection_tool class="AnonymousInnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="AmbiguousFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="AmbiguousMethodCall" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="AssertEqualsCalledOnArray" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="AssertEqualsMayBeAssertSame" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="AssignmentToCatchBlockParameter" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -115,12 +121,15 @@
       </inspection_tool>
       <inspection_tool class="AutoUnboxing" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="BigDecimalLegacyMethod" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="BooleanParameter" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="CStyleArrayDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="CastThatLosesPrecision" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="ignoreIntegerCharCasts" value="false" />
+      </inspection_tool>
       <inspection_tool class="ChainedEquality" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ClassInitializer" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ClassMayBeInterface" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ClassNameDiffersFromFileName" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="ClassNameSameAsAncestorName" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="CloneCallsConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -138,6 +147,9 @@
         <option name="ignoreLocalVariables" value="false" />
         <option name="ignorePrivateMethodsAndFields" value="false" />
       </inspection_tool>
+      <inspection_tool class="EnumSwitchStatementWhichMissesCases" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="ignoreSwitchStatementsWithDefault" value="false" />
+      </inspection_tool>
       <inspection_tool class="EnumerationCanBeIteration" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="EqualsCalledOnEnumConstant" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="ExtendsUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -145,6 +157,11 @@
       <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="HtmlTagCanBeJavadocTag" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="IfMayBeConditional" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="ImplicitNumericConversion" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="ignoreWideningConversions" value="false" />
+        <option name="ignoreCharConversions" value="false" />
+        <option name="ignoreConstantConversions" value="false" />
+      </inspection_tool>
       <inspection_tool class="InnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="InstantiationOfUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="InterfaceMayBeAnnotatedFunctional" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -165,17 +182,24 @@
         <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
       </inspection_tool>
       <inspection_tool class="MarkerInterface" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="MethodCanBeVariableArityMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="MethodCanBeVariableArityMethod" enabled="false" level="WARNING" enabled_by_default="false">
+        <option name="ignoreMultipleArrayParameters" value="true" />
+      </inspection_tool>
       <inspection_tool class="MethodMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
         <option name="m_onlyPrivateOrFinal" value="false" />
         <option name="m_ignoreEmptyMethods" value="true" />
       </inspection_tool>
+      <inspection_tool class="MethodNameSameAsParentName" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
         <option name="ignoreMethodsAccessedFromAnonymousClass" value="true" />
         <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
         <option name="onlyReportStaticMethods" value="false" />
       </inspection_tool>
       <inspection_tool class="MisorderedAssertEqualsParameters" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="ignoreObjectMethods" value="true" />
+        <option name="ignoreAnonymousClassMethods" value="false" />
+      </inspection_tool>
       <inspection_tool class="MisspelledTearDown" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="MultipleDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
         <option name="ignoreForLoopDeclarations" value="true" />
@@ -196,6 +220,7 @@
         <option name="ignoreSerializable" value="false" />
         <option name="ignoreCloneable" value="false" />
       </inspection_tool>
+      <inspection_tool class="RedundantMethodOverride" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="SimplifiableAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="SimplifiableEqualsExpression" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="SimplifiableJUnitAssertion" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -227,7 +252,7 @@
       <inspection_tool class="UnnecessaryCallToStringValueOf" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="UnnecessaryConstantArrayCreationExpression" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="false" level="WARNING" enabled_by_default="false">
         <option name="reportLocalVariables" value="false" />
       </inspection_tool>
       <inspection_tool class="UnnecessaryFullyQualifiedName" enabled="true" level="WARNING" enabled_by_default="true">
@@ -256,6 +281,11 @@
           <value />
         </option>
         <option name="ignoreClassesWithOnlyMain" value="false" />
+      </inspection_tool>
+      <inspection_tool class="WeakerAccess" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="false" />
+        <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
+        <option name="SUGGEST_PRIVATE_FOR_INNERS" value="false" />
       </inspection_tool>
     </profile>
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -461,7 +491,7 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="MetricsReloaded" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="MetricsReloaded" />
-      <option name="VM_PARAMETERS" value="-XX:+UseCompressedOops -XX:MaxPermSize=250m -Xmx196m -Dcheck.psi.is.valid=true -ea" />
+      <option name="VM_PARAMETERS" value="-XX:+UseCompressedOops -XX:MaxPermSize=250m -Xmx250m -Dcheck.psi.is.valid=true -Didea.is.internal=true -Didea.debug.mode=true -ea" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <log_file path="$USER_HOME$/Library/Caches/IntelliJIdea14/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
       <RunnerSettings RunnerId="Debug">
@@ -474,9 +504,7 @@
         <option name="JVMPI" value="false" />
         <option name="INTERPRETED" value="false" />
       </RunnerSettings>
-      <RunnerSettings RunnerId="Profile ">
-        <option name="myExternalizedOptions" value="&#10;additional-options2=onexit\=snapshot&#10;" />
-      </RunnerSettings>
+      <RunnerSettings RunnerId="Profile " />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
