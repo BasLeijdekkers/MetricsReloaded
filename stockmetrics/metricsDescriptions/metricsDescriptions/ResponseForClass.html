@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2005, Sixth and Red River Software
+  ~ Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -18,18 +18,17 @@
 <body>
 <table><tr><td valign="top" height="150">
     <font face="verdana" size="-1">
-        Calculates the Response For Class value of the class.
-        The Response For Class is defined as the number of possible
+        Calculates the <i>Response For Class</i> value of the class.
+        This is defined as the number of possible
         methods that may be called when a class is sent a method send.
-        In practice, this is the sum of the number of methods in the class,
-        plus the number of methods that the class may directly call.
-        Classes with high Response For Class may be less stable,
-        and require higher amounts of integration testing.
+        In practice, this is the sum of the number of methods and constructors
+        in the class, plus the number of methods and constructors that the
+        class may directly call.
+        Classes with high <i>Response For Class</i> have a higher complexity,
+        may be less stable, and require higher amounts of integration testing.
     </font></td></tr>
-    <tr><td height="50"><font face="verdana" size="-1">Abbreviation:
-        <b>RFC</b></font></td></tr>
-    <tr><td height="20"><font face="verdana" size="-2">Powered by
-        MetricsReloaded </font></td></tr>
+    <tr><td height="50"><font face="verdana" size="-1">Abbreviation: <b>RFC</b></font></td></tr>
+    <tr><td height="20"><font face="verdana" size="-2">Powered by MetricsReloaded</font></td></tr>
 </table>
 </body>
 </html>
