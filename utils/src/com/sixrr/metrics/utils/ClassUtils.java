@@ -72,7 +72,8 @@ public final class ClassUtils {
     }
 
     public static boolean isAnonymous(PsiClass aClass) {
-        return aClass instanceof PsiAnonymousClass || aClass instanceof PsiTypeParameter;
+        return aClass instanceof PsiAnonymousClass || aClass instanceof PsiTypeParameter ||
+                aClass.getParent() instanceof PsiDeclarationStatement;
     }
 
     @Nullable
