@@ -34,9 +34,8 @@ public abstract class ElementCountPackageCalculator extends PackageCalculator {
     public final void endMetricsRun() {
         final Set<PsiPackage> packages = elementCountPerPackage.getBuckets();
         for (final PsiPackage aPackage : packages) {
-            final int numCommentLines = elementCountPerPackage.getBucketValue(aPackage);
-
-            postMetric(aPackage, numCommentLines);
+            final int count = elementCountPerPackage.getBucketValue(aPackage);
+            postMetric(aPackage, count);
         }
     }
 
