@@ -33,7 +33,7 @@ public class NumTestAssertsProjectCalculator extends ElementCountProjectCalculat
         @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             if (JavaTestUtils.isJUnitAssertCall(expression)) {
-                numElements++;
+                incrementCount(1);
             }
         }
     }

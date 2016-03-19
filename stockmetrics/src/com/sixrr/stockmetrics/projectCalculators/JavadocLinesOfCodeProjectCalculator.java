@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class JavadocLinesOfCodeProjectCalculator extends ElementCountProjectCalc
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitDocComment(PsiDocComment comment) {
-            numElements += LineUtil.countLines(comment);
+            incrementCount(LineUtil.countLines(comment));
         }
     }
 }

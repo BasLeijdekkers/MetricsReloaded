@@ -32,7 +32,7 @@ public class TodoCommentCountProjectCalculator extends ElementCountProjectCalcul
 
         @Override
         public void visitFile(PsiFile file) {
-            numElements += TodoUtil.getTodoItemsCount(file);
+            incrementCount(TodoUtil.getTodoItemsCount(file));
         }
     }
 }

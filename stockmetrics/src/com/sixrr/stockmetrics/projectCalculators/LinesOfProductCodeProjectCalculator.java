@@ -34,7 +34,7 @@ public class LinesOfProductCodeProjectCalculator extends ElementCountProjectCalc
         @Override
         public void visitFile(PsiFile file) {
             if (TestUtils.isProduction(file)) {
-                numElements += LineUtil.countLines(file);
+                incrementCount(LineUtil.countLines(file));
             }
         }
     }

@@ -32,7 +32,7 @@ public class LinesOfTestCodeProjectCalculator extends ElementCountProjectCalcula
         @Override
         public void visitFile(PsiFile file) {
             if (TestUtils.isTest(file)) {
-                numElements += LineUtil.countLines(file);
+                incrementCount(LineUtil.countLines(file));
             }
         }
     }

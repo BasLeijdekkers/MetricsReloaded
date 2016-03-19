@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class SourceLinesOfCodeProjectCalculator extends ElementCountProjectCalcu
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            numElements += LineUtil.countLines(file);
+            incrementCount(LineUtil.countLines(file));
         }
 
         @Override
@@ -38,7 +38,7 @@ public class SourceLinesOfCodeProjectCalculator extends ElementCountProjectCalcu
             super.visitElement(element);
             if (element instanceof PsiComment) {
                 final PsiComment comment = (PsiComment) element;
-                numElements -= LineUtil.countCommentOnlyLines(comment);
+                incrementCount(-LineUtil.countCommentOnlyLines(comment));
             }
         }
     }

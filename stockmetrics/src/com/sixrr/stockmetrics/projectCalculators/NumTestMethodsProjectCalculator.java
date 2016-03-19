@@ -34,7 +34,7 @@ public class NumTestMethodsProjectCalculator extends ElementCountProjectCalculat
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             if (JavaTestUtils.isJUnitTestMethod(method)) {
-                numElements++;
+                incrementCount(1);
             }
         }
     }

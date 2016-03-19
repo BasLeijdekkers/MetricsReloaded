@@ -33,7 +33,7 @@ public class SourceLinesOfCodeTestProjectCalculator extends ElementCountProjectC
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             if (TestUtils.isTest(file)) {
-                numElements += LineUtil.countLines(file);
+                incrementCount(LineUtil.countLines(file));
             }
         }
 
@@ -44,7 +44,7 @@ public class SourceLinesOfCodeTestProjectCalculator extends ElementCountProjectC
                 final PsiComment comment = (PsiComment) element;
                 final PsiFile file = comment.getContainingFile();
                 if (TestUtils.isTest(file)) {
-                    numElements -= LineUtil.countCommentOnlyLines(comment);
+                    incrementCount(-LineUtil.countCommentOnlyLines(comment));
                 }
             }
         }

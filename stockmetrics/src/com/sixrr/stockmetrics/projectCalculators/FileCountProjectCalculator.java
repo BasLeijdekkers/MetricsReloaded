@@ -39,7 +39,7 @@ public class FileCountProjectCalculator extends ElementCountProjectCalculator {
         public void visitFile(PsiFile file) {
             super.visitFile(file);
             if (fileType == null || file.getFileType() == fileType) {
-                numElements++;
+                incrementCount(1);
             }
         }
     }

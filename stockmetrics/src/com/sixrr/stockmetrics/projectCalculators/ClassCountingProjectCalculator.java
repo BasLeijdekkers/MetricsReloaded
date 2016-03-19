@@ -18,14 +18,7 @@ package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.*;
 
-public abstract class ClassCountingProjectCalculator extends ProjectCalculator {
-
-    private int numElements = 0;
-
-    @Override
-    public void endMetricsRun() {
-        postMetric(numElements);
-    }
+public abstract class ClassCountingProjectCalculator extends ElementCountProjectCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -37,12 +30,11 @@ public abstract class ClassCountingProjectCalculator extends ProjectCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (aClass instanceof PsiTypeParameter ||
-                    aClass instanceof PsiEnumConstantInitializer) {
+            if (aClass instanceof PsiTypeParameter || aClass instanceof PsiEnumConstantInitializer) {
                 return;
             }
             if (satisfies(aClass)) {
-                numElements++;
+                incrementCount(1);
             }
         }
     }

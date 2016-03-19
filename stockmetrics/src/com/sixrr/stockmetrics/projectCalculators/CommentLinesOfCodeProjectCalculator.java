@@ -35,7 +35,7 @@ public class CommentLinesOfCodeProjectCalculator extends ElementCountProjectCalc
         public void visitElement(PsiElement element) {
             super.visitElement(element);
             if (element instanceof PsiComment) {
-                numElements += LineUtil.countLines(element);
+                incrementCount(LineUtil.countLines(element));
             }
         }
     }
