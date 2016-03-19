@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 
 package com.sixrr.stockmetrics.moduleMetrics;
 
-import com.sixrr.stockmetrics.i18n.HelpURLs;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.moduleCalculators.NumTestAssertsModuleCalculator;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class NumTestAssertsModuleMetric extends ModuleMetric {
@@ -42,5 +45,11 @@ public class NumTestAssertsModuleMetric extends ModuleMetric {
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.JUNIT_DISPLAY_STRING;
+    }
+
+    @NotNull
+    @Override
+    public MetricCalculator createCalculator() {
+        return new NumTestAssertsModuleCalculator();
     }
 }

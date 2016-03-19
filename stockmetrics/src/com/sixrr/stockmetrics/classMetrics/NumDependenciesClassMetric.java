@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 
 package com.sixrr.stockmetrics.classMetrics;
 
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.classCalculators.NumDependenciesClassCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import org.jetbrains.annotations.NotNull;
 
 public class NumDependenciesClassMetric extends ClassMetric {
     public String getDisplayName() {
@@ -34,5 +37,11 @@ public class NumDependenciesClassMetric extends ClassMetric {
 
     public boolean requiresDependents() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public MetricCalculator createCalculator() {
+        return new NumDependenciesClassCalculator();
     }
 }

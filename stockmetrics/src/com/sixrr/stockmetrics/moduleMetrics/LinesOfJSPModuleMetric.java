@@ -21,7 +21,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleCalculators.LinesOfCodeModuleCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class LinesOfJSPModuleMetric extends ModuleMetric {
     public String getDisplayName() {
@@ -36,7 +36,7 @@ public class LinesOfJSPModuleMetric extends ModuleMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new LinesOfCodeModuleCalculator(NewJspFileType.INSTANCE);

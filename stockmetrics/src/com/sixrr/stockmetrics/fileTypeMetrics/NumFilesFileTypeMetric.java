@@ -20,6 +20,7 @@ import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -42,7 +43,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new NumFilesFileTypeCalculator();

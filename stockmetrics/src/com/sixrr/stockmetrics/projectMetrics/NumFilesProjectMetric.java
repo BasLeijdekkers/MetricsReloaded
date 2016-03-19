@@ -14,18 +14,13 @@
  *  limitations under the License.
  */
 
-/**
- * (c) 2016 Silent Forest AB
- * created: 21 February 2016
- */
 package com.sixrr.stockmetrics.projectMetrics;
 
-import com.intellij.psi.css.CssFileType;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.projectCalculators.FileCountProjectCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Bas Leijdekkers
@@ -47,7 +42,7 @@ public class NumFilesProjectMetric extends ProjectMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new FileCountProjectCalculator(null);

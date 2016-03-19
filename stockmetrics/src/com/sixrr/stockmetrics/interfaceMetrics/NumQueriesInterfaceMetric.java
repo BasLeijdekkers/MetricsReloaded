@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 
 package com.sixrr.stockmetrics.interfaceMetrics;
 
-import com.sixrr.stockmetrics.i18n.HelpURLs;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.interfaceCalculators.NumQueriesInterfaceCalculator;
+import org.jetbrains.annotations.NotNull;
 
 public class NumQueriesInterfaceMetric extends InterfaceMetric {
 
@@ -40,5 +43,11 @@ public class NumQueriesInterfaceMetric extends InterfaceMetric {
 
     public String getHelpDisplayString() {
         return HelpURLs.MEYER_DISPLAY_STRING;
+    }
+
+    @NotNull
+    @Override
+    public MetricCalculator createCalculator() {
+        return new NumQueriesInterfaceCalculator();
     }
 }

@@ -20,7 +20,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.methodCalculators.NumImplementationsMethodCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class NumImplementationsMethodMetric extends MethodMetric {
 
@@ -39,7 +39,7 @@ public class NumImplementationsMethodMetric extends MethodMetric {
         return MetricType.Score;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new NumImplementationsMethodCalculator();

@@ -21,6 +21,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.utils.LineUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
@@ -40,7 +41,7 @@ public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new NonCommentLinesOfCodeFileTypeCalculator();

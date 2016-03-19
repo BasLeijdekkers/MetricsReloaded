@@ -21,7 +21,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleCalculators.FileCountModuleCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class NumJSPFilesModuleMetric extends ModuleMetric {
 
@@ -37,7 +37,7 @@ public class NumJSPFilesModuleMetric extends ModuleMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new FileCountModuleCalculator(NewJspFileType.INSTANCE);

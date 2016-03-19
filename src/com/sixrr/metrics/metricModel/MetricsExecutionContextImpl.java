@@ -88,10 +88,8 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
             final Metric metric = metricInstance.getMetric();
             final MetricCalculator calculator = metric.createCalculator();
 
-            if (calculator != null) {
-                calculators.add(calculator);
-                calculator.beginMetricsRun(metric, resultsHolder, this);
-            }
+            calculators.add(calculator);
+            calculator.beginMetricsRun(metric, resultsHolder, this);
         }
 
         scope.accept(new PsiElementVisitor() {

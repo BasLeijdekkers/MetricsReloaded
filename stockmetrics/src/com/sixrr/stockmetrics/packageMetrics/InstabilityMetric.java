@@ -16,9 +16,12 @@
 
 package com.sixrr.stockmetrics.packageMetrics;
 
-import com.sixrr.stockmetrics.i18n.HelpURLs;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.packageCalculators.InstabilityCalculator;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class InstabilityMetric extends PackageMetric {
@@ -46,5 +49,11 @@ public class InstabilityMetric extends PackageMetric {
 
     public boolean requiresDependents() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public MetricCalculator createCalculator() {
+        return new InstabilityCalculator();
     }
 }

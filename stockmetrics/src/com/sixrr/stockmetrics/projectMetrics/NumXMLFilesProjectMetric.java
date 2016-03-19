@@ -21,7 +21,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.projectCalculators.FileCountProjectCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class NumXMLFilesProjectMetric extends ProjectMetric {
 
@@ -37,7 +37,7 @@ public class NumXMLFilesProjectMetric extends ProjectMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new FileCountProjectCalculator(XmlFileType.INSTANCE);

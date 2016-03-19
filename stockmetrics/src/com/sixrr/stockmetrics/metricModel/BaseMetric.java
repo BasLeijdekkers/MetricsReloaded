@@ -1,5 +1,5 @@
 /*
- * Copyright 200-2016 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package com.sixrr.stockmetrics.metricModel;
 
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.MetricCalculator;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseMetric implements Metric {
@@ -49,34 +49,19 @@ public abstract class BaseMetric implements Metric {
         return name.hashCode();
     }
 
+    @NotNull
+    @Override
     public String getID() {
         return name;
     }
 
-    @Nullable
-    public MetricCalculator createCalculator() {
-        final String metricClassName = getClass().getName();
-        //noinspection HardCodedStringLiteral
-        final String calculatorClassName = metricClassName.replaceAll("Metric", "Calculator");
-        final MetricCalculator calculator;
-        try {
-            final Class<?> calculatorClass = Class.forName(calculatorClassName);
-            calculator = (MetricCalculator) calculatorClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (InstantiationException e) {
-            return null;
-        } catch (IllegalAccessException e) {
-            return null;
-        }
-        return calculator;
-    }
-
+    @Override
     @Nullable
     public String getHelpURL() {
         return null;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return null;

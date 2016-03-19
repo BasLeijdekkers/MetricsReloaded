@@ -22,6 +22,7 @@ import com.intellij.psi.search.PsiTodoSearchHelper;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -44,7 +45,7 @@ public class TodoCommentCountFileTypeMetric extends FileTypeMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new TodoCommentCountFileTypeCalculator();

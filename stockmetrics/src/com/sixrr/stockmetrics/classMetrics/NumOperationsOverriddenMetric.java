@@ -20,7 +20,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.NumOperationsOverriddenCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class NumOperationsOverriddenMetric extends ClassMetric {
 
@@ -39,7 +39,7 @@ public class NumOperationsOverriddenMetric extends ClassMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new NumOperationsOverriddenCalculator();

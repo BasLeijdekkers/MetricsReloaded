@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 
 package com.sixrr.metrics;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * To add a new metric to IntelliJ IDEA, create a Metric class for it, which specifies both all the "metadata" for a metric,
@@ -30,30 +31,35 @@ public interface Metric {
      * @return the metric id
      */
     @NonNls
+    @NotNull
     String getID();
 
     /**
      * The user-visible name of the metric.  This need not be unique globally, but should be unique within a metric category
      * @return the display name for the metric.
      */
+    @NotNull
     String getDisplayName();
 
     /**
      * The user-visible abbreviation of the metric.  This need not be unique globally, but should be unique within a metric category
      * @return the abbreviation for the metric.
      */
+    @NotNull
     String getAbbreviation();
 
     /**
      * The category for this metric, indicating what objects are measured (classes, methods, modules)
      * @return  the metric category
      */
+    @NotNull
     MetricCategory getCategory();
 
     /**
      * The type of the metric, indicating whether the number returned is a score, a count, or an average.
      * @return the metric type
      */
+    @NotNull
     MetricType getType();
 
     /**
@@ -79,5 +85,6 @@ public interface Metric {
      * Create a calculator for this method.  The calculator returned is used for the duration of one entire metrics run.
      * @return a calculator for this metric.
      */
+    @NotNull
     MetricCalculator createCalculator();
 }

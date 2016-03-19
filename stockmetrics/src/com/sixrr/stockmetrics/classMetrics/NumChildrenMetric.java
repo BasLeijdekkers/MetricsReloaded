@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.sixrr.stockmetrics.classMetrics;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
@@ -24,7 +25,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.ClassCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Bas Leijdekkers
@@ -46,7 +47,7 @@ public class NumChildrenMetric extends ClassMetric {
         return MetricType.Score;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new NumberOfChildrenCalculator();

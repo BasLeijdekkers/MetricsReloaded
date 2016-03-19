@@ -16,9 +16,12 @@
 
 package com.sixrr.stockmetrics.packageMetrics;
 
-import com.sixrr.stockmetrics.i18n.HelpURLs;
+import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.packageCalculators.AbstractnessCalculator;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AbstractnessMetric extends PackageMetric {
@@ -42,5 +45,11 @@ public class AbstractnessMetric extends PackageMetric {
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.MARTIN_DISPLAY_STRING;
+    }
+
+    @NotNull
+    @Override
+    public MetricCalculator createCalculator() {
+        return new AbstractnessCalculator();
     }
 }

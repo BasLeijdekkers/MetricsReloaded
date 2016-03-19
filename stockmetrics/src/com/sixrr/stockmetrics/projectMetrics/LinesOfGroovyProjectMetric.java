@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.projectCalculators.LinesOfCodeProjectCalculator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 public class LinesOfGroovyProjectMetric extends ProjectMetric {
@@ -37,7 +37,7 @@ public class LinesOfGroovyProjectMetric extends ProjectMetric {
         return MetricType.Count;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public MetricCalculator createCalculator() {
         return new LinesOfCodeProjectCalculator(GroovyFileType.GROOVY_FILE_TYPE);
