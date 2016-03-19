@@ -16,27 +16,11 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
 
-import java.util.Set;
-
-public abstract class ClassCountingModuleCalculator extends ModuleCalculator {
-
-    private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
+public abstract class ClassCountingModuleCalculator extends ElementCountModuleCalculator {
 
     protected abstract boolean satisfies(PsiClass aClass);
-
-    @Override
-    public void endMetricsRun() {
-        final Set<Module> modules = numClassesPerModule.getBuckets();
-        for (final Module module : modules) {
-            final int numClasses = numClassesPerModule.getBucketValue(module);
-            postMetric(module, numClasses);
-        }
-    }
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -48,17 +32,12 @@ public abstract class ClassCountingModuleCalculator extends ModuleCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (aClass instanceof PsiTypeParameter ||
-                    aClass instanceof PsiEnumConstantInitializer) {
+            if (aClass instanceof PsiTypeParameter || aClass instanceof PsiEnumConstantInitializer) {
                 return;
             }
-            final Module module = ClassUtils.calculateModule(aClass);
-            if (module == null) {
-                return;
-            }
-            numClassesPerModule.createBucket(module);
+            createCount(aClass);
             if (satisfies(aClass)) {
-                numClassesPerModule.incrementBucketValue(module);
+                incrementCount(aClass, 1);
             }
         }
     }

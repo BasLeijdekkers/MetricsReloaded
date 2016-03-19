@@ -28,12 +28,11 @@ public abstract class ElementCountModuleCalculator extends ModuleCalculator {
     private final BucketedCount<Module> elementCountPerModule = new BucketedCount<Module>();
 
     @Override
-    public void endMetricsRun() {
+    public final void endMetricsRun() {
         final Set<Module> modules = elementCountPerModule.getBuckets();
         for (final Module module : modules) {
-            final int numCommentLines = elementCountPerModule.getBucketValue(module);
-
-            postMetric(module, numCommentLines);
+            final int count = elementCountPerModule.getBucketValue(module);
+            postMetric(module, count);
         }
     }
 

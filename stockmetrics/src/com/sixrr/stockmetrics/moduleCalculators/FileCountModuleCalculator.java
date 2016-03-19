@@ -17,18 +17,12 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
 
-import java.util.Set;
-
-public class FileCountModuleCalculator extends ModuleCalculator {
+public class FileCountModuleCalculator extends ElementCountModuleCalculator {
 
     private final FileType fileType;
-    private final BucketedCount<Module> numClassesPerModule = new BucketedCount<Module>();
 
     public FileCountModuleCalculator(FileType fileType) {
         this.fileType = fileType;
@@ -36,15 +30,6 @@ public class FileCountModuleCalculator extends ModuleCalculator {
 
     protected boolean satisfies(PsiFile file) {
         return file.getFileType() == fileType;
-    }
-
-    @Override
-    public void endMetricsRun() {
-        final Set<Module> modules = numClassesPerModule.getBuckets();
-        for (final Module module : modules) {
-            final int numClasses = numClassesPerModule.getBucketValue(module);
-            postMetric(module, numClasses);
-        }
     }
 
     @Override
@@ -57,13 +42,9 @@ public class FileCountModuleCalculator extends ModuleCalculator {
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            numClassesPerModule.createBucket(module);
+            createCount(file);
             if (satisfies(file)) {
-                numClassesPerModule.incrementBucketValue(module);
+                incrementCount(file, 1);
             }
         }
     }

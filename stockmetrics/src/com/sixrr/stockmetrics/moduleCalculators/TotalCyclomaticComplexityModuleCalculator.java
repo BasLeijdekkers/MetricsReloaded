@@ -16,29 +16,13 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
 import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
-import java.util.Set;
-
-public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator {
-
-    private final BucketedCount<Module> totalComplexityPerModule = new BucketedCount<Module>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<Module> modules = totalComplexityPerModule.getBuckets();
-        for (final Module module : modules) {
-            final int complexityForModule = totalComplexityPerModule.getBucketValue(module);
-            postMetric(module, complexityForModule);
-        }
-    }
+public class TotalCyclomaticComplexityModuleCalculator extends ElementCountModuleCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -52,12 +36,8 @@ public class TotalCyclomaticComplexityModuleCalculator extends ModuleCalculator 
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            final Module module = ClassUtils.calculateModule(method);
-            if (module == null) {
-                return;
-            }
             final int complexity = CyclomaticComplexityUtil.calculateComplexity(method);
-            totalComplexityPerModule.incrementBucketValue(module, complexity);
+            incrementCount(method, complexity);
         }
     }
 }
