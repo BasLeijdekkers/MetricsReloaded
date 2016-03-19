@@ -56,6 +56,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         final Task.Backgroundable task = new Task.Backgroundable(project,
                 MetricsReloadedBundle.message("calculating.metrics"), true) {
 
+            @Override
             public void run(@NotNull final ProgressIndicator indicator) {
                 calculateMetrics(profile, resultsHolder);
             }
@@ -133,21 +134,25 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
 
     public void onCancel() {}
 
+    @Override
     public final Project getProject() {
         return project;
     }
 
+    @Override
     public final AnalysisScope getScope() {
         return scope;
     }
 
     private Map userData = new HashMap();
 
-    public final <T> T getUserData(Key<T> key) {
+    @Override
+    public final <T> T getUserData(@NotNull Key<T> key) {
         return (T) userData.get(key);
     }
 
-    public final <T> void putUserData(Key<T> key, T t) {
+    @Override
+    public final <T> void putUserData(@NotNull Key<T> key, T t) {
         userData.put(key, t);
     }
 }

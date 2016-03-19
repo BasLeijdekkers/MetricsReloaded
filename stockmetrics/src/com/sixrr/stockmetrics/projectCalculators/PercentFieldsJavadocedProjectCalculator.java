@@ -25,11 +25,13 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 public class PercentFieldsJavadocedProjectCalculator extends ElementRatioProjectCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitField(PsiField field) {
             final PsiClass containingClass = field.getContainingClass();
             if (containingClass == null || ClassUtils.isAnonymous(containingClass)) {

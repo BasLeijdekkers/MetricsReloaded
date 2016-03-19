@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class EncapsulationRatioPackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("encapsulation.ratio.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("encapsulation.ratio.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Ratio;
     }

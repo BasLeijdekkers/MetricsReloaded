@@ -51,10 +51,12 @@ public class MetricsProfileImpl implements MetricsProfile {
         id2instance.put(metricInstance.getMetric().getID(), metricInstance);
     }
 
+    @Override
     public MetricDisplaySpecification getDisplaySpecification() {
         return displaySpecification;
     }
 
+    @Override
     public void copyFrom(List<MetricInstance> metricInstances) {
         for (MetricInstance newMetricInstance : metricInstances) {
             final MetricInstance metricInstance = getMetricInstance(newMetricInstance.getMetric());
@@ -64,28 +66,34 @@ public class MetricsProfileImpl implements MetricsProfile {
         }
     }
 
+    @Override
     public boolean isBuiltIn() {
         return builtIn;
     }
 
+    @Override
     public void setBuiltIn(boolean builtIn) {
         this.builtIn = builtIn;
     }
 
+    @Override
     public void setName(String newProfileName) {
         name = newProfileName;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public List<MetricInstance> getMetricInstances() {
         final ArrayList<MetricInstance> result = new ArrayList<MetricInstance>(id2instance.values());
         Collections.sort(result);
         return result;
     }
 
+    @Override
     public MetricsProfileImpl clone() throws CloneNotSupportedException {
         final MetricsProfileImpl out = (MetricsProfileImpl) super.clone();
         out.id2instance.clear();
@@ -96,11 +104,13 @@ public class MetricsProfileImpl implements MetricsProfile {
         return out;
     }
 
+    @Override
     @Nullable
     public MetricInstance getMetricInstance(Metric metric) {
         return getMetricInstance(metric.getID());
     }
 
+    @Override
     @Nullable
     public MetricInstance getMetricInstance(String metricID) {
         return id2instance.get(metricID);
@@ -225,6 +235,7 @@ public class MetricsProfileImpl implements MetricsProfile {
         return metricInstance;
     }
 
+    @Override
     @SuppressWarnings({"HardCodedStringLiteral"})
     public void writeToFile(File profileFile) throws FileNotFoundException {
         final PrintWriter writer = new PrintWriter(new FileOutputStream(profileFile));

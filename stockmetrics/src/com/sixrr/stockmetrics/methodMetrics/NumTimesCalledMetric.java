@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumTimesCalledMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.times.called.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.times.called.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }

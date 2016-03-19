@@ -26,12 +26,14 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 public class TrueCommentRatioClassCalculator extends ClassCalculator {
     private int commentLines = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             int prevCommentLines = 0;
@@ -56,6 +58,7 @@ public class TrueCommentRatioClassCalculator extends ClassCalculator {
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             commentLines += LineUtil.countCommentOnlyLines(comment);

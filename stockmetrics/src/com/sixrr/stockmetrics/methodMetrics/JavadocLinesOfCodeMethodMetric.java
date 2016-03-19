@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class JavadocLinesOfCodeMethodMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("javadoc.lines.of.code.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("javadoc.lines.of.code.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

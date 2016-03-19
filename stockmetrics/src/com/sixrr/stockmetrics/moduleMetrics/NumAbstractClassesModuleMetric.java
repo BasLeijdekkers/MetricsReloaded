@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumAbstractClassesModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.abstract.classes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.abstract.classes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

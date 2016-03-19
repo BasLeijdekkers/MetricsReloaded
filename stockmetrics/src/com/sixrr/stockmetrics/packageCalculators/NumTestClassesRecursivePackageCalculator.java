@@ -22,6 +22,7 @@ import com.sixrr.metrics.utils.TestUtils;
 public class NumTestClassesRecursivePackageCalculator
         extends ClassCountingRecursivePackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return TestUtils.isTest(aClass);
     }

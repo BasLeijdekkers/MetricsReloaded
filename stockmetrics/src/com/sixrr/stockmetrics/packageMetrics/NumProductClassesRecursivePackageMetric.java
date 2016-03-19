@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumProductClassesRecursivePackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.product.classes.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.product.classes.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveCount;
     }

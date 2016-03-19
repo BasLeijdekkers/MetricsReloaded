@@ -26,12 +26,14 @@ public class QCPCorrectnessCalculator extends MethodCalculator {
     private int numControlStatements = 0;
     private int numExecutableStatements = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 complexity = 1;
@@ -51,75 +53,89 @@ public class QCPCorrectnessCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitExpressionListStatement(PsiExpressionListStatement statement) {
             super.visitExpressionListStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitExpressionStatement(PsiExpressionStatement statement) {
             super.visitExpressionStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitDeclarationStatement(PsiDeclarationStatement statement) {
             super.visitDeclarationStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitAssertStatement(PsiAssertStatement statement) {
             super.visitAssertStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitReturnStatement(PsiReturnStatement statement) {
             super.visitReturnStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitThrowStatement(PsiThrowStatement statement) {
             super.visitThrowStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitIfStatement(PsiIfStatement statement) {
             super.visitIfStatement(statement);
             numControlStatements++;
             complexity++;
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             super.visitDoWhileStatement(statement);
             numControlStatements++;
             complexity++;
         }
 
+        @Override
         public void visitContinueStatement(PsiContinueStatement statement) {
             super.visitContinueStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitBreakStatement(PsiBreakStatement statement) {
             super.visitBreakStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             super.visitForStatement(statement);
             numControlStatements++;
             complexity++;
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             super.visitForeachStatement(statement);
             numControlStatements++;
             complexity++;
         }
 
+        @Override
         public void visitSwitchLabelStatement(PsiSwitchLabelStatement statement) {
             super.visitSwitchLabelStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
             super.visitSwitchStatement(statement);
             numControlStatements++;
@@ -141,22 +157,26 @@ public class QCPCorrectnessCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitSynchronizedStatement(PsiSynchronizedStatement statement) {
             super.visitSynchronizedStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitTryStatement(PsiTryStatement statement) {
             super.visitTryStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
             numControlStatements++;
             complexity++;
         }
 
+        @Override
         public void visitConditionalExpression(PsiConditionalExpression expression) {
             super.visitConditionalExpression(expression);
             complexity++;

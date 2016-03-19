@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumImplementationsMethodMetric extends MethodMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.implementations.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.implementations.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Score;

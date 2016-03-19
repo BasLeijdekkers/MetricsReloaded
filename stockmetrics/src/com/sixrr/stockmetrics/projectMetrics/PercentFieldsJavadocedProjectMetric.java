@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class PercentFieldsJavadocedProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("javadoc.field.coverage.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("javadoc.field.coverage.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Ratio;
     }

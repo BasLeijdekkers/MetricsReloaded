@@ -25,12 +25,14 @@ import com.sixrr.metrics.utils.MethodUtils;
 public abstract class HalsteadMethodCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0 && !MethodUtils.isAbstract(method)) {
                 final HalsteadVisitor visitor = new HalsteadVisitor(executionContext);

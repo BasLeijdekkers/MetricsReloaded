@@ -23,12 +23,14 @@ public class NumLoopsCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
     private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 elementCount = 0;
@@ -41,21 +43,25 @@ public class NumLoopsCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             super.visitForStatement(statement);
             elementCount++;
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             super.visitForeachStatement(statement);
             elementCount++;
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             super.visitDoWhileStatement(statement);
             elementCount++;
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
             elementCount++;

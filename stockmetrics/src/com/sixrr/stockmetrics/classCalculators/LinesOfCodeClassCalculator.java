@@ -23,12 +23,14 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class LinesOfCodeClassCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {

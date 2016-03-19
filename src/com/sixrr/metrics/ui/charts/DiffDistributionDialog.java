@@ -21,6 +21,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.JFreeChartConstants;
@@ -115,14 +116,18 @@ public class DiffDistributionDialog extends DialogWrapper {
         return new JFreeChart(title, JFreeChartConstants.DEFAULT_TITLE_FONT, plot, true);
     }
 
+    @Override
     public JComponent createCenterPanel() {
         return chartPanel;
     }
 
+    @NotNull
+    @Override
     public Action[] createActions() {
         return new Action[0];
     }
 
+    @Override
     public String getTitle() {
         if (metricName.startsWith(MetricsReloadedBundle.message("number.of"))) {
             final String shortName = metricName.substring(MetricsReloadedBundle.message("number.of").length());
@@ -133,6 +138,7 @@ public class DiffDistributionDialog extends DialogWrapper {
     }
 
 
+    @Override
     @NonNls
     protected String getDimensionServiceKey() {
         return "MetricsReloaded.DiffDistributionDialog";

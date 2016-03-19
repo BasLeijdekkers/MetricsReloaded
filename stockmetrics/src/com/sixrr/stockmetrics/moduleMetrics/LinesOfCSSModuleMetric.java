@@ -25,14 +25,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class LinesOfCSSModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.css.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("lines.of.css.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

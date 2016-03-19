@@ -25,14 +25,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumXMLFilesProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.xml.files.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.xml.files.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

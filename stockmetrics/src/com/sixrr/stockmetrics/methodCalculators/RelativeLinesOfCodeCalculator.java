@@ -25,12 +25,14 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 public class RelativeLinesOfCodeCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 final int numMethodLines = LineUtil.countLines(method);

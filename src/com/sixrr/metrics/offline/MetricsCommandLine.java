@@ -118,6 +118,7 @@ public class MetricsCommandLine implements ApplicationStarter {
         }
     }
 
+    @Override
     public void main(String[] args) {
         if (outputXmlPath != null) {
             final File file = new File(outputXmlPath);

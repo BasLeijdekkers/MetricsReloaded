@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClassSizeAttributesMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("class.size.attributes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("class.size.attributes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

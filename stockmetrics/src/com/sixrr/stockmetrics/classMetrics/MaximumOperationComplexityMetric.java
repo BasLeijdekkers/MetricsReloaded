@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class MaximumOperationComplexityMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("maximum.operation.complexity.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("maximum.operation.complexity.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.COMPLEXITY_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }

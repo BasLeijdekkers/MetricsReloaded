@@ -25,14 +25,20 @@ import org.jetbrains.plugins.scala.ScalaFileType;
 
 public class LinesOfScalaModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.scala.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("lines.of.scala.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

@@ -38,6 +38,7 @@ class HeaderRenderer extends DefaultTableCellRenderer {
         this.alignment = alignment;
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
         setToolTipText(toolTipText);

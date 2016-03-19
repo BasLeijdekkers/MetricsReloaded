@@ -22,12 +22,14 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiField;
 
 public class NumAttributesAddedCalculator extends ClassCalculator {
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {

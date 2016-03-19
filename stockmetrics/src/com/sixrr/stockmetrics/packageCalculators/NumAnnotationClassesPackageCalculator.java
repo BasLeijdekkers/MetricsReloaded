@@ -20,6 +20,7 @@ import com.intellij.psi.PsiClass;
 
 public class NumAnnotationClassesPackageCalculator extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return aClass.isAnnotationType();
     }

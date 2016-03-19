@@ -18,9 +18,12 @@ package com.sixrr.stockmetrics.methodMetrics;
 
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.stockmetrics.metricModel.BaseMetric;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MethodMetric extends BaseMetric {
 
+    @NotNull
+    @Override
     public MetricCategory getCategory() {
         return MetricCategory.Method;
     }

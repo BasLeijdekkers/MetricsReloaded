@@ -24,22 +24,30 @@ import com.sixrr.stockmetrics.methodCalculators.HalsteadBugsMethodCalculator;
 import org.jetbrains.annotations.NotNull;
 
 public class HalsteadBugsMethodMetric extends MethodMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("halstead.bugs.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("halstead.bugs.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.HALSTEAD_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.HALSTEAD_DISPLAY_STRING;
     }

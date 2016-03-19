@@ -21,6 +21,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 public class NumAbstractClassesPackageCalculator extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return ClassUtils.isAbstract(aClass);
     }

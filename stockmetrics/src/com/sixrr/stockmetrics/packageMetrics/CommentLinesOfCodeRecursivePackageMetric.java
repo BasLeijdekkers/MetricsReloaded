@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommentLinesOfCodeRecursivePackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("comment.lines.of.code.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("comment.lines.of.code.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveCount;
     }

@@ -24,12 +24,14 @@ public class LoopNestingDepthCalculator extends MethodCalculator {
     private int maximumDepth = 0;
     private int currentDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingCount == 0) {
                 maximumDepth = 0;
@@ -45,24 +47,28 @@ public class LoopNestingDepthCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             enterScope();
             super.visitDoWhileStatement(statement);
             exitScope();
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             enterScope();
             super.visitWhileStatement(statement);
             exitScope();
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             enterScope();
             super.visitForStatement(statement);
             exitScope();
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             enterScope();
             super.visitForeachStatement(statement);

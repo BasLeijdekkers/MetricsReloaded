@@ -21,6 +21,7 @@ import com.intellij.psi.PsiClass;
 public class NumAnnotationClassesRecursivePackageCalculator
         extends ClassCountingRecursivePackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return aClass.isAnnotationType();
     }

@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class HalsteadEffortClassMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("halstead.effort.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("halstead.effort.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.HALSTEAD_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.HALSTEAD_DISPLAY_STRING;
     }

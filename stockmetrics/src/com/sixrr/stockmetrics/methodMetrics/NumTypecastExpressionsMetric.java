@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumTypecastExpressionsMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.type.cast.expressions.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.type.cast.expressions.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

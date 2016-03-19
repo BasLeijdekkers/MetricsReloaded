@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class TodoCommentCountRecursivePackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.todo.comments.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.todo.comments.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveCount;
     }

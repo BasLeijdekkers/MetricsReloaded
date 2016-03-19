@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumTopLevelInterfacesProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.top.level.interfaces.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.top.level.interfaces.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

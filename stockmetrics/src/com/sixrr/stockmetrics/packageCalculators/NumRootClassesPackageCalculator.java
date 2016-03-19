@@ -21,6 +21,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 
 public class NumRootClassesPackageCalculator extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return ClassUtils.isRoot(aClass);
     }

@@ -25,14 +25,20 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 
 public class NumGroovyFilesModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.groovy.files.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.groovy.files.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

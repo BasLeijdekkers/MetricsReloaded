@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class PercentFieldsJavadocedRecursivePackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("javadoc.field.coverage.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("javadoc.field.coverage.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveRatio;
     }

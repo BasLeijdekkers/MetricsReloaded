@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class SourceLinesOfCodeTestProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("source.lines.of.code.test.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("source.lines.of.code.test.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

@@ -20,6 +20,7 @@ import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 
 public class HalsteadLengthClassCalculator extends HalsteadClassCalculator {
 
+    @Override
     protected double calculateValue(HalsteadVisitor visitor) {
         return (double) visitor.getLength();
     }

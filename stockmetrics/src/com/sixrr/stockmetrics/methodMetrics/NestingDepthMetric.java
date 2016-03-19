@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class NestingDepthMetric extends MethodMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("nesting.depth.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("nesting.depth.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Score;

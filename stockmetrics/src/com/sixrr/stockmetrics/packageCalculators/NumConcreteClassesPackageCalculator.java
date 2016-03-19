@@ -22,6 +22,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 public class NumConcreteClassesPackageCalculator
         extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return ClassUtils.isConcrete(aClass);
     }

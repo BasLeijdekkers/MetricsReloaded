@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class AttributeInheritanceFactorProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("attribute.inheritance.factor.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("attribute.inheritance.factor.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Ratio;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.MOOD_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.MOOD_DISPLAY_STRING;
     }

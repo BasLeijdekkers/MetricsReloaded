@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class TotalCyclomaticComplexityProjectMetric extends ProjectMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("total.cyclomatic.complexity");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("cctot");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

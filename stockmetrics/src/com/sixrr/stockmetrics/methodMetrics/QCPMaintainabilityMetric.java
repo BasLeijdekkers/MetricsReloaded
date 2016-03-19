@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class QCPMaintainabilityMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("quality.criteria.profile.maintainability.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("quality.criteria.profile.maintainability.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }

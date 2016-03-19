@@ -19,6 +19,7 @@ package com.sixrr.metrics.metricModel;
 import java.util.Comparator;
 
 public class MetricInstanceAbbreviationComparator implements Comparator<MetricInstance> {
+    @Override
     public int compare(MetricInstance o1, MetricInstance o2) {
         final String abbrev1 = o1.getMetric().getAbbreviation();
         final String upperAbbrev1 = abbrev1.toUpperCase();

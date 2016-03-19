@@ -27,12 +27,14 @@ import java.util.Set;
 
 public class CouplingBetweenObjectsClassCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {

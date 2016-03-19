@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class LinesOfCodeProjectMetric extends ProjectMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.code.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("lines.of.code.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Count;

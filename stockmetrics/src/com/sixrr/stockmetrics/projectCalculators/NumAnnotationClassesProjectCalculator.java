@@ -21,6 +21,7 @@ import com.intellij.psi.PsiClass;
 public class NumAnnotationClassesProjectCalculator
         extends ClassCountingProjectCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return aClass.isAnnotationType();
     }

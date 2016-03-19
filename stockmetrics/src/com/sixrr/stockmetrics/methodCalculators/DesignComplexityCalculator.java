@@ -20,6 +20,7 @@ import com.intellij.psi.*;
 
 public class DesignComplexityCalculator extends ComplexityCalculator {
 
+    @Override
     public boolean isReducible(PsiElement element) {
         if (element == null) {
             return true;
@@ -60,6 +61,7 @@ public class DesignComplexityCalculator extends ComplexityCalculator {
     private static class MethodCallVisitor extends JavaRecursiveElementVisitor {
         private boolean methodCalled = false;
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             methodCalled = true;
         }

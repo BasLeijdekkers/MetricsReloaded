@@ -26,12 +26,14 @@ import com.sixrr.stockmetrics.utils.LineUtil;
 public class CommentLinesOfCodeInterfaceCalculator extends InterfaceCalculator {
     private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             int prevElementCount = 0;
             if (!ClassUtils.isAnonymous(aClass)) {
@@ -47,6 +49,7 @@ public class CommentLinesOfCodeInterfaceCalculator extends InterfaceCalculator {
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             elementCount += LineUtil.countLines(comment);

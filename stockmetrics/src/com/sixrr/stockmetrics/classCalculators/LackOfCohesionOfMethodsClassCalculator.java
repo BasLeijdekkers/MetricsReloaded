@@ -31,12 +31,14 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
                 "writeObject");
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
@@ -119,6 +121,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
         FieldsUsedVisitor() {
         }
 
+        @Override
         public void visitReferenceExpression(PsiReferenceExpression referenceExpression) {
             super.visitReferenceExpression(referenceExpression);
             final PsiElement referent = referenceExpression.resolve();
@@ -165,6 +168,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
             this.applicableMethods = applicableMethods;
         }
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression callExpression) {
             super.visitMethodCallExpression(callExpression);
             final PsiMethod testMethod = callExpression.resolveMethod();

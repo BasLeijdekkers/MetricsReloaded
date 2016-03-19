@@ -22,6 +22,7 @@ import com.sixrr.metrics.utils.ClassUtils;
 public class NumTopLevelClassesPackageCalculator
         extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return !aClass.isInterface() &&
                 ClassUtils.isTopLevel(aClass);

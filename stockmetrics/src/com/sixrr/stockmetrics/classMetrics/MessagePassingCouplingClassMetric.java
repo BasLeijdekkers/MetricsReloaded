@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
 public class MessagePassingCouplingClassMetric extends ClassMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("message.passing.coupling.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("message.passing.complexity.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }

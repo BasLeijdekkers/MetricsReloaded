@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumOperationsOverriddenMetric extends ClassMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.operations.overridden.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.operations.overridden.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Count;

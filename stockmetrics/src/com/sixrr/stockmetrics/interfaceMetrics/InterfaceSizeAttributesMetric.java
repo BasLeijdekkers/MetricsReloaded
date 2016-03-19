@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class InterfaceSizeAttributesMetric extends InterfaceMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("interface.size.attributes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("interface.size.attributes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }

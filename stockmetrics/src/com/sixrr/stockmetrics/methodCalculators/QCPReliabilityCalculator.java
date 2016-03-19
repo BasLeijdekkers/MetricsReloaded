@@ -29,11 +29,13 @@ public class QCPReliabilityCalculator extends MethodCalculator {
     private int maxNestingDepth = 0;
     private int currentDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 complexity = 1;
@@ -56,36 +58,43 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitExpressionListStatement(PsiExpressionListStatement statement) {
             super.visitExpressionListStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitExpressionStatement(PsiExpressionStatement statement) {
             super.visitExpressionStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitDeclarationStatement(PsiDeclarationStatement statement) {
             super.visitDeclarationStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitAssertStatement(PsiAssertStatement statement) {
             super.visitAssertStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitReturnStatement(PsiReturnStatement statement) {
             super.visitReturnStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitThrowStatement(PsiThrowStatement statement) {
             super.visitThrowStatement(statement);
             numExecutableStatements++;
         }
 
+        @Override
         public void visitIfStatement(PsiIfStatement statement) {
             boolean isAlreadyCounted = false;
             if (statement.getParent()instanceof PsiIfStatement) {
@@ -106,6 +115,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             enterScope();
             super.visitDoWhileStatement(statement);
@@ -114,12 +124,14 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitContinueStatement(PsiContinueStatement statement) {
             super.visitContinueStatement(statement);
             numBranchStatements++;
             numControlStatements++;
         }
 
+        @Override
         public void visitBreakStatement(PsiBreakStatement statement) {
             super.visitBreakStatement(statement);
             numControlStatements++;
@@ -130,6 +142,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitForStatement(PsiForStatement statement) {
             enterScope();
             super.visitForStatement(statement);
@@ -138,6 +151,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             enterScope();
             super.visitForeachStatement(statement);
@@ -146,11 +160,13 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitSwitchLabelStatement(PsiSwitchLabelStatement statement) {
             super.visitSwitchLabelStatement(statement);
             numControlStatements++;
         }
 
+        @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
             enterScope();
             numControlStatements++;
@@ -174,6 +190,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitSynchronizedStatement(PsiSynchronizedStatement statement) {
             enterScope();
             super.visitSynchronizedStatement(statement);
@@ -181,6 +198,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitTryStatement(PsiTryStatement statement) {
             enterScope();
             super.visitTryStatement(statement);
@@ -188,6 +206,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             enterScope();
             super.visitWhileStatement(statement);
@@ -196,11 +215,13 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             exitScope();
         }
 
+        @Override
         public void visitConditionalExpression(PsiConditionalExpression expression) {
             super.visitConditionalExpression(expression);
             complexity++;
         }
 
+        @Override
         public void visitBlockStatement(PsiBlockStatement statement) {
             final PsiElement parent = statement.getParent();
             final boolean isAlreadyCounted = parent instanceof PsiDoWhileStatement ||

@@ -26,22 +26,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class NumTestCasesPackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.junit.test.cases.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.junit.test.cases.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.JUNIT_URL;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.JUNIT_DISPLAY_STRING;

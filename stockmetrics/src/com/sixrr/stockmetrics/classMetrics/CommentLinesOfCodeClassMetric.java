@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommentLinesOfCodeClassMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("comment.lines.of.code.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("comment.lines.of.code.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

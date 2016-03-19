@@ -26,16 +26,19 @@ public class TotalCyclomaticComplexityProjectCalculator extends ProjectCalculato
 
     private int totalComplexity = 0;
 
+    @Override
     public void endMetricsRun() {
         postMetric(totalComplexity);
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (MethodUtils.isAbstract(method)) {
                 return;

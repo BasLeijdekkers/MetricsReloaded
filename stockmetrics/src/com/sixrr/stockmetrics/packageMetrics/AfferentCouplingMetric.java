@@ -26,27 +26,36 @@ import org.jetbrains.annotations.Nullable;
 
 public class AfferentCouplingMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("afferent.coupling.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("afferent.coupling.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.MARTIN_URL;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.MARTIN_DISPLAY_STRING;
     }
 
+    @Override
     public boolean requiresDependents() {
         return true;
     }

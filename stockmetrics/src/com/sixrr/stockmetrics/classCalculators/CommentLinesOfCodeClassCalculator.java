@@ -27,12 +27,14 @@ public class CommentLinesOfCodeClassCalculator
         extends ClassCalculator {
     private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             final int prevElementCount = elementCount;
             if (!ClassUtils.isAnonymous(aClass)) {
@@ -47,6 +49,7 @@ public class CommentLinesOfCodeClassCalculator
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             elementCount += LineUtil.countLines(comment);

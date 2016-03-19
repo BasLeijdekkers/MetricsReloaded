@@ -26,22 +26,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class NumTestMethodsRecursivePackageMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.junit.test.methods.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.junit.test.methods.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveCount;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.JUNIT_URL;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.JUNIT_DISPLAY_STRING;

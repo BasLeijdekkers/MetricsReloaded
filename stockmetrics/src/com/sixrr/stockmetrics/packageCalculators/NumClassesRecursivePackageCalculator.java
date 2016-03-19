@@ -21,6 +21,7 @@ import com.intellij.psi.PsiClass;
 public class NumClassesRecursivePackageCalculator
         extends ClassCountingRecursivePackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return true;
     }

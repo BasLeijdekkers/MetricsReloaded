@@ -25,12 +25,14 @@ import com.sixrr.metrics.utils.ClassUtils;
 public class MessagePassingCouplingClassCalculator extends ClassCalculator {
     private int numCalls = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             if (ClassUtils.isConcrete(aClass) && !ClassUtils.isAnonymous(aClass)) {
                 numCalls = 0;
@@ -41,6 +43,7 @@ public class MessagePassingCouplingClassCalculator extends ClassCalculator {
             }
         }
 
+        @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
             numCalls++;

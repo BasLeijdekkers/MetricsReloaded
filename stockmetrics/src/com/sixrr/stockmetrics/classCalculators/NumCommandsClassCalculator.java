@@ -20,12 +20,14 @@ import com.intellij.psi.*;
 
 public class NumCommandsClassCalculator extends ClassCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {

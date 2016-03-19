@@ -21,6 +21,7 @@ import com.intellij.psi.PsiClass;
 public class NumInterfacesPackageCalculator
         extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return aClass.isInterface();
     }

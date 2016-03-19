@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class AverageOperationComplexityMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("average.operation.complexity.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("average.operation.complexity.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Average;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.COMPLEXITY_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }

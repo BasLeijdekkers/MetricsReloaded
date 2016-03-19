@@ -25,14 +25,20 @@ import org.jetbrains.kotlin.idea.KotlinFileType;
 
 public class LinesOfKotlinModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("lines.of.kotlin.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("lines.of.kotlin.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

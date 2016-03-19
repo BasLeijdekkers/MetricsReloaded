@@ -29,6 +29,7 @@ import java.util.Set;
 public class NumDependencyPackagesPackageCalculator extends PackageCalculator {
     private final Set<PsiPackage> packages = new HashSet<PsiPackage>();
 
+    @Override
     public void endMetricsRun() {
         for (final PsiPackage aPackage : packages) {
             final DependencyMap dependencyMap = getDependencyMap();
@@ -38,11 +39,13 @@ public class NumDependencyPackagesPackageCalculator extends PackageCalculator {
         }
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (!ClassUtils.isAnonymous(aClass)) {

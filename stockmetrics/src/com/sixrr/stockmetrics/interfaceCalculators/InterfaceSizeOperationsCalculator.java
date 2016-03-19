@@ -23,12 +23,14 @@ import com.intellij.psi.PsiMethod;
 
 public class InterfaceSizeOperationsCalculator extends InterfaceCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isInterface(aClass)) {

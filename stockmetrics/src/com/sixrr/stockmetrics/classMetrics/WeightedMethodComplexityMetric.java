@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeightedMethodComplexityMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("weighted.method.complexity.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("weighted.method.complexity.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

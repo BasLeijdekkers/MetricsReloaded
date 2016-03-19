@@ -21,6 +21,7 @@ public abstract class ElementRatioProjectCalculator extends ProjectCalculator {
     protected int denominator = 0;
     protected int numerator = 0;
 
+    @Override
     public void endMetricsRun() {
         postMetric(numerator, denominator);
     }

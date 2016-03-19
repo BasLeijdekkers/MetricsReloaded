@@ -25,28 +25,37 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AdjustedLevelOrderClassMetric extends ClassMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("adjusted.level.order.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("adjusted.level.order.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     @Nullable
     public String getHelpURL() {
         return HelpURLs.LAYERING_URL;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.LAYERING_DISPLAY_STRING;
     }
 
+    @Override
     public boolean requiresDependents() {
         return true;
     }

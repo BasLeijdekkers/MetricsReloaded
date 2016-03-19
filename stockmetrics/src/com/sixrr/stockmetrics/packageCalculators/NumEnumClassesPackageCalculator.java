@@ -20,6 +20,7 @@ import com.intellij.psi.PsiClass;
 
 public class NumEnumClassesPackageCalculator extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return aClass.isEnum();
     }

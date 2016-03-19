@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class TrueCommentRatioInterfaceMetric extends InterfaceMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("true.comment.ratio.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("true.comment.ration.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

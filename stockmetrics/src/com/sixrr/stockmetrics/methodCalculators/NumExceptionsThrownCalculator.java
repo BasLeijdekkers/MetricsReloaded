@@ -21,11 +21,13 @@ import com.intellij.psi.*;
 public class NumExceptionsThrownCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 final PsiReferenceList throwsList = method.getThrowsList();

@@ -26,11 +26,13 @@ public class NumAssertsCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
     private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 elementCount = 0;
@@ -43,6 +45,7 @@ public class NumAssertsCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitAssertStatement(PsiAssertStatement statement) {
             super.visitAssertStatement(statement);
             elementCount++;

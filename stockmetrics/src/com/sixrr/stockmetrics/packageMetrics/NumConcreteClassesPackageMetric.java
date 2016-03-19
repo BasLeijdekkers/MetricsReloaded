@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.packageCalculators.NumConcreteClassesPackageCalcul
 import org.jetbrains.annotations.NotNull;
 
 public class NumConcreteClassesPackageMetric extends PackageMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.concrete.classes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.concrete.classes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

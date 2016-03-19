@@ -23,12 +23,14 @@ import com.sixrr.stockmetrics.dependency.DependencyMap;
 
 public class AdjustedLevelOrderInterfaceCalculator extends InterfaceCalculator {
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isInterface(aClass)) {

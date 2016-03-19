@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class DepthOfInheritanceMetric extends ClassMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("depth.of.inheritance.tree.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("depth.of.inheritance.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Score;

@@ -21,6 +21,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.JFreeChartConstants;
@@ -104,6 +105,7 @@ public class DistributionDialog extends DialogWrapper {
         return chartPanel;
     }
 
+    @NotNull
     @Override
     public Action[] createActions() {
         return new Action[0];

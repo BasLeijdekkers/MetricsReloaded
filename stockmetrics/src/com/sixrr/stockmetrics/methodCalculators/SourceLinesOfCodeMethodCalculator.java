@@ -26,12 +26,14 @@ public class SourceLinesOfCodeMethodCalculator extends MethodCalculator {
     private int methodNestingDepth = 0;
     private int commentLines = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 commentLines = 0;
@@ -45,6 +47,7 @@ public class SourceLinesOfCodeMethodCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             commentLines += LineUtil.countCommentOnlyLines(comment);

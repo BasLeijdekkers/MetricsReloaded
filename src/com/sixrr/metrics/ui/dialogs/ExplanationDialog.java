@@ -24,6 +24,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -66,6 +67,7 @@ public class ExplanationDialog extends DialogWrapper {
             moreInformationLabel.setVisible(true);
         }
         urlLabel.addHyperlinkListener(new HyperlinkListener() {
+            @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (helpURL != null) {
                     BrowserUtil.launchBrowser("http://" + helpURL);
@@ -92,6 +94,7 @@ public class ExplanationDialog extends DialogWrapper {
 
     }
 
+    @NotNull
     @Override
     public Action[] createActions() {
         return EMPTY_ACTION_ARRAY;

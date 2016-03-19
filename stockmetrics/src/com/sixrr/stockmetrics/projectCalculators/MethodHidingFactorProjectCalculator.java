@@ -39,12 +39,14 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
     private Bag<String> packageVisibleMethodsPerPackage = new Bag<String>();
     private Map<PsiClass, Integer> subclassesPerClass = new HashMap<PsiClass, Integer>();
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             numMethods++;
@@ -65,6 +67,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
             }
         }
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             numClasses++;
@@ -79,6 +82,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
         }
         final int[] numSubclasses = new int[1];
         final Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 final Project project = executionContext.getProject();
                 final GlobalSearchScope globalScope = GlobalSearchScope.allScope(project);
@@ -97,6 +101,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
         return numSubclasses[0];
     }
 
+    @Override
     public void endMetricsRun() {
         totalVisibility += numPublicMethods * (numClasses - 1);
         final Set<String> packages = classesPerPackage.getContents();

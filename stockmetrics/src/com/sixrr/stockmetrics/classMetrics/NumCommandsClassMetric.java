@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumCommandsClassMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.commands.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("numer.of.commands.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.MEYER_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.MEYER_DISPLAY_STRING;
     }

@@ -24,16 +24,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class NumSubinterfacesMetric extends InterfaceMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.subinterfaces");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.subinterfaces.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Score;

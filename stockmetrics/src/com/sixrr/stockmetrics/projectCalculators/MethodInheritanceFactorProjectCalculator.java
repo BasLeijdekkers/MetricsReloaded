@@ -27,12 +27,14 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
     private int availableMethods = 0;
     private int inheritedMethods = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             final PsiMethod[] allMethods = aClass.getAllMethods();
@@ -78,6 +80,7 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
         }
     }
 
+    @Override
     public void endMetricsRun() {
         postMetric(inheritedMethods, availableMethods);
     }

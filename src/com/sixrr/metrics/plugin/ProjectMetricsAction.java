@@ -41,7 +41,7 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
     }
 
     @Override
-    protected void analyze(@NotNull final Project project, final AnalysisScope analysisScope) {
+    protected void analyze(@NotNull final Project project, @NotNull final AnalysisScope analysisScope) {
         final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
         final MetricsProfileRepository repository = plugin.getProfileRepository();
         final MetricsProfile profile = repository.getCurrentProfile();

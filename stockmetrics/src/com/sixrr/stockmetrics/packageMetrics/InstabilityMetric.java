@@ -26,27 +26,36 @@ import org.jetbrains.annotations.Nullable;
 
 public class InstabilityMetric extends PackageMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("instability.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("instability.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Average;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.MARTIN_URL;
     }
 
+    @Override
     @Nullable
     public String getHelpDisplayString() {
         return HelpURLs.MARTIN_DISPLAY_STRING;
     }
 
+    @Override
     public boolean requiresDependents() {
         return true;
     }

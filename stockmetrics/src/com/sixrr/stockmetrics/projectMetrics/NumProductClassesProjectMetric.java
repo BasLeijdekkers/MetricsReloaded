@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.projectCalculators.NumProductClassesProjectCalcula
 import org.jetbrains.annotations.NotNull;
 
 public class NumProductClassesProjectMetric extends ProjectMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.product.classes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.product.classes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

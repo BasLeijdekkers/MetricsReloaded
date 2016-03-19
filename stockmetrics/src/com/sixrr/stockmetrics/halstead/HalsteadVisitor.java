@@ -37,6 +37,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         this.context = context;
     }
 
+    @Override
     public void visitReferenceExpression(PsiReferenceExpression expression) {
         super.visitReferenceExpression(expression);
 
@@ -88,6 +89,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         return Math.pow(effort, 2.0 / 3.0) / 3000.0;
     }
 
+    @Override
     public void visitLiteralExpression(PsiLiteralExpression expression) {
         if (inCompileTimeConstant) {
             return;
@@ -101,6 +103,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         inCompileTimeConstant = false;
     }
 
+    @Override
     public void visitBinaryExpression(PsiBinaryExpression expression) {
         if (inCompileTimeConstant) {
             return;
@@ -116,6 +119,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         inCompileTimeConstant = false;
     }
 
+    @Override
     public void visitPrefixExpression(PsiPrefixExpression expression) {
         if (inCompileTimeConstant) {
             return;
@@ -132,6 +136,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         inCompileTimeConstant = false;
     }
 
+    @Override
     public void visitPostfixExpression(PsiPostfixExpression expression) {
         if (inCompileTimeConstant) {
             return;
@@ -147,11 +152,13 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         inCompileTimeConstant = false;
     }
 
+    @Override
     public void visitKeyword(PsiKeyword psiKeyword) {
         super.visitKeyword(psiKeyword);
         registerSign(psiKeyword);
     }
 
+    @Override
     public void visitMethodCallExpression(PsiMethodCallExpression callExpression) {
         super.visitMethodCallExpression(callExpression);
         final PsiMethod method = callExpression.resolveMethod();

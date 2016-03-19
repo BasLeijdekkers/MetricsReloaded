@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.moduleCalculators.NumTopLevelClassesModuleCalculat
 import org.jetbrains.annotations.NotNull;
 
 public class NumTopLevelClassesModuleMetric extends ModuleMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.top.level.classes.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.top.level.classes.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

@@ -20,6 +20,7 @@ public abstract class ElementCountProjectCalculator extends ProjectCalculator {
 
     protected int numElements = 0;
 
+    @Override
     public void endMetricsRun() {
         postMetric(numElements);
     }

@@ -27,12 +27,14 @@ public class CommentRatioMethodCalculator extends MethodCalculator {
     private int numerator = 0;
     private int denominator = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
                 numerator = 0;
@@ -52,6 +54,7 @@ public class CommentRatioMethodCalculator extends MethodCalculator {
             }
         }
 
+        @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             numerator += LineUtil.countLines(comment);

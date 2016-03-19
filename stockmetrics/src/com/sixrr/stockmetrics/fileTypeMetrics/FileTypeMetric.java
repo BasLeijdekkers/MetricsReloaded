@@ -17,12 +17,14 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.stockmetrics.metricModel.BaseMetric;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Bas Leijdekkers
  */
 public abstract class FileTypeMetric extends BaseMetric {
 
+    @NotNull
     @Override
     public MetricCategory getCategory() {
         return MetricCategory.FileType;

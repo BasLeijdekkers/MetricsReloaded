@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.packageCalculators.NumConcreteClassesRecursivePack
 import org.jetbrains.annotations.NotNull;
 
 public class NumConcreteClassesRecursivePackageMetric extends PackageMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.concrete.classes.recursive.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.concrete.classes.recursive.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.RecursiveCount;
     }

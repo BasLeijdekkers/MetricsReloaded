@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class CyclomaticComplexityMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("cyclomatic.complexity.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("cyclomatic.complexity.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.COMPLEXITY_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }

@@ -25,22 +25,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class HalsteadVocabularyMethodMetric extends MethodMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("halstead.vocabulary.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("halstead.vocabulary.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public String getHelpURL() {
         return HelpURLs.HALSTEAD_URL;
     }
 
+    @Override
     public String getHelpDisplayString() {
         return HelpURLs.HALSTEAD_DISPLAY_STRING;
     }

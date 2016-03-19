@@ -26,16 +26,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("source.lines.of.code.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("source.lines.of.code.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Count;

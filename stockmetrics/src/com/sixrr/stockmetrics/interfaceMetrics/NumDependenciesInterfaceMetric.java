@@ -23,18 +23,25 @@ import com.sixrr.stockmetrics.interfaceCalculators.NumDependenciesInterfaceCalcu
 import org.jetbrains.annotations.NotNull;
 
 public class NumDependenciesInterfaceMetric extends InterfaceMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.dependencies.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.dependencies.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Score;
     }
 
+    @Override
     public boolean requiresDependents() {
         return true;
     }

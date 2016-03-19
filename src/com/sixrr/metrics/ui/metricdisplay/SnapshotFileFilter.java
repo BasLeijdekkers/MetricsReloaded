@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 public class SnapshotFileFilter extends FileFilter {
+    @Override
     public boolean accept(File f) {
         if (f.isDirectory()) {
             return true;
@@ -31,6 +32,7 @@ public class SnapshotFileFilter extends FileFilter {
         return fileName.endsWith(".met");
     }
 
+    @Override
     public String getDescription() {
         return MetricsReloadedBundle.message("snapshot.files.description");
     }

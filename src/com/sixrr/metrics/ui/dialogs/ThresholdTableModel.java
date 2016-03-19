@@ -33,10 +33,12 @@ public class ThresholdTableModel extends AbstractTableModel {
         this.result = result;
     }
 
+    @Override
     public int getRowCount() {
         return metrics.size();
     }
 
+    @Override
     public int getColumnCount() {
         return 6;
     }
@@ -72,6 +74,7 @@ public class ThresholdTableModel extends AbstractTableModel {
         return String.class;
     }
 
+    @Override
     public Object getValueAt(int rowNum, int columnNum) {
         final MetricInstance instance = metrics.get(rowNum);
         if (instance == null) {

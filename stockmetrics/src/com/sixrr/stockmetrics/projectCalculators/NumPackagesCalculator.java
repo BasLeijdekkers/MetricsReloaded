@@ -28,16 +28,19 @@ public class NumPackagesCalculator extends ProjectCalculator {
 
     private final Set<String> packages = new HashSet<String>(20);
 
+    @Override
     public void endMetricsRun() {
         final int numPackages = packages.size();
         postMetric(numPackages);
     }
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
         public void visitClass(PsiClass aClass) {
             final String packageName = ClassUtils.calculatePackageName(aClass);
             packages.add(packageName);

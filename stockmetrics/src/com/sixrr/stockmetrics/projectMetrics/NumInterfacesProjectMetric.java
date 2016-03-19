@@ -23,14 +23,20 @@ import com.sixrr.stockmetrics.projectCalculators.NumInterfacesProjectCalculator;
 import org.jetbrains.annotations.NotNull;
 
 public class NumInterfacesProjectMetric extends ProjectMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.interfaces.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.interfaces.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }

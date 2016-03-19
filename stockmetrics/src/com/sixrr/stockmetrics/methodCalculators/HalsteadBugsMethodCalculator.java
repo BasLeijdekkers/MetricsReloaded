@@ -20,6 +20,7 @@ import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 
 public class HalsteadBugsMethodCalculator extends HalsteadMethodCalculator {
 
+    @Override
     protected double getValue(HalsteadVisitor visitor) {
         return visitor.getBugs();
     }

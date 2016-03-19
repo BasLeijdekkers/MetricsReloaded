@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class PercentMethodsJavadocedModuleMetric extends ModuleMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("javadoc.method.coverage.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("javadoc.method.coverage.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Ratio;
     }

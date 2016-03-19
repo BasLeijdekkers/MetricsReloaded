@@ -24,12 +24,14 @@ import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 public abstract class HalsteadClassCalculator extends ClassCalculator {
     protected abstract double calculateValue(HalsteadVisitor visitor);
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {

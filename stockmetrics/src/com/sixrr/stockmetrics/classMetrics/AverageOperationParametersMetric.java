@@ -24,14 +24,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class AverageOperationParametersMetric extends ClassMetric {
 
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("average.number.of.parameters.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("average.operation.parameters.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Average;
     }

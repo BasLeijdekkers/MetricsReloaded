@@ -22,6 +22,7 @@ import com.sixrr.metrics.utils.TestUtils;
 public class NumTestClassesPackageCalculator
         extends ClassCountingPackageCalculator {
 
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return TestUtils.isTest(aClass);
     }

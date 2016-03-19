@@ -171,6 +171,7 @@ public class ControlFlowUtils {
             return m_found;
         }
 
+        @Override
         public void visitBreakStatement(PsiBreakStatement breakStatement) {
             super.visitBreakStatement(breakStatement);
             final PsiStatement exitedStatement = breakStatement.findExitedStatement();

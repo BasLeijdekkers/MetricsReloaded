@@ -20,6 +20,7 @@ import com.intellij.psi.PsiClass;
 import com.sixrr.metrics.utils.ClassUtils;
 
 public class NumConcreteClassesModuleCalculator extends ClassCountingModuleCalculator {
+    @Override
     public boolean satisfies(PsiClass aClass) {
         return ClassUtils.isConcrete(aClass);
     }

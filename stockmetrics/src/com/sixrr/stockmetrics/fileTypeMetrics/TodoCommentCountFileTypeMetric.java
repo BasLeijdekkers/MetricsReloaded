@@ -30,16 +30,19 @@ import org.jetbrains.annotations.Nullable;
  */
 public class TodoCommentCountFileTypeMetric extends FileTypeMetric {
 
+    @NotNull
     @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.todo.comments.display.name");
     }
 
+    @NotNull
     @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.todo.comments.abbreviation");
     }
 
+    @NotNull
     @Override
     public MetricType getType() {
         return MetricType.Count;

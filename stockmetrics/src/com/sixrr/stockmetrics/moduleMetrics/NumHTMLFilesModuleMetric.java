@@ -24,14 +24,20 @@ import com.sixrr.stockmetrics.moduleCalculators.FileCountModuleCalculator;
 import org.jetbrains.annotations.NotNull;
 
 public class NumHTMLFilesModuleMetric extends ModuleMetric {
+    @NotNull
+    @Override
     public String getDisplayName() {
         return StockMetricsBundle.message("number.of.html.files.display.name");
     }
 
+    @NotNull
+    @Override
     public String getAbbreviation() {
         return StockMetricsBundle.message("number.of.html.files.abbreviation");
     }
 
+    @NotNull
+    @Override
     public MetricType getType() {
         return MetricType.Count;
     }
