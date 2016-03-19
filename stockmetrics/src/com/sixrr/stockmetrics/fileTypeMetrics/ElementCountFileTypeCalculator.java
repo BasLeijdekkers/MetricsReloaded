@@ -39,7 +39,7 @@ public abstract class ElementCountFileTypeCalculator extends FileTypeCalculator 
         });
     }
 
-    public void createElementCount(@NotNull PsiElement element) {
+    public void createCount(@NotNull PsiElement element) {
         final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
         if (file == null) {
             return;
@@ -50,7 +50,7 @@ public abstract class ElementCountFileTypeCalculator extends FileTypeCalculator 
         }
     }
 
-    protected void incrementElementCount(PsiElement element, int count) {
+    protected void incrementCount(PsiElement element, int count) {
         final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
         if (file == null) {
             return;

@@ -58,7 +58,7 @@ public class CommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
                 @Override
                 public void visitFile(PsiFile file) {
                     super.visitFile(file);
-                    createElementCount(file);
+                    createCount(file);
                 }
 
                 @Override
@@ -66,7 +66,7 @@ public class CommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
                     super.visitElement(element);
                     if (element instanceof PsiComment) {
                         final int lineCount = LineUtil.countLines(element);
-                        incrementElementCount(element, lineCount);
+                        incrementCount(element, lineCount);
                     }
                 }
             };

@@ -22,7 +22,6 @@ import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.utils.LineUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
 
@@ -60,7 +59,7 @@ public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
                 public void visitFile(PsiFile file) {
                     super.visitFile(file);
                     final int lineCount = LineUtil.countLines(file);
-                    incrementElementCount(file, lineCount);
+                    incrementCount(file, lineCount);
                 }
 
                 @Override
@@ -69,7 +68,7 @@ public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
                     if (element instanceof PsiComment) {
                         final PsiComment comment = (PsiComment) element;
                         final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                        incrementElementCount(comment, -lineCount);
+                        incrementCount(comment, -lineCount);
                     }
                 }
             };

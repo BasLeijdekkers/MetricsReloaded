@@ -22,7 +22,6 @@ import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.utils.LineUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Bas Leijdekkers
@@ -66,7 +65,7 @@ public class LinesOfCodeFileTypeMetric extends FileTypeMetric {
             public void visitFile(PsiFile file) {
                 super.visitFile(file);
                 final int lines = LineUtil.countLines(file);
-                incrementElementCount(file, lines);
+                incrementCount(file, lines);
             }
         }
     }

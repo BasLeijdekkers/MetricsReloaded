@@ -23,7 +23,6 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Bas Leijdekkers
@@ -66,7 +65,7 @@ public class TodoCommentCountFileTypeMetric extends FileTypeMetric {
                     final PsiTodoSearchHelper todoSearchHelper =
                             PsiTodoSearchHelper.SERVICE.getInstance(file.getProject());
                     final int count = todoSearchHelper.getTodoItemsCount(file);
-                    incrementElementCount(file, count);
+                    incrementCount(file, count);
                 }
             };
         }

@@ -21,7 +21,6 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Bas Leijdekkers
@@ -64,7 +63,7 @@ public class NumFilesFileTypeMetric extends FileTypeMetric {
             @Override
             public void visitFile(PsiFile file) {
                 super.visitFile(file);
-                incrementElementCount(file, 1);
+                incrementCount(file, 1);
             }
         }
     }
