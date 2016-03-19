@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,40 +18,23 @@ package com.sixrr.stockmetrics.interfaceCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
-import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 public class TodoCommentCountInterfaceCalculator extends InterfaceCalculator {
-    private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitClass(PsiClass aClass) {
-            int prevElementCount = 0;
-            if (!ClassUtils.isAnonymous(aClass)) {
-                prevElementCount = elementCount;
-                elementCount = 0;
-            }
             super.visitClass(aClass);
-            if (!ClassUtils.isAnonymous(aClass)) {
-                if (isInterface(aClass)) {
-                    postMetric(aClass, (double) elementCount);
-                }
-                elementCount = prevElementCount;
-            }
-        }
-
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            if (TodoUtil.isTodoComment(comment)) {
-                elementCount += LineUtil.countLines(comment);
+            if (isInterface(aClass)) {
+                postMetric(aClass, TodoUtil.getTodoItemsCount(aClass));
             }
         }
     }

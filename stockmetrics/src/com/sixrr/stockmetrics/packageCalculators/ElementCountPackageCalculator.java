@@ -40,7 +40,7 @@ public abstract class ElementCountPackageCalculator extends PackageCalculator {
         }
     }
 
-    protected void createBucket(PsiElement element) {
+    protected void createCount(PsiElement element) {
         final PsiPackage aPackage = ClassUtils.findPackage(element);
         if (aPackage == null) {
             return;
@@ -48,7 +48,7 @@ public abstract class ElementCountPackageCalculator extends PackageCalculator {
         elementCountPerPackage.createBucket(aPackage);
     }
 
-    protected void incrementElementCount(PsiElement element, int count) {
+    protected void incrementCount(PsiElement element, int count) {
         final PsiPackage aPackage = ClassUtils.findPackage(element);
         if (aPackage == null) {
             return;
@@ -56,7 +56,7 @@ public abstract class ElementCountPackageCalculator extends PackageCalculator {
         elementCountPerPackage.incrementBucketValue(aPackage, count);
     }
 
-    protected void incrementElementCountRecursive(PsiElement element, int count) {
+    protected void incrementCountRecursive(PsiElement element, int count) {
         final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(element);
         for (PsiPackage aPackage : packages) {
             elementCountPerPackage.incrementBucketValue(aPackage, count);

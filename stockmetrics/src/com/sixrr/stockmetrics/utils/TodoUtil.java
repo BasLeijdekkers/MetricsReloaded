@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,26 +16,18 @@
 
 package com.sixrr.stockmetrics.utils;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiTodoSearchHelper;
-import com.intellij.psi.search.TodoItem;
 
-public class TodoUtil {
+public final class TodoUtil {
+
     private TodoUtil() {}
 
-    public static boolean isTodoComment(PsiComment comment) {
-        final PsiFile file = comment.getContainingFile();
-        final PsiTodoSearchHelper searchHelper = PsiTodoSearchHelper.SERVICE.getInstance(comment.getProject());
-        final TodoItem[] todoItems = searchHelper.findTodoItems(file);
-        for (final TodoItem todoItem : todoItems) {
-            final TextRange commentTextRange = comment.getTextRange();
-            final TextRange todoTextRange = todoItem.getTextRange();
-            if (commentTextRange.contains(todoTextRange)) {
-                return true;
-            }
-        }
-        return false;
+    public static int getTodoItemsCount(PsiElement element) {
+        final PsiFile file = element.getContainingFile();
+        final PsiTodoSearchHelper todoSearchHelper = PsiTodoSearchHelper.SERVICE.getInstance(file.getProject());
+        final int offset = element.getTextOffset();
+        return todoSearchHelper.findTodoItems(file, offset, offset + element.getTextLength()).length;
     }
 }

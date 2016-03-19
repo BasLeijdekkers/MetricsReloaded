@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,40 +17,22 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 public class TodoCommentCountMethodCalculator extends MethodCalculator {
-    private int methodNestingDepth = 0;
-    private int elementCount = 0;
 
+    @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
 
+        @Override
         public void visitMethod(PsiMethod method) {
-            if (methodNestingDepth == 0) {
-                elementCount = 0;
-            }
-            methodNestingDepth++;
-            super.visitMethod(method);
-            methodNestingDepth--;
-            if (methodNestingDepth == 0 && !MethodUtils.isAbstract(method)) {
-                postMetric(method, elementCount);
-            }
-        }
-
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            if (TodoUtil.isTodoComment(comment)) {
-                elementCount += LineUtil.countLines(comment);
-            }
+            postMetric(method, TodoUtil.getTodoItemsCount(method));
         }
     }
 }

@@ -16,9 +16,8 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
@@ -32,14 +31,8 @@ public class TodoCommentCountProjectCalculator extends ElementCountProjectCalcul
     private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitElement(PsiElement element) {
-            super.visitElement(element);
-            if (element instanceof PsiComment) {
-                final PsiComment comment = (PsiComment) element;
-                if (TodoUtil.isTodoComment(comment)) {
-                    numElements++;
-                }
-            }
+        public void visitFile(PsiFile file) {
+            numElements += TodoUtil.getTodoItemsCount(file);
         }
     }
 }

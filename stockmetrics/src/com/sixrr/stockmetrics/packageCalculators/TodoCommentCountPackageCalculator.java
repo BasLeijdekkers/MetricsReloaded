@@ -16,26 +16,12 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
-import java.util.Set;
-
-public class TodoCommentCountPackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numTodoCommentsPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numTodoCommentsPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numCommentLines = numTodoCommentsPerPackage.getBucketValue(aPackage);
-
-            postMetric(aPackage, numCommentLines);
-        }
-    }
+public class TodoCommentCountPackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -47,23 +33,7 @@ public class TodoCommentCountPackageCalculator extends PackageCalculator {
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage aPackage = ClassUtils.findPackage(file);
-            if (aPackage == null) {
-                return;
-            }
-            numTodoCommentsPerPackage.createBucket(aPackage);
-        }
-
-        @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            final PsiPackage aPackage = ClassUtils.findPackage(comment);
-            if (aPackage == null) {
-                return;
-            }
-            if (TodoUtil.isTodoComment(comment)) {
-                numTodoCommentsPerPackage.incrementBucketValue(aPackage, 1);
-            }
+            incrementCount(file, TodoUtil.getTodoItemsCount(file));
         }
     }
 }

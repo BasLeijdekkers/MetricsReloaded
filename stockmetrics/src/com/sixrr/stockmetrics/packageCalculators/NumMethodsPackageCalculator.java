@@ -36,13 +36,13 @@ public class NumMethodsPackageCalculator extends ElementCountPackageCalculator {
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            createBucket(file);
+            createCount(file);
         }
 
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            incrementElementCount(method, 1);
+            incrementCount(method, 1);
         }
     }
 }
