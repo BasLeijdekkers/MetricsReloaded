@@ -19,9 +19,13 @@ package com.sixrr.stockmetrics;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
+import com.sixrr.stockmetrics.classMetrics.SourceLinesOfCodeClassMetric;
 import com.sixrr.stockmetrics.fileTypeMetrics.*;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
+import com.sixrr.stockmetrics.interfaceMetrics.SourceLinesOfCodeInterfaceMetric;
+import com.sixrr.stockmetrics.methodMetrics.SourceLinesOfCodeMethodMetric;
 import com.sixrr.stockmetrics.moduleMetrics.*;
+import com.sixrr.stockmetrics.packageMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -110,6 +114,22 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric(LinesOfTestCodeProjectMetric.class);
         profile.addMetric(LinesOfXMLModuleMetric.class);
         profile.addMetric(LinesOfXMLProjectMetric.class);
+        profile.addMetric(NonCommentLinesOfCodeFileTypeMetric.class);
+        profile.addMetric(SourceLinesOfCodeClassMetric.class);
+        profile.addMetric(SourceLinesOfCodeInterfaceMetric.class);
+        profile.addMetric(SourceLinesOfCodeMethodMetric.class);
+        profile.addMetric(SourceLinesOfCodeModuleMetric.class);
+        profile.addMetric(SourceLinesOfCodePackageMetric.class);
+        profile.addMetric(SourceLinesOfCodeProductModuleMetric.class);
+        profile.addMetric(SourceLinesOfCodeProductPackageMetric.class);
+        profile.addMetric(SourceLinesOfCodeProductProjectMetric.class);
+        profile.addMetric(SourceLinesOfCodeProductRecursivePackageMetric.class);
+        profile.addMetric(SourceLinesOfCodeProjectMetric.class);
+        profile.addMetric(SourceLinesOfCodeRecursivePackageMetric.class);
+        profile.addMetric(SourceLinesOfCodeTestModuleMetric.class);
+        profile.addMetric(SourceLinesOfCodeTestPackageMetric.class);
+        profile.addMetric(SourceLinesOfCodeTestProjectMetric.class);
+        profile.addMetric(SourceLinesOfCodeTestRecursivePackageMetric.class);
         return profile;
     }
 
