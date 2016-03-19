@@ -16,12 +16,10 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethodCallExpression;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.JavaTestUtils;
 
 public class NumTestAssertsModuleCalculator extends ElementCountModuleCalculator {
@@ -37,18 +35,14 @@ public class NumTestAssertsModuleCalculator extends ElementCountModuleCalculator
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
             if (JavaTestUtils.isJUnitAssertCall(expression)) {
-                incrementElementCount(expression, 1);
+                incrementCount(expression, 1);
             }
         }
 
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            elementsCountPerModule.createBucket(module);
+            createCount(file);
         }
     }
 }

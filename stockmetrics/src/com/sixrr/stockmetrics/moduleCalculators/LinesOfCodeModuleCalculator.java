@@ -42,7 +42,7 @@ public class LinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
             super.visitFile(file);
             if (fileType == null || file.getFileType() == fileType) {
                 final int lineCount = LineUtil.countLines(file);
-                incrementElementCount(file, lineCount);
+                incrementCount(file, lineCount);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
-import com.sixrr.metrics.utils.ClassUtils;
 
 public class NumMethodsModuleCalculator extends ElementCountModuleCalculator {
 
@@ -35,17 +33,13 @@ public class NumMethodsModuleCalculator extends ElementCountModuleCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            incrementElementCount(method, 1);
+            incrementCount(method, 1);
         }
 
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            elementsCountPerModule.createBucket(module);
+            createCount(file);
         }
     }
 }

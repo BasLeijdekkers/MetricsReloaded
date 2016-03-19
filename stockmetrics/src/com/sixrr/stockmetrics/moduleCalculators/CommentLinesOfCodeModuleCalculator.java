@@ -16,9 +16,7 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class CommentLinesOfCodeModuleCalculator extends ElementCountModuleCalculator {
@@ -33,11 +31,7 @@ public class CommentLinesOfCodeModuleCalculator extends ElementCountModuleCalcul
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            elementsCountPerModule.createBucket(module);
+            createCount(file);
         }
 
         @Override
@@ -45,7 +39,7 @@ public class CommentLinesOfCodeModuleCalculator extends ElementCountModuleCalcul
             super.visitElement(element);
             if (element instanceof PsiComment) {
                 final int lineCount = LineUtil.countLines(element);
-                incrementElementCount(element, lineCount);
+                incrementCount(element, lineCount);
             }
         }
     }

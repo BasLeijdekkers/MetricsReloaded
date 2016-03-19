@@ -16,9 +16,9 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 public class TodoCommentCountModuleCalculator extends ElementCountModuleCalculator {
@@ -33,22 +33,7 @@ public class TodoCommentCountModuleCalculator extends ElementCountModuleCalculat
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            elementsCountPerModule.createBucket(module);
-        }
-
-        @Override
-        public void visitElement(PsiElement element) {
-            super.visitElement(element);
-            if (element instanceof PsiComment) {
-                final PsiComment comment = (PsiComment) element;
-                if (TodoUtil.isTodoComment(comment)) {
-                    incrementElementCount(comment, 1);
-                }
-            }
+            incrementCount(file, TodoUtil.getTodoItemsCount(file));
         }
     }
 }

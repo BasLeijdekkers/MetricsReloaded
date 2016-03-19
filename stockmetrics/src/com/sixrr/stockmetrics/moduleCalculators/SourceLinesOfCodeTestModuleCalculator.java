@@ -16,11 +16,9 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.ClassUtils;
-import com.sixrr.stockmetrics.utils.LineUtil;
 import com.sixrr.metrics.utils.TestUtils;
+import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCalculator {
 
@@ -34,14 +32,10 @@ public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCal
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            elementsCountPerModule.createBucket(module);
+            createCount(file);
             if (TestUtils.isTest(file)) {
                 final int lineCount = LineUtil.countLines(file);
-                incrementElementCount(file, lineCount);
+                incrementCount(file, lineCount);
             }
         }
 
@@ -53,7 +47,7 @@ public class SourceLinesOfCodeTestModuleCalculator extends ElementCountModuleCal
                 final PsiFile file = comment.getContainingFile();
                 if (TestUtils.isTest(file)) {
                     final int lineCount = LineUtil.countCommentOnlyLines(comment);
-                    incrementElementCount(comment, -lineCount);
+                    incrementCount(comment, -lineCount);
                 }
             }
         }

@@ -18,8 +18,6 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -27,24 +25,31 @@ import java.util.Set;
 
 public abstract class ElementCountModuleCalculator extends ModuleCalculator {
 
-    protected final BucketedCount<Module> elementsCountPerModule = new BucketedCount<Module>();
+    private final BucketedCount<Module> elementCountPerModule = new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {
-        final Set<Module> modules = elementsCountPerModule.getBuckets();
+        final Set<Module> modules = elementCountPerModule.getBuckets();
         for (final Module module : modules) {
-            final int numCommentLines = elementsCountPerModule.getBucketValue(module);
+            final int numCommentLines = elementCountPerModule.getBucketValue(module);
 
             postMetric(module, numCommentLines);
         }
     }
 
-    protected void incrementElementCount(PsiElement element, int count) {
-        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
-        final Module module = ClassUtils.calculateModule(file);
+    protected void createCount(PsiElement element) {
+        final Module module = ClassUtils.calculateModule(element);
         if (module == null) {
             return;
         }
-        elementsCountPerModule.incrementBucketValue(module, count);
+        elementCountPerModule.createBucket(module);
+    }
+
+    protected void incrementCount(PsiElement element, int count) {
+        final Module module = ClassUtils.calculateModule(element);
+        if (module == null) {
+            return;
+        }
+        elementCountPerModule.incrementBucketValue(module, count);
     }
 }

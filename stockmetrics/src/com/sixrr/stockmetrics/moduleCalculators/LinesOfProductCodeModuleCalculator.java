@@ -16,11 +16,9 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
@@ -36,13 +34,10 @@ public class LinesOfProductCodeModuleCalculator extends ElementCountModuleCalcul
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module != null) {
-                elementsCountPerModule.createBucket(module);
-            }
+            createCount(file);
             if (TestUtils.isProduction(file)) {
                 final int lineCount = LineUtil.countLines(file);
-                incrementElementCount(file, lineCount);
+                incrementCount(file, lineCount);
             }
         }
     }
