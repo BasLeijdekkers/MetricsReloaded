@@ -16,25 +16,13 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethodCallExpression;
 import com.sixrr.metrics.utils.JavaTestUtils;
 
-import java.util.Set;
-
-public class NumTestAssertsRecursivePackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numTestAssertsPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numTestAssertsPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numCommentLines = numTestAssertsPerPackage.getBucketValue(aPackage);
-            postMetric(aPackage, (double) numCommentLines);
-        }
-    }
+public class NumTestAssertsRecursivePackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -46,20 +34,14 @@ public class NumTestAssertsRecursivePackageCalculator extends PackageCalculator 
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(file);
-            for (PsiPackage aPackage : packages) {
-                numTestAssertsPerPackage.createBucket(aPackage);
-            }
+            createCountRecursive(file);
         }
 
         @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             super.visitMethodCallExpression(expression);
             if (JavaTestUtils.isJUnitAssertCall(expression)) {
-                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(expression);
-                for (PsiPackage aPackage : packages) {
-                    numTestAssertsPerPackage.incrementBucketValue(aPackage, 1);
-                }
+                incrementCountRecursive(expression, 1);
             }
         }
     }

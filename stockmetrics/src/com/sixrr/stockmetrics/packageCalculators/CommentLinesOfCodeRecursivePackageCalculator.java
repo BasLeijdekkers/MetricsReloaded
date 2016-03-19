@@ -16,26 +16,13 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
-import java.util.Set;
-
-public class CommentLinesOfCodeRecursivePackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numCommentLinesPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numCommentLinesPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numCommentLines = numCommentLinesPerPackage.getBucketValue(aPackage);
-
-            postMetric(aPackage, (double) numCommentLines);
-        }
-    }
+public class CommentLinesOfCodeRecursivePackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -47,21 +34,14 @@ public class CommentLinesOfCodeRecursivePackageCalculator extends PackageCalcula
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage aPackage = ClassUtils.findPackage(file);
-            if (aPackage == null) {
-                return;
-            }
-            numCommentLinesPerPackage.createBucket(aPackage);
+            createCount(file);
         }
 
         @Override
         public void visitComment(PsiComment comment) {
             super.visitComment(comment);
             final int lineCount = LineUtil.countLines(comment);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(comment);
-            for (final PsiPackage aPackage : packages) {
-                numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
-            }
+            incrementCountRecursive(comment, lineCount);
         }
     }
 }

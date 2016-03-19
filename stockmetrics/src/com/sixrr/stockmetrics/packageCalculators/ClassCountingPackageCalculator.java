@@ -17,23 +17,8 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
 
-import java.util.Set;
-
-public abstract class ClassCountingPackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numClassesPerPackage.getBuckets();
-        for (final PsiPackage packageName : packages) {
-            final int numClasses = numClassesPerPackage.getBucketValue(packageName);
-            postMetric(packageName, numClasses);
-        }
-    }
+public abstract class ClassCountingPackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -45,18 +30,13 @@ public abstract class ClassCountingPackageCalculator extends PackageCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (aClass instanceof PsiTypeParameter ||
-                    aClass instanceof PsiEnumConstantInitializer) {
+            if (aClass instanceof PsiTypeParameter || aClass instanceof PsiEnumConstantInitializer) {
                 return;
             }
-            final PsiPackage aPackage = ClassUtils.findPackage(aClass);
-            if (aPackage == null) {
-                return;
-            }
-            numClassesPerPackage.createBucket(aPackage);
+            createCount(aClass);
 
             if (satisfies(aClass)) {
-                numClassesPerPackage.incrementBucketValue(aPackage);
+                incrementCount(aClass, 1);
             }
         }
     }

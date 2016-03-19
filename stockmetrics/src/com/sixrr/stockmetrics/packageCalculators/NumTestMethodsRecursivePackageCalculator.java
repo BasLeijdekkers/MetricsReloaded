@@ -16,25 +16,13 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.utils.JavaTestUtils;
 
-import java.util.Set;
-
-public class NumTestMethodsRecursivePackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numTestMethodsPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numTestMethodsPerPackage.getBuckets();
-        for (final PsiPackage packageName : packages) {
-            final int numCommentLines = numTestMethodsPerPackage.getBucketValue(packageName);
-            postMetric(packageName, (double) numCommentLines);
-        }
-    }
+public class NumTestMethodsRecursivePackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -46,20 +34,14 @@ public class NumTestMethodsRecursivePackageCalculator extends PackageCalculator 
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(file);
-            for (PsiPackage aPackage : packages) {
-                numTestMethodsPerPackage.createBucket(aPackage);
-            }
+            createCountRecursive(file);
         }
 
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
             if (JavaTestUtils.isJUnitTestMethod(method)) {
-                final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(method);
-                for (PsiPackage aPackage : packages) {
-                    numTestMethodsPerPackage.incrementBucketValue(aPackage, 1);
-                }
+                createCountRecursive(method);
             }
         }
     }

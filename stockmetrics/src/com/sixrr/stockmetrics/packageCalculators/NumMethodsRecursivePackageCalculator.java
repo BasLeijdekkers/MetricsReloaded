@@ -16,24 +16,12 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethod;
 
-import java.util.Set;
-
-public class NumMethodsRecursivePackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numMethodsPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numMethodsPerPackage.getBuckets();
-        for (final PsiPackage packageName : packages) {
-            final int numClasses = numMethodsPerPackage.getBucketValue(packageName);
-            postMetric(packageName, numClasses);
-        }
-    }
+public class NumMethodsRecursivePackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -45,19 +33,13 @@ public class NumMethodsRecursivePackageCalculator extends PackageCalculator {
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(file);
-            for (PsiPackage aPackage : packages) {
-                numMethodsPerPackage.createBucket(aPackage);
-            }
+            createCountRecursive(file);
         }
 
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(method);
-            for (final PsiPackage aPackage : packages) {
-                numMethodsPerPackage.incrementBucketValue(aPackage);
-            }
+            incrementCountRecursive(method, 1);
         }
     }
 }

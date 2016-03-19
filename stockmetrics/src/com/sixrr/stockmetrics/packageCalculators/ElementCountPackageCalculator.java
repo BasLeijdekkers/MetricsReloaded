@@ -48,6 +48,13 @@ public abstract class ElementCountPackageCalculator extends PackageCalculator {
         elementCountPerPackage.createBucket(aPackage);
     }
 
+    protected void createCountRecursive(PsiElement element) {
+        final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(element);
+        for (PsiPackage aPackage : packages) {
+            elementCountPerPackage.createBucket(aPackage);
+        }
+    }
+
     protected void incrementCount(PsiElement element, int count) {
         final PsiPackage aPackage = ClassUtils.findPackage(element);
         if (aPackage == null) {

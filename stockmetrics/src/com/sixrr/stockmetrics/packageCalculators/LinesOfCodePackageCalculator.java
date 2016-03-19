@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,25 +19,9 @@ package com.sixrr.stockmetrics.packageCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.PsiPackage;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
-import java.util.Set;
-
-public class LinesOfCodePackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numLinesPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numLines = numLinesPerPackage.getBucketValue(aPackage);
-            postMetric(aPackage, (double) numLines);
-        }
-    }
+public class LinesOfCodePackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -49,12 +33,8 @@ public class LinesOfCodePackageCalculator extends PackageCalculator {
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage aPackage = ClassUtils.findPackage(file);
-            if (aPackage == null) {
-                return;
-            }
             final int lineCount = LineUtil.countLines(file);
-            numLinesPerPackage.incrementBucketValue(aPackage, lineCount);
+            incrementCount(file, lineCount);
         }
     }
 }

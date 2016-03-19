@@ -16,26 +16,13 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.ClassUtils;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.utils.JavaTestUtils;
 
-import java.util.Set;
-
-public class NumTestMethodsPackageCalculator extends PackageCalculator {
-
-    private final BucketedCount<PsiPackage> numTestMethodsPerPackages = new BucketedCount<PsiPackage>();
-
-    @Override
-    public void endMetricsRun() {
-        final Set<PsiPackage> packages = numTestMethodsPerPackages.getBuckets();
-        for (final PsiPackage aPackage : packages) {
-            final int numTestMethods = numTestMethodsPerPackages.getBucketValue(aPackage);
-
-            postMetric(aPackage, numTestMethods);
-        }
-    }
+public class NumTestMethodsPackageCalculator extends ElementCountPackageCalculator {
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -47,11 +34,7 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
         @Override
         public void visitJavaFile(PsiJavaFile file) {
             super.visitJavaFile(file);
-            final PsiPackage aPackage = ClassUtils.findPackage(file);
-            if (aPackage == null) {
-                return;
-            }
-            numTestMethodsPerPackages.createBucket(aPackage);
+            createCount(file);
         }
 
         @Override
@@ -60,11 +43,7 @@ public class NumTestMethodsPackageCalculator extends PackageCalculator {
             if (!JavaTestUtils.isJUnitTestMethod(method)) {
                 return;
             }
-            final PsiPackage aPackage = ClassUtils.findPackage(method);
-            if (aPackage == null) {
-                return;
-            }
-            numTestMethodsPerPackages.incrementBucketValue(aPackage, 1);
+            incrementCount(method, 1);
         }
     }
 }
