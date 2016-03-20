@@ -16,13 +16,12 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.ClassReferenceCache;
-import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Collection;
 
@@ -70,14 +69,10 @@ public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalcul
             }
             return true;
         }
-    }
 
-    public void visitFile(PsiFile file) {
-        final Module module = ClassUtils.calculateModule(file);
-        if (module == null) {
-            return;
+        @Override
+        public void visitFile(PsiFile file) {
+            createRatio(file);
         }
-        numeratorPerModule.createBucket(module);
-        denominatorPerModule.createBucket(module);
     }
 }

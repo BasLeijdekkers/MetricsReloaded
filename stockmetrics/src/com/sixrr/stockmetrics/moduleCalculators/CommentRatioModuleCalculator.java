@@ -15,9 +15,7 @@
  */
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class CommentRatioModuleCalculator extends ElementRatioModuleCalculator {
@@ -32,12 +30,7 @@ public class CommentRatioModuleCalculator extends ElementRatioModuleCalculator {
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            numeratorPerModule.createBucket(module);
-            denominatorPerModule.createBucket(module);
+            createRatio(file);
             final int lineCount = LineUtil.countLines(file);
             incrementDenominator(file, lineCount);
         }

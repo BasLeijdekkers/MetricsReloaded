@@ -16,7 +16,6 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.ClassUtils;
@@ -46,12 +45,7 @@ public class PercentMethodsJavadocedModuleCalculator extends ElementRatioModuleC
         @Override
         public void visitFile(PsiFile file) {
             super.visitFile(file);
-            final Module module = ClassUtils.calculateModule(file);
-            if (module == null) {
-                return;
-            }
-            numeratorPerModule.createBucket(module);
-            denominatorPerModule.createBucket(module);
+            createRatio(file);
         }
     }
 }

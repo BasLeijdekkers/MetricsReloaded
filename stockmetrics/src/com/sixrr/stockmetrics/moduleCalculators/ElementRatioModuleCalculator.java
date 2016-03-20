@@ -18,8 +18,6 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -27,8 +25,8 @@ import java.util.Set;
 
 public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
 
-    protected final BucketedCount<Module> numeratorPerModule = new BucketedCount<Module>();
-    protected final BucketedCount<Module> denominatorPerModule = new BucketedCount<Module>();
+    private final BucketedCount<Module> numeratorPerModule = new BucketedCount<Module>();
+    private final BucketedCount<Module> denominatorPerModule = new BucketedCount<Module>();
 
     @Override
     public void endMetricsRun() {
@@ -45,6 +43,15 @@ public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
         }
     }
 
+    protected void createRatio(PsiElement element) {
+        final Module module = ClassUtils.calculateModule(element);
+        if (module == null) {
+            return;
+        }
+        numeratorPerModule.createBucket(module);
+        denominatorPerModule.createBucket(module);
+    }
+
     protected void incrementNumerator(PsiElement element, int count) {
         increment(element, count, numeratorPerModule);
     }
@@ -54,11 +61,7 @@ public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
     }
 
     private static void increment(PsiElement element, int count, BucketedCount<Module> result) {
-        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
-        if (file == null) {
-            return;
-        }
-        final Module module = ClassUtils.calculateModule(file);
+        final Module module = ClassUtils.calculateModule(element);
         if (module == null) {
             return;
         }
