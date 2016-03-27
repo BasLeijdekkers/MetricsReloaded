@@ -18,7 +18,6 @@ package com.sixrr.metrics.metricModel;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.sixrr.metrics.Metric;
@@ -107,6 +106,9 @@ public class MetricsResultImpl implements MetricsResult {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
+        if (metricValues == null) {
+            return Double.valueOf(0.0);
+        }
         return Double.valueOf(metricValues.getTotal());
     }
 
@@ -118,13 +120,15 @@ public class MetricsResultImpl implements MetricsResult {
             return null;
         }
         final StringToFractionMap metricValues = values.get(metric);
+        if (metricValues == null) {
+            return Double.valueOf(0.0);
+        }
         return Double.valueOf(metricValues.getAverage());
     }
 
     @Override
     public void setElementForMeasuredObject(String measuredObject, PsiElement element) {
-        final PsiManager psiManager = element.getManager();
-        final Project project = psiManager.getProject();
+        final Project project = element.getProject();
         final SmartPointerManager pointerManager = SmartPointerManager.getInstance(project);
         final SmartPsiElementPointer<PsiElement> pointer = pointerManager.createSmartPsiElementPointer(element);
         elements.put(measuredObject, pointer);
