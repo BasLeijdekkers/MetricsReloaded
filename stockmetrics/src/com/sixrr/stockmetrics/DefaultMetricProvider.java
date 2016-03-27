@@ -38,7 +38,7 @@ public class DefaultMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(37);
+        final List<Metric> metrics = new ArrayList<Metric>(38);
         initializeFileTypeMetrics(metrics);
         initializeModuleMetrics(metrics);
         initializeProjectMetrics(metrics);
@@ -47,6 +47,7 @@ public class DefaultMetricProvider implements MetricProvider {
 
     private static void initializeFileTypeMetrics(Collection<Metric> metrics) {
         metrics.add(new CommentLinesOfCodeFileTypeMetric());
+        metrics.add(new CommentRatioFileTypeMetric());
         metrics.add(new LinesOfCodeFileTypeMetric());
         metrics.add(new NonCommentLinesOfCodeFileTypeMetric());
         metrics.add(new NumFilesFileTypeMetric());
