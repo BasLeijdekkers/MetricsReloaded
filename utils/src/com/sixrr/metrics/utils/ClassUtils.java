@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.utils;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -36,6 +37,15 @@ public final class ClassUtils {
     private static final Key<Integer> SUBCLASS_COUNT = new Key<Integer>("MetricsReloadedSubclassCount");
 
     private ClassUtils() {}
+
+    @Nullable
+    public static FileType calculateFileType(@Nullable PsiElement element) {
+        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
+        if (file == null) {
+            return null;
+        }
+        return file.getFileType();
+    }
 
     public static int calculateSubclassCount(final PsiClass aClass) {
         final Integer subclassCount = aClass.getUserData(SUBCLASS_COUNT);

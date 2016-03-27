@@ -18,8 +18,7 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.metrics.utils.ClassUtils;
 import gnu.trove.TObjectIntHashMap;
 import gnu.trove.TObjectIntProcedure;
 import org.jetbrains.annotations.NotNull;
@@ -40,22 +39,14 @@ public abstract class ElementCountFileTypeCalculator extends FileTypeCalculator 
     }
 
     public void createCount(@NotNull PsiElement element) {
-        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
-        if (file == null) {
-            return;
-        }
-        final FileType fileType = file.getFileType();
+        final FileType fileType = ClassUtils.calculateFileType(element);
         if (!elementCountsPerFileType.containsKey(fileType)) {
             elementCountsPerFileType.put(fileType, 0);
         }
     }
 
     protected void incrementCount(PsiElement element, int count) {
-        final PsiFile file = PsiTreeUtil.getParentOfType(element, PsiFile.class, false);
-        if (file == null) {
-            return;
-        }
-        final FileType fileType = file.getFileType();
+        final FileType fileType = ClassUtils.calculateFileType(element);
         if (elementCountsPerFileType.containsKey(fileType)) {
             elementCountsPerFileType.adjustValue(fileType, count);
         }
