@@ -1,17 +1,17 @@
 <!--
   ~ Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
   ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
   ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~  http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
   -->
 
 <idea-plugin version="2" url="https://github.com/BasLeijdekkers/MetricsReloaded">
@@ -32,9 +32,14 @@
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
   <version>1.5</version>
   <change-notes><![CDATA[
-  - Three new file type metrics: CLOC, NCLOC and TODO<br>
-  - Fixed possible off-by-one error when counting lines<br>
-  - Fixed doc comments counted incorrectly as non-comment<br>
+  - New "Comment ratio" (COM_RAT) file type metric
+  - Expanded the "Lines of code metrics" default profile<br>
+  - "Number of TODO comments" (TODO) now counts actual number of TODO comments, instead of the number of lines of TODO comments<br>
+  - Fixed "Response for Class" (RFC) metric<br>
+  - Fixed "Module/Number of annotation interfaces" (Can) & "Module/Number of enumerated classes" (EC) module metrics<br>
+  - Fixed "Package/Number of methods" (METH) package metric<br>
+  - Fixed several minor bugs<br>
+  - Internal improvements<br>
   ]]></change-notes>
   <idea-version since-build="139"/>
 
