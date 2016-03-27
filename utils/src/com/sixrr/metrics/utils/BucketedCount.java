@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,15 +16,16 @@
 
 package com.sixrr.metrics.utils;
 
+import gnu.trove.TObjectIntHashMap;
+import gnu.trove.TObjectProcedure;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BucketedCount<T> {
 
-    private final Map<T, Integer> buckets = new HashMap<T, Integer>();
+    private final TObjectIntHashMap<T> buckets = new TObjectIntHashMap<T>();
 
     public void createBucket(@NotNull T bucketName) {
         if (!buckets.containsKey(bucketName)) {
@@ -33,12 +34,20 @@ public class BucketedCount<T> {
     }
 
     public Set<T> getBuckets() {
-        return buckets.keySet();
+        final Set<T> result = new HashSet<T>(buckets.size());
+        buckets.forEachKey(new TObjectProcedure<T>() {
+            @Override
+            public boolean execute(T t) {
+                result.add(t);
+                return true;
+            }
+        });
+        return result;
     }
 
     public void incrementBucketValue(@NotNull T bucketName, int increment) {
         if (buckets.containsKey(bucketName)) {
-            buckets.put(bucketName, buckets.get(bucketName) + increment);
+            buckets.adjustValue(bucketName, increment);
         } else {
             buckets.put(bucketName, increment);
         }
