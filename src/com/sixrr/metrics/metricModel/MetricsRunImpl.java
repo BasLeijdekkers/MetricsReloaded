@@ -67,6 +67,13 @@ public class MetricsRunImpl implements MetricsRun {
         return new ArrayList<Metric>(allMetrics);
     }
 
+    @NotNull
+    private static String getFileTypeString(FileType fileType) {
+        final String description = fileType.getDescription();
+        return StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(description,
+                " (syntax highlighting only)"), " files"), " source");
+    }
+
     @Override
     public void postProjectMetric(@NotNull Metric metric, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Project);
@@ -76,11 +83,7 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postFileTypeMetric(Metric metric, FileType fileType, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
-        final String description = fileType.getDescription();
-        final String trimmedDescription =
-                StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(description,
-                        " (syntax highlighting only)"), " files"), " source");
-        results.postValue(metric, trimmedDescription, value);
+        results.postValue(metric, getFileTypeString(fileType), value);
     }
 
     @Override
@@ -136,6 +139,13 @@ public class MetricsRunImpl implements MetricsRun {
                                   double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Package);
         results.postValue(metric, aPackage.getQualifiedName(), numerator, denominator);
+    }
+
+    @Override
+    public void postFileTypeMetric(@NotNull Metric metric, @NotNull FileType fileType,
+                                   double numerator, double denominator) {
+        final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
+        results.postValue(metric, getFileTypeString(fileType), numerator, denominator);
     }
 
     @Override

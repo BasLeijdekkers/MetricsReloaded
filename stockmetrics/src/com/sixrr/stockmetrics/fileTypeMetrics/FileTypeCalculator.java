@@ -23,11 +23,15 @@ import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
  */
 public abstract class FileTypeCalculator extends BaseMetricsCalculator {
 
-    protected void postMetric(FileType aClass, int value) {
-        resultsHolder.postFileTypeMetric(metric, aClass, (double) value);
+    protected void postMetric(FileType fileType, int numerator, int denominator) {
+        resultsHolder.postFileTypeMetric(metric, fileType, (double) numerator, (double) denominator);
     }
 
-    protected void postMetric(FileType aClass, double value) {
-        resultsHolder.postFileTypeMetric(metric, aClass, value);
+    protected void postMetric(FileType fileType, int value) {
+        resultsHolder.postFileTypeMetric(metric, fileType, (double) value);
+    }
+
+    protected void postMetric(FileType fileType, double value) {
+        resultsHolder.postFileTypeMetric(metric, fileType, value);
     }
 }

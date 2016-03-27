@@ -31,7 +31,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a project metric.
      *
-     * @param metric the metric to post the value for.   It should have a category of MetricCategory.Project.
+     * @param metric the metric to post the value for.   It should have a category of {@link MetricCategory#Project}.
      * @param value  the value to post.
      */
     void postProjectMetric(Metric metric, double value);
@@ -39,7 +39,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a file type metric.
      *
-     * @param metric   the metric to post the value for.
+     * @param metric   the metric to post the value for. It should have a category of {@link MetricCategory#FileType}
      * @param fileType the file type for which the metric value is calculated.
      * @param value    the value to post.
      */
@@ -48,7 +48,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a module metric.
      *
-     * @param metric the metric to post the value for.  It should have a category of MetricCategory.Module.
+     * @param metric the metric to post the value for.  It should have a category of {@link MetricCategory#Module}.
      * @param module the module for which the metric value is calculated.
      * @param value  the value to post.
      */
@@ -57,7 +57,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a package metric.
      *
-     * @param metric   the metric to post the value for.   It should have a category of MetricCategory.Package.
+     * @param metric   the metric to post the value for.   It should have a category of {@link MetricCategory#Package}.
      * @param aPackage the package for which the metric value is calculated.
      * @param value    the value to post.
      */
@@ -66,7 +66,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a class metric.
      *
-     * @param metric the metric to post the value for.   It should have a category of MetricCategory.Class.
+     * @param metric the metric to post the value for.   It should have a category of {@link MetricCategory#Class}.
      * @param aClass the class for which the metric value is calculated.
      * @param value  the value to post.
      */
@@ -75,7 +75,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for an interface metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Interface.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Interface}.
      * @param anInterface the interface for which the metric value is calculated.
      * @param value       the value to post.
      */
@@ -84,7 +84,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a simple value for a method metric.
      *
-     * @param metric the metric to post the value for.   It should have a category of MetricCategory.Method.
+     * @param metric the metric to post the value for.   It should have a category of {@link MetricCategory#Method}.
      * @param method the method for which the metric value is calculated.
      * @param value  the value to post.
      */
@@ -93,16 +93,25 @@ public interface MetricsResultsHolder {
     /**
      * Post a ratio value for a project metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Project.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Project}.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
      */
     void postProjectMetric(Metric metric, double numerator, double denominator);
 
     /**
+     * Post a ratio value for a file type metric.
+     *
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#FileType}.
+     * @param numerator   The numerator of the value to post.  Should be an integer.
+     * @param denominator The denominator of the value to post.  Should be a positive integer.
+     */
+    void postFileTypeMetric(Metric metric, FileType fileType, double numerator, double denominator);
+
+    /**
      * Post a ratio value for a module metric.
      *
-     * @param metric      the metric to post the value for.  It should have a category of MetricCategory.Module.
+     * @param metric      the metric to post the value for.  It should have a category of {@link MetricCategory#Module}.
      * @param module      the module for which the metric value is calculated.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
@@ -112,7 +121,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a ratio value for a package metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Package.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Package}.
      * @param aPackage    the package for which the metric value is calculated.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
@@ -122,7 +131,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a ratio value for a class metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Class.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Class}.
      * @param aClass      the class for which the metric value is calculated.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
@@ -132,7 +141,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a ratio value for a interface metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Interface.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Interface}.
      * @param anInterface the interface for which the metric value is calculated.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
@@ -142,7 +151,7 @@ public interface MetricsResultsHolder {
     /**
      * Post a ratio value for a method metric.
      *
-     * @param metric      the metric to post the value for.   It should have a category of MetricCategory.Method.
+     * @param metric      the metric to post the value for.   It should have a category of {@link MetricCategory#Method}.
      * @param method      the method for which the metric value is calculated.
      * @param numerator   The numerator of the value to post.  Should be an integer.
      * @param denominator The denominator of the value to post.  Should be a positive integer.
