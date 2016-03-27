@@ -20,7 +20,7 @@ import com.sixrr.metrics.MetricCategory;
 import com.sixrr.stockmetrics.metricModel.BaseMetric;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class PackageMetric extends BaseMetric {
+abstract class PackageMetric extends BaseMetric {
 
     @NotNull
     @Override

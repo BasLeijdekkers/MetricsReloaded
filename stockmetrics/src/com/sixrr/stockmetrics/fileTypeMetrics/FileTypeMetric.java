@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Bas Leijdekkers
  */
-public abstract class FileTypeMetric extends BaseMetric {
+abstract class FileTypeMetric extends BaseMetric {
 
     @NotNull
     @Override
