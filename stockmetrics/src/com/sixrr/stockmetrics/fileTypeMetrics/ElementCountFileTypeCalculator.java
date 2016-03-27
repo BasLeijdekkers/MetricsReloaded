@@ -18,40 +18,38 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
-import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectIntProcedure;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public abstract class ElementCountFileTypeCalculator extends FileTypeCalculator {
 
-    private final TObjectIntHashMap<FileType> elementCountsPerFileType = new TObjectIntHashMap<FileType>();
+    private final BucketedCount<FileType> elementCountsPerFileType = new BucketedCount<FileType>();
 
     @Override
     public void endMetricsRun() {
-        elementCountsPerFileType.forEachEntry(new TObjectIntProcedure<FileType>() {
-            @Override
-            public boolean execute(FileType fileType, int count) {
-                postMetric(fileType, count);
-                return true;
-            }
-        });
+        final Set<FileType> fileTypes = elementCountsPerFileType.getBuckets();
+        for (FileType fileType : fileTypes) {
+            final int count = elementCountsPerFileType.getBucketValue(fileType);
+            postMetric(fileType, count);
+        }
     }
 
     public void createCount(@NotNull PsiElement element) {
         final FileType fileType = ClassUtils.calculateFileType(element);
-        if (!elementCountsPerFileType.containsKey(fileType)) {
-            elementCountsPerFileType.put(fileType, 0);
+        if (fileType == null) {
+            return;
         }
+        elementCountsPerFileType.createBucket(fileType);
     }
 
     protected void incrementCount(PsiElement element, int count) {
         final FileType fileType = ClassUtils.calculateFileType(element);
-        if (elementCountsPerFileType.containsKey(fileType)) {
-            elementCountsPerFileType.adjustValue(fileType, count);
+        if (fileType == null) {
+            return;
         }
-        else {
-            elementCountsPerFileType.put(fileType, count);
-        }
+        elementCountsPerFileType.incrementBucketValue(fileType, count);
     }
 }
