@@ -70,8 +70,9 @@ public class MetricsRunImpl implements MetricsRun {
     @NotNull
     private static String getFileTypeString(FileType fileType) {
         final String description = fileType.getDescription();
-        return StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(description,
-                " (syntax highlighting only)"), " files"), " source");
+        System.out.println("description = " + description);
+        return StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(StringUtil.trimEnd(description,
+                " (syntax highlighting only)"), " files"), " Files"), " source");
     }
 
     @Override
