@@ -39,7 +39,7 @@ public class TrueCommentRatioInterfaceMetric extends InterfaceMetric {
     @NotNull
     @Override
     public MetricType getType() {
-        return MetricType.Count;
+        return MetricType.Ratio;
     }
 
     @NotNull
