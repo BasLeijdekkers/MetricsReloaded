@@ -116,21 +116,12 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric(LinesOfXMLModuleMetric.class);
         profile.addMetric(LinesOfXMLProjectMetric.class);
         profile.addMetric(NonCommentLinesOfCodeFileTypeMetric.class);
-        profile.addMetric(SourceLinesOfCodeClassMetric.class);
-        profile.addMetric(SourceLinesOfCodeInterfaceMetric.class);
-        profile.addMetric(SourceLinesOfCodeMethodMetric.class);
         profile.addMetric(SourceLinesOfCodeModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodePackageMetric.class);
         profile.addMetric(SourceLinesOfCodeProductModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodeProductPackageMetric.class);
         profile.addMetric(SourceLinesOfCodeProductProjectMetric.class);
-        profile.addMetric(SourceLinesOfCodeProductRecursivePackageMetric.class);
         profile.addMetric(SourceLinesOfCodeProjectMetric.class);
-        profile.addMetric(SourceLinesOfCodeRecursivePackageMetric.class);
         profile.addMetric(SourceLinesOfCodeTestModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodeTestPackageMetric.class);
         profile.addMetric(SourceLinesOfCodeTestProjectMetric.class);
-        profile.addMetric(SourceLinesOfCodeTestRecursivePackageMetric.class);
         return profile;
     }
 
