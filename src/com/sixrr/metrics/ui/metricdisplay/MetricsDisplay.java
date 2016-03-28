@@ -18,6 +18,7 @@ package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.TableSpeedSearch;
 import com.intellij.ui.table.JBTable;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
@@ -92,6 +93,7 @@ public class MetricsDisplay {
     }
 
     private void setupTable(JTable table, Project project) {
+        new TableSpeedSearch(table);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.addMouseListener(new MetricTableMouseListener(project, table, configuration));
         final JTableHeader tableHeader = table.getTableHeader();
