@@ -30,9 +30,12 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must not be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.5</version>
+  <version>1.6.1</version>
   <change-notes><![CDATA[
-  - New "Comment ratio" (COM_RAT) file type metric
+  1.6.1<br>
+  - Fix accidental breakage on the IntelliJ Platform IDEs<br>
+  1.6<br>
+  - New "Comment ratio" (COM_RAT) file type metric<br>
   - Expanded the "Lines of code metrics" default profile<br>
   - "Number of TODO comments" (TODO) now counts actual number of TODO comments, instead of the number of lines of TODO comments<br>
   - Fixed "Response for Class" (RFC) metric<br>
