@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,21 +23,18 @@ import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 class ToggleAutoscrollAction extends ToggleAction {
 
-    private final MetricsReloadedConfig configuration;
-
-    ToggleAutoscrollAction(MetricsReloadedConfig configuration) {
+    ToggleAutoscrollAction() {
         super(MetricsReloadedBundle.message("autoscroll.to.source.action"),
                 MetricsReloadedBundle.message("autoscroll.to.source.description"), AllIcons.General.AutoscrollToSource);
-        this.configuration = configuration;
     }
 
     @Override
     public boolean isSelected(AnActionEvent event) {
-        return configuration.isAutoscroll();
+        return MetricsReloadedConfig.getInstance().isAutoscroll();
     }
 
     @Override
     public void setSelected(AnActionEvent event, boolean b) {
-        configuration.setAutoscroll(b);
+        MetricsReloadedConfig.getInstance().setAutoscroll(b);
     }
 }

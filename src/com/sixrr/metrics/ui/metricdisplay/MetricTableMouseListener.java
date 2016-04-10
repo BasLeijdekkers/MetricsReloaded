@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,18 +28,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-class MetricTableMouseListener extends MouseAdapter implements MouseListener {
+class MetricTableMouseListener extends MouseAdapter {
     private final Project project;
     private final JTable table;
-    private final MetricsReloadedConfig configuration;
 
-    MetricTableMouseListener(Project project, JTable table, MetricsReloadedConfig configuration) {
-        super();
+    MetricTableMouseListener(Project project, JTable table) {
         this.project = project;
         this.table = table;
-        this.configuration = configuration;
     }
 
     @Override
@@ -54,7 +50,7 @@ class MetricTableMouseListener extends MouseAdapter implements MouseListener {
             return;
         }
         final int modelIndex = table.convertColumnIndexToModel(column);
-        final boolean autoscroll = configuration.isAutoscroll();
+        final boolean autoscroll = MetricsReloadedConfig.getInstance().isAutoscroll();
         if (modelIndex == 0 && (e.getClickCount() == 2 || autoscroll)) {
             final EditorCaretMover caretMover = new EditorCaretMover(project);
             final MetricTableModel model = (MetricTableModel) table.getModel();

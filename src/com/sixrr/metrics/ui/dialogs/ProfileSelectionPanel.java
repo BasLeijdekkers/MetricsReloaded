@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011, Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,14 +39,13 @@ public class ProfileSelectionPanel extends JPanel {
         super(new GridBagLayout());
         final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
         final MetricsProfileRepository repository = plugin.getProfileRepository();
-        final MetricsReloadedConfig configuration = plugin.getConfiguration();
 
         final ComboboxWithBrowseButton comboboxWithBrowseButton =
                 buildComboBoxWithBrowseButton(project, repository);
 
         final JComponent separator =
                 new TitledSeparator(MetricsReloadedBundle.message("metrics.profile"));
-        final JCheckBox checkBox = buildCheckBox(configuration);
+        final JCheckBox checkBox = buildCheckBox(MetricsReloadedConfig.getInstance());
 
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets.left = 0;

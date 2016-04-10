@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.intellij.analysis.BaseAnalysisAction;
 import com.intellij.analysis.BaseAnalysisActionDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
@@ -51,7 +52,7 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
 
             @Override
             public void onFinish() {
-                final boolean showOnlyWarnings = plugin.getConfiguration().isShowOnlyWarnings();
+                final boolean showOnlyWarnings = MetricsReloadedConfig.getInstance().isShowOnlyWarnings();
                 if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
                     Messages.showMessageDialog(project,
                             MetricsReloadedBundle.message("no.metrics.warnings.found"),

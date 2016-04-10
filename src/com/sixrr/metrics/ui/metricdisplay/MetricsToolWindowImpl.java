@@ -26,7 +26,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
@@ -48,12 +47,11 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
 
-    public MetricsToolWindowImpl(@NotNull Project project, @NotNull MetricsPlugin plugin,
-                                 @NotNull MetricsReloadedConfig config) {
+    public MetricsToolWindowImpl(@NotNull Project project, @NotNull MetricsPlugin plugin) {
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
-        toolbarGroup.add(new ToggleAutoscrollAction(config));
+        toolbarGroup.add(new ToggleAutoscrollAction());
         toolbarGroup.add(new ExportAction(this, project));
         toolbarGroup.add(new CreateSnapshotAction(this, project));
         toolbarGroup.add(new DiffSnapshotAction(this, project));
@@ -64,7 +62,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         final ActionToolbar toolbar =
                 actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
         myContentPanel = new JPanel(new BorderLayout());
-        metricsDisplay = new MetricsDisplay(project, config, plugin);
+        metricsDisplay = new MetricsDisplay(project, plugin);
         myContentPanel.add(toolbar.getComponent(), BorderLayout.WEST);
         myContentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
     }

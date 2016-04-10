@@ -48,12 +48,9 @@ public class MetricsDisplay {
     private boolean hasOverlay = false;
     private final Map<MetricCategory, JTable> tables = new EnumMap<MetricCategory, JTable>(MetricCategory.class);
     private final JTabbedPane tabbedPane = new JTabbedPane();
-    private final MetricsReloadedConfig configuration;
     private final MetricsPlugin metricsPlugin;
 
-    public MetricsDisplay(@NotNull Project project, @NotNull MetricsReloadedConfig configuration,
-                          @NotNull MetricsPlugin metricsPlugin) {
-        this.configuration = configuration;
+    public MetricsDisplay(@NotNull Project project, @NotNull MetricsPlugin metricsPlugin) {
         this.metricsPlugin = metricsPlugin;
         final JTable projectMetricsTable = new JBTable();
         tables.put(MetricCategory.Project, projectMetricsTable);
@@ -92,10 +89,10 @@ public class MetricsDisplay {
                 ScrollPaneFactory.createScrollPane(methodMetricsTable));
     }
 
-    private void setupTable(JTable table, Project project) {
+    private static void setupTable(JTable table, Project project) {
         new TableSpeedSearch(table);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.addMouseListener(new MetricTableMouseListener(project, table, configuration));
+        table.addMouseListener(new MetricTableMouseListener(project, table));
         final JTableHeader tableHeader = table.getTableHeader();
         tableHeader.addMouseListener(new MetricTableHeaderMouseListener(project, table));
     }

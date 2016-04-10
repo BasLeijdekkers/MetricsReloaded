@@ -45,24 +45,17 @@ public class MetricsProfileRepository implements MetricRepository {
 
     private final Map<String, MetricsProfile> profiles = new LinkedHashMap<String, MetricsProfile>(20);
     private String selectedProfile = "";
-    private final MetricsReloadedConfig configuration;
     private final Map<String, Metric> metrics = new HashMap();
-
-    public MetricsProfileRepository(MetricsReloadedConfig configuration) {
-        this.configuration = configuration;
-    }
 
     public void initialize() {
         loadMetricsFromProviders();
         loadProfiles();
         reconcileProfiles();
         addPrebuiltProfiles();
-        if (configuration != null) {
-            final String previouslySelectedProfile = configuration.getSelectedProfile();
-            selectedProfile = profiles.containsKey(previouslySelectedProfile)
-                    ? previouslySelectedProfile
-                    : profiles.keySet().iterator().next();
-        }
+        final String previouslySelectedProfile = MetricsReloadedConfig.getInstance().getSelectedProfile();
+        selectedProfile = profiles.containsKey(previouslySelectedProfile)
+                ? previouslySelectedProfile
+                : profiles.keySet().iterator().next();
     }
 
     private void loadMetricsFromProviders() {
@@ -189,7 +182,7 @@ public class MetricsProfileRepository implements MetricRepository {
 
     public void setSelectedProfile(String profileName) {
         selectedProfile = profileName;
-        configuration.setSelectedProfile(selectedProfile);
+        MetricsReloadedConfig.getInstance().setSelectedProfile(selectedProfile);
     }
 
     public void deleteProfile(MetricsProfile profile) {

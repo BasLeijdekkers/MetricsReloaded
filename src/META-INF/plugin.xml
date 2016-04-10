@@ -60,6 +60,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
+    <applicationService serviceImplementation="com.sixrr.metrics.config.MetricsReloadedConfig"/>
   </extensions>
   <extensions defaultExtensionNs="MetricsReloaded">
     <metricProvider implementation="com.sixrr.stockmetrics.DefaultMetricProvider"/>
