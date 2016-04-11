@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,39 +17,44 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.profile.MetricsProfile;
 import org.jetbrains.annotations.NonNls;
 
-public interface MetricsToolWindow {
+public abstract class MetricsToolWindow implements Disposable {
 
-    @NonNls String TOOL_WINDOW_ICON_PATH = "/images/metricsToolWindow.png";
-    @NonNls String METRICS_TOOL_WINDOW_ID = "Metrics";
+    @NonNls
+    public static final String TOOL_WINDOW_ICON_PATH = "/images/metricsToolWindow.png";
+    @NonNls
+    public static final String METRICS_TOOL_WINDOW_ID = "Metrics";
 
-    void register();
+    public static MetricsToolWindow getInstance(Project project) {
+        return ServiceManager.getService(project, MetricsToolWindow.class);
+    }
 
-    void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope, boolean showOnlyWarnings);
+    public abstract void show(MetricsRun results, MetricsProfile profile, AnalysisScope scope, boolean showOnlyWarnings);
 
-    void update(MetricsRun results);
+    public abstract void update(MetricsRun results);
 
-    void updateWithDiff(MetricsRun results);
+    public abstract void updateWithDiff(MetricsRun results);
 
-    void reloadAsDiff(MetricsRun prevResults);
+    public abstract void reloadAsDiff(MetricsRun prevResults);
 
-    void removeDiffOverlay();
+    public abstract void removeDiffOverlay();
 
-    boolean hasDiffOverlay();
+    public abstract boolean hasDiffOverlay();
 
-    void close();
+    public abstract void close();
 
-    MetricsRun getCurrentRun();
+    public abstract MetricsRun getCurrentRun();
 
-    AnalysisScope getCurrentScope();
+    public abstract AnalysisScope getCurrentScope();
 
-    void unregister();
+    public abstract MetricsProfile getCurrentProfile();
 
-    MetricsProfile getCurrentProfile();
-
-    MetricCategory getSelectedCategory();
+    public abstract MetricCategory getSelectedCategory();
 }

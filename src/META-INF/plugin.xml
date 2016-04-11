@@ -61,26 +61,14 @@
   <extensions defaultExtensionNs="com.intellij">
     <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
     <applicationService serviceImplementation="com.sixrr.metrics.config.MetricsReloadedConfig"/>
+    <applicationService serviceImplementation="com.sixrr.metrics.profile.MetricsProfileRepository"/>
+    <projectService serviceInterface="com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow"
+                    serviceImplementation="com.sixrr.metrics.ui.metricdisplay.MetricsToolWindowImpl"/>
+    <exportable serviceInterface="com.sixrr.metrics.profile.MetricsProfileRepository"/>
   </extensions>
   <extensions defaultExtensionNs="MetricsReloaded">
     <metricProvider implementation="com.sixrr.stockmetrics.DefaultMetricProvider"/>
   </extensions>
-
-  <application-components>
-    <component>
-      <interface-class>com.sixrr.metrics.plugin.MetricsPluginApplication</interface-class>
-      <implementation-class>com.sixrr.metrics.plugin.MetricsPluginApplicationImpl</implementation-class>
-    </component>
-  </application-components>
-
-  <project-components>
-    <component>
-      <interface-class>com.sixrr.metrics.plugin.MetricsPlugin</interface-class>
-      <implementation-class>com.sixrr.metrics.plugin.MetricsPluginImpl</implementation-class>
-      <skipForDefaultProject/>
-      <option name="workspace" value="true" />
-    </component>
-  </project-components>
 
   <actions>
     <group>

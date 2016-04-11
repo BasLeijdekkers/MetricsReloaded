@@ -20,7 +20,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.ComboboxWithBrowseButton;
 import com.intellij.ui.TitledSeparator;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.metricdisplay.MetricsConfigurationDialog;
@@ -37,11 +36,9 @@ public class ProfileSelectionPanel extends JPanel {
 
     public ProfileSelectionPanel(Project project) {
         super(new GridBagLayout());
-        final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
-        final MetricsProfileRepository repository = plugin.getProfileRepository();
 
         final ComboboxWithBrowseButton comboboxWithBrowseButton =
-                buildComboBoxWithBrowseButton(project, repository);
+                buildComboBoxWithBrowseButton(project, MetricsProfileRepository.getInstance());
 
         final JComponent separator =
                 new TitledSeparator(MetricsReloadedBundle.message("metrics.profile"));

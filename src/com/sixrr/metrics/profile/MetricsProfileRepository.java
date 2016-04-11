@@ -19,6 +19,8 @@ package com.sixrr.metrics.profile;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.components.ExportableComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
@@ -28,6 +30,7 @@ import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
+import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class MetricsProfileRepository implements MetricRepository {
+public final class MetricsProfileRepository implements MetricRepository, ExportableComponent {
 
     private static final Logger LOG = Logger.getInstance("#com.sixrr.metrics.profile.MetricsProfileRepository");
 
@@ -47,7 +50,43 @@ public class MetricsProfileRepository implements MetricRepository {
     private String selectedProfile = "";
     private final Map<String, Metric> metrics = new HashMap();
 
-    public void initialize() {
+    private MetricsProfileRepository() {
+        initialize();
+    }
+
+    public static MetricsProfileRepository getInstance() {
+        return ServiceManager.getService(MetricsProfileRepository.class);
+    }
+
+    /**
+     * Allows for exporting metrics profiles. (<pre>File | Export settings...</pre>)
+     * <p>
+     * The metrics configuration files are located within <code>idea.config.path/metrics/...</code>
+     */
+    @NotNull
+    @Override
+    public File[] getExportFiles() {
+        @NonNls final String dirName = PathManager.getConfigPath() + File.separator + "metrics";
+        final File metricsDirectory = new File(dirName);
+        final File[] files = metricsDirectory.listFiles();
+        final File[] out;
+        if (files == null) {
+            out = new File[1];
+        } else {
+            out = new File[files.length + 1];
+            System.arraycopy(files, 0, out, 1, files.length);
+        }
+        out[0] = metricsDirectory;
+        return out;
+    }
+
+    @NotNull
+    @Override
+    public String getPresentableName() {
+        return MetricsReloadedBundle.message("metrics.profiles.configuration.presentable.name");
+    }
+
+    private void initialize() {
         loadMetricsFromProviders();
         loadProfiles();
         reconcileProfiles();

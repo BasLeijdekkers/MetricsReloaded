@@ -36,7 +36,6 @@ import java.util.*;
 class MetricTableModel extends AbstractTableModel {
 
     private final int[] columnPermutation;
-    private final MetricsProfileRepository profileRepository;
     private final MetricTableSpecification tableSpecification;
     private final String type;
     private String[] measuredObjects;
@@ -46,11 +45,9 @@ class MetricTableModel extends AbstractTableModel {
     private int[] rowPermutation;
 
     MetricTableModel(@NotNull MetricsResult results, @NotNull String type,
-                     @NotNull MetricTableSpecification tableSpecification,
-                     @NotNull MetricsProfileRepository profileRepository) {
+                     @NotNull MetricTableSpecification tableSpecification) {
         this.results = results;
         this.type = type;
-        this.profileRepository = profileRepository;
         this.tableSpecification = tableSpecification;
         prevResults = null;
         measuredObjects = results.getMeasuredObjects();
@@ -122,11 +119,11 @@ class MetricTableModel extends AbstractTableModel {
         tableSpecification.setAscending(ascending);
         sort();
         fireTableDataChanged();
-        profileRepository.persistCurrentProfile();
+        MetricsProfileRepository.getInstance().persistCurrentProfile();
     }
 
     private MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
-        final MetricsProfile profile = profileRepository.getCurrentProfile();
+        final MetricsProfile profile = MetricsProfileRepository.getInstance().getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
             final MetricInstance metricInstance = profile.getMetricInstance(metrics[i]);

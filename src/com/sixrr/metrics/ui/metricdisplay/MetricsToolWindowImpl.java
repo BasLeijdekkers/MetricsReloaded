@@ -27,7 +27,6 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
@@ -37,7 +36,7 @@ import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings({"ThisEscapedInObjectConstruction"})
-public class MetricsToolWindowImpl implements MetricsToolWindow {
+public final class MetricsToolWindowImpl extends MetricsToolWindow {
 
     private final Project project;
     private final JPanel myContentPanel;
@@ -47,7 +46,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
 
-    public MetricsToolWindowImpl(@NotNull Project project, @NotNull MetricsPlugin plugin) {
+    private MetricsToolWindowImpl(@NotNull Project project) {
         this.project = project;
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
@@ -59,20 +58,18 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
         toolbarGroup.add(new EditThresholdsAction(this));
         toolbarGroup.add(new CloseMetricsViewAction(this));
         final ActionManager actionManager = ActionManager.getInstance();
-        final ActionToolbar toolbar =
-                actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
+        final ActionToolbar toolbar = actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
         myContentPanel = new JPanel(new BorderLayout());
-        metricsDisplay = new MetricsDisplay(project, plugin);
+        metricsDisplay = new MetricsDisplay(project);
         myContentPanel.add(toolbar.getComponent(), BorderLayout.WEST);
         myContentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
+        register();
     }
 
-    @Override
-    public void register() {
+    private void register() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        myToolWindow =
-                toolWindowManager.registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel,
-                        ToolWindowAnchor.BOTTOM);
+        myToolWindow = toolWindowManager.registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel,
+                ToolWindowAnchor.BOTTOM);
         myToolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
         myToolWindow.setIcon(IconLoader.getIcon(TOOL_WINDOW_ICON_PATH));
         myToolWindow.setAvailable(false, null);
@@ -155,7 +152,7 @@ public class MetricsToolWindowImpl implements MetricsToolWindow {
     }
 
     @Override
-    public void unregister() {
+    public void dispose() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         toolWindowManager.unregisterToolWindow(METRICS_TOOL_WINDOW_ID);
     }

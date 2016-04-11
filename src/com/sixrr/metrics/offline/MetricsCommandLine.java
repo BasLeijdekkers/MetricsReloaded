@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ import com.sixrr.metrics.export.XMLExporter;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.metricModel.TimeStamp;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import org.jetbrains.annotations.Contract;
@@ -152,7 +151,7 @@ public class MetricsCommandLine implements ApplicationStarter {
                 PatchProjectUtil.patchProject(project);
                 info("Project " + project.getName() + " opened.");
 
-                final MetricsProfile profile = getMetricsProfile(project, metricsProfileName);
+                final MetricsProfile profile = getMetricsProfile(metricsProfileName);
                 if (profile == null) {
                     error("Profile not found: " + metricsProfileName);
                 }
@@ -224,9 +223,8 @@ public class MetricsCommandLine implements ApplicationStarter {
         }
     }
 
-    private static MetricsProfile getMetricsProfile(Project project, String profileName) {
-        final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
-        final MetricsProfileRepository repository = plugin.getProfileRepository();
+    private static MetricsProfile getMetricsProfile(String profileName) {
+        final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
         final List<String> metricsProfileNames = Arrays.asList(repository.getProfileNames());
         if (!metricsProfileNames.contains(profileName)) {
             return null;

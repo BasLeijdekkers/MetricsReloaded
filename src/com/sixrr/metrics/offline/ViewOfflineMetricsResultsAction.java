@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.sixrr.metrics.metricModel.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileImpl;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
@@ -43,7 +42,10 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent event) {
         final DataContext dataContext = event.getDataContext();
-        final Project project = (Project) dataContext.getData(DataConstants.PROJECT);
+        final Project project = CommonDataKeys.PROJECT.getData(dataContext);
+        if (project == null) {
+            return;
+        }
 
         final JFileChooser chooser = new JFileChooser();
         final FileFilter filter = new SnapshotFileFilter();
@@ -57,10 +59,11 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
         }
         final File selectedFile = chooser.getSelectedFile();
         final MetricsRun results = MetricsRunImpl.readFromFile(selectedFile);
-        assert project != null;
-        final MetricsPlugin plugin = project.getComponent(MetricsPlugin.class);
-        final MetricsToolWindow toolWindow = plugin.getMetricsToolWindow();
-        final MetricsProfileRepository repository = plugin.getProfileRepository();
+        if (results == null) {
+            return;
+        }
+        final MetricsToolWindow toolWindow = MetricsToolWindow.getInstance(project);
+        final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
         final String profileName = results.getProfileName();
         MetricsProfile profile = repository.getProfileForName(profileName);
         if (profile == null) {
@@ -82,7 +85,7 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
         super.update(event);
         final Presentation presentation = event.getPresentation();
         final DataContext dataContext = event.getDataContext();
-        final Project project = (Project) dataContext.getData(DataConstants.PROJECT);
+        final Project project = CommonDataKeys.PROJECT.getData(dataContext);
         presentation.setEnabled(project != null);
     }
 }

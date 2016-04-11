@@ -22,11 +22,10 @@ import com.intellij.ui.TableSpeedSearch;
 import com.intellij.ui.table.JBTable;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.*;
-import com.sixrr.metrics.plugin.MetricsPlugin;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricTableSpecification;
+import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,10 +47,8 @@ public class MetricsDisplay {
     private boolean hasOverlay = false;
     private final Map<MetricCategory, JTable> tables = new EnumMap<MetricCategory, JTable>(MetricCategory.class);
     private final JTabbedPane tabbedPane = new JTabbedPane();
-    private final MetricsPlugin metricsPlugin;
 
-    public MetricsDisplay(@NotNull Project project, @NotNull MetricsPlugin metricsPlugin) {
-        this.metricsPlugin = metricsPlugin;
+    public MetricsDisplay(@NotNull Project project) {
         final JTable projectMetricsTable = new JBTable();
         tables.put(MetricCategory.Project, projectMetricsTable);
         final JTable fileTypeMetricsTable = new JBTable();
@@ -105,9 +102,7 @@ public class MetricsDisplay {
             final MetricTableSpecification tableSpecification =
                     displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
-            final MetricTableModel model =
-                    new MetricTableModel(results, type, tableSpecification,
-                            metricsPlugin.getProfileRepository());
+            final MetricTableModel model = new MetricTableModel(results, type, tableSpecification);
             table.setModel(model);
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
@@ -351,7 +346,7 @@ public class MetricsDisplay {
             }
             tableSpecification.setColumnOrder(columns);
             tableSpecification.setColumnWidths(columnWidths);
-            metricsPlugin.getProfileRepository().persistCurrentProfile();
+            MetricsProfileRepository.getInstance().persistCurrentProfile();
         }
     }
 }
