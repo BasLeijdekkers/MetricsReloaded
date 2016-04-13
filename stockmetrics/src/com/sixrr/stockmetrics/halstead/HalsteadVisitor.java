@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 package com.sixrr.stockmetrics.halstead;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.MetricsExecutionContext;
-import com.sixrr.stockmetrics.utils.ExpressionUtils;
 import com.sixrr.metrics.utils.MethodUtils;
+import com.sixrr.stockmetrics.utils.ExpressionUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,13 +28,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
     private int numOperators = 0;
     private final Set<String> operators = new HashSet<String>(32);
     private final Set<String> operands = new HashSet<String>(32);
-    private final MetricsExecutionContext context;
     private boolean inCompileTimeConstant = false;
-
-    public HalsteadVisitor(MetricsExecutionContext context) {
-        super();
-        this.context = context;
-    }
 
     @Override
     public void visitReferenceExpression(PsiReferenceExpression expression) {
@@ -68,11 +61,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         final int N2 = numOperands;
         final int n1 = getNumDistinctOperators();
         final int n2 = getNumDistinctOperands();
-        if (n2 == 0) {
-            return 0.0;
-        } else {
-            return ((double) n1 / 2.0) * ((double) N2 / (double) n2);
-        }
+        return n2 == 0 ? 0.0 : ((double) n1 / 2.0) * ((double) N2 / (double) n2);
     }
 
     public double getVolume() {

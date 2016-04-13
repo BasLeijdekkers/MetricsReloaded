@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public abstract class HalsteadMethodCalculator extends MethodCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0 && !MethodUtils.isAbstract(method)) {
-                final HalsteadVisitor visitor = new HalsteadVisitor(executionContext);
+                final HalsteadVisitor visitor = new HalsteadVisitor();
                 method.accept(visitor);
                 final double value = getValue(visitor);
                 postMetric(method, value);

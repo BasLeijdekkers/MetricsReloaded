@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class QCPReliabilityCalculator extends MethodCalculator {
             super.visitMethod(method);
             methodNestingDepth--;
             if (methodNestingDepth == 0 && !MethodUtils.isAbstract(method)) {
-                final HalsteadVisitor visitor = new HalsteadVisitor(executionContext);
+                final HalsteadVisitor visitor = new HalsteadVisitor();
                 method.accept(visitor);
                 final int N = visitor.getLength();
                 final double value = (double) (N + (2 * maxNestingDepth) + (3 * complexity) + numBranchStatements +
