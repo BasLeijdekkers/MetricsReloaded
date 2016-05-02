@@ -22,26 +22,26 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPackage;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
+import com.sixrr.metrics.profile.MetricRepository;
 import com.sixrr.metrics.profile.MetricsProfile;
+import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MethodUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class MetricsRunImpl implements MetricsRun {
@@ -306,34 +306,65 @@ public class MetricsRunImpl implements MetricsRun {
 
     public static MetricsRun readFromFile(@NotNull File file) {
         final SAXBuilder builder = new SAXBuilder();
-        final Document doc;
+        Document doc;
         try {
             doc = builder.build(file);
         } catch (Exception e) {
-            return null;
+            try {
+                doc = builder.build(fixBrokenXml(file));
+            } catch (Exception e1) {
+                logger.warn(e);
+                return null;
+            }
         }
-        @NonNls final Element snapshotElement = doc.getRootElement();
+        final Element snapshotElement = doc.getRootElement();
         final MetricsRunImpl run = new MetricsRunImpl();
         run.setTimestamp(new TimeStamp(snapshotElement.getAttributeValue("timestamp")));
         run.setProfileName(snapshotElement.getAttributeValue("profile"));
+        final String version = snapshotElement.getAttributeValue("version"); // may need this later
         final List<Element> metrics = snapshotElement.getChildren("METRIC");
+        final MetricRepository repository = MetricsProfileRepository.getInstance();
         for (final Element metricElement : metrics) {
-            readMetricElement(metricElement, run);
+            readMetricElement(metricElement, repository, run);
         }
         return run;
     }
 
-    private static void readMetricElement(@NonNls Element metricElement, MetricsRunImpl run) {
+    @NotNull
+    private static Reader fixBrokenXml(@NotNull File file) throws IOException {
+        final String s = FileUtilRt.loadFile(file);
+        final StringBuilder sb = new StringBuilder();
+        boolean insideQuotes = false;
+        for (int i = 0, length = s.length(); i < length; i++) {
+            final int c = s.codePointAt(i);
+            if (c == '"') {
+                insideQuotes = !insideQuotes;
+                sb.appendCodePoint(c);
+            }
+            else if (!insideQuotes) {
+                sb.appendCodePoint(c);
+            }
+            else if (c == '<') {
+                sb.append("&lt;");
+            } else {
+                sb.appendCodePoint(c);
+            }
+        }
+        return new StringReader(sb.toString());
+    }
+
+    private static void readMetricElement(Element metricElement, MetricRepository repository, MetricsRunImpl run) {
         try {
             final String className = metricElement.getAttributeValue("class_name");
-            final Class<?> metricClass = Class.forName(className);
-            final Metric metric = (Metric) metricClass.newInstance();
-            final List<Element> values = metricElement.getChildren("VALUE");
-            for (final Element valueElement : values) {
-                final String measured = valueElement.getAttributeValue("measured");
-                final String valueString = valueElement.getAttributeValue("value");
-                final double value = Double.parseDouble(valueString);
-                run.postRawMetric(metric, measured, value);
+            final Metric metric = repository.getMetric(className);
+            if (metric != null) {
+                final List<Element> values = metricElement.getChildren("VALUE");
+                for (final Element valueElement : values) {
+                    final String measured = valueElement.getAttributeValue("measured");
+                    final String valueString = valueElement.getAttributeValue("value");
+                    final double value = Double.parseDouble(valueString);
+                    run.postRawMetric(metric, measured, value);
+                }
             }
         } catch (Exception e) {
             logger.warn(e);
