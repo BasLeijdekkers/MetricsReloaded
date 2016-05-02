@@ -17,7 +17,9 @@
 package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.text.StringUtil;
@@ -34,10 +36,12 @@ import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 
 public class MetricsRunImpl implements MetricsRun {
@@ -189,19 +193,33 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void writeToFile(@NotNull String fileName) {
         try {
-            @NonNls final PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
+            final XMLStreamWriter writer =
+                    XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(fileName), "UTF-8");
             try {
-                writer.println("<SNAPSHOT" + " profile = \"" + profileName + '\"' +
-                        " timestamp = \"" + timestamp + '\"' + '>');
+                writer.writeStartDocument();
+                writer.writeCharacters("\n");
+                writer.writeStartElement("SNAPSHOT");
+                writer.writeAttribute("profile", profileName);
+                writer.writeAttribute("timestamp", timestamp.toString());
+                final String version = PluginManager.getPlugin(PluginId.getId("MetricsReloaded")).getVersion();
+                writer.writeAttribute("version", version);
+                writer.writeCharacters("\n");
                 final MetricCategory[] categories = MetricCategory.values();
                 for (MetricCategory category : categories) {
                     writeResultsForCategory(category, writer);
                 }
-                writer.println("</SNAPSHOT>");
+                writer.writeEndElement();
+                writer.writeEndDocument();
             } finally {
-                writer.close();
+                try {
+                    writer.close();
+                } catch (XMLStreamException e) {
+                    logger.warn(e);
+                }
             }
         } catch (IOException e) {
+            logger.warn(e);
+        } catch (XMLStreamException e) {
             logger.warn(e);
         }
     }
@@ -250,7 +268,7 @@ public class MetricsRunImpl implements MetricsRun {
         return out;
     }
 
-    private void writeResultsForCategory(MetricCategory category, PrintWriter writer) {
+    private void writeResultsForCategory(MetricCategory category, XMLStreamWriter writer) throws XMLStreamException {
         final MetricsResult results = getResultsForCategory(category);
         final Metric[] metrics = results.getMetrics();
         for (final Metric metric : metrics) {
@@ -258,21 +276,31 @@ public class MetricsRunImpl implements MetricsRun {
         }
     }
 
-    private static void writeResultsForMetric(Metric metric, MetricsResult results, @NonNls PrintWriter writer) {
+    private static void writeResultsForMetric(Metric metric, MetricsResult results, XMLStreamWriter writer)
+            throws XMLStreamException {
         final Class<?> metricClass = metric.getClass();
         final String[] measuredObjects = results.getMeasuredObjects();
-        writer.println("\t\t<METRIC class_name= \"" + metricClass.getName() + "\">");
+        writer.writeCharacters("  ");
+        writer.writeStartElement("METRIC");
+        writer.writeAttribute("class_name", metricClass.getName());
+        writer.writeCharacters("\n");
         for (final String measuredObject : measuredObjects) {
             writeValue(results, metric, measuredObject, writer);
         }
-        writer.println("\t\t</METRIC>");
+        writer.writeCharacters("  ");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
     }
 
-    private static void writeValue(MetricsResult results, Metric metric, String measuredObject,
-                                   @NonNls PrintWriter writer) {
+    private static void writeValue(MetricsResult results, Metric metric, String measuredObject, XMLStreamWriter writer)
+            throws XMLStreamException {
         final Double value = results.getValueForMetric(metric, measuredObject);
         if (value != null) {
-            writer.println("\t\t\t<VALUE measured = \"" + measuredObject + "\" value = \"" + value + "\"/>");
+            writer.writeCharacters("    ");
+            writer.writeEmptyElement("VALUE");
+            writer.writeAttribute("measured", measuredObject);
+            writer.writeAttribute("value", value.toString());
+            writer.writeCharacters("\n");
         }
     }
 
