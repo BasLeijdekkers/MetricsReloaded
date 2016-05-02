@@ -20,7 +20,8 @@ import com.intellij.analysis.AnalysisScope;
 import com.intellij.analysis.BaseAnalysisAction;
 import com.intellij.analysis.BaseAnalysisActionDialog;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
@@ -53,10 +54,8 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
             public void onFinish() {
                 final boolean showOnlyWarnings = MetricsReloadedConfig.getInstance().isShowOnlyWarnings();
                 if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-                    Messages.showMessageDialog(project,
-                            MetricsReloadedBundle.message("no.metrics.warnings.found"),
-                            MetricsReloadedBundle.message("no.metrics.warnings.found.title"),
-                            Messages.getInformationIcon());
+                    ToolWindowManager.getInstance(project).notifyByBalloon(MetricsToolWindow.METRICS_TOOL_WINDOW_ID,
+                            MessageType.INFO, MetricsReloadedBundle.message("no.metrics.warnings.found"));
                     return;
                 }
                 final String profileName = profile.getName();
