@@ -22,6 +22,7 @@ import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.StringToFractionMap;
 import org.jetbrains.annotations.Nullable;

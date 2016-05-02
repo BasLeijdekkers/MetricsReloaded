@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.ui.FormatUtils;
+import com.sixrr.metrics.utils.FormatUtils;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.IOException;

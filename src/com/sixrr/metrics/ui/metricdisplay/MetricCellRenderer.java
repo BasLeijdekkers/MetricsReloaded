@@ -24,8 +24,8 @@ import com.intellij.ui.ColoredTableCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.metrics.metricModel.MetricInstance;
-import com.sixrr.metrics.ui.FormatUtils;
+import com.sixrr.metrics.profile.MetricInstance;
+import com.sixrr.metrics.utils.FormatUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;

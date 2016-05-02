@@ -20,13 +20,9 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.metricModel.MetricInstance;
-import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
-import com.sixrr.metrics.profile.MetricsProfile;
-import com.sixrr.metrics.profile.MetricsProfileImpl;
-import com.sixrr.metrics.profile.MetricsProfileRepository;
+import com.sixrr.metrics.profile.*;
 import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
 import com.sixrr.metrics.ui.metricdisplay.SnapshotFileFilter;
 

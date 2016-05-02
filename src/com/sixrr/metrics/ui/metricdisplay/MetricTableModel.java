@@ -20,7 +20,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.profile.MetricTableSpecification;

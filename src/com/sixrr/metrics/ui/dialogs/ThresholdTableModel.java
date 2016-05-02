@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.sixrr.metrics.ui.dialogs;
 
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
@@ -115,7 +115,7 @@ public class ThresholdTableModel extends AbstractTableModel {
         }
         if (columnNum == 4) {
             final String valueString = ((String) object).trim();
-            if(valueString.length() == 0) {
+            if(valueString.isEmpty()) {
                 instance.setLowerThresholdEnabled(false);
             } else {
                 try {
@@ -128,7 +128,7 @@ public class ThresholdTableModel extends AbstractTableModel {
             }
         } else {
             final String valueString = ((String) object).trim();
-            if (valueString.length() == 0) {
+            if (valueString.isEmpty()) {
                 instance.setUpperThresholdEnabled(false);
             } else {
                 try {

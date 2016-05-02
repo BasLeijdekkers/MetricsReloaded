@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.sixrr.metrics.metricModel;
+package com.sixrr.metrics.profile;
 
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;

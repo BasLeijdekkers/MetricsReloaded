@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.sixrr.metrics.ui.metricdisplay;
+package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
@@ -37,8 +37,8 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.containers.Convertor;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricInstance;
-import com.sixrr.metrics.metricModel.MetricsCategoryNameUtil;
+import com.sixrr.metrics.profile.MetricInstance;
+import com.sixrr.metrics.utils.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.SearchUtil;

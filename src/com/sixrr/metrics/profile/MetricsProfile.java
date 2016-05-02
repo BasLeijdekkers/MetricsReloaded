@@ -17,7 +17,6 @@
 package com.sixrr.metrics.profile;
 
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.metricModel.MetricInstance;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;

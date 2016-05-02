@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricInstance;
+import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;

@@ -33,6 +33,7 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricsExecutionContext;
 import com.sixrr.metrics.MetricsResultsHolder;
+import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;

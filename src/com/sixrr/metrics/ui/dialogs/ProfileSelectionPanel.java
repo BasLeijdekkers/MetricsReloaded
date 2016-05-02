@@ -22,7 +22,6 @@ import com.intellij.ui.TitledSeparator;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
-import com.sixrr.metrics.ui.metricdisplay.MetricsConfigurationDialog;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;

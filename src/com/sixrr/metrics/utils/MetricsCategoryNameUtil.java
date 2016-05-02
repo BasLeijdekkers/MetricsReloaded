@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-package com.sixrr.metrics.metricModel;
+package com.sixrr.metrics.utils;
 
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 
 public final class MetricsCategoryNameUtil {

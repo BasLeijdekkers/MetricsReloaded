@@ -18,8 +18,6 @@ package com.sixrr.metrics.profile;
 
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.MetricInstance;
-import com.sixrr.metrics.metricModel.MetricInstanceImpl;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
