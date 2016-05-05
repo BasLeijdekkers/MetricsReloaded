@@ -146,6 +146,9 @@ public final class ClassUtils {
         }
         final PsiFile file = element.getContainingFile();
         final PsiDirectory directory = file.getContainingDirectory();
+        if (directory == null) {
+            return null;
+        }
         return JavaDirectoryService.getInstance().getPackage(directory);
     }
 }
