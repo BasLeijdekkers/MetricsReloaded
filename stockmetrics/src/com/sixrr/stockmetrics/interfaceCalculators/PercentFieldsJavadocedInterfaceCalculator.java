@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.interfaceCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
 
 public class PercentFieldsJavadocedInterfaceCalculator extends InterfaceCalculator {
 
@@ -36,13 +35,13 @@ public class PercentFieldsJavadocedInterfaceCalculator extends InterfaceCalculat
             }
             int numFields = 0;
             int numJavadocedFields = 0;
-            final PsiField[] fields = aClass.getFields();
-            for (final PsiField field : fields) {
-                if (!field.hasModifierProperty(PsiModifier.PRIVATE)) {
-                    numFields++;
-                    if (field.getFirstChild()instanceof PsiDocComment) {
-                        numJavadocedFields++;
-                    }
+            for (final PsiField field : aClass.getFields()) {
+                if (field.hasModifierProperty(PsiModifier.PRIVATE)) {
+                    continue;
+                }
+                numFields++;
+                if (field.getDocComment() != null) {
+                    numJavadocedFields++;
                 }
             }
             postMetric(aClass, numJavadocedFields, numFields);

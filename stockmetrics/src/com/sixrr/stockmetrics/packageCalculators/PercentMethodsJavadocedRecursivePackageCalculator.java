@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -53,12 +52,9 @@ public class PercentMethodsJavadocedRecursivePackageCalculator extends PackageCa
             if (containingClass == null || ClassUtils.isAnonymous(containingClass)) {
                 return;
             }
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(containingClass);
-
-            for (final PsiPackage aPackage : packages) {
+            for (final PsiPackage aPackage : ClassUtils.calculatePackagesRecursive(containingClass)) {
                 numMethodsPerPackage.createBucket(aPackage);
-
-                if (method.getFirstChild()instanceof PsiDocComment) {
+                if (method.getDocComment() != null) {
                     numJavadocedMethodsPerPackage.incrementBucketValue(aPackage);
                 }
                 numMethodsPerPackage.incrementBucketValue(aPackage);

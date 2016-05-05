@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiField;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.ClassUtils;
 
 public class PercentFieldsJavadocedClassCalculator extends ClassCalculator {
@@ -35,18 +34,18 @@ public class PercentFieldsJavadocedClassCalculator extends ClassCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
-            if (!ClassUtils.isAnonymous(aClass) && !aClass.isInterface()) {
-                int numFields = 0;
-                int numJavadocedFields = 0;
-                final PsiField[] fields = aClass.getFields();
-                for (final PsiField field : fields) {
-                    numFields++;
-                    if (field.getFirstChild()instanceof PsiDocComment) {
-                        numJavadocedFields++;
-                    }
-                }
-                postMetric(aClass, numJavadocedFields, numFields);
+            if (ClassUtils.isAnonymous(aClass) || aClass.isInterface()) {
+                return;
             }
+            int numFields = 0;
+            int numJavadocedFields = 0;
+            for (final PsiField field : aClass.getFields()) {
+                numFields++;
+                if (field.getDocComment() != null) {
+                    numJavadocedFields++;
+                }
+            }
+            postMetric(aClass, numJavadocedFields, numFields);
         }
     }
 }

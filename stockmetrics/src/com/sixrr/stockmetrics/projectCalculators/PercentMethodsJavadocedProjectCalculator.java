@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.ClassUtils;
 
 public class PercentMethodsJavadocedProjectCalculator extends ElementRatioProjectCalculator {
@@ -37,7 +36,7 @@ public class PercentMethodsJavadocedProjectCalculator extends ElementRatioProjec
             if (containingClass == null || ClassUtils.isAnonymous(containingClass)) {
                 return;
             }
-            if (method.getFirstChild()instanceof PsiDocComment) {
+            if (method.getDocComment() != null) {
                 numerator++;
             }
             denominator++;

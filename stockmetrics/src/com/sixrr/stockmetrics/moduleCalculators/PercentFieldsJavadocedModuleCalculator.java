@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.ClassUtils;
 
 public class PercentFieldsJavadocedModuleCalculator extends ElementRatioModuleCalculator {
@@ -36,15 +35,15 @@ public class PercentFieldsJavadocedModuleCalculator extends ElementRatioModuleCa
             if (containingClass == null || ClassUtils.isAnonymous(containingClass)) {
                 return;
             }
-            if (field.getFirstChild()instanceof PsiDocComment) {
+            if (field.getDocComment() != null) {
                 incrementNumerator(field, 1);
             }
             incrementDenominator(field, 1);
         }
 
         @Override
-        public void visitFile(PsiFile file) {
-            super.visitFile(file);
+        public void visitJavaFile(PsiJavaFile file) {
+            super.visitJavaFile(file);
             createRatio(file);
         }
     }

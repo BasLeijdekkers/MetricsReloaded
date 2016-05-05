@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.javadoc.PsiDocComment;
 
 public class PercentMethodsJavadocedInterfaceCalculator extends InterfaceCalculator {
 
@@ -39,10 +38,9 @@ public class PercentMethodsJavadocedInterfaceCalculator extends InterfaceCalcula
             }
             int numMethods = 0;
             int numJavadocedMethods = 0;
-            final PsiMethod[] methods = aClass.getMethods();
-            for (final PsiMethod method : methods) {
+            for (final PsiMethod method : aClass.getMethods()) {
                 numMethods++;
-                if (method.getFirstChild()instanceof PsiDocComment) {
+                if (method.getDocComment() != null) {
                     numJavadocedMethods++;
                 }
             }

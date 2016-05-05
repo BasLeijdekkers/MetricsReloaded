@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPackage;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -54,9 +53,8 @@ public class PercentClassesJavadocedRecursivePackageCalculator extends PackageCa
             if (ClassUtils.isAnonymous(aClass)) {
                 return;
             }
-            final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(aClass);
-            for (final PsiPackage aPackage : packages) {
-                if (aClass.getFirstChild()instanceof PsiDocComment) {
+            for (final PsiPackage aPackage : ClassUtils.calculatePackagesRecursive(aClass)) {
+                if (aClass.getDocComment() != null) {
                     numJavadocedClassesPerPackage.incrementBucketValue(aPackage);
                 }
                 numClassesPerPackage.incrementBucketValue(aPackage);
