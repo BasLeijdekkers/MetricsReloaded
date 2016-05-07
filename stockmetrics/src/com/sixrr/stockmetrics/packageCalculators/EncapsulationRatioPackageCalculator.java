@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.openapi.util.Key;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.ClassReferenceCache;
 
-import java.util.Collection;
 import java.util.Set;
 
 public class EncapsulationRatioPackageCalculator extends PackageCalculator {
@@ -65,6 +64,10 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
         }
 
         private boolean isInternal(PsiClass aClass) {
+            if (aClass.hasModifierProperty(PsiModifier.PRIVATE) ||
+                    aClass.hasModifierProperty(PsiModifier.PACKAGE_LOCAL)) {
+                return true;
+            }
             final String packageName = ClassUtils.calculatePackageName(aClass);
             final Key<ClassReferenceCache> key = new Key<ClassReferenceCache>("ClassReferenceCache");
 
@@ -73,9 +76,7 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
                 classReferenceCache = new ClassReferenceCache();
                 executionContext.putUserData(key, classReferenceCache);
             }
-            final Collection<PsiReference> references =
-                    classReferenceCache.findClassReferences(aClass);
-            for (final PsiReference reference : references) {
+            for (final PsiReference reference : classReferenceCache.findClassReferences(aClass)) {
                 final PsiElement element = reference.getElement();
                 final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
 
