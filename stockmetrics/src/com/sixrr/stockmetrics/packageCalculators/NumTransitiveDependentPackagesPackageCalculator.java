@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiPackage;
-import com.sixrr.stockmetrics.dependency.DependentsMap;
 import com.sixrr.metrics.utils.ClassUtils;
+import com.sixrr.stockmetrics.dependency.DependentsMap;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,13 +45,10 @@ public class NumTransitiveDependentPackagesPackageCalculator extends PackageCalc
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
+
         @Override
-        public void visitClass(PsiClass aClass) {
-            super.visitClass(aClass);
-            if (!ClassUtils.isAnonymous(aClass)) {
-                final PsiPackage usedPackage = ClassUtils.findPackage(aClass);
-                packages.add(usedPackage);
-            }
+        public void visitJavaFile(PsiJavaFile file) {
+            packages.add(ClassUtils.findPackage(file));
         }
     }
 }
