@@ -18,7 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.sixrr.metrics.utils.JavaTestUtils;
 
@@ -40,8 +40,8 @@ public class NumTestAssertsModuleCalculator extends ElementCountModuleCalculator
         }
 
         @Override
-        public void visitFile(PsiFile file) {
-            super.visitFile(file);
+        public void visitJavaFile(PsiJavaFile file) {
+            super.visitJavaFile(file);
             createCount(file);
         }
     }
