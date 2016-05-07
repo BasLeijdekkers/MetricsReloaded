@@ -18,12 +18,9 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.ClassReferenceCache;
-
-import java.util.Collection;
 
 public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalculator {
 
@@ -54,24 +51,23 @@ public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalcul
                 classReferenceCache = new ClassReferenceCache();
                 executionContext.putUserData(key, classReferenceCache);
             }
-            final Collection<PsiReference> references =
-                    classReferenceCache.findClassReferences(aClass);
-            for (final PsiReference reference : references) {
+            for (final PsiReference reference : classReferenceCache.findClassReferences(aClass)) {
                 final PsiElement element = reference.getElement();
-                final PsiClass referencingClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
-
-                if (referencingClass != null && !TestUtils.isTest(referencingClass)) {
-                    final String referencingModuleName = ClassUtils.calculateModuleName(referencingClass);
-                    if (!moduleName.equals(referencingModuleName)) {
-                        return false;
-                    }
+                final PsiFile containingFile = element.getContainingFile();
+                if (containingFile == null || TestUtils.isTest(containingFile)) {
+                    continue;
+                }
+                final String referencingModuleName = ClassUtils.calculateModuleName(containingFile);
+                if (!moduleName.equals(referencingModuleName)) {
+                    return false;
                 }
             }
             return true;
         }
 
         @Override
-        public void visitFile(PsiFile file) {
+        public void visitJavaFile(PsiJavaFile file) {
+            super.visitJavaFile(file);
             createRatio(file);
         }
     }
