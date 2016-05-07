@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.intellij.psi.PsiPackage;
 import java.util.Set;
 
 public interface DependencyMap {
+
     Set<PsiClass> calculateDependencies(PsiClass aClass);
 
     Set<PsiClass> calculateTransitiveDependencies(PsiClass aClass);
@@ -34,11 +35,11 @@ public interface DependencyMap {
 
     Set<PsiPackage> calculatePackageDependencies(PsiClass aClass);
 
-    Set<PsiPackage> calculateTransitivePackageDependencies(PsiPackage packageName);
+    Set<PsiPackage> calculateTransitivePackageDependencies(PsiPackage aPackage);
 
-    Set<PsiPackage> calculateStronglyConnectedPackageComponents(PsiPackage name);
+    Set<PsiPackage> calculateStronglyConnectedPackageComponents(PsiPackage aPackage);
 
-    int calculatePackageLevelOrder(PsiPackage packageName);
+    int calculatePackageLevelOrder(PsiPackage aPackage);
 
     int calculatePackageAdjustedLevelOrder(PsiPackage aPackage);
 
@@ -46,5 +47,5 @@ public interface DependencyMap {
 
     int getStrengthForPackageDependency(PsiClass aClass, PsiPackage dependencyPackage);
 
-    Set<PsiPackage> calculatePackageToPackageDependencies(PsiPackage packageName);
+    Set<PsiPackage> calculatePackageToPackageDependencies(PsiPackage aPackage);
 }
