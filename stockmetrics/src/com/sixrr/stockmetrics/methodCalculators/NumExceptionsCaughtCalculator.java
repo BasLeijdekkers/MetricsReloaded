@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,10 +50,17 @@ public class NumExceptionsCaughtCalculator extends MethodCalculator {
         public void visitTryStatement(PsiTryStatement statement) {
             super.visitTryStatement(statement);
             final PsiParameter[] catchBlockParameters = statement.getCatchBlockParameters();
-            for (final PsiParameter parameter : catchBlockParameters) {
-                final PsiType parameterType = parameter.getType();
-                final String parameterClassName = parameterType.getCanonicalText();
-                caughtExceptions.add(parameterClassName);
+            for (PsiParameter parameter : catchBlockParameters) {
+                final PsiType type = parameter.getType();
+                if (type instanceof PsiDisjunctionType) {
+                    final PsiDisjunctionType disjunctionType = (PsiDisjunctionType) type;
+                    for (PsiType disjunction : disjunctionType.getDisjunctions()) {
+                        caughtExceptions.add(disjunction.getCanonicalText());
+                    }
+                }
+                else {
+                    caughtExceptions.add(type.getCanonicalText());
+                }
             }
         }
     }
