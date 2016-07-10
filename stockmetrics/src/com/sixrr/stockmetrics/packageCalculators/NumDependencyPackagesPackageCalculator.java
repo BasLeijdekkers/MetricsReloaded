@@ -16,10 +16,10 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPackage;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.dependency.DependencyMap;
 
@@ -31,7 +31,7 @@ public class NumDependencyPackagesPackageCalculator extends PackageCalculator {
 
     @Override
     public void endMetricsRun() {
-        for (final PsiPackage aPackage : packages) {
+        for (PsiPackage aPackage : packages) {
             final DependencyMap dependencyMap = getDependencyMap();
             final Set<PsiPackage> dependentPackages = dependencyMap.calculatePackageToPackageDependencies(aPackage);
             final int numDependencies = dependentPackages.size();
@@ -44,10 +44,10 @@ public class NumDependencyPackagesPackageCalculator extends PackageCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitJavaFile(PsiJavaFile file) {
+        public void visitFile(PsiFile file) {
             packages.add(ClassUtils.findPackage(file));
         }
     }

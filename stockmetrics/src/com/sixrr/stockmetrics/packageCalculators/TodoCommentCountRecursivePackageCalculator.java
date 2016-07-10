@@ -16,9 +16,9 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.TodoUtil;
 
 public class TodoCommentCountRecursivePackageCalculator extends ElementCountPackageCalculator {
@@ -28,10 +28,10 @@ public class TodoCommentCountRecursivePackageCalculator extends ElementCountPack
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitJavaFile(PsiJavaFile file) {
+        public void visitFile(PsiFile file) {
             incrementCountRecursive(file, TodoUtil.getTodoItemsCount(file));
         }
     }

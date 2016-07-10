@@ -31,7 +31,7 @@ public class TrueCommentRatioPackageCalculator extends PackageCalculator {
     @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numLinesPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
+        for (PsiPackage aPackage : packages) {
             final int numLines = numLinesPerPackage.getBucketValue(aPackage);
             final int numCommentLines = numCommentLinesPerPackage.getBucketValue(aPackage);
             postMetric(aPackage, numCommentLines, numLines - numCommentLines);
@@ -43,11 +43,11 @@ public class TrueCommentRatioPackageCalculator extends PackageCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitJavaFile(file);
+        public void visitFile(PsiFile file) {
+            super.visitFile(file);
             final PsiPackage aPackage = ClassUtils.findPackage(file);
             if (aPackage == null) {
                 return;

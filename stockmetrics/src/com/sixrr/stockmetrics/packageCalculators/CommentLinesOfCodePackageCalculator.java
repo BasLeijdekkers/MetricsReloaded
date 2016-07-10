@@ -16,10 +16,10 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class CommentLinesOfCodePackageCalculator extends ElementCountPackageCalculator {
@@ -29,10 +29,10 @@ public class CommentLinesOfCodePackageCalculator extends ElementCountPackageCalc
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitJavaFile(PsiJavaFile file) {
+        public void visitFile(PsiFile file) {
             createCount(file);
         }
 

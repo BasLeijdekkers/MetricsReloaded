@@ -31,7 +31,7 @@ public class CommentRatioRecursivePackageCalculator extends PackageCalculator {
     @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numLinesPerPackage.getBuckets();
-        for (final PsiPackage packageName : packages) {
+        for (PsiPackage packageName : packages) {
             final int numLines = numLinesPerPackage.getBucketValue(packageName);
             final int numCommentLines = numCommentLinesPerPackage.getBucketValue(packageName);
             postMetric(packageName, numCommentLines, numLines);
@@ -43,14 +43,14 @@ public class CommentRatioRecursivePackageCalculator extends PackageCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
+    private class Visitor extends PsiRecursiveElementVisitor {
 
         @Override
-        public void visitJavaFile(PsiJavaFile file) {
-            super.visitJavaFile(file);
+        public void visitFile(PsiFile file) {
+            super.visitFile(file);
             final int lineCount = LineUtil.countLines(file);
             final PsiPackage[] packageNames = ClassUtils.calculatePackagesRecursive(file);
-            for (final PsiPackage packageName : packageNames) {
+            for (PsiPackage packageName : packageNames) {
                 numLinesPerPackage.incrementBucketValue(packageName, lineCount);
             }
         }
@@ -60,7 +60,7 @@ public class CommentRatioRecursivePackageCalculator extends PackageCalculator {
             super.visitComment(comment);
             final PsiPackage[] packages = ClassUtils.calculatePackagesRecursive(comment);
             final int lineCount = LineUtil.countLines(comment);
-            for (final PsiPackage aPackage : packages) {
+            for (PsiPackage aPackage : packages) {
                 numCommentLinesPerPackage.incrementBucketValue(aPackage, lineCount);
             }
         }
