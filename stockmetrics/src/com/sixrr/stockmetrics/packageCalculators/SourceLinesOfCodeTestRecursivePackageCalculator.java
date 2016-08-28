@@ -16,6 +16,7 @@
 
 package com.sixrr.stockmetrics.packageCalculators;
 
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
@@ -34,6 +35,9 @@ public class SourceLinesOfCodeTestRecursivePackageCalculator extends ElementCoun
 
         @Override
         public void visitFile(PsiFile file) {
+            if (file.getFileType() == PlainTextFileType.INSTANCE) {
+                return;
+            }
             super.visitFile(file);
             if (TestUtils.isTest(file)) {
                 final int lineCount = LineUtil.countLines(file);

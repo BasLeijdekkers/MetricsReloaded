@@ -16,6 +16,7 @@
 
 package com.sixrr.stockmetrics.moduleCalculators;
 
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.psi.*;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -44,6 +45,9 @@ public class SourceLinesOfCodeProductModuleCalculator extends ElementCountModule
 
         @Override
         public void visitFile(PsiFile file) {
+            if (file.getFileType() == PlainTextFileType.INSTANCE) {
+                return;
+            }
             super.visitFile(file);
             createCount(file);
             if (TestUtils.isProduction(file)) {

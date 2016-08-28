@@ -16,6 +16,7 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.psi.*;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -31,6 +32,9 @@ public class SourceLinesOfCodeProductProjectCalculator extends ElementCountProje
 
         @Override
         public void visitFile(PsiFile file) {
+            if (file.getFileType() == PlainTextFileType.INSTANCE) {
+                return;
+            }
             super.visitFile(file);
             if (TestUtils.isProduction(file)) {
                 incrementCount(LineUtil.countLines(file));

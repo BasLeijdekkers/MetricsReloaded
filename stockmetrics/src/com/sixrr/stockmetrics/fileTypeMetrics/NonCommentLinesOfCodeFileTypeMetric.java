@@ -16,6 +16,7 @@
 
 package com.sixrr.stockmetrics.fileTypeMetrics;
 
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.psi.*;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
@@ -57,6 +58,9 @@ public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
 
                 @Override
                 public void visitFile(PsiFile file) {
+                    if (file.getFileType() == PlainTextFileType.INSTANCE) {
+                        return;
+                    }
                     super.visitFile(file);
                     final int lineCount = LineUtil.countLines(file);
                     incrementCount(file, lineCount);
