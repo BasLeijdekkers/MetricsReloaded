@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics;
+package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiReference;

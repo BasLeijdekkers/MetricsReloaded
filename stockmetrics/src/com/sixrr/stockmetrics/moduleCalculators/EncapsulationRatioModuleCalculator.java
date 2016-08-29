@@ -20,7 +20,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
-import com.sixrr.stockmetrics.ClassReferenceCache;
+import com.sixrr.stockmetrics.utils.ClassReferenceCache;
 
 public class EncapsulationRatioModuleCalculator extends ElementRatioModuleCalculator {
 

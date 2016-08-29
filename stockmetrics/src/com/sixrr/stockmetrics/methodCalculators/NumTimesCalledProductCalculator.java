@@ -21,8 +21,8 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
-import com.sixrr.stockmetrics.MethodCallMap;
-import com.sixrr.stockmetrics.MethodCallMapImpl;
+import com.sixrr.stockmetrics.utils.MethodCallMap;
+import com.sixrr.stockmetrics.utils.MethodCallMapImpl;
 
 import java.util.Set;
 

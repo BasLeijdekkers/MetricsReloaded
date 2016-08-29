@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics;
+package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
