@@ -71,10 +71,10 @@
   </target>
 
   <target name="compile-openapi" depends="prepare">
-    <javac srcdir="${openapi.src.dir}" destdir="${openapi.build.classes.dir}"
+    <javac2 srcdir="${openapi.src.dir}" destdir="${openapi.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="openapi.class.path"/>
-    </javac>
+    </javac2>
   </target>
 
   <target name="javadoc-openapi" depends="prepare">
@@ -90,10 +90,10 @@
   </target>
 
   <target name="compile-utils" depends="prepare, compile-openapi">
-    <javac srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
+    <javac2 srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
-    </javac>
+    </javac2>
   </target>
 
   <target name="create-utils-jar" depends="compile-utils">
@@ -104,10 +104,10 @@
   </target>
   
   <target name="compile-stockmetrics" depends="prepare, compile-openapi, compile-utils">
-    <javac srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
+    <javac2 srcdir="${stockmetrics.src.dir}" destdir="${stockmetrics.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
-    </javac>
+    </javac2>
   </target>
 
   <target name="create-stockmetrics-jars" depends="compile-stockmetrics">
