@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NonNls;
 public abstract class MetricsToolWindow implements Disposable {
 
     @NonNls
-    public static final String TOOL_WINDOW_ICON_PATH = "/images/metricsToolWindow.png";
+    public static final String TOOL_WINDOW_ICON_PATH = "/images/metrics.png";
     @NonNls
     public static final String METRICS_TOOL_WINDOW_ID = "Metrics";
 
