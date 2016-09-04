@@ -164,6 +164,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new NumImplementationsMethodMetric());
         metrics.add(new NumLoopsMetric());
         metrics.add(new NumMethodCallsMetric());
+        metrics.add(new NumNullChecksMetric());
         metrics.add(new NumOverridesMethodMetric());
         metrics.add(new NumParametersMetric());
         metrics.add(new NumReturnPointsMetric());
@@ -236,6 +237,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new NumAbstractClassesRecursivePackageMetric());
         metrics.add(new NumAnnotationClassesPackageMetric());
         metrics.add(new NumAnnotationClassesRecursivePackageMetric());
+        metrics.add(new NumAnonymousClassesPackageMetric());
         metrics.add(new NumClassesPackageMetric());
         metrics.add(new NumClassesRecursivePackageMetric());
         metrics.add(new NumConcreteClassesPackageMetric());
@@ -247,6 +249,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new NumEnumClassesRecursivePackageMetric());
         metrics.add(new NumInterfacesPackageMetric());
         metrics.add(new NumInterfacesRecursivePackageMetric());
+        metrics.add(new NumLambdasPackageMetric());
         metrics.add(new NumLeafClassesPackageMetric());
         metrics.add(new NumLeafClassesRecursivePackageMetric());
         metrics.add(new NumMethodsPackageMetric());
