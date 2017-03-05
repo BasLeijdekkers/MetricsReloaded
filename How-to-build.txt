@@ -1,0 +1,17 @@
+Как собрать плагин:
+0) Открыть проект
+1) Добавить IDEA Plugin SDK
+   File -> Project structure
+   На левой панели в разделе Project Settings выбрать Project
+   На правой панели в разделе Project SDK нажать New -> Intellij Platform Plugin SDK
+   В появившемся окне указать папку с установленой Intellij IDEA
+2) Добавить в SDK библиотеки плагинов
+   File -> Project structure
+   На левой панели в разделе Platform Settings выбрать SDKs
+   Из списка справа выбрать созданную на первом шаге SDK
+   Добавить в список "Classpath" jar-файлы из следующих папок: 
+		*idea_directory*\plugins\Kotlin\lib 	
+		*idea_directory*\plugins\Kotlin\kotlinc
+		*idea_directory*\plugins\Groovy\lib
+		
+3) Запустить Project Build
