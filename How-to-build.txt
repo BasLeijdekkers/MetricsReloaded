@@ -9,9 +9,8 @@
    File -> Project structure
    На левой панели в разделе Platform Settings выбрать SDKs
    Из списка справа выбрать созданную на первом шаге SDK
-   Добавить в список "Classpath" jar-файлы из следующих папок: 
-		*idea_directory*\plugins\Kotlin\lib 	
-		*idea_directory*\plugins\Kotlin\kotlinc
-		*idea_directory*\plugins\Groovy\lib
+   Добавить в список "Classpath" следующие файлы: 
+		*idea_directory*\plugins\Kotlin\kotlinc\lib\kotlin-compiler.jar
+		*idea_directory*\plugins\Groovy\lib\Groovy.jar
 		
 3) Запустить Project Build
