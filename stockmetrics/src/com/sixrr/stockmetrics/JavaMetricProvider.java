@@ -105,6 +105,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TrueCommentRatioClassMetric());
         metrics.add(new WeightedMethodComplexityMetric());
         metrics.add(new FanInClassMetric());
+        metrics.add(new FanOutClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -348,6 +349,7 @@ public class JavaMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createFanProfile() {
         final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(StockMetricsBundle.message("fan.profile.name"));
         profile.addMetric(FanInClassMetric.class);
+        profile.addMetric(FanOutClassMetric.class);
         return profile;
     }
 
