@@ -18,21 +18,20 @@ package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by Aleksandr Chudov on 28.03.2017.
  */
 public class FanOutClassCalculator extends ClassCalculator {
     private final Map<PsiClass, Integer> metrics = new HashMap<PsiClass, Integer>();
+    private final Collection<PsiClass> visitClasses = new ArrayList<PsiClass>();
     private final Stack<PsiClass> classes = new Stack<PsiClass>();
 
     @Override
     public void endMetricsRun() {
-        for (Map.Entry<PsiClass, Integer> e : metrics.entrySet()) {
-            postMetric(e.getKey(), e.getValue());
+        for (PsiClass aClass : visitClasses) {
+            postMetric(aClass, metrics.get(aClass));
         }
         super.endMetricsRun();
     }
@@ -46,8 +45,10 @@ public class FanOutClassCalculator extends ClassCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             classes.push(aClass);
-            if (!metrics.containsKey(aClass))
+            visitClasses.add(aClass);
+            if (!metrics.containsKey(aClass)) {
                 metrics.put(aClass, 0);
+            }
             super.visitClass(aClass);
             classes.pop();
         }
