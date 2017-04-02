@@ -184,6 +184,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TodoCommentCountMethodMetric());
         metrics.add(new TrueCommentRatioMethodMetric());
         metrics.add(new FanInMethodMetric());
+        metrics.add(new FanOutMethodMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
@@ -352,6 +353,7 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(FanInClassMetric.class);
         profile.addMetric(FanOutClassMetric.class);
         profile.addMetric(FanInMethodMetric.class);
+        profile.addMetric(FanOutMethodMetric.class);
         return profile;
     }
 
