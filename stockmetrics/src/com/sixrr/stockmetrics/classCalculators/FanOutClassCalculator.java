@@ -16,10 +16,7 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiMethodCallExpression;
+import com.intellij.psi.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +54,12 @@ public class FanOutClassCalculator extends ClassCalculator {
 
         @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
-            final PsiClass aClass = expression.resolveMethod().getContainingClass();
+            super.visitMethodCallExpression(expression);
+            final PsiMethod method = expression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass aClass = method.getContainingClass();
             if (classes.empty() || classes.peek().equals(aClass)) {
                 return;
             }

@@ -16,10 +16,7 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiMethodCallExpression;
+import com.intellij.psi.*;
 
 import java.util.Stack;
 
@@ -57,7 +54,8 @@ public class FanInClassCalculator extends ClassCalculator {
             if (classes.empty()) {
                 return;
             }
-            if (classes.peek().equals(expression.resolveMethod().getContainingClass())) {
+            final PsiMethod method = expression.resolveMethod();
+            if (method == null || classes.peek().equals(method.getContainingClass())) {
                 return;
             }
             currentMetric++;
