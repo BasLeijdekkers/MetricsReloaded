@@ -329,7 +329,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(10);
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(11);
         out.add(createChidamberKemererProfile());
         out.add(createClassCountProfile());
         out.add(createCodeSizeProfile());
@@ -340,7 +340,30 @@ public class JavaMetricProvider implements MetricProvider {
         out.add(createMartinProfile());
         out.add(createMoodProfile());
         out.add(createTestProfile());
+        out.add(createSDDRARProfile());
         return out;
+    }
+
+    private static PrebuiltMetricProfile createSDDRARProfile() {
+        final PrebuiltMetricProfile profile =
+                new PrebuiltMetricProfile(StockMetricsBundle.message("sddrar.metrics.profile.name"));
+        profile.addMetric(AfferentCouplingMetric.class);  // package metric
+        profile.addMetric(CouplingBetweenObjectsClassMetric.class);  // calc dependents and dependencies for class
+        // Data Abstraction Coupling
+        // Information Flow Based Cohesion
+        profile.addMetric(InstabilityMetric.class); // Package metric
+        // Tight Class Coupling
+        // Loose Class Coupling
+        // LCOM1
+        // LCOM2
+        profile.addMetric(LackOfCohesionOfMethodsClassMetric.class); // LCOM4
+        // LCOM5
+        profile.addMetric(ResponseForClassMetric.class);
+        // Locality of Data
+        profile.addMetric(NumAttributesAddedMetric.class);
+        // Number of Methods
+        profile.addMetric(MessagePassingCouplingClassMetric.class);
+        return profile;
     }
 
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
