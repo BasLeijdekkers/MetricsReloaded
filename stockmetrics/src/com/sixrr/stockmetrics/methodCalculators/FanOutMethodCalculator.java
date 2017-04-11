@@ -17,51 +17,53 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.utils.BucketedCount;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Stack;
 
 /**
- * Created by Aleksandr Chudov on 02.04.2017.
+ * @author Aleksandr Chudov.
  */
 public class FanOutMethodCalculator extends MethodCalculator {
-    private final Map<PsiMethod, Integer> metrics = new HashMap<PsiMethod, Integer>();
-    private final Collection<PsiMethod> visitMethods = new ArrayList<PsiMethod>();
+    private final Collection<PsiMethod> visitedMethods = new ArrayList<PsiMethod>();
+    private final BucketedCount<PsiMethod> metrics = new BucketedCount<PsiMethod>();
     private final Stack<PsiMethod> methods = new Stack<PsiMethod>();
-
-    @Override
-    public void endMetricsRun() {
-        for (PsiMethod method : visitMethods) {
-            postMetric(method, metrics.get(method));
-        }
-        super.endMetricsRun();
-    }
 
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
+    @Override
+    public void endMetricsRun() {
+        for (final PsiMethod method : visitedMethods) {
+            postMetric(method, metrics.getBucketValue(method));
+        }
+        super.endMetricsRun();
+    }
+
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitMethod(PsiMethod method) {
             methods.push(method);
-            visitMethods.add(method);
-            if (!metrics.containsKey(method)) {
-                metrics.put(method, 0);
-            }
+            visitedMethods.add(method);
             super.visitMethod(method);
             methods.pop();
         }
 
         @Override
-        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
-            super.visitMethodCallExpression(expression);
-            final PsiMethod method = expression.resolveMethod();
-            if (method == null || methods.empty() || methods.peek().equals(method)) {
+        public void visitCallExpression(PsiCallExpression callExpression) {
+            super.visitCallExpression(callExpression);
+            if (methods.empty()) {
                 return;
             }
-            int metric = metrics.containsKey(method) ? metrics.get(method).intValue() : 0;
-            metrics.put(method, metric + 1);
+            final PsiMethod method = callExpression.resolveMethod();
+            if (method == null || methods.peek().equals(method)) {
+                return;
+            }
+            metrics.incrementBucketValue(methods.peek());
         }
     }
 }

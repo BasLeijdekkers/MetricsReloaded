@@ -17,21 +17,22 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.utils.BucketedCount;
 
 import java.util.*;
 
 /**
- * Created by Aleksandr Chudov on 28.03.2017.
+ * @author Aleksandr Chudov.
  */
 public class FanOutClassCalculator extends ClassCalculator {
-    private final Map<PsiClass, Integer> metrics = new HashMap<PsiClass, Integer>();
-    private final Collection<PsiClass> visitClasses = new ArrayList<PsiClass>();
+    private final BucketedCount<PsiClass> metrics = new BucketedCount<PsiClass>();
+    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
     private final Stack<PsiClass> classes = new Stack<PsiClass>();
 
     @Override
     public void endMetricsRun() {
-        for (PsiClass aClass : visitClasses) {
-            postMetric(aClass, metrics.get(aClass));
+        for (PsiClass aClass : visitedClasses) {
+            postMetric(aClass, metrics.getBucketValue(aClass));
         }
         super.endMetricsRun();
     }
@@ -45,10 +46,7 @@ public class FanOutClassCalculator extends ClassCalculator {
         @Override
         public void visitClass(PsiClass aClass) {
             classes.push(aClass);
-            visitClasses.add(aClass);
-            if (!metrics.containsKey(aClass)) {
-                metrics.put(aClass, 0);
-            }
+            visitedClasses.add(aClass);
             super.visitClass(aClass);
             classes.pop();
         }
@@ -61,11 +59,10 @@ public class FanOutClassCalculator extends ClassCalculator {
                 return;
             }
             final PsiClass aClass = method.getContainingClass();
-            if (classes.empty() || classes.peek().equals(aClass)) {
+            if (aClass == null || classes.empty() || classes.peek().equals(aClass)) {
                 return;
             }
-            int metric = metrics.containsKey(aClass) ? metrics.get(aClass).intValue() : 0;
-            metrics.put(aClass, metric + 1);
+            metrics.incrementBucketValue(aClass);
         }
     }
 }
