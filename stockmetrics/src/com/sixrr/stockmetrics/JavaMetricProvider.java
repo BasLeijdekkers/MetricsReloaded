@@ -106,6 +106,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new WeightedMethodComplexityMetric());
         metrics.add(new AfferentCouplingClassMetric());
         metrics.add(new InformationFlowBasedCohesionClassMetric());
+        metrics.add(new NumMethodsClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -360,11 +361,11 @@ public class JavaMetricProvider implements MetricProvider {
         // LCOM2
         profile.addMetric(LackOfCohesionOfMethodsClassMetric.class); // LCOM4
         // LCOM5
-        profile.addMetric(ResponseForClassMetric.class);
         // Locality of Data
-        profile.addMetric(NumAttributesAddedMetric.class);
-        // Number of Methods
         profile.addMetric(MessagePassingCouplingClassMetric.class);
+        profile.addMetric(NumAttributesAddedMetric.class);
+        profile.addMetric(NumMethodsClassMetric.class);
+        profile.addMetric(ResponseForClassMetric.class);
         return profile;
     }
 
