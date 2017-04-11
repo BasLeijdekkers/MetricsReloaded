@@ -105,6 +105,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TrueCommentRatioClassMetric());
         metrics.add(new WeightedMethodComplexityMetric());
         metrics.add(new AfferentCouplingClassMetric());
+        metrics.add(new InformationFlowBasedCohesionClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -351,7 +352,7 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(AfferentCouplingClassMetric.class);
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);  // calc dependents and dependencies for class
         // Data Abstraction Coupling
-        // Information Flow Based Cohesion
+        profile.addMetric(InformationFlowBasedCohesionClassMetric.class);
         profile.addMetric(InstabilityMetric.class); // Package metric
         // Tight Class Coupling
         // Loose Class Coupling
