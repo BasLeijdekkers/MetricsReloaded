@@ -17,34 +17,41 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * @author Aleksandr Chudov.
  */
 public class FanOutClassCalculator extends ClassCalculator {
-    private final BucketedCount<PsiClass> metrics = new BucketedCount<PsiClass>();
+    private final Map<PsiClass, Set<PsiClass>> metrics = new HashMap<PsiClass, Set<PsiClass>>();
     private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
     private final Stack<PsiClass> classes = new Stack<PsiClass>();
-
-    @Override
-    public void endMetricsRun() {
-        for (PsiClass aClass : visitedClasses) {
-            postMetric(aClass, metrics.getBucketValue(aClass));
-        }
-        super.endMetricsRun();
-    }
 
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
+    @Override
+    public void endMetricsRun() {
+        for (final PsiClass aClass : visitedClasses) {
+            postMetric(aClass, metrics.get(aClass).size());
+        }
+        super.endMetricsRun();
+    }
+
     private class Visitor extends JavaRecursiveElementVisitor {
+
         @Override
         public void visitClass(PsiClass aClass) {
+            metrics.put(aClass, new HashSet<PsiClass>());
             classes.push(aClass);
             visitedClasses.add(aClass);
             super.visitClass(aClass);
@@ -52,17 +59,20 @@ public class FanOutClassCalculator extends ClassCalculator {
         }
 
         @Override
-        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
-            super.visitMethodCallExpression(expression);
-            final PsiMethod method = expression.resolveMethod();
-            if (method == null) {
+        public void visitCallExpression(PsiCallExpression callExpression) {
+            super.visitCallExpression(callExpression);
+            if (classes.empty()) {
+                return;
+            }
+            final PsiMethod method = callExpression.resolveMethod();
+            if (method == null || classes.peek().equals(method.getContainingClass())) {
                 return;
             }
             final PsiClass aClass = method.getContainingClass();
-            if (aClass == null || classes.empty() || classes.peek().equals(aClass)) {
+            if (aClass == null) {
                 return;
             }
-            metrics.incrementBucketValue(aClass);
+            metrics.get(classes.peek()).add(aClass);
         }
     }
 }
