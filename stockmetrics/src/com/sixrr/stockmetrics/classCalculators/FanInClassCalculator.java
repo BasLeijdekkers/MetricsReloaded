@@ -17,6 +17,8 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.stockmetrics.utils.FieldUsageMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,22 +31,12 @@ import java.util.Stack;
 /**
  * @author Aleksandr Chudov.
  */
-public class FanInClassCalculator extends ClassCalculator {
-    private final Map<PsiClass, Set<PsiClass>> metrics = new HashMap<PsiClass, Set<PsiClass>>();
-    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
+public class FanInClassCalculator extends FanClassCalculator {
     private final Stack<PsiClass> classes = new Stack<PsiClass>();
 
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
-    }
-
-    @Override
-    public void endMetricsRun() {
-        for (PsiClass aClass : visitedClasses) {
-            postMetric(aClass, metrics.get(aClass).size());
-        }
-        super.endMetricsRun();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
@@ -57,6 +49,20 @@ public class FanInClassCalculator extends ClassCalculator {
             visitedClasses.add(aClass);
             super.visitClass(aClass);
             classes.pop();
+            final FieldUsageMap map = executionContext.getUserData(fieldUsageKey);
+            final PsiField[] fields = aClass.getFields();
+            for (final PsiField field : fields) {
+                final Set<PsiReference> references = map.calculateFieldUsagePoints(field);
+                for (final PsiReference reference : references) {
+                    final PsiElement element = reference.getElement();
+                    final PsiClass fieldClass = PsiTreeUtil.getParentOfType(element, PsiClass.class);
+                    if (fieldClass == null || fieldClass.equals(aClass)) {
+                        continue;
+                    }
+                    final Set<PsiClass> classes = metrics.get(aClass);
+                    classes.add(fieldClass);
+                }
+            }
         }
 
         @Override
