@@ -19,22 +19,21 @@ package com.sixrr.stockmetrics.methodMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.ConditionCountCalculator;
-import com.sixrr.stockmetrics.methodCalculators.DecisionCountCalculator;
+import com.sixrr.stockmetrics.methodCalculators.OperandsCountCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class DecisionCountMetric extends MethodMetric {
+public class OperadsCountMetric extends MethodMetric {
 
     @NotNull
     @Override
     public String getDisplayName() {
-        return StockMetricsBundle.message("decision.count.method.metric.display.name");
+        return StockMetricsBundle.message("operands.count.method.metric.display.name");
     }
 
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("decision.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("operands.count.method.metric.abbreviation"); //TODO find correct abbreviation
     }
 
     @NotNull
@@ -46,6 +45,6 @@ public class DecisionCountMetric extends MethodMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new DecisionCountCalculator();
+        return new OperandsCountCalculator();
     }
 }

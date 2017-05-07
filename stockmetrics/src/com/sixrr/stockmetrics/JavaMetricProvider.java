@@ -183,6 +183,10 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TrueCommentRatioMethodMetric());
         metrics.add(new ConditionCountMetric());
         metrics.add(new DecisionCountMetric());
+        metrics.add(new OperadsCountMetric());
+        metrics.add(new OperatorsCountMetric());
+        metrics.add(new DistinctOperandsMetric());
+        metrics.add(new DistinctOperatorsMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
