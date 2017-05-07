@@ -181,6 +181,8 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new SourceLinesOfCodeMethodMetric());
         metrics.add(new TodoCommentCountMethodMetric());
         metrics.add(new TrueCommentRatioMethodMetric());
+        metrics.add(new ConditionCountMetric());
+        metrics.add(new DecisionCountMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
