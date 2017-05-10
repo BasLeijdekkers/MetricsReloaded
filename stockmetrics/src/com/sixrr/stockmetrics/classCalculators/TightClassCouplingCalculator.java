@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.codeInsight.dataflow.SetUtil;
 import com.intellij.psi.*;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 
 import java.util.*;
@@ -26,13 +27,13 @@ import java.util.*;
  * @author Aleksandr Chudov.
  * Number of method pairs that access common attributes over the total number of method pairs
  */
-public class TightClassCouplingCalculator extends ClassCalculator {
-    private final Map<PsiMethod, Set<PsiField>> methodsToFields = new HashMap<PsiMethod, Set<PsiField>>();
-    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
+public class TightClassCouplingCalculator extends MethodPairsCountClassCalculator {
+//    private final Map<PsiMethod, Set<PsiField>> methodsToFields = new HashMap<PsiMethod, Set<PsiField>>();
+//    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
 
     @Override
     public void endMetricsRun() {
-        for (final PsiClass aClass : visitedClasses) {
+/*        for (final PsiClass aClass : visitedClasses) {
             final List<PsiMethod> methods = Arrays.asList(aClass.getMethods());
             final int n = methods.size();
             if (n < 2) {
@@ -54,10 +55,21 @@ public class TightClassCouplingCalculator extends ClassCalculator {
             }
             postMetric(aClass, result, n * (n - 1) / 2);
         }
+*/
+        final BucketedCount<PsiClass> metrics = calculatePairs();
+        for (final PsiClass aClass : metrics.getBuckets()) {
+            final int n = aClass.getMethods().length;
+            if (n < 2) {
+                postMetric(aClass, 0);
+            }
+            else {
+                postMetric(aClass, metrics.getBucketValue(aClass), n * (n - 1) / 2);
+            }
+        }
         super.endMetricsRun();
     }
 
-    @Override
+    /*@Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
@@ -80,5 +92,5 @@ public class TightClassCouplingCalculator extends ClassCalculator {
                 }
             }
         }
-    }
+    }*/
 }

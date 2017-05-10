@@ -19,6 +19,7 @@ package com.sixrr.stockmetrics.classCalculators;
 import com.intellij.codeInsight.dataflow.SetUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 
 import java.util.*;
@@ -26,9 +27,9 @@ import java.util.*;
 /**
  * @author Aleksandr Chudov.
  */
-public class LooseClassCouplingCalculator extends ClassCalculator {
-    private final Map<PsiMethod, Set<PsiField>> methodsToFields = new HashMap<PsiMethod, Set<PsiField>>();
-    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
+public class LooseClassCouplingCalculator extends MethodPairsCountClassCalculator {
+//    private final Map<PsiMethod, Set<PsiField>> methodsToFields = new HashMap<PsiMethod, Set<PsiField>>();
+//    private final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();
     private final Map<PsiMethod, Set<PsiMethod>> methodsCalls = new HashMap<PsiMethod, Set<PsiMethod>>();
 
     @Override
@@ -39,27 +40,37 @@ public class LooseClassCouplingCalculator extends ClassCalculator {
             }
             collectFields(e.getKey(), e.getKey(), new HashSet<PsiMethod>());
         }
-        for (final PsiClass aClass : visitedClasses) {
-            final List<PsiMethod> methods = Arrays.asList(aClass.getMethods());
-            final int n = methods.size();
+//        for (final PsiClass aClass : visitedClasses) {
+//            final List<PsiMethod> methods = Arrays.asList(aClass.getMethods());
+//            final int n = methods.size();
+//            if (n < 2) {
+//                postMetric(aClass, 0);
+//                continue;
+//            }
+//            int result = 0;
+//            for (int i = 0; i < methods.size(); i++) {
+//                for (int j = i + 1; j < methods.size(); j++) {
+//                    final Set<PsiField> a = methodsToFields.get(methods.get(i));
+//                    final Set<PsiField> b = methodsToFields.get(methods.get(j));
+//                    if (a == null || b == null) {
+//                        continue;
+//                    }
+//                    if (!SetUtil.intersect(a, b).isEmpty()) {
+//                        result++;
+//                    }
+//                }
+//            }
+//            postMetric(aClass, result, n * (n - 1) / 2);
+//        }
+        final BucketedCount<PsiClass> metrics = calculatePairs();
+        for (final PsiClass aClass : metrics.getBuckets()) {
+            final int n = aClass.getMethods().length;
             if (n < 2) {
                 postMetric(aClass, 0);
-                continue;
             }
-            int result = 0;
-            for (int i = 0; i < methods.size(); i++) {
-                for (int j = i + 1; j < methods.size(); j++) {
-                    final Set<PsiField> a = methodsToFields.get(methods.get(i));
-                    final Set<PsiField> b = methodsToFields.get(methods.get(j));
-                    if (a == null || b == null) {
-                        continue;
-                    }
-                    if (!SetUtil.intersect(a, b).isEmpty()) {
-                        result++;
-                    }
-                }
+            else {
+                postMetric(aClass, metrics.getBucketValue(aClass), n * (n - 1) / 2);
             }
-            postMetric(aClass, result, n * (n - 1) / 2);
         }
         super.endMetricsRun();
     }
@@ -85,24 +96,24 @@ public class LooseClassCouplingCalculator extends ClassCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaRecursiveElementVisitor {
-        @Override
-        public void visitClass(PsiClass aClass) {
-            super.visitClass(aClass);
-            if (!isConcreteClass(aClass)) {
-                return;
-            }
-            visitedClasses.add(aClass);
-            final Map<PsiField, Set<PsiMethod>> fieldToMethods = FieldUsageUtil.getFieldUsagesInMethods(executionContext, aClass);
-            for (final Map.Entry<PsiField, Set<PsiMethod>> e : fieldToMethods.entrySet()) {
-                for (final PsiMethod method : e.getValue()) {
-                    if (!methodsToFields.containsKey(method)) {
-                        methodsToFields.put(method, new HashSet<PsiField>());
-                    }
-                    methodsToFields.get(method).add(e.getKey());
-                }
-            }
-        }
+    private class Visitor extends MethodPairsCountClassVisitor {
+//        @Override
+//        public void visitClass(PsiClass aClass) {
+//            super.visitClass(aClass);
+//            if (!isConcreteClass(aClass)) {
+//                return;
+//            }
+//            visitedClasses.add(aClass);
+//            final Map<PsiField, Set<PsiMethod>> fieldToMethods = FieldUsageUtil.getFieldUsagesInMethods(executionContext, aClass);
+//            for (final Map.Entry<PsiField, Set<PsiMethod>> e : fieldToMethods.entrySet()) {
+//                for (final PsiMethod method : e.getValue()) {
+//                    if (!methodsToFields.containsKey(method)) {
+//                        methodsToFields.put(method, new HashSet<PsiField>());
+//                    }
+//                    methodsToFields.get(method).add(e.getKey());
+//                }
+//            }
+//        }
 
         @Override
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
