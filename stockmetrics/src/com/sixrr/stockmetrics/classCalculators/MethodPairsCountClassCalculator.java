@@ -16,11 +16,11 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.codeInsight.dataflow.SetUtil;
 import com.intellij.psi.*;
 import com.intellij.util.containers.Predicate;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.stockmetrics.utils.FieldUsageUtil;
+import com.sixrr.stockmetrics.utils.SetUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +51,7 @@ public abstract class MethodPairsCountClassCalculator extends ClassCalculator {
     private boolean hasCommonFields(final MethodPair methods) {
         final Set<PsiField> a = methodsToFields.get(methods.method1);
         final Set<PsiField> b = methodsToFields.get(methods.method2);
-        return !(a == null || b == null) && !SetUtil.intersect(a, b).isEmpty();
+        return SetUtil.hasIntersec(a, b);
     }
 
     protected BucketedCount<PsiClass> calculatePairs() {
