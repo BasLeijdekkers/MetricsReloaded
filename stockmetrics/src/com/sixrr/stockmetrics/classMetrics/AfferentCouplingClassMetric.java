@@ -44,6 +44,13 @@ public class AfferentCouplingClassMetric extends ClassMetric {
         return MetricType.Count;
     }
 
+
+
+    @Override
+    public boolean requiresDependents() {
+        return true;
+    }
+
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
