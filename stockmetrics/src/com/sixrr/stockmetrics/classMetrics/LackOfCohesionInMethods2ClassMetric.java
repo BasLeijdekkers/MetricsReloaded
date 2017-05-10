@@ -18,14 +18,14 @@ package com.sixrr.stockmetrics.classMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.classCalculators.LackOfCohesionInMetrics2ClassCalculator;
+import com.sixrr.stockmetrics.classCalculators.LackOfCohesionInMethods2ClassCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Aleksandr Chudov.
  */
-public class LackOfCohesionInMetrics2ClassMetric extends ClassMetric {
+public class LackOfCohesionInMethods2ClassMetric extends ClassMetric {
     @NotNull
     @Override
     public String getDisplayName() {
@@ -47,6 +47,6 @@ public class LackOfCohesionInMetrics2ClassMetric extends ClassMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new LackOfCohesionInMetrics2ClassCalculator();
+        return new LackOfCohesionInMethods2ClassCalculator();
     }
 }

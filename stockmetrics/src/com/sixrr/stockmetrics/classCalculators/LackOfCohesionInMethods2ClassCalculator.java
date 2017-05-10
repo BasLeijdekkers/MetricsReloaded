@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * @author Aleksandr Chudov.
  */
-public class LackOfCohesionInMetrics2ClassCalculator extends ClassCalculator {
+public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
