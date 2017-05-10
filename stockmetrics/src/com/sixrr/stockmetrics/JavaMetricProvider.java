@@ -112,6 +112,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new LooseClassCouplingMetric());
         metrics.add(new LackOfCohesionInMethods1ClassMetric());
         metrics.add(new LackOfCohesionInMethods2ClassMetric());
+        metrics.add(new LackOfCohesionInMethods5ClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -364,7 +365,7 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(LackOfCohesionInMethods1ClassMetric.class);
         profile.addMetric(LackOfCohesionInMethods2ClassMetric.class);
         profile.addMetric(LackOfCohesionOfMethodsClassMetric.class); // LCOM4
-        // LCOM5
+        profile.addMetric(LackOfCohesionInMethods5ClassMetric.class);
         // Locality of Data
         profile.addMetric(MessagePassingCouplingClassMetric.class);
         profile.addMetric(NumAttributesAddedMetric.class);
