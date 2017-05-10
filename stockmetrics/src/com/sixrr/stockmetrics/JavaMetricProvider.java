@@ -358,7 +358,6 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);  // calc dependents and dependencies for class
         profile.addMetric(DataAbstractionCouplingClassMetric.class);
         profile.addMetric(InformationFlowBasedCohesionClassMetric.class);
-        profile.addMetric(InstabilityMetric.class); // Package metric
         profile.addMetric(TightClassCouplingMetric.class);
         profile.addMetric(LooseClassCouplingMetric.class);
         profile.addMetric(LackOfCohesionInMethods1ClassMetric.class);
