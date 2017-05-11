@@ -54,6 +54,10 @@ public class FanInMethodCalculator extends MethodCalculator {
         }
 
         @Override
+        public void visitLambdaExpression(PsiLambdaExpression expression) {
+        }
+
+        @Override
         public void visitCallExpression(PsiCallExpression callExpression) {
             super.visitCallExpression(callExpression);
             final PsiMethod method = callExpression.resolveMethod();

@@ -78,6 +78,10 @@ public class FanOutClassCalculator extends FanClassCalculator {
         }
 
         @Override
+        public void visitLambdaExpression(PsiLambdaExpression expression) {
+        }
+
+        @Override
         public void visitCallExpression(PsiCallExpression callExpression) {
             super.visitCallExpression(callExpression);
             if (classes.empty()) {

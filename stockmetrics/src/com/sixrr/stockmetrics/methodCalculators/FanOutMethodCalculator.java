@@ -17,7 +17,9 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
+import com.sixrr.metrics.utils.MethodUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +53,10 @@ public class FanOutMethodCalculator extends MethodCalculator {
             visitedMethods.add(method);
             super.visitMethod(method);
             methods.pop();
+        }
+
+        @Override
+        public void visitLambdaExpression(PsiLambdaExpression expression) {
         }
 
         @Override
