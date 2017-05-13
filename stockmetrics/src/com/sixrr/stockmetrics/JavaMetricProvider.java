@@ -187,6 +187,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new OperatorsCountMetric());
         metrics.add(new DistinctOperandsMetric());
         metrics.add(new DistinctOperatorsMetric());
+        metrics.add(new BranchCountMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
