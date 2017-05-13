@@ -104,6 +104,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TodoCommentCountClassMetric());
         metrics.add(new TrueCommentRatioClassMetric());
         metrics.add(new WeightedMethodComplexityMetric());
+        metrics.add(new BlankLinesCountMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
