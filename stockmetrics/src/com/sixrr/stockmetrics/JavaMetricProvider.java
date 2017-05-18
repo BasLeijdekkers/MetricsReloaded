@@ -151,6 +151,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new HalsteadLengthMethodMetric());
         metrics.add(new HalsteadVocabularyMethodMetric());
         metrics.add(new HalsteadVolumeMethodMetric());
+        metrics.add(new HalsteadProgramLevelMetric());
         metrics.add(new JavadocLinesOfCodeMethodMetric());
         metrics.add(new LinesOfCodeMethodMetric());
         metrics.add(new LoopNestingDepthMetric());
@@ -217,6 +218,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new PercentFieldsJavadocedModuleMetric());
         metrics.add(new PercentMethodsJavadocedModuleMetric());
         metrics.add(new TotalCyclomaticComplexityModuleMetric());
+        metrics.add(new DesignDensityMetric());
     }
 
     private static void initializePackageMetrics(Collection<Metric> metrics) {

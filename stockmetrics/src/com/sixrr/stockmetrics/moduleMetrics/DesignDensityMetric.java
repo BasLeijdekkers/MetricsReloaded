@@ -14,38 +14,37 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics.methodMetrics;
+package com.sixrr.stockmetrics.moduleMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.ConditionCountCalculator;
-import com.sixrr.stockmetrics.methodCalculators.HelsteadProgramLevelCalculator;
+import com.sixrr.stockmetrics.moduleCalculators.DesignDensityCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class HalsteadProgramLevelMetric extends MethodMetric {
+public class DesignDensityMetric extends ModuleMetric {
 
     @NotNull
     @Override
     public String getDisplayName() {
-        return StockMetricsBundle.message("halstead.program.level.method.metric.display.name");
+        return StockMetricsBundle.message("design.density.metric.display.name");
     }
 
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("halstead.program.level.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("design.density.metric.abbreviation"); //TODO find correct abbreviation
     }
 
     @NotNull
     @Override
     public MetricType getType() {
-        return MetricType.Score;
+        return MetricType.Ratio;
     }
 
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new HelsteadProgramLevelCalculator();
+        return new DesignDensityCalculator();
     }
 }
