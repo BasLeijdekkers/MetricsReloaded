@@ -86,6 +86,10 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         return Math.pow(effort, 2.0 / 3.0) / 3000.0;
     }
 
+    public double getLevel() {
+        return (2.0 * (double)getNumDistinctOperands()) / ((double)getNumDistinctOperators() * (double)getNumOperands());
+    }
+
     @Override
     public void visitLiteralExpression(PsiLiteralExpression expression) {
         if (inCompileTimeConstant) {
