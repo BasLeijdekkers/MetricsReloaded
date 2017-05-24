@@ -63,7 +63,7 @@ public class LooseClassCouplingCalculator extends MethodPairsCountClassCalculato
             return;
         }
         for (final PsiMethod neighbor : methodsCalls.get(current)) {
-            collectFields(neighbor, current, visited);
+            collectFields(neighbor, primary, visited);
         }
     }
 
