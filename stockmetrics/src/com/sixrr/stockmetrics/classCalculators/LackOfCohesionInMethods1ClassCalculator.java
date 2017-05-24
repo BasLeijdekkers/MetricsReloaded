@@ -36,6 +36,15 @@ public class LackOfCohesionInMethods1ClassCalculator extends MethodPairsCountCla
         final Set<PsiClass> buckets = withCommonFields.getBuckets();
         for (final PsiClass aClass : buckets) {
             final PsiMethod[] methods = aClass.getMethods();
+            boolean isEmpty = true;
+            for (final PsiMethod method : methods) {
+                final Set<PsiField> fields = methodsToFields.get(method);
+                isEmpty &= fields == null || fields.isEmpty();
+            }
+            if (isEmpty) {
+                postMetric(aClass, 0);
+                continue;
+            }
             final int n = methods.length;
             final int methodsPairsCount = n * (n - 1) / 2;
             postMetric(aClass, Math.max(0, methodsPairsCount - 2 * withCommonFields.getBucketValue(aClass)));

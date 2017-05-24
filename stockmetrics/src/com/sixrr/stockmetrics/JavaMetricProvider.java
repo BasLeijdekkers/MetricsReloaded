@@ -358,7 +358,7 @@ public class JavaMetricProvider implements MetricProvider {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("sddrar.metrics.profile.name"));
         profile.addMetric(AfferentCouplingClassMetric.class);
-        profile.addMetric(CouplingBetweenObjectsClassMetric.class);  // calc dependents and dependencies for class
+        profile.addMetric(CouplingBetweenObjectsClassMetric.class);
         profile.addMetric(DataAbstractionCouplingClassMetric.class);
         profile.addMetric(InformationFlowBasedCohesionClassMetric.class);
         profile.addMetric(TightClassCouplingMetric.class);
