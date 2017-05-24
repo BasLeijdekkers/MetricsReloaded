@@ -40,36 +40,23 @@ public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            final int fieldsNumber = aClass.getFields().length;
             final int n = aClass.getMethods().length;
-            if (n == 1) {
-                postMetric(aClass, 0);
+            if (n <= 1) {
+                postMetric(aClass, 1);
                 return;
             }
+            final int fieldsNumber = aClass.getFields().length;
             if (fieldsNumber == 0) {
-                postMetric(aClass, -n, n - 1);
+                postMetric(aClass, 1);
                 return;
             }
             final Map<PsiField, Set<PsiMethod>> fieldToMethods = FieldUsageUtil.getFieldUsagesInMethods(executionContext, aClass);
-            final Map<PsiMethod, Set<PsiField>> methodsToFields = new HashMap<PsiMethod, Set<PsiField>>();
+            int fieldUsagesSum = 0;
             for (final Map.Entry<PsiField, Set<PsiMethod>> e : fieldToMethods.entrySet()) {
-                if (!aClass.equals(e.getKey().getContainingClass())) {
-                    continue;
-                }
-                for (final PsiMethod method : e.getValue()) {
-                    if (!methodsToFields.containsKey(method)) {
-                        methodsToFields.put(method, new HashSet<PsiField>());
-                    }
-                    methodsToFields.get(method).add(e.getKey());
-                }
+                fieldUsagesSum += e.getValue().size();
             }
-            int eachFieldMethodNumber = 0;
-            for (final Map.Entry<PsiMethod, Set<PsiField>> e : methodsToFields.entrySet()) {
-                if (e.getValue().size() == fieldsNumber) {
-                    eachFieldMethodNumber++;
-                }
-            }
-            postMetric(aClass, eachFieldMethodNumber * (n - 1) - n, n - 1);
+            final double averageFieldUsage = (double) fieldUsagesSum / fieldsNumber;
+            postMetric(aClass, ((double) n - averageFieldUsage) / (double) (n - 1));
         }
     }
 }
