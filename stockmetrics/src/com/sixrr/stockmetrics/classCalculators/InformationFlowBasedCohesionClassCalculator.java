@@ -16,10 +16,8 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiMethod;
+import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 
 /**
@@ -43,12 +41,32 @@ public class InformationFlowBasedCohesionClassCalculator extends ClassCalculator
 
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
-        public void visitMethod(PsiMethod method) {
-            super.visitMethod(method);
-            if (method.getContainingClass() == null) {
+        public void visitClass(PsiClass aClass) {
+            metrics.createBucket(aClass);
+            super.visitClass(aClass);
+        }
+
+        @Override
+        public void visitLambdaExpression(PsiLambdaExpression expression) {
+            // ignore
+        }
+
+        @Override
+        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+            super.visitMethodCallExpression(expression);
+            final PsiMethod calledMethod = expression.resolveMethod();
+            if (calledMethod == null) {
                 return;
             }
-            metrics.incrementBucketValue(method.getContainingClass(), method.getParameterList().getParametersCount());
+            final PsiClass calledClass = calledMethod.getContainingClass();
+            if (calledClass == null) {
+                return;
+            }
+            final PsiClass aClass = PsiTreeUtil.getParentOfType(expression, PsiClass.class);
+            if (!calledClass.equals(aClass)) {
+                return;
+            }
+            metrics.incrementBucketValue(aClass, calledMethod.getParameterList().getParametersCount());
         }
     }
 }
