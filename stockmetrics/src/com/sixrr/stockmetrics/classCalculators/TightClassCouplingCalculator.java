@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.codeInsight.dataflow.SetUtil;
 import com.intellij.psi.*;
+import com.intellij.util.containers.Predicate;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 
@@ -32,7 +33,7 @@ public class TightClassCouplingCalculator extends MethodPairsCountClassCalculato
     public void endMetricsRun() {
         final BucketedCount<PsiClass> metrics = calculatePairs();
         for (final PsiClass aClass : metrics.getBuckets()) {
-            final int n = aClass.getMethods().length;
+            final int n = getVisibleMethodsCount(aClass);
             if (n < 2) {
                 postMetric(aClass, 0);
             }
@@ -41,5 +42,10 @@ public class TightClassCouplingCalculator extends MethodPairsCountClassCalculato
             }
         }
         super.endMetricsRun();
+    }
+
+    @Override
+    protected int calculatePairs(PsiClass aClass, Predicate<MethodPair> isSuitable) {
+        return super.calculatePairs(getVisibleMethods(aClass), isSuitable);
     }
 }

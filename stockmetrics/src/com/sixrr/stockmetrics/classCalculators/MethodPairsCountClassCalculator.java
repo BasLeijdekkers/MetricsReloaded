@@ -48,6 +48,28 @@ public abstract class MethodPairsCountClassCalculator extends ClassCalculator {
         }
     }
 
+    protected int getVisibleMethodsCount(final PsiClass aClass) {
+        int count = 0;
+        for (final PsiMethod method : aClass.getAllMethods()) {
+            if (visitedClasses.contains(method.getContainingClass())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    protected PsiMethod[] getVisibleMethods(final PsiClass aClass) {
+        final PsiMethod[] result = new PsiMethod[getVisibleMethodsCount(aClass)];
+        int i = 0;
+        for (final PsiMethod method : aClass.getAllMethods()) {
+            if (visitedClasses.contains(method.getContainingClass())) {
+                result[i] = method;
+                i++;
+            }
+        }
+        return result;
+    }
+
     private boolean hasCommonFields(final MethodPair methods) {
         final Set<PsiField> a = methodsToFields.get(methods.method1);
         final Set<PsiField> b = methodsToFields.get(methods.method2);
@@ -71,9 +93,12 @@ public abstract class MethodPairsCountClassCalculator extends ClassCalculator {
         return results;
     }
 
-    private int calculatePairs(final PsiClass aClass, final Predicate<MethodPair> isSuitable) {
+    protected int calculatePairs(final PsiClass aClass, final Predicate<MethodPair> isSuitable) {
+        return calculatePairs(aClass.getMethods(), isSuitable);
+
+    }
+    protected int calculatePairs(final PsiMethod[] methods, final Predicate<MethodPair> isSuitable) {
         int result = 0;
-        final PsiMethod[] methods = aClass.getMethods();
         for (int i = 0; i < methods.length; i++) {
             for (int j = i + 1; j < methods.length; j++) {
                 if (isSuitable.apply(new MethodPair(methods[i], methods[j]))) {
