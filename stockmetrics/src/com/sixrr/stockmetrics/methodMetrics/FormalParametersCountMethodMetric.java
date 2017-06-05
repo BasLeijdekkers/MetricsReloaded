@@ -19,22 +19,21 @@ package com.sixrr.stockmetrics.methodMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.BranchCountCalculator;
-import com.sixrr.stockmetrics.methodCalculators.DistinctOperandsCountCalculator;
+import com.sixrr.stockmetrics.methodCalculators.FormalParametersCountMethodCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class BranchCountMetric extends MethodMetric {
+public class FormalParametersCountMethodMetric extends MethodMetric {
 
     @NotNull
     @Override
     public String getDisplayName() {
-        return StockMetricsBundle.message("branch.count.method.metric.display.name");
+        return StockMetricsBundle.message("formal.parameters.count.method.metric.display.name");
     }
 
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("branch.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("formal.parameters.count.method.metric.abbreviation"); //TODO find correct abbreviation
     }
 
     @NotNull
@@ -46,6 +45,6 @@ public class BranchCountMetric extends MethodMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new BranchCountCalculator();
+        return new FormalParametersCountMethodCalculator();
     }
 }
