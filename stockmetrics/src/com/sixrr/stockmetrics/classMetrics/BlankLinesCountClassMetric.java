@@ -18,11 +18,11 @@ package com.sixrr.stockmetrics.classMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.classCalculators.BlankLinesCountCalculator;
+import com.sixrr.stockmetrics.classCalculators.BlankLinesCountClassCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
-public class BlankLinesCountMetric extends ClassMetric {
+public class BlankLinesCountClassMetric extends ClassMetric {
 
     @NotNull
     @Override
@@ -45,6 +45,6 @@ public class BlankLinesCountMetric extends ClassMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new BlankLinesCountCalculator();
+        return new BlankLinesCountClassCalculator();
     }
 }
