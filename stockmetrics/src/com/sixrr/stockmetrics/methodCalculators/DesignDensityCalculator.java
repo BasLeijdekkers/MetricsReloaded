@@ -14,17 +14,15 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics.moduleCalculators;
+package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiElementFilter;
-import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.methodCalculators.ComplexityCalculator;
-import com.sixrr.stockmetrics.methodCalculators.DesignComplexityCalculator;
+import com.sixrr.stockmetrics.moduleCalculators.ElementRatioModuleCalculator;
 import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
-public class DesignDensityCalculator extends ElementRatioModuleCalculator {
+public class DesignDensityCalculator extends MethodCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
@@ -37,7 +35,6 @@ public class DesignDensityCalculator extends ElementRatioModuleCalculator {
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            createRatio(method);
             final int design = CyclomaticComplexityUtil.calculateComplexity(method,  new PsiElementFilter() {
                 @Override
                 public boolean isAccepted(PsiElement element) {
@@ -50,11 +47,7 @@ public class DesignDensityCalculator extends ElementRatioModuleCalculator {
                     return true;
                 }
             });
-            System.err.println(method.getName());
-            System.err.println(design);
-            System.err.println(complexity);
-            incrementNumerator(method, design);
-            incrementDenominator(method, complexity);
+            postMetric(method, design, complexity);
         }
     }
 

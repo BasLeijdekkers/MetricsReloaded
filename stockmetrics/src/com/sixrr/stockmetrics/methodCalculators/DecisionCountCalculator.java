@@ -28,42 +28,42 @@ public class DecisionCountCalculator extends MethodCalculator {
         return new Visitor();
     }
 
-    private class Visitor extends JavaElementVisitor {
+    private class Visitor extends JavaRecursiveElementVisitor {
 
         @Override
         public void visitCatchSection(PsiCatchSection section) {
-            count++;
             super.visitCatchSection(section);
+            count++;
         }
 
         @Override
         public void visitIfStatement(PsiIfStatement statement) {
+            super.visitIfStatement(statement);
             if (!ExpressionUtils.isEvaluatedAtCompileTime(statement.getCondition())) {
                 count++;
             }
-            super.visitIfStatement(statement);
         }
 
         @Override
         public void visitForStatement(PsiForStatement statement) {
+            super.visitForStatement(statement);
             if (!ExpressionUtils.isEvaluatedAtCompileTime(statement.getCondition())) {
                 count++;
             }
-            super.visitForStatement(statement);
         }
 
         @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
+            super.visitWhileStatement(statement);
             if (!ExpressionUtils.isEvaluatedAtCompileTime(statement.getCondition())) {
                 count++;
             }
-            super.visitWhileStatement(statement);
         }
 
         @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
-            count++;
             super.visitSwitchStatement(statement);
+            count++;
         }
 
         @Override

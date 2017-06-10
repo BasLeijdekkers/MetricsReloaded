@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics.moduleMetrics;
+package com.sixrr.stockmetrics.methodMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.moduleCalculators.DesignDensityCalculator;
+import com.sixrr.stockmetrics.methodCalculators.DesignDensityCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class DesignDensityMetric extends ModuleMetric {
+public class DesignDensityMetric extends MethodMetric {
 
     @NotNull
     @Override

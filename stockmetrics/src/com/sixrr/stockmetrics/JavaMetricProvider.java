@@ -192,6 +192,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new BranchCountMetric());
         metrics.add(new FormalParametersCountMethodMetric());
         metrics.add(new BlankLinesCountMethodMetric());
+        metrics.add(new DesignDensityMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
@@ -220,7 +221,6 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new PercentFieldsJavadocedModuleMetric());
         metrics.add(new PercentMethodsJavadocedModuleMetric());
         metrics.add(new TotalCyclomaticComplexityModuleMetric());
-        metrics.add(new DesignDensityMetric());
     }
 
     private static void initializePackageMetrics(Collection<Metric> metrics) {
