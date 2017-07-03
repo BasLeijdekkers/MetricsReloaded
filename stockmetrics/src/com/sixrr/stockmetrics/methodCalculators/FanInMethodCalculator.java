@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class FanInMethodCalculator extends MethodCalculator {
     private final BucketedCount<PsiMethod> metrics = new BucketedCount<PsiMethod>();
     private final Collection<PsiMethod> visitedMethods = new ArrayList<PsiMethod>();

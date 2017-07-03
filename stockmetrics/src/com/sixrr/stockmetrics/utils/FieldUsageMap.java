@@ -21,10 +21,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
-
-/**
- * @author Aleksandr Chudov.
- */
+\
 public interface FieldUsageMap {
     @NotNull
     Set<PsiReference> calculateFieldUsagePoints(PsiField field);

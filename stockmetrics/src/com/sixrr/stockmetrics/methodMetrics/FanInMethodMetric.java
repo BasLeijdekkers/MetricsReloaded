@@ -23,9 +23,6 @@ import com.sixrr.stockmetrics.methodCalculators.FanInMethodCalculator;
 import com.sixrr.stockmetrics.methodCalculators.MethodCalculator;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Aleksandr Chudov on 02.04.2017.
- */
 public class FanInMethodMetric extends MethodMetric {
     @NotNull
     @Override

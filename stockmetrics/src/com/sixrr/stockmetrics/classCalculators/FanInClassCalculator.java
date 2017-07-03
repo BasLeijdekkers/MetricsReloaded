@@ -28,9 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class FanInClassCalculator extends FanClassCalculator {
     private final Stack<PsiClass> classes = new Stack<PsiClass>();
 

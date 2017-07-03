@@ -28,9 +28,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class FieldUsageMapImpl implements FieldUsageMap {
     private final Map<SmartPsiElementPointer<PsiField>, Set<PsiReference>> fieldUsagePointMap =
             new HashMap<SmartPsiElementPointer<PsiField>, Set<PsiReference>>(1024);

@@ -26,9 +26,6 @@ import com.sixrr.stockmetrics.utils.FieldUsageMapImpl;
 
 import java.util.*;
 
-/**
- * @author Aleksandr Chudov.
- */
 public abstract class FanClassCalculator extends ClassCalculator {
     protected final Map<PsiClass, Set<PsiClass>> metrics = new HashMap<PsiClass, Set<PsiClass>>();
     protected final Collection<PsiClass> visitedClasses = new ArrayList<PsiClass>();

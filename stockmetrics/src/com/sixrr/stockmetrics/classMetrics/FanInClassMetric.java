@@ -22,9 +22,6 @@ import com.sixrr.stockmetrics.classCalculators.FanInClassCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Aleksandr Chudov on 27.03.2017.
- */
 public class FanInClassMetric extends ClassMetric {
     @NotNull
     @Override
