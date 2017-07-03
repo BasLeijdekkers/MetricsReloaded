@@ -41,11 +41,19 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         }
     }
 
-    private int getNumDistinctOperands() {
+    public int getNumOperators() {
+        return numOperators;
+    }
+
+    public int getNumOperands() {
+        return numOperands;
+    }
+
+    public int getNumDistinctOperands() {
         return operands.size();
     }
 
-    private int getNumDistinctOperators() {
+    public int getNumDistinctOperators() {
         return operators.size();
     }
 
@@ -76,6 +84,10 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
     public double getBugs() {
         final double effort = getEffort();
         return Math.pow(effort, 2.0 / 3.0) / 3000.0;
+    }
+
+    public double getLevel() {
+        return (2.0 * (double)getNumDistinctOperands()) / ((double)getNumDistinctOperators() * (double)getNumOperands());
     }
 
     @Override

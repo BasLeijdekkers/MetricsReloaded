@@ -106,6 +106,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new WeightedMethodComplexityMetric());
         metrics.add(new FanInClassMetric());
         metrics.add(new FanOutClassMetric());
+        metrics.add(new BlankLinesCountClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -152,6 +153,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new HalsteadLengthMethodMetric());
         metrics.add(new HalsteadVocabularyMethodMetric());
         metrics.add(new HalsteadVolumeMethodMetric());
+        metrics.add(new HalsteadProgramLevelMetric());
         metrics.add(new JavadocLinesOfCodeMethodMetric());
         metrics.add(new LinesOfCodeMethodMetric());
         metrics.add(new LoopNestingDepthMetric());
@@ -185,6 +187,16 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TrueCommentRatioMethodMetric());
         metrics.add(new FanInMethodMetric());
         metrics.add(new FanOutMethodMetric());
+        metrics.add(new ConditionCountMetric());
+        metrics.add(new DecisionCountMetric());
+        metrics.add(new OperadsCountMetric());
+        metrics.add(new OperatorsCountMetric());
+        metrics.add(new DistinctOperandsMetric());
+        metrics.add(new DistinctOperatorsMetric());
+        metrics.add(new BranchCountMetric());
+        metrics.add(new FormalParametersCountMethodMetric());
+        metrics.add(new BlankLinesCountMethodMetric());
+        metrics.add(new DesignDensityMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
