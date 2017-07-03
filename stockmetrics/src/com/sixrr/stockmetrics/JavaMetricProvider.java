@@ -104,6 +104,8 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TodoCommentCountClassMetric());
         metrics.add(new TrueCommentRatioClassMetric());
         metrics.add(new WeightedMethodComplexityMetric());
+        metrics.add(new FanInClassMetric());
+        metrics.add(new FanOutClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -181,6 +183,8 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new SourceLinesOfCodeMethodMetric());
         metrics.add(new TodoCommentCountMethodMetric());
         metrics.add(new TrueCommentRatioMethodMetric());
+        metrics.add(new FanInMethodMetric());
+        metrics.add(new FanOutMethodMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
@@ -329,7 +333,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(10);
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(11);
         out.add(createChidamberKemererProfile());
         out.add(createClassCountProfile());
         out.add(createCodeSizeProfile());
@@ -340,7 +344,17 @@ public class JavaMetricProvider implements MetricProvider {
         out.add(createMartinProfile());
         out.add(createMoodProfile());
         out.add(createTestProfile());
+        out.add(createFanProfile());
         return out;
+    }
+
+    private static PrebuiltMetricProfile createFanProfile() {
+        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(StockMetricsBundle.message("fan.profile.name"));
+        profile.addMetric(FanInClassMetric.class);
+        profile.addMetric(FanOutClassMetric.class);
+        profile.addMetric(FanInMethodMetric.class);
+        profile.addMetric(FanOutMethodMetric.class);
+        return profile;
     }
 
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
