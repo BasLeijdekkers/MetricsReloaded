@@ -17,39 +17,30 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.metrics.utils.MethodUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
 
 public class FanOutMethodCalculator extends MethodCalculator {
-    private final Collection<PsiMethod> visitedMethods = new ArrayList<PsiMethod>();
-    private final BucketedCount<PsiMethod> metrics = new BucketedCount<PsiMethod>();
-    private final Stack<PsiMethod> methods = new Stack<PsiMethod>();
+    private PsiMethod currentMethod;
+    private int methodNestingDepth = 0;
+    private int count = 0;
 
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    @Override
-    public void endMetricsRun() {
-        for (final PsiMethod method : visitedMethods) {
-            postMetric(method, metrics.getBucketValue(method));
-        }
-        super.endMetricsRun();
-    }
-
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitMethod(PsiMethod method) {
-            methods.push(method);
-            visitedMethods.add(method);
+            if (methodNestingDepth == 0) {
+                count = 0;
+                currentMethod = method;
+            }
+            methodNestingDepth++;
             super.visitMethod(method);
-            methods.pop();
+            methodNestingDepth--;
+            if (methodNestingDepth == 0) {
+                postMetric(method, count);
+            }
         }
 
         @Override
@@ -59,14 +50,12 @@ public class FanOutMethodCalculator extends MethodCalculator {
         @Override
         public void visitCallExpression(PsiCallExpression callExpression) {
             super.visitCallExpression(callExpression);
-            if (methods.empty()) {
-                return;
-            }
             final PsiMethod method = callExpression.resolveMethod();
-            if (method == null || methods.peek().equals(method)) {
+            if (method == null || method.getContainingClass() == null
+                    || method.equals(currentMethod)) {
                 return;
             }
-            metrics.incrementBucketValue(methods.peek());
+            count++;
         }
     }
 }

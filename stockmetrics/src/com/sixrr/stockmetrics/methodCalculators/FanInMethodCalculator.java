@@ -17,24 +17,13 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.BucketedCount;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
+import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.util.Query;
 
 public class FanInMethodCalculator extends MethodCalculator {
-    private final BucketedCount<PsiMethod> metrics = new BucketedCount<PsiMethod>();
-    private final Collection<PsiMethod> visitedMethods = new ArrayList<PsiMethod>();
-    private final Stack<PsiMethod> methods = new Stack<PsiMethod>();
-
-    @Override
-    public void endMetricsRun() {
-        for (PsiMethod method : visitedMethods) {
-            postMetric(method, metrics.getBucketValue(method));
-        }
-        super.endMetricsRun();
-    }
+    private PsiMethod currentMethod;
+    private int methodNestingDepth = 0;
+    private int count = 0;
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -44,24 +33,32 @@ public class FanInMethodCalculator extends MethodCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitMethod(PsiMethod method) {
-            methods.push(method);
-            visitedMethods.add(method);
-            super.visitMethod(method);
-            methods.pop();
-        }
-
-        @Override
-        public void visitLambdaExpression(PsiLambdaExpression expression) {
-        }
-
-        @Override
-        public void visitCallExpression(PsiCallExpression callExpression) {
-            super.visitCallExpression(callExpression);
-            final PsiMethod method = callExpression.resolveMethod();
-            if (method == null || !methods.empty() && methods.peek().equals(method)) {
-                return;
+            if (methodNestingDepth == 0) {
+                count = 0;
+                currentMethod = method;
+                final Query<PsiReference> references = ReferencesSearch.search(method);
+                for (final PsiReference reference : references) {
+                    final PsiElement element = reference.getElement();
+                    if (element != null && element.getParent() instanceof PsiCallExpression) {
+                        count++;
+                    }
+                }
             }
-            metrics.incrementBucketValue(method);
+            methodNestingDepth++;
+            super.visitMethod(method);
+            methodNestingDepth--;
+            if (methodNestingDepth == 0) {
+                postMetric(method, count);
+            }
+        }
+
+        @Override
+        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+            final PsiMethod method = expression.resolveMethod();
+            if (currentMethod != null && currentMethod.equals(method)) {
+                count--;
+            }
+            super.visitMethodCallExpression(expression);
         }
     }
 }

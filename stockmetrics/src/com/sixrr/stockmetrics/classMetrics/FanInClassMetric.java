@@ -46,4 +46,9 @@ public class FanInClassMetric extends ClassMetric {
     public MetricCalculator createCalculator() {
         return new FanInClassCalculator();
     }
+
+    @Override
+    public boolean requiresDependents() {
+        return true;
+    }
 }
