@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.yourkit.util.Asserts.assertEqual;
+import static org.junit.Assert.*;
 
 /**
  * @author Aleksandr Chudov.
@@ -29,19 +29,19 @@ import static com.yourkit.util.Asserts.assertEqual;
 public class SetUtilTest {
     @Test
     public void testHasIntersec() {
-        assertEqual(false, SetUtil.hasIntersec(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEqual(false, SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
-        assertEqual(true, SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(3, 4, 5))));
-        assertEqual(true, SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEqual(false, SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(6, 4, 5))));
+        assertFalse(SetUtil.hasIntersec(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
+        assertFalse(SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
+        assertTrue(SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(3, 4, 5))));
+        assertTrue(SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(1, 2, 3))));
+        assertFalse(SetUtil.hasIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(6, 4, 5))));
     }
 
     @Test
     public void testSizeOfIntersec() {
-        assertEqual(0, SetUtil.sizeOfIntersec(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEqual(0, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
-        assertEqual(1, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(3, 4, 5))));
-        assertEqual(3, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEqual(0, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(6, 4, 5))));
+        assertEquals(0, SetUtil.sizeOfIntersec(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
+        assertEquals(0, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
+        assertEquals(1, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(3, 4, 5))));
+        assertEquals(3, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(1, 2, 3))));
+        assertEquals(0, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(6, 4, 5))));
     }
 }
