@@ -39,16 +39,17 @@ public class BranchCountCalculator extends MethodCalculator {
 
         @Override
         public void visitBlockStatement(PsiBlockStatement statement) {
-            if (PsiCodeBlock.class.isInstance(statement.getParent())) {
+            final PsiElement parent = statement.getParent();
+            if (PsiCodeBlock.class.isInstance(parent) || PsiTryStatement.class.isInstance(parent)) {
                 count--;
             }
             super.visitBlockStatement(statement);
         }
 
         @Override
-        public void visitThrowStatement(PsiThrowStatement statement) {
+        public void visitTryStatement(PsiTryStatement statement) {
             count--;
-            super.visitThrowStatement(statement);
+            super.visitTryStatement(statement);
         }
 
         @Override
