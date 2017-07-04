@@ -32,7 +32,7 @@ public class ConditionCountCalculator extends MethodCalculator {
 
         @Override
         public void visitExpression(PsiExpression expression) {
-            int oldCount = count;
+            final int oldCount = count;
             super.visitExpression(expression);
             if (expression.getType() != null &&
                     PsiType.BOOLEAN.isAssignableFrom(expression.getType()) && oldCount == count) {
