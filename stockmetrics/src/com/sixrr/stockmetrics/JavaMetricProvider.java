@@ -189,7 +189,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new FanOutMethodMetric());
         metrics.add(new ConditionCountMetric());
         metrics.add(new DecisionCountMetric());
-        metrics.add(new OperadsCountMetric());
+        metrics.add(new OperandsCountMetric());
         metrics.add(new OperatorsCountMetric());
         metrics.add(new DistinctOperandsMetric());
         metrics.add(new DistinctOperatorsMetric());

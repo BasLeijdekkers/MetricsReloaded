@@ -22,7 +22,7 @@ import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.methodCalculators.OperandsCountCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class OperadsCountMetric extends MethodMetric {
+public class OperandsCountMetric extends MethodMetric {
 
     @NotNull
     @Override
