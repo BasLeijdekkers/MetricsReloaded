@@ -17,7 +17,10 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
+import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtil;
+import com.intellij.util.Query;
 
 import java.util.*;
 
@@ -26,45 +29,30 @@ import java.util.*;
  * Number of classes used by this class as attribute.
  */
 public class DataAbstractionCouplingClassCalculator extends ClassCalculator {
-    private final Map<PsiClass, Set<PsiClass>> metrics = new HashMap<PsiClass, Set<PsiClass>>();
-    private final Collection<String> visitedTypeNames = new HashSet<String>();
-    private final Collection<PsiClass> classes = new HashSet<PsiClass>();
 
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    @Override
-    public void endMetricsRun() {
-        for (final Collection<PsiClass> names : metrics.values()) {
-            names.retainAll(classes);
-        }
-        for (final PsiClass aClass : classes) {
-            postMetric(aClass, metrics.get(aClass).size());
-        }
-        super.endMetricsRun();
-    }
-
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitClass(PsiClass aClass) {
-            super.visitClass(aClass);
-            classes.add(aClass);
-            visitedTypeNames.add(aClass.getQualifiedName());
-            metrics.put(aClass, new HashSet<PsiClass>());
+            final Set<PsiClass> classes = new HashSet<PsiClass>();
             final PsiField[] fields = aClass.getFields();
             for (final PsiField field : fields) {
                 if (!field.isPhysical()) {
-                    System.out.println(field.getName());
                     continue;
                 }
                 final PsiType type = field.getType().getDeepComponentType();
-                if (type instanceof PsiPrimitiveType) {
+                final PsiClass classInType = PsiUtil.resolveClassInType(type);
+                if (classInType == null) {
                     continue;
                 }
-                metrics.get(aClass).add(PsiUtil.resolveClassInClassTypeOnly(type));
+                classes.add(classInType);
             }
+            postMetric(aClass, classes.size());
+            super.visitClass(aClass);
         }
     }
 }
