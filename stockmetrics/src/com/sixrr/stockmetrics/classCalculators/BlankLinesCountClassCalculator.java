@@ -33,14 +33,11 @@ public class BlankLinesCountClassCalculator extends ClassCalculator {
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
-                int lines = LineUtil.countLines(aClass);
-                int blankLines = aClass.getTextLength();
+                int blankLines = LineUtil.countBlankLines(aClass);
                 final PsiClass[] innerClasses = aClass.getInnerClasses();
                 for (PsiClass innerClass : innerClasses) {
-                    lines -= LineUtil.countLines(innerClass);
-                    blankLines -= innerClass.getTextLength();
+                    blankLines -= LineUtil.countBlankLines(innerClass);
                 }
-                blankLines -= lines;
                 postMetric(aClass, (double) blankLines);
             }
         }

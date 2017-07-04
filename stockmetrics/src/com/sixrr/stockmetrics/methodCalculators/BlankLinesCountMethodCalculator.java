@@ -31,10 +31,7 @@ public class BlankLinesCountMethodCalculator extends MethodCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             super.visitMethod(method);
-            int lines = LineUtil.countLines(method);
-            int blankLines = method.getTextLength();
-            blankLines -= lines;
-            postMetric(method, (double) blankLines);
+            postMetric(method, LineUtil.countBlankLines(method));
         }
     }
 }
