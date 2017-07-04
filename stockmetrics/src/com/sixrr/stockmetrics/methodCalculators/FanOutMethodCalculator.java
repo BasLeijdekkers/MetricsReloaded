@@ -51,8 +51,7 @@ public class FanOutMethodCalculator extends MethodCalculator {
         public void visitCallExpression(PsiCallExpression callExpression) {
             super.visitCallExpression(callExpression);
             final PsiMethod method = callExpression.resolveMethod();
-            if (method == null || method.getContainingClass() == null
-                    || method.equals(currentMethod)) {
+            if (method == null || method.getContainingClass() == null || method.equals(currentMethod)) {
                 return;
             }
             count++;

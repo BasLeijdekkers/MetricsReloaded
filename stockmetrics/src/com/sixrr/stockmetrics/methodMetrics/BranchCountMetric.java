@@ -34,7 +34,7 @@ public class BranchCountMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("branch.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("branch.count.method.metric.abbreviation");
     }
 
     @NotNull

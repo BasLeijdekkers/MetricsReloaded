@@ -33,7 +33,7 @@ public class OperatorsCountMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("operators.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("operators.count.method.metric.abbreviation");
     }
 
     @NotNull

@@ -36,7 +36,7 @@ public class HalsteadProgramLevelMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("halstead.program.level.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("halstead.program.level.method.metric.abbreviation");
     }
 
     @NotNull
