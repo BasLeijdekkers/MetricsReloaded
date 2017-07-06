@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * @author Aleksandr Chudov.
  */
-public class SetUtil {
+public final class SetUtil {
     private SetUtil() {
     }
 

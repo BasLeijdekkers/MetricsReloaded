@@ -26,12 +26,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class LocalityOfDataClassCalculator extends ClassCalculator {
-    private final Map<PsiClass, Set<PsiField>> usedFields = new HashMap<PsiClass, Set<PsiField>>();
-    private final BucketedCount<PsiClass> params = new BucketedCount<PsiClass>();
+    private final Map<PsiMethod, Set<PsiField>> usedFields = new HashMap<PsiMethod, Set<PsiField>>();
+    private final Map<PsiMethod, Set<PsiField>> usedLocalFields = new HashMap<PsiMethod, Set<PsiField>>();
+    private final BucketedCount<PsiClass> localVars = new BucketedCount<PsiClass>();
+    private final BucketedCount<PsiClass> allVars = new BucketedCount<PsiClass>();
+
+    @Override
+    public void endMetricsRun() {
+        usedFields.clear();
+        usedLocalFields.clear();
+        localVars.clear();
+        allVars.clear();
+        super.endMetricsRun();
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -44,30 +52,10 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            usedFields.put(aClass, new HashSet<PsiField>());
-            params.createBucket(aClass);
             super.visitClass(aClass);
-            int localFields = 0;
-            for (final PsiField field : usedFields.get(aClass)) {
-                final PsiClass fieldClass = field.getContainingClass();
-                if (fieldClass == null) {
-                    continue;
-                }
-                if (aClass.equals(fieldClass)) {
-                    if (!field.hasModifierProperty(PsiModifier.PUBLIC)) {
-                        localFields++;
-                    }
-                    continue;
-                }
-                if (aClass.isInheritor(fieldClass, true)) {
-                    if (field.hasModifierProperty(PsiModifier.PROTECTED)) {
-                        localFields++;
-                    }
-                }
-            }
-            double metric = (double) localFields / (double) (params.getBucketValue(aClass) + usedFields.get(aClass).size());
-            if (Double.isInfinite(metric) || Double.isNaN(metric)) {
-                metric = 1.0;
+            double metric = 1.0;
+            if (allVars.getBucketValue(aClass) > 0) {
+                metric = (double) localVars.getBucketValue(aClass) / (double) allVars.getBucketValue(aClass);
             }
             postMetric(aClass, metric);
         }
@@ -81,8 +69,15 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (aClass == null) {
                 return;
             }
-            params.incrementBucketValue(aClass, method.getParameterList().getParametersCount());
+            allVars.incrementBucketValue(aClass, method.getParameterList().getParametersCount());
+            usedFields.put(method, new HashSet<PsiField>());
+            usedLocalFields.put(method, new HashSet<PsiField>());
             super.visitMethod(method);
+            allVars.incrementBucketValue(aClass, usedFields.get(method).size());
+            localVars.incrementBucketValue(aClass, usedLocalFields.get(method).size());
+
+            usedFields.remove(method);
+            usedLocalFields.remove(method);
         }
 
         @Override
@@ -101,7 +96,13 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (!aClass.equals(methodClass)) {
                 return;
             }
-            usedFields.get(aClass).add(MethodUtils.getUsedFields(calledMethod).iterator().next());
+            final Set<PsiField> fields = MethodUtils.getUsedFields(calledMethod);
+            usedFields.get(method).addAll(fields);
+            for (final PsiField field : fields) {
+                if (isLocal(aClass, field)) {
+                    usedLocalFields.get(method).add(field);
+                }
+            }
         }
 
         @Override
@@ -114,13 +115,28 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             super.visitReferenceExpression(expression);
             final PsiElement element = expression.resolve();
             final PsiClass aClass = PsiTreeUtil.getParentOfType(expression, PsiClass.class);
-            if (aClass == null) {
+            final PsiMethod method = PsiTreeUtil.getParentOfType(expression, PsiMethod.class);
+            if (aClass == null || method == null) {
                 return;
             }
             if (element instanceof PsiField) {
                 final PsiField field = (PsiField) element;
-                usedFields.get(aClass).add(field);
+                usedFields.get(method).add(field);
+                if (isLocal(aClass, field)) {
+                    usedLocalFields.get(method).add(field);
+                }
             }
+        }
+
+        private boolean isLocal(final PsiClass aClass, final PsiField field) {
+            final PsiClass fieldClass = field.getContainingClass();
+            if (fieldClass == null) {
+                return false;
+            }
+            if (aClass.equals(fieldClass)) {
+                return !field.hasModifierProperty(PsiModifier.PUBLIC);
+            }
+            return aClass.isInheritor(fieldClass, true) && field.hasModifierProperty(PsiModifier.PROTECTED);
         }
     }
 }
