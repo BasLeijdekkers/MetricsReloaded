@@ -20,9 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class NumMethodsClassCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -32,6 +29,9 @@ public class NumMethodsClassCalculator extends ClassCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitClass(PsiClass aClass) {
+            if (!isConcreteClass(aClass)) {
+                return;
+            }
             super.visitClass(aClass);
             postMetric(aClass, aClass.getMethods().length);
         }
