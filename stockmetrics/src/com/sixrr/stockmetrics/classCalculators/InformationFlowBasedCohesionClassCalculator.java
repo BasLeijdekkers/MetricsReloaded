@@ -20,9 +20,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.sixrr.metrics.utils.BucketedCount;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class InformationFlowBasedCohesionClassCalculator extends ClassCalculator {
     private final BucketedCount<PsiClass> metrics = new BucketedCount<PsiClass>();
 
@@ -33,17 +30,19 @@ public class InformationFlowBasedCohesionClassCalculator extends ClassCalculator
 
     @Override
     public void endMetricsRun() {
-        for (final PsiClass aClass : metrics.getBuckets()) {
-            postMetric(aClass, metrics.getBucketValue(aClass));
-        }
+        metrics.clear();
         super.endMetricsRun();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitClass(PsiClass aClass) {
+            if (!isConcreteClass(aClass)) {
+                return;
+            }
             metrics.createBucket(aClass);
             super.visitClass(aClass);
+            postMetric(aClass, metrics.getBucketValue(aClass));
         }
 
         @Override
