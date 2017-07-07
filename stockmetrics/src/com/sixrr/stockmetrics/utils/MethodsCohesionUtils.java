@@ -93,6 +93,20 @@ public final class MethodsCohesionUtils {
         return fieldsPerMethod;
     }
 
+    public static int calculateConnectedMethods(@NotNull final Set<PsiMethod> applicableMethods) {
+        final PsiMethod[] methods = applicableMethods.toArray(new PsiMethod[0]);
+        final Map<PsiMethod, Set<PsiField>> fieldUsage = calculateFieldUsage(applicableMethods);
+        int connectedPairs = 0;
+        for (int i = 0; i < methods.length; i++) {
+            for (int j = i + 1; j < methods.length; j++) {
+                if (SetUtil.hasIntersec(fieldUsage.get(methods[i]), fieldUsage.get(methods[j]))) {
+                    connectedPairs++;
+                }
+            }
+        }
+        return connectedPairs;
+    }
+
     public static Map<PsiField, Set<PsiMethod>> calculateFieldToMethodUsage(@NotNull final Set<PsiField> applicableFields,
                                                                             @NotNull final Set<PsiMethod> applicableMethods) {
         final Map<PsiField, Set<PsiMethod>> methodsPerField = new HashMap<PsiField, Set<PsiMethod>>();

@@ -16,13 +16,14 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.psi.*;
-import com.sixrr.stockmetrics.utils.SetUtil;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiMethod;
 
-import java.util.Map;
 import java.util.Set;
 
-import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.calculateFieldUsage;
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.calculateConnectedMethods;
 import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.getApplicableMethods;
 
 public class TightClassCouplingCalculator extends ClassCalculator {
@@ -38,18 +39,9 @@ public class TightClassCouplingCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            // TODO extract to utils
-            final Map<PsiMethod, Set<PsiField>> fieldUsage = calculateFieldUsage(getApplicableMethods(aClass));
-            final PsiMethod[] applicableMethods = getApplicableMethods(aClass).toArray(new PsiMethod[0]);
-            final int allPairs = applicableMethods.length * (applicableMethods.length - 1) / 2;
-            int connectedPairs = 0;
-            for (int i = 0; i < applicableMethods.length; i++) {
-                for (int j = i + 1; j < applicableMethods.length; j++) {
-                    if (SetUtil.hasIntersec(fieldUsage.get(applicableMethods[i]), fieldUsage.get(applicableMethods[j]))) {
-                        connectedPairs++;
-                    }
-                }
-            }
+            final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
+            final int allPairs = applicableMethods.size() * (applicableMethods.size() - 1) / 2;
+            final int connectedPairs = calculateConnectedMethods(applicableMethods);
             postMetric(aClass, connectedPairs, allPairs);
         }
     }
