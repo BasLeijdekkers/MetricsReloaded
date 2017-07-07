@@ -17,15 +17,16 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 import com.sixrr.stockmetrics.utils.SetUtil;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.calculateFieldToMethodUsage;
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.getApplicableMethods;
+
 public class LackOfCohesionInMethods5ClassCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -39,7 +40,8 @@ public class LackOfCohesionInMethods5ClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            final Map<PsiField, Set<PsiMethod>> fieldToMethods = FieldUsageUtil.getFieldUsagesInMethods(executionContext, aClass);
+            final Map<PsiField, Set<PsiMethod>> fieldToMethods =
+                    calculateFieldToMethodUsage(new HashSet<PsiField>(Arrays.asList(aClass.getFields())), getApplicableMethods(aClass));
             final PsiField[] fields = aClass.getFields();
             if (fields.length < 2) {
                 postMetric(aClass, 0);
