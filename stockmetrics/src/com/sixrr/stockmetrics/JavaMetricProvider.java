@@ -39,7 +39,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(255);
+        final List<Metric> metrics = new ArrayList<Metric>(275);
         initializeClassMetrics(metrics);
         initializeInterfaceMetrics(metrics);
         initializeMethodMetrics(metrics);
@@ -113,6 +113,9 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new LackOfCohesionInMethods2ClassMetric());
         metrics.add(new LackOfCohesionInMethods5ClassMetric());
         metrics.add(new LocalityOfDataClassMetric());
+        metrics.add(new FanInClassMetric());
+        metrics.add(new FanOutClassMetric());
+        metrics.add(new BlankLinesCountClassMetric());
     }
 
     private static void initializeInterfaceMetrics(Collection<Metric> metrics) {
@@ -159,6 +162,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new HalsteadLengthMethodMetric());
         metrics.add(new HalsteadVocabularyMethodMetric());
         metrics.add(new HalsteadVolumeMethodMetric());
+        metrics.add(new HalsteadProgramLevelMetric());
         metrics.add(new JavadocLinesOfCodeMethodMetric());
         metrics.add(new LinesOfCodeMethodMetric());
         metrics.add(new LoopNestingDepthMetric());
@@ -190,6 +194,18 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new SourceLinesOfCodeMethodMetric());
         metrics.add(new TodoCommentCountMethodMetric());
         metrics.add(new TrueCommentRatioMethodMetric());
+        metrics.add(new FanInMethodMetric());
+        metrics.add(new FanOutMethodMetric());
+        metrics.add(new ConditionCountMetric());
+        metrics.add(new DecisionCountMetric());
+        metrics.add(new OperandsCountMetric());
+        metrics.add(new OperatorsCountMetric());
+        metrics.add(new DistinctOperandsMetric());
+        metrics.add(new DistinctOperatorsMetric());
+        metrics.add(new BranchCountMetric());
+        metrics.add(new FormalParametersCountMethodMetric());
+        metrics.add(new BlankLinesCountMethodMetric());
+        metrics.add(new DesignDensityMetric());
     }
 
     private static void initializeModuleMetrics(Collection<Metric> metrics) {
@@ -350,6 +366,7 @@ public class JavaMetricProvider implements MetricProvider {
         out.add(createMoodProfile());
         out.add(createTestProfile());
         out.add(createSDDRARProfile());
+        out.add(createFanProfile());
         return out;
     }
 
@@ -370,6 +387,15 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(NumAttributesAddedMetric.class);
         profile.addMetric(NumMethodsClassMetric.class);
         profile.addMetric(ResponseForClassMetric.class);
+        return profile;
+    }
+
+    private static PrebuiltMetricProfile createFanProfile() {
+        final PrebuiltMetricProfile profile = new PrebuiltMetricProfile(StockMetricsBundle.message("fan.profile.name"));
+        profile.addMetric(FanInClassMetric.class);
+        profile.addMetric(FanOutClassMetric.class);
+        profile.addMetric(FanInMethodMetric.class);
+        profile.addMetric(FanOutMethodMetric.class);
         return profile;
     }
 
