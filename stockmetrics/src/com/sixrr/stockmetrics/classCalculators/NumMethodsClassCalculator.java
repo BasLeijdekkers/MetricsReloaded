@@ -29,10 +29,10 @@ public class NumMethodsClassCalculator extends ClassCalculator {
     private class Visitor extends JavaRecursiveElementVisitor {
         @Override
         public void visitClass(PsiClass aClass) {
+            super.visitClass(aClass);
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            super.visitClass(aClass);
             postMetric(aClass, aClass.getMethods().length);
         }
     }
