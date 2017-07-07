@@ -19,7 +19,6 @@ package com.sixrr.stockmetrics.methodCalculators;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiElementFilter;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.moduleCalculators.ElementRatioModuleCalculator;
 import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
 public class DesignDensityCalculator extends MethodCalculator {
@@ -38,7 +37,7 @@ public class DesignDensityCalculator extends MethodCalculator {
             final int design = CyclomaticComplexityUtil.calculateComplexity(method,  new PsiElementFilter() {
                 @Override
                 public boolean isAccepted(PsiElement element) {
-                    return !notCallAnotherModule(element);
+                    return callsAnotherModule(element);
                 }
             });
             final int complexity = CyclomaticComplexityUtil.calculateComplexity(method,  new PsiElementFilter() {
@@ -51,32 +50,29 @@ public class DesignDensityCalculator extends MethodCalculator {
         }
     }
 
-    private boolean notCallAnotherModule(PsiElement element) {
+    private static boolean callsAnotherModule(PsiElement element) {
         if (element == null) {
-            return true;
+            return false;
         }
         if (element instanceof PsiIfStatement) {
             final PsiIfStatement ifStatement = (PsiIfStatement) element;
-            return !containsMethodCall(ifStatement.getThenBranch()) && !containsMethodCall(ifStatement.getElseBranch());
+            return containsMethodCall(ifStatement.getThenBranch()) || containsMethodCall(ifStatement.getElseBranch());
         } else if (element instanceof PsiLoopStatement) {
             final PsiLoopStatement loopStatement = (PsiLoopStatement) element;
-            return !containsMethodCall(loopStatement.getBody());
+            return containsMethodCall(loopStatement.getBody());
         } else if (element instanceof PsiCatchSection) {
             final PsiCatchSection catchSection = (PsiCatchSection) element;
-            return !containsMethodCall(catchSection.getCatchBlock());
+            return containsMethodCall(catchSection.getCatchBlock());
         } else if (element instanceof PsiBlockStatement) {
-            return blockStatementIsReducible((PsiBlockStatement) element);
+            final PsiBlockStatement blockStatement = (PsiBlockStatement) element;
+            return containsMethodCall(blockStatement.getCodeBlock());
         } else if (element instanceof PsiConditionalExpression) {
             final PsiConditionalExpression conditionalExpression = (PsiConditionalExpression) element;
-            return !containsMethodCall(conditionalExpression.getThenExpression()) &&
-                    !containsMethodCall(conditionalExpression.getElseExpression());
+            return containsMethodCall(conditionalExpression.getThenExpression()) ||
+                    containsMethodCall(conditionalExpression.getElseExpression());
         } else {
-            return !containsMethodCall(element);
+            return containsMethodCall(element);
         }
-    }
-
-    private static boolean blockStatementIsReducible(PsiBlockStatement statement) {
-        return !containsMethodCall(statement.getCodeBlock());
     }
 
     private static boolean containsMethodCall(PsiElement element) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2017 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  *  limitations under the License.
  */
 
-package com.sixrr.stockmetrics.methodMetrics;
+package com.sixrr.stockmetrics.moduleMetrics;
 
+import com.intellij.ide.highlighter.NewJspFileType;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.DistinctOperandsCountCalculator;
-import com.sixrr.stockmetrics.methodCalculators.OperandsCountCalculator;
+import com.sixrr.stockmetrics.moduleCalculators.LinesOfCodeModuleCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class DistinctOperandsMetric extends MethodMetric {
-
+public class LinesOfJSPModuleMetric extends ModuleMetric {
     @NotNull
     @Override
     public String getDisplayName() {
-        return StockMetricsBundle.message("distinct.operands.count.method.metric.display.name");
+        return StockMetricsBundle.message("lines.of.jsp.display.name");
     }
 
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("distinct.operands.count.method.metric.abbreviation");
+        return StockMetricsBundle.message("lines.of.jsp.abbreviation");
     }
 
     @NotNull
@@ -46,6 +45,6 @@ public class DistinctOperandsMetric extends MethodMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new DistinctOperandsCountCalculator();
+        return new LinesOfCodeModuleCalculator(NewJspFileType.INSTANCE);
     }
 }

@@ -33,7 +33,7 @@ public class BlankLinesCountMethodMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("blank.lines.count.class.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("blank.lines.count.class.metric.abbreviation");
     }
 
     @NotNull

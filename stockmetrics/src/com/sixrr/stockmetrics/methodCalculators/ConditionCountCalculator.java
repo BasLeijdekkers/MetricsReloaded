@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.MethodUtils;
 
 public class ConditionCountCalculator extends MethodCalculator {
     private int count = 0;
@@ -32,7 +31,7 @@ public class ConditionCountCalculator extends MethodCalculator {
 
         @Override
         public void visitExpression(PsiExpression expression) {
-            int oldCount = count;
+            final int oldCount = count;
             super.visitExpression(expression);
             if (expression.getType() != null &&
                     PsiType.BOOLEAN.isAssignableFrom(expression.getType()) && oldCount == count) {

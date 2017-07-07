@@ -33,7 +33,7 @@ public class ConditionCountMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("condition.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("condition.count.method.metric.abbreviation");
     }
 
     @NotNull

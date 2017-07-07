@@ -39,7 +39,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(255);
+        final List<Metric> metrics = new ArrayList<Metric>(275);
         initializeClassMetrics(metrics);
         initializeInterfaceMetrics(metrics);
         initializeMethodMetrics(metrics);
@@ -189,7 +189,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new FanOutMethodMetric());
         metrics.add(new ConditionCountMetric());
         metrics.add(new DecisionCountMetric());
-        metrics.add(new OperadsCountMetric());
+        metrics.add(new OperandsCountMetric());
         metrics.add(new OperatorsCountMetric());
         metrics.add(new DistinctOperandsMetric());
         metrics.add(new DistinctOperatorsMetric());

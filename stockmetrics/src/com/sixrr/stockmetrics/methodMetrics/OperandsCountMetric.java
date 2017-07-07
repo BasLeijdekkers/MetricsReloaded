@@ -19,22 +19,21 @@ package com.sixrr.stockmetrics.methodMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.DistinctOperandsCountCalculator;
 import com.sixrr.stockmetrics.methodCalculators.OperandsCountCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class DistinctOperandsMetric extends MethodMetric {
+public class OperandsCountMetric extends MethodMetric {
 
     @NotNull
     @Override
     public String getDisplayName() {
-        return StockMetricsBundle.message("distinct.operands.count.method.metric.display.name");
+        return StockMetricsBundle.message("operands.count.method.metric.display.name");
     }
 
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("distinct.operands.count.method.metric.abbreviation");
+        return StockMetricsBundle.message("operands.count.method.metric.abbreviation");
     }
 
     @NotNull
@@ -46,6 +45,6 @@ public class DistinctOperandsMetric extends MethodMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new DistinctOperandsCountCalculator();
+        return new OperandsCountCalculator();
     }
 }

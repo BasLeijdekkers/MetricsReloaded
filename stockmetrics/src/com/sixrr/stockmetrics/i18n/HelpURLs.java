@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NonNls;
 public interface HelpURLs {
     @NonNls String COMPLEXITY_URL = "en.wikipedia.org/wiki/Cyclomatic_complexity";
     @NonNls String HALSTEAD_URL = "en.wikipedia.org/wiki/Halstead_complexity_measures";
+    @NonNls String HALSTEAD_LEVEL_URL = "maisqual.squoring.com/wiki/index.php/Halstead_Program_Level";
     @NonNls String JUNIT_URL = "www.junit.org";
     @NonNls String MARTIN_URL = "www.objectmentor.com/resources/articles/oodmetrc.pdf";
     @NonNls String LAYERING_URL =
@@ -32,6 +33,7 @@ public interface HelpURLs {
 
     @NonNls String COMPLEXITY_DISPLAY_STRING = "Wikipedia";
     @NonNls String HALSTEAD_DISPLAY_STRING = "Wikipedia";
+    @NonNls String HALSTEAD_LEVEL_DISPLAY_STRING = "Maisqual wiki";
     @NonNls String JUNIT_DISPLAY_STRING = "www.junit.org";
     @NonNls String MARTIN_DISPLAY_STRING = "www.objectmentor.com";
     @NonNls String LAYERING_DISPLAY_STRING = "Large Scale C++ Software Development";

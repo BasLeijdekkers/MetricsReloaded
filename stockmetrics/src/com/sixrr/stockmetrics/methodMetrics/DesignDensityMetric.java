@@ -33,7 +33,7 @@ public class DesignDensityMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("design.density.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("design.density.metric.abbreviation");
     }
 
     @NotNull

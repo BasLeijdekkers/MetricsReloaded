@@ -16,13 +16,12 @@
 
 package com.sixrr.stockmetrics.methodCalculators;
 
-
 import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 
-public class OperandsCountCalculator extends HalsteadMethodCalculator{
+public class OperandsCountCalculator extends HalsteadMethodCalculator {
 
     @Override
     protected double getValue(HalsteadVisitor visitor) {
-        return (double)visitor.getNumOperands();
+        return (double) visitor.getNumOperands();
     }
 }

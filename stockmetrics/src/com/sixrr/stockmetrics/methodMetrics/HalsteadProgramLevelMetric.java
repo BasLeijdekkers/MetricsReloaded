@@ -18,8 +18,8 @@ package com.sixrr.stockmetrics.methodMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
+import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.ConditionCountCalculator;
 import com.sixrr.stockmetrics.methodCalculators.HelsteadProgramLevelCalculator;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public class HalsteadProgramLevelMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("halstead.program.level.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("halstead.program.level.method.metric.abbreviation");
     }
 
     @NotNull
@@ -47,5 +47,17 @@ public class HalsteadProgramLevelMetric extends MethodMetric {
     @Override
     public MetricCalculator createCalculator() {
         return new HelsteadProgramLevelCalculator();
+    }
+
+    @NotNull
+    @Override
+    public String getHelpURL() {
+        return HelpURLs.HALSTEAD_LEVEL_URL;
+    }
+
+    @NotNull
+    @Override
+    public String getHelpDisplayString() {
+        return HelpURLs.HALSTEAD_LEVEL_DISPLAY_STRING;
     }
 }

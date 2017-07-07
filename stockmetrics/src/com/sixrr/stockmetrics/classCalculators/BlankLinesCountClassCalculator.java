@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
 import com.sixrr.stockmetrics.utils.LineUtil;
 

@@ -34,7 +34,7 @@ public class DecisionCountMetric extends MethodMetric {
     @NotNull
     @Override
     public String getAbbreviation() {
-        return StockMetricsBundle.message("decision.count.method.metric.abbreviation"); //TODO find correct abbreviation
+        return StockMetricsBundle.message("decision.count.method.metric.abbreviation");
     }
 
     @NotNull
