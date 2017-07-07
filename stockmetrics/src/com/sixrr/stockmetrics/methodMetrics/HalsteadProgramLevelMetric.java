@@ -20,10 +20,8 @@ import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.ConditionCountCalculator;
 import com.sixrr.stockmetrics.methodCalculators.HelsteadProgramLevelCalculator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class HalsteadProgramLevelMetric extends MethodMetric {
 
@@ -51,13 +49,13 @@ public class HalsteadProgramLevelMetric extends MethodMetric {
         return new HelsteadProgramLevelCalculator();
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getHelpURL() {
         return HelpURLs.HALSTEAD_LEVEL_URL;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getHelpDisplayString() {
         return HelpURLs.HALSTEAD_LEVEL_DISPLAY_STRING;
