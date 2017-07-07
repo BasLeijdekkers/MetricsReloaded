@@ -17,12 +17,10 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.Query;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataAbstractionCouplingClassCalculator extends ClassCalculator {
 
