@@ -94,6 +94,23 @@ public final class MethodsCohesionUtils {
         return fieldsPerMethod;
     }
 
+    public static Map<PsiField, Set<PsiMethod>> calculateFieldToMethodUsage(@NotNull final Set<PsiField> applicableFields,
+                                                                            @NotNull final Set<PsiMethod> applicableMethods) {
+        final Map<PsiField, Set<PsiMethod>> methodsPerField = new HashMap<PsiField, Set<PsiMethod>>();
+        for (final PsiField field : applicableFields) {
+            methodsPerField.put(field, new HashSet<PsiMethod>());
+        }
+        for (PsiMethod method : applicableMethods) {
+            final Set<PsiField> fields = calculateUsedFields(method);
+            for (final PsiField field : fields) {
+                if (applicableFields.contains(field)) {
+                    methodsPerField.get(field).add(method);
+                }
+            }
+        }
+        return methodsPerField;
+    }
+
     public static Set<PsiField> calculateUsedFields(PsiMethod method) {
         final FieldsUsedVisitor visitor = new FieldsUsedVisitor();
         method.accept(visitor);

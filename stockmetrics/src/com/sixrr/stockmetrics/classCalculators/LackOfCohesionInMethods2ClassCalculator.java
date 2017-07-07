@@ -17,16 +17,15 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.calculateFieldToMethodUsage;
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.getApplicableMethods;
+
 public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -40,23 +39,22 @@ public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            final int n = aClass.getMethods().length;
+            final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
+            final int n = applicableMethods.size();
             if (n <= 1) {
-                postMetric(aClass, 1);
+                postMetric(aClass, 0);
                 return;
             }
-            final int fieldsNumber = aClass.getFields().length;
-            if (fieldsNumber == 0) {
-                postMetric(aClass, 1);
-                return;
-            }
-            final Map<PsiField, Set<PsiMethod>> fieldToMethods = FieldUsageUtil.getFieldUsagesInMethods(executionContext, aClass);
-            int fieldUsagesSum = 0;
+            final Set<PsiField> fields = new HashSet<PsiField>(Arrays.asList(aClass.getFields()));
+            final int fieldsNumber = fields.size();
+            final Map<PsiField, Set<PsiMethod>> fieldToMethods =
+                    calculateFieldToMethodUsage(fields, applicableMethods);
+            int fieldsUsagesSum = 0;
             for (final Map.Entry<PsiField, Set<PsiMethod>> e : fieldToMethods.entrySet()) {
-                fieldUsagesSum += e.getValue().size();
+                fieldsUsagesSum += e.getValue().size();
             }
-            final double averageFieldUsage = (double) fieldUsagesSum / fieldsNumber;
-            postMetric(aClass, ((double) n - averageFieldUsage) / (double) (n - 1));
+            final double averageFieldUsage = fieldsNumber == 0 ? 0.0 : (double) fieldsUsagesSum / fieldsNumber;
+            postMetric(aClass, Math.min(1.0, ((double) n - averageFieldUsage) / (double) (n - 1)));
         }
     }
 }
