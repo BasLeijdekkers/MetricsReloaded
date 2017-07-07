@@ -24,10 +24,6 @@ import com.intellij.util.Query;
 
 import java.util.*;
 
-/**
- * @author Aleksandr Chudov.
- * Number of classes used by this class as attribute.
- */
 public class DataAbstractionCouplingClassCalculator extends ClassCalculator {
 
     @Override

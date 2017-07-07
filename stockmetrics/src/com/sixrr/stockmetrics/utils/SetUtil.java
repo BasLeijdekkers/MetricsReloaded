@@ -21,9 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
 public final class SetUtil {
     private SetUtil() {
     }
@@ -67,6 +64,13 @@ public final class SetUtil {
         return size;
     }
 
+    /**
+     * Calculates Jaccard index for two sets(see <a href="https://en.wikipedia.org/wiki/Jaccard_index">Jaccard index</a>)
+     * @param a First set
+     * @param b Second set
+     * @param <T>
+     * @return Returns Jaccard index of sets
+     */
     public static <T> double jaccardIndex(@Nullable final Set<T> a, @Nullable final Set<T> b) {
         if (a == null || b == null || a.size() + b.size() == 0) {
             return 1.0;
@@ -75,6 +79,14 @@ public final class SetUtil {
         return (double) intersec / (double) (a.size() + b.size() - intersec);
     }
 
+    /**
+     * Calculates Jaccard distance for two sets(see <a href="https://en.wikipedia.org/wiki/Jaccard_index">Jaccard index</a>).
+     * It is equal {@code 1 - jaccardIndex(a, b)}
+     * @param a First set
+     * @param b Second set
+     * @param <T>
+     * @return Returns Jaccard distance of sets
+     */
     public static <T> double jaccardDistance(@Nullable final Set<T> a, @Nullable final Set<T> b) {
         return 1.0 - jaccardIndex(a, b);
     }

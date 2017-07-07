@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.*;
-import com.sixrr.stockmetrics.classCalculators.LackOfCohesionOfMethodsClassCalculator;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
