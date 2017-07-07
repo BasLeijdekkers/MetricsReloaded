@@ -16,81 +16,38 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.codeInsight.dataflow.SetUtil;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.Predicate;
-import com.sixrr.metrics.utils.BucketedCount;
-import com.sixrr.stockmetrics.utils.FieldUsageUtil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
-public class LooseClassCouplingCalculator extends MethodPairsCountClassCalculator {
-    private final Map<PsiMethod, Set<PsiMethod>> methodsCalls = new HashMap<PsiMethod, Set<PsiMethod>>();
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.*;
 
-    @Override
-    public void endMetricsRun() {
-        for (final Map.Entry<PsiMethod, Set<PsiMethod>> e : methodsCalls.entrySet()) {
-            if (!methodsToFields.containsKey(e.getKey())) {
-                methodsToFields.put(e.getKey(), new HashSet<PsiField>());
-            }
-            collectFields(e.getKey(), e.getKey(), new HashSet<PsiMethod>());
-        }
-        final BucketedCount<PsiClass> metrics = calculatePairs();
-        for (final PsiClass aClass : metrics.getBuckets()) {
-            final int n = getVisibleMethodsCount(aClass);
-            if (n < 2) {
-                postMetric(aClass, 0);
-            }
-            else {
-                postMetric(aClass, metrics.getBucketValue(aClass), n * (n - 1) / 2);
-            }
-        }
-        super.endMetricsRun();
-    }
-
-    private void collectFields(final PsiMethod current, final PsiMethod primary, final Set<PsiMethod> visited) {
-        if (visited.contains(current)) {
-            return;
-        }
-        visited.add(current);
-        if (methodsToFields.containsKey(current)) {
-            methodsToFields.get(primary).addAll(methodsToFields.get(current));
-        }
-        if (methodsCalls.get(current) == null) {
-            return;
-        }
-        for (final PsiMethod neighbor : methodsCalls.get(current)) {
-            collectFields(neighbor, primary, visited);
-        }
-    }
-
-    @Override
-    protected int calculatePairs(PsiClass aClass, Predicate<MethodPair> isSuitable) {
-        return super.calculatePairs(getVisibleMethods(aClass), isSuitable);
-    }
-
+public class LooseClassCouplingCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
-    private class Visitor extends MethodPairsCountClassVisitor {
+    private class Visitor extends JavaRecursiveElementVisitor {
         @Override
-        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
-            super.visitMethodCallExpression(expression);
-            final PsiMethod currentMethod = PsiTreeUtil.getParentOfType(expression, PsiMethod.class);
-            final PsiMethod calledMethod = expression.resolveMethod();
-            if (currentMethod == null || currentMethod.getContainingClass() == null || calledMethod == null) {
+        public void visitClass(PsiClass aClass) {
+            super.visitClass(aClass);
+            if (!isConcreteClass(aClass)) {
                 return;
             }
-            if (!methodsCalls.containsKey(currentMethod)) {
-                methodsCalls.put(currentMethod, new HashSet<PsiMethod>());
+            final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
+            final int allPairs = applicableMethods.size() * (applicableMethods.size() - 1) / 2;
+            final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = calculateFieldUsage(applicableMethods);
+            final Set<Set<PsiMethod>> components = calculateComponents(applicableMethods, fieldsPerMethod,
+                    new HashMap<PsiMethod, Set<PsiMethod>>());
+            int metric = 0;
+            for (final Set<PsiMethod> methods : components) {
+                final int n = methods.size();
+                metric += n * (n - 1) / 2;
             }
-            methodsCalls.get(currentMethod).add(calledMethod);
+            postMetric(aClass, metric, allPairs);
         }
     }
 }
