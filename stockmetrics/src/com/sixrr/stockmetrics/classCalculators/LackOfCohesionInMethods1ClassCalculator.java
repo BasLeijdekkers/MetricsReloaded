@@ -16,39 +16,41 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.codeInsight.dataflow.SetUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.containers.Predicate;
-import com.sixrr.metrics.utils.BucketedCount;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.*;
+import com.sixrr.stockmetrics.utils.SetUtil;
 
+import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Aleksandr Chudov.
- */
-public class LackOfCohesionInMethods1ClassCalculator extends MethodPairsCountClassCalculator {
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.calculateFieldUsage;
+import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.getApplicableMethods;
+
+public class LackOfCohesionInMethods1ClassCalculator extends ClassCalculator {
     @Override
-    public void endMetricsRun() {
-        final BucketedCount<PsiClass> withCommonFields = calculatePairs();
-        final Set<PsiClass> buckets = withCommonFields.getBuckets();
-        for (final PsiClass aClass : buckets) {
-            final PsiMethod[] methods = aClass.getMethods();
-            boolean isEmpty = true;
-            for (final PsiMethod method : methods) {
-                final Set<PsiField> fields = methodsToFields.get(method);
-                isEmpty &= fields == null || fields.isEmpty();
+    protected PsiElementVisitor createVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends JavaRecursiveElementVisitor {
+        @Override
+        public void visitClass(PsiClass aClass) {
+            super.visitClass(aClass);
+            if (!isConcreteClass(aClass)) {
+                return;
             }
-            if (isEmpty) {
-                postMetric(aClass, 0);
-                continue;
+            // TODO exctract to utils
+            final Map<PsiMethod, Set<PsiField>> fieldUsage = calculateFieldUsage(getApplicableMethods(aClass));
+            final PsiMethod[] applicableMethods = getApplicableMethods(aClass).toArray(new PsiMethod[0]);
+            final int allPairs = applicableMethods.length * (applicableMethods.length - 1) / 2;
+            int connectedPairs = 0;
+            for (int i = 0; i < applicableMethods.length; i++) {
+                for (int j = i + 1; j < applicableMethods.length; j++) {
+                    if (SetUtil.hasIntersec(fieldUsage.get(applicableMethods[i]), fieldUsage.get(applicableMethods[j]))) {
+                        connectedPairs++;
+                    }
+                }
             }
-            final int n = methods.length;
-            final int methodsPairsCount = n * (n - 1) / 2;
-            postMetric(aClass, Math.max(0, methodsPairsCount - 2 * withCommonFields.getBucketValue(aClass)));
+            postMetric(aClass, Math.max(allPairs - 2 * connectedPairs, 0));
         }
-        super.endMetricsRun();
     }
 }
