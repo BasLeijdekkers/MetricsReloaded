@@ -23,7 +23,7 @@ import com.intellij.util.Query;
 public class FanInMethodCalculator extends MethodCalculator {
     private PsiMethod currentMethod;
     private int methodNestingDepth = 0;
-    private int count = 0;
+    private int result = 0;
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -34,21 +34,23 @@ public class FanInMethodCalculator extends MethodCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
-                count = 0;
+                result = 0;
                 currentMethod = method;
                 final Query<PsiReference> references = ReferencesSearch.search(method);
                 for (final PsiReference reference : references) {
                     final PsiElement element = reference.getElement();
                     if (element != null && element.getParent() instanceof PsiCallExpression) {
-                        count++;
+                        result++;
                     }
                 }
             }
+
             methodNestingDepth++;
             super.visitMethod(method);
             methodNestingDepth--;
+
             if (methodNestingDepth == 0) {
-                postMetric(method, count);
+                postMetric(method, result);
             }
         }
 
@@ -56,7 +58,7 @@ public class FanInMethodCalculator extends MethodCalculator {
         public void visitMethodCallExpression(PsiMethodCallExpression expression) {
             final PsiMethod method = expression.resolveMethod();
             if (currentMethod != null && currentMethod.equals(method)) {
-                count--;
+                result--;
             }
             super.visitMethodCallExpression(expression);
         }

@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.stockmetrics.classCalculators.ClassCalculator;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class BlankLinesCountMethodCalculator extends MethodCalculator {

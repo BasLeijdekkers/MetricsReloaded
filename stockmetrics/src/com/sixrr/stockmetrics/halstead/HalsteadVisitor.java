@@ -87,7 +87,8 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
     }
 
     public double getLevel() {
-        return (2.0 * (double)getNumDistinctOperands()) / ((double)getNumDistinctOperators() * (double)getNumOperands());
+        return (2.0 * (double) getNumDistinctOperands())
+                / ((double) getNumDistinctOperators() * (double) getNumOperands());
     }
 
     @Override

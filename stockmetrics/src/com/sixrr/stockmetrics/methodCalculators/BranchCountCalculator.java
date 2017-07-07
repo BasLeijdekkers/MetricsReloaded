@@ -18,8 +18,6 @@ package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
 
-import java.util.Arrays;
-
 public class BranchCountCalculator extends MethodCalculator {
     private int count = 0;
     private int depth = 0;

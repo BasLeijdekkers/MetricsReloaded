@@ -21,7 +21,7 @@ import com.intellij.psi.*;
 public class FanOutMethodCalculator extends MethodCalculator {
     private PsiMethod currentMethod;
     private int methodNestingDepth = 0;
-    private int count = 0;
+    private int result = 0;
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -32,14 +32,16 @@ public class FanOutMethodCalculator extends MethodCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
-                count = 0;
+                result = 0;
                 currentMethod = method;
             }
+
             methodNestingDepth++;
             super.visitMethod(method);
             methodNestingDepth--;
+
             if (methodNestingDepth == 0) {
-                postMetric(method, count);
+                postMetric(method, result);
             }
         }
 
@@ -54,7 +56,7 @@ public class FanOutMethodCalculator extends MethodCalculator {
             if (method == null || method.getContainingClass() == null || method.equals(currentMethod)) {
                 return;
             }
-            count++;
+            result++;
         }
     }
 }

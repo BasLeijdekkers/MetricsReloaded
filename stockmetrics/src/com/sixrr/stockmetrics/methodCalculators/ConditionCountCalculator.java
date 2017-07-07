@@ -17,7 +17,6 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.MethodUtils;
 
 public class ConditionCountCalculator extends MethodCalculator {
     private int count = 0;
