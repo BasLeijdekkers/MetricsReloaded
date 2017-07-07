@@ -104,7 +104,6 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new TodoCommentCountClassMetric());
         metrics.add(new TrueCommentRatioClassMetric());
         metrics.add(new WeightedMethodComplexityMetric());
-        metrics.add(new AfferentCouplingClassMetric());
         metrics.add(new InformationFlowBasedCohesionClassMetric());
         metrics.add(new NumMethodsClassMetric());
         metrics.add(new DataAbstractionCouplingClassMetric());
@@ -357,7 +356,6 @@ public class JavaMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createSDDRARProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("sddrar.metrics.profile.name"));
-        profile.addMetric(AfferentCouplingClassMetric.class);
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);
         profile.addMetric(DataAbstractionCouplingClassMetric.class);
         profile.addMetric(InformationFlowBasedCohesionClassMetric.class);
