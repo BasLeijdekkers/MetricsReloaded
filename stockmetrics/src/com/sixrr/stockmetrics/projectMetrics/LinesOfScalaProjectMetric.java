@@ -46,6 +46,6 @@ public class LinesOfScalaProjectMetric extends ProjectMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new LinesOfCodeProjectCalculator(ScalaFileType.SCALA_FILE_TYPE);
+        return new LinesOfCodeProjectCalculator(ScalaFileType.INSTANCE);
     }
 }

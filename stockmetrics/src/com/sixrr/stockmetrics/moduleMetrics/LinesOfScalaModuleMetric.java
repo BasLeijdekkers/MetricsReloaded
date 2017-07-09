@@ -46,6 +46,6 @@ public class LinesOfScalaModuleMetric extends ModuleMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new LinesOfCodeModuleCalculator(ScalaFileType.SCALA_FILE_TYPE);
+        return new LinesOfCodeModuleCalculator(ScalaFileType.INSTANCE);
     }
 }

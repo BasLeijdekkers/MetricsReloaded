@@ -46,6 +46,6 @@ public class NumScalaFilesProjectMetric extends ProjectMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new FileCountProjectCalculator(ScalaFileType.SCALA_FILE_TYPE);
+        return new FileCountProjectCalculator(ScalaFileType.INSTANCE);
     }
 }

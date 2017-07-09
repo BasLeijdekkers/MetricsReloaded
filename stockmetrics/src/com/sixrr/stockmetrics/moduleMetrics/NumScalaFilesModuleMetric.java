@@ -46,6 +46,6 @@ public class NumScalaFilesModuleMetric extends ModuleMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new FileCountModuleCalculator(ScalaFileType.SCALA_FILE_TYPE);
+        return new FileCountModuleCalculator(ScalaFileType.INSTANCE);
     }
 }
