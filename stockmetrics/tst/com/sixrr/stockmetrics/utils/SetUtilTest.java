@@ -23,9 +23,6 @@ import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class SetUtilTest {
     @Test
     public void testHasIntersec() {

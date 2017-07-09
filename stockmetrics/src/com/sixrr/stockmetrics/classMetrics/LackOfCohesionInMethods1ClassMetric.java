@@ -22,9 +22,6 @@ import com.sixrr.stockmetrics.classCalculators.LackOfCohesionInMethods1ClassCalc
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class LackOfCohesionInMethods1ClassMetric extends ClassMetric {
     @NotNull
     @Override
