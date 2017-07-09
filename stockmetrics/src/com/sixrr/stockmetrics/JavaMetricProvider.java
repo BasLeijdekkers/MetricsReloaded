@@ -373,6 +373,7 @@ public class JavaMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createSDDRARProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("sddrar.metrics.profile.name"));
+        profile.addMetric(FanInClassMetric.class);
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);
         profile.addMetric(DataAbstractionCouplingClassMetric.class);
         profile.addMetric(InformationFlowBasedCohesionClassMetric.class);
