@@ -19,6 +19,7 @@ package com.sixrr.stockmetrics.utils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public final class SetUtil {
@@ -35,33 +36,22 @@ public final class SetUtil {
         if (a == null || b == null) {
             return false;
         }
-        final Set<T> s1 = a.size() < b.size() ? a : b;
-        final Set<T> s2 = a.size() < b.size() ? b : a;
-        for (final T entry : s1) {
-            if (s2.contains(entry)) {
-                return true;
-            }
-        }
-        return false;
+        final Set<T> intersection  = new HashSet<T>(a);
+        intersection.retainAll(b);
+        return !intersection.isEmpty();
     }
 
     /**
      * Calculate size of the intersection of two sets.
      * @return Size of the intersection of two sets. If one of sets is null, intersection will be considered equal to 0.
      */
-    public static <T> int sizeOfIntersec(@Nullable final Set<T> a, @Nullable final Set<T> b) {
+    public static <T> int sizeOfIntersection(@Nullable final Set<T> a, @Nullable final Set<T> b) {
         if (a == null || b == null) {
             return 0;
         }
-        final Set<T> s1 = a.size() < b.size() ? a : b;
-        final Set<T> s2 = a.size() < b.size() ? b : a;
-        int size = 0;
-        for (final T entry : s1) {
-            if (s2.contains(entry)) {
-                size++;
-            }
-        }
-        return size;
+        final Set<T> intersection  = new HashSet<T>(a);
+        intersection.retainAll(b);
+        return intersection.size();
     }
 
     /**
@@ -75,8 +65,8 @@ public final class SetUtil {
         if (a == null || b == null || a.size() + b.size() == 0) {
             return 1.0;
         }
-        final int intersec = sizeOfIntersec(a, b);
-        return (double) intersec / (double) (a.size() + b.size() - intersec);
+        final int intersection = sizeOfIntersection(a, b);
+        return (double) intersection / (double) (a.size() + b.size() - intersection);
     }
 
     /**

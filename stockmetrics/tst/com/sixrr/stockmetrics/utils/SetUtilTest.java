@@ -35,13 +35,13 @@ public class SetUtilTest {
 
     @Test
     public void testSizeOfIntersec() {
-        assertEquals(0, SetUtil.sizeOfIntersec(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEquals(0, SetUtil.sizeOfIntersec(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
-        assertEquals(1, SetUtil.sizeOfIntersec(
+        assertEquals(0, SetUtil.sizeOfIntersection(null, new HashSet<Integer>(Arrays.asList(1, 2, 3))));
+        assertEquals(0, SetUtil.sizeOfIntersection(new HashSet<Integer>(Arrays.asList(1, 2, 3)), null));
+        assertEquals(1, SetUtil.sizeOfIntersection(
                 new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(3, 4, 5))));
-        assertEquals(3, SetUtil.sizeOfIntersec(
+        assertEquals(3, SetUtil.sizeOfIntersection(
                 new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(1, 2, 3))));
-        assertEquals(0, SetUtil.sizeOfIntersec(
+        assertEquals(0, SetUtil.sizeOfIntersection(
                 new HashSet<Integer>(Arrays.asList(1, 2, 3)), new HashSet<Integer>(Arrays.asList(6, 4, 5))));
     }
 }
