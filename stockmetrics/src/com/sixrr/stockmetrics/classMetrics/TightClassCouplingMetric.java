@@ -22,9 +22,6 @@ import com.sixrr.stockmetrics.classCalculators.TightClassCouplingCalculator;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Aleksandr Chudov.
- */
 public class TightClassCouplingMetric extends ClassMetric {
     @NotNull
     @Override

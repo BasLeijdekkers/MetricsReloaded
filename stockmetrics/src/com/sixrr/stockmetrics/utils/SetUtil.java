@@ -31,7 +31,7 @@ public final class SetUtil {
      * or at least one of them is null.
      */
     @Contract("null, _ -> false; _, null -> false")
-    public static <T> boolean hasIntersec(final Set<T> a, final Set<T> b) {
+    public static <T> boolean haveIntersection(final Set<T> a, final Set<T> b) {
         if (a == null || b == null) {
             return false;
         }

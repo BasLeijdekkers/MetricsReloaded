@@ -39,7 +39,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(275);
+        final List<Metric> metrics = new ArrayList<Metric>(284);
         initializeClassMetrics(metrics);
         initializeInterfaceMetrics(metrics);
         initializeMethodMetrics(metrics);
@@ -354,7 +354,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(11);
+        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(12);
         out.add(createChidamberKemererProfile());
         out.add(createClassCountProfile());
         out.add(createCodeSizeProfile());
@@ -365,14 +365,14 @@ public class JavaMetricProvider implements MetricProvider {
         out.add(createMartinProfile());
         out.add(createMoodProfile());
         out.add(createTestProfile());
-        out.add(createSDDRARProfile());
+        out.add(createCohesionAndCouplingProfile());
         out.add(createFanProfile());
         return out;
     }
 
-    private static PrebuiltMetricProfile createSDDRARProfile() {
+    private static PrebuiltMetricProfile createCohesionAndCouplingProfile() {
         final PrebuiltMetricProfile profile =
-                new PrebuiltMetricProfile(StockMetricsBundle.message("sddrar.metrics.profile.name"));
+                new PrebuiltMetricProfile(StockMetricsBundle.message("cohesion.and.coupling.metrics.profile.name"));
         profile.addMetric(CouplingBetweenObjectsClassMetric.class);
         profile.addMetric(DataAbstractionCouplingClassMetric.class);
         profile.addMetric(InformationFlowBasedCohesionClassMetric.class);

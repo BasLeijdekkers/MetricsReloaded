@@ -40,13 +40,15 @@ public class LackOfCohesionInMethods5ClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
-            final Map<PsiField, Set<PsiMethod>> fieldToMethods =
-                    calculateFieldToMethodUsage(new HashSet<PsiField>(Arrays.asList(aClass.getFields())), getApplicableMethods(aClass));
+
+            final Map<PsiField, Set<PsiMethod>> fieldToMethods = calculateFieldToMethodUsage(
+                            new HashSet<PsiField>(Arrays.asList(aClass.getFields())), getApplicableMethods(aClass));
             final PsiField[] fields = aClass.getFields();
             if (fields.length < 2) {
                 postMetric(aClass, 0);
                 return;
             }
+
             double sumOfJaccardDistances = 0.0;
             for (int i = 0; i < fields.length; i++) {
                 for (int j = i + 1; j < fields.length; j++) {
@@ -55,6 +57,7 @@ public class LackOfCohesionInMethods5ClassCalculator extends ClassCalculator {
                     sumOfJaccardDistances += SetUtil.jaccardDistance(a, b);
                 }
             }
+
             postMetric(aClass, sumOfJaccardDistances / (double) (fields.length * (fields.length - 1) / 2));
         }
     }

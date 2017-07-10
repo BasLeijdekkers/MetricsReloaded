@@ -52,11 +52,13 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
+
             super.visitClass(aClass);
             double metric = 1.0;
             if (allVars.getBucketValue(aClass) > 0) {
                 metric = (double) localVars.getBucketValue(aClass) / (double) allVars.getBucketValue(aClass);
             }
+
             postMetric(aClass, metric);
         }
 
@@ -65,10 +67,12 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (MethodUtils.isTrivialGetterOrSetter(method)) {
                 return;
             }
+
             final PsiClass aClass = method.getContainingClass();
             if (aClass == null) {
                 return;
             }
+
             allVars.incrementBucketValue(aClass, method.getParameterList().getParametersCount());
             usedFields.put(method, new HashSet<PsiField>());
             usedLocalFields.put(method, new HashSet<PsiField>());
@@ -87,15 +91,18 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (calledMethod == null || !MethodUtils.isTrivialGetterOrSetter(calledMethod)) {
                 return;
             }
+
             final PsiMethod method = PsiTreeUtil.getParentOfType(expression, PsiMethod.class);
             final PsiClass aClass = PsiTreeUtil.getParentOfType(expression, PsiClass.class);
             if (method == null || aClass == null) {
                 return;
             }
+
             final PsiClass methodClass = method.getContainingClass();
             if (!aClass.equals(methodClass)) {
                 return;
             }
+
             final Set<PsiField> fields = MethodUtils.getUsedFields(calledMethod);
             usedFields.get(method).addAll(fields);
             for (final PsiField field : fields) {
@@ -119,6 +126,7 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (aClass == null || method == null) {
                 return;
             }
+
             if (element instanceof PsiField) {
                 final PsiField field = (PsiField) element;
                 usedFields.get(method).add(field);
@@ -133,9 +141,11 @@ public class LocalityOfDataClassCalculator extends ClassCalculator {
             if (fieldClass == null) {
                 return false;
             }
+
             if (aClass.equals(fieldClass)) {
                 return !field.hasModifierProperty(PsiModifier.PUBLIC);
             }
+
             return aClass.isInheritor(fieldClass, true) && field.hasModifierProperty(PsiModifier.PROTECTED);
         }
     }

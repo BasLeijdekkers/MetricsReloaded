@@ -39,9 +39,11 @@ public class TightClassCouplingCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
+
             final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
             final int allPairs = applicableMethods.size() * (applicableMethods.size() - 1) / 2;
             final int connectedPairs = calculateConnectedMethods(applicableMethods);
+
             postMetric(aClass, connectedPairs, allPairs);
         }
     }

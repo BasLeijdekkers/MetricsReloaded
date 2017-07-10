@@ -38,8 +38,8 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
                 final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
                 final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = calculateFieldUsage(applicableMethods);
                 final Map<PsiMethod, Set<PsiMethod>> linkedMethods = calculateMethodLinkage(applicableMethods);
-                final Set<Set<PsiMethod>> components = calculateComponents(applicableMethods, fieldsPerMethod,
-                        linkedMethods);
+                final Set<Set<PsiMethod>> components =
+                        calculateComponents(applicableMethods, fieldsPerMethod, linkedMethods);
                 final int numComponents = components.size();
                 postMetric(aClass, numComponents);
             }

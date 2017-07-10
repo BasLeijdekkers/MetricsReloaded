@@ -37,16 +37,19 @@ public class LooseClassCouplingCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
+
             final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
             final int allPairs = applicableMethods.size() * (applicableMethods.size() - 1) / 2;
             final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = calculateFieldUsage(applicableMethods);
             final Set<Set<PsiMethod>> components = calculateComponents(applicableMethods, fieldsPerMethod,
                     new HashMap<PsiMethod, Set<PsiMethod>>());
+
             int metric = 0;
             for (final Set<PsiMethod> methods : components) {
                 final int n = methods.size();
                 metric += n * (n - 1) / 2;
             }
+
             postMetric(aClass, metric, allPairs);
         }
     }

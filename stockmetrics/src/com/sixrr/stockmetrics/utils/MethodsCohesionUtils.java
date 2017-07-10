@@ -36,7 +36,8 @@ public final class MethodsCohesionUtils {
     }
 
     /**
-     * Find all applicable methods in class. Method is considered applicable if it is not constructor or boilerplate.
+     * Find all applicable methods in class. A method is considered applicable if it is not a constructor
+     * or a boilerplate.
      * @param aClass Input class
      * @return Set of applicable methods from input class
      */
@@ -67,8 +68,8 @@ public final class MethodsCohesionUtils {
             while (true) {
                 final Set<PsiMethod> methodsToAdd = new HashSet<PsiMethod>();
                 for (PsiMethod method : applicableMethods) {
-                    if (SetUtil.hasIntersec(fieldsPerMethod.get(method), fieldsUsed) ||
-                            SetUtil.hasIntersec(linkedMethods.get(method), component)) {
+                    if (SetUtil.haveIntersection(fieldsPerMethod.get(method), fieldsUsed) ||
+                            SetUtil.haveIntersection(linkedMethods.get(method), component)) {
                         methodsToAdd.add(method);
                         fieldsUsed.addAll(fieldsPerMethod.get(method));
                     }
@@ -99,7 +100,7 @@ public final class MethodsCohesionUtils {
         int connectedPairs = 0;
         for (int i = 0; i < methods.length; i++) {
             for (int j = i + 1; j < methods.length; j++) {
-                if (SetUtil.hasIntersec(fieldUsage.get(methods[i]), fieldUsage.get(methods[j]))) {
+                if (SetUtil.haveIntersection(fieldUsage.get(methods[i]), fieldUsage.get(methods[j]))) {
                     connectedPairs++;
                 }
             }

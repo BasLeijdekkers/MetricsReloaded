@@ -39,12 +39,14 @@ public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
             if (!isConcreteClass(aClass)) {
                 return;
             }
+
             final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
             final int n = applicableMethods.size();
             if (n <= 1) {
                 postMetric(aClass, 0);
                 return;
             }
+
             final Set<PsiField> fields = new HashSet<PsiField>(Arrays.asList(aClass.getFields()));
             final int fieldsNumber = fields.size();
             final Map<PsiField, Set<PsiMethod>> fieldToMethods =
@@ -53,6 +55,7 @@ public class LackOfCohesionInMethods2ClassCalculator extends ClassCalculator {
             for (final Map.Entry<PsiField, Set<PsiMethod>> e : fieldToMethods.entrySet()) {
                 fieldsUsagesSum += e.getValue().size();
             }
+
             final double averageFieldUsage = fieldsNumber == 0 ? 0.0 : (double) fieldsUsagesSum / fieldsNumber;
             postMetric(aClass, Math.min(1.0, ((double) n - averageFieldUsage) / (double) (n - 1)));
         }
