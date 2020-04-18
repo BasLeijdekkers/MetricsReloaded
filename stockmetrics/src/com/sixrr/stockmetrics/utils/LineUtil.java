@@ -16,10 +16,11 @@
 
 package com.sixrr.stockmetrics.utils;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.*;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.BufferedReader;
+import java.util.StringTokenizer;
 
 public final class LineUtil {
 
@@ -30,7 +31,18 @@ public final class LineUtil {
             return 0;
         }
         final String text = element.getText();
+        element.getContainingFile().getVirtualFile().getDetectedLineSeparator();
         return countLines(text);
+    }
+
+    public static int countBlankLines(PsiElement element) {
+        if (element instanceof PsiCompiledElement) {
+            return 0;
+        }
+        final String text = element.getText();
+        final String lineSeparator = text.contains("\r")? "\r" : "\n";
+        final int totalLinesCount = 1 + StringUtils.countMatches(text, lineSeparator);
+        return totalLinesCount - countLines(text);
     }
 
     static int countLines(String text) {

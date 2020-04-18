@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2017 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,32 +16,28 @@
 
 package com.sixrr.stockmetrics.classCalculators;
 
-import com.intellij.psi.*;
+import com.intellij.psi.JavaRecursiveElementVisitor;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElementVisitor;
+import com.sixrr.stockmetrics.utils.LineUtil;
 
-import java.util.Map;
-import java.util.Set;
-
-import static com.sixrr.stockmetrics.utils.MethodsCohesionUtils.*;
-
-public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
+public class BlankLinesCountClassCalculator extends ClassCalculator {
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends JavaRecursiveElementVisitor {
-
         @Override
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
-                final Set<PsiMethod> applicableMethods = getApplicableMethods(aClass);
-                final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = calculateFieldUsage(applicableMethods);
-                final Map<PsiMethod, Set<PsiMethod>> linkedMethods = calculateMethodLinkage(applicableMethods);
-                final Set<Set<PsiMethod>> components =
-                        calculateComponents(applicableMethods, fieldsPerMethod, linkedMethods);
-                final int numComponents = components.size();
-                postMetric(aClass, numComponents);
+                int blankLines = LineUtil.countBlankLines(aClass);
+                final PsiClass[] innerClasses = aClass.getInnerClasses();
+                for (PsiClass innerClass : innerClasses) {
+                    blankLines -= LineUtil.countBlankLines(innerClass);
+                }
+                postMetric(aClass, (double) blankLines);
             }
         }
     }
