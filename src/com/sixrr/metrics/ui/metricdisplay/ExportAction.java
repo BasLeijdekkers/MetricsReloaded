@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class ExportAction extends AnAction {
 
     ExportAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("export.action"),
-                MetricsReloadedBundle.message("export.description"), AllIcons.Actions.Export);
+                MetricsReloadedBundle.message("export.description"), AllIcons.ToolbarDecorator.Export);
         this.toolWindow = toolWindow;
         this.project = project;
     }

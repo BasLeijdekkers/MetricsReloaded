@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.awt.*;
 
 class HeaderRenderer extends DefaultTableCellRenderer {
 
-    private static final Icon UP_ARROW = AllIcons.Actions.UP;
-    private static final Icon DOWN_ARROW = AllIcons.Actions.Down;
+    private static final Icon UP_ARROW = AllIcons.General.ArrowUp;
+    private static final Icon DOWN_ARROW = AllIcons.General.ArrowDown;
     private final String toolTipText;
     private final MetricTableModel model;
     private final int alignment;
@@ -44,7 +44,6 @@ class HeaderRenderer extends DefaultTableCellRenderer {
         setToolTipText(toolTipText);
         setHorizontalAlignment(alignment);
         setHorizontalTextPosition(alignment);
-        //noinspection HardCodedStringLiteral
         setBorder(UIManager.getBorder("TableHeader.cellBorder"));
         if (!isSelected) {
             setBackground(table.getTableHeader().getBackground());
