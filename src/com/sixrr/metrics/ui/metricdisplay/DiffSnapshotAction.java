@@ -36,7 +36,7 @@ class DiffSnapshotAction extends AnAction {
 
     DiffSnapshotAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("compare.with.snapshot.action"),
-                MetricsReloadedBundle.message("compare.with.snapshot.description"), AllIcons.Diff.Diff);
+                MetricsReloadedBundle.message("compare.with.snapshot.description"), AllIcons.Actions.Diff);
         this.toolWindow = toolWindow;
         this.project = project;
     }

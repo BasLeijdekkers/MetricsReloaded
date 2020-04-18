@@ -27,7 +27,7 @@ class RemoveDiffAction extends AnAction {
 
     RemoveDiffAction(MetricsToolWindow toolWindow) {
         super(MetricsReloadedBundle.message("hide.comparison.action"),
-                MetricsReloadedBundle.message("hide.comparison.description"), AllIcons.Actions.Reset);
+                MetricsReloadedBundle.message("hide.comparison.description"), AllIcons.Actions.Restart);
         this.toolWindow = toolWindow;
     }
 

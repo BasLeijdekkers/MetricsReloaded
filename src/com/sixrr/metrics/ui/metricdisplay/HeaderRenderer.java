@@ -25,8 +25,8 @@ import java.awt.*;
 
 class HeaderRenderer extends DefaultTableCellRenderer {
 
-    private static final Icon UP_ARROW = AllIcons.Actions.UP;
-    private static final Icon DOWN_ARROW = AllIcons.Actions.Down;
+    private static final Icon UP_ARROW = AllIcons.Actions.MoveUp;
+    private static final Icon DOWN_ARROW = AllIcons.Actions.MoveDown;
     private final String toolTipText;
     private final MetricTableModel model;
     private final int alignment;

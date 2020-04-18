@@ -43,7 +43,7 @@ class ExportAction extends AnAction {
 
     ExportAction(MetricsToolWindow toolWindow, Project project) {
         super(MetricsReloadedBundle.message("export.action"),
-                MetricsReloadedBundle.message("export.description"), AllIcons.Actions.Export);
+                MetricsReloadedBundle.message("export.description"), AllIcons.Actions.Download);
         this.toolWindow = toolWindow;
         this.project = project;
     }
