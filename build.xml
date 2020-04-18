@@ -5,8 +5,8 @@
   <property file="build.properties"/>
 
   <!-- override these two in a build.properties file -->
-  <property name="idea.dir" value="/Applications/IntelliJ IDEA 14.1"/>
-  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea14"/>
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA 2019.1.app/Contents"/>
+  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea2019.1"/>
 
   <property name="src.dir" value="src"/>
   <property name="build.classes.dir" value="build/jar-classes"/>
@@ -31,26 +31,47 @@
   <property name="utils.jar.file" value="utils/build/utils.jar"/>
 
   <property name="build.compiler" value="modern"/>
+  <property name="build.sysclasspath" value="ignore"/>
   <path id="openapi.class.path">
+    <pathelement location="${idea.dir}/lib/platform-api.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
-    <pathelement location="${idea.dir}/lib/openapi.jar"/>
+    <pathelement location="${idea.dir}/lib/java-api.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
+    <pathelement location="${idea.dir}/lib/extensions.jar"/>
+  </path>
+
+  <path id="utils.class.path">
+    <pathelement location="${idea.dir}/lib/trove4j.jar"/>
+    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/lib/platform-api.jar"/>
+    <pathelement location="${idea.dir}/lib/util.jar"/>
+    <pathelement location="${idea.dir}/lib/java-api.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
   </path>
 
   <path id="plugin.class.path">
     <pathelement location="lib/jcommon-0.9.1.jar"/>
     <pathelement location="lib/jfreechart-0.9.16.jar"/>
-    <pathelement location="lib/args4j-2.32.jar"/>
-    <pathelement location="${openapi.jar.file}"/>
-    <pathelement location="${utils.jar.file}"/>
-    <pathelement location="${idea.dir}/lib/idea.jar"/>
-    <pathelement location="${idea.dir}/lib/openAPI.jar"/>
-    <pathelement location="${idea.dir}/lib/jdom.jar"/>
+    <pathelement location="lib/args4j-2.32.jar" />
+    <pathelement location="${openapi.build.classes.dir}"/>
+    <pathelement location="${utils.build.classes.dir}"/>
+    <pathelement location="${idea.dir}/lib/platform-api.jar"/>
+    <pathelement location="${idea.dir}/lib/platform-impl.jar"/>
+    <pathelement location="${idea.dir}/lib/java-api.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
-    <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
+    <pathelement location="${idea.dir}/lib/jdom.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
+
+    <!-- jars for language specific metrics support -->
+    <pathelement location="${idea.dir}/lib/java-impl.jar"/>
+    <pathelement location="${idea.dir}/plugins/CSS/lib/css-openapi.jar"/>
+    <pathelement location="${idea.dir}/plugins/Groovy/lib/Groovy.jar"/>
+    <pathelement location="${idea.dir}/plugins/jsp/lib/jsp-impl.jar"/>
+    <pathelement location="${idea.dir}/plugins/JavaScriptLanguage/lib/javascript-openapi.jar"/>
+    <pathelement location="${idea.plugin.dir}/Scala/lib/scalaUltimate.jar"/>
+    <pathelement location="${idea.plugin.dir}/Kotlin/lib/kotlin-plugin.jar"/>
   </path>
 
   <path id="javac2.classpath">
@@ -71,8 +92,7 @@
   </target>
 
   <target name="compile-openapi" depends="prepare">
-    <javac2 srcdir="${openapi.src.dir}" destdir="${openapi.build.classes.dir}"
-           includes="com/sixrr/**" debug="${debug}">
+    <javac2 srcdir="${openapi.src.dir}" destdir="${openapi.build.classes.dir}" includes="com/sixrr/**" debug="${debug}">
       <classpath refid="openapi.class.path"/>
     </javac2>
   </target>
@@ -86,13 +106,12 @@
     <jar jarfile="${openapi.jar.file}" duplicate="fail" index="true" indexMetaInf="true">
       <fileset dir="${openapi.build.classes.dir}"/>
     </jar>
-    <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
   </target>
 
   <target name="compile-utils" depends="prepare, compile-openapi">
     <javac2 srcdir="${utils.src.dir}" destdir="${utils.build.classes.dir}"
            includes="com/sixrr/**" debug="${debug}">
-      <classpath refid="plugin.class.path"/>
+      <classpath refid="utils.class.path"/>
     </javac2>
   </target>
 
@@ -100,7 +119,6 @@
     <jar jarfile="${utils.jar.file}" duplicate="fail" index="true" indexMetaInf="true">
       <fileset dir="${utils.build.classes.dir}"/>
     </jar>
-    <delete failonerror="false" dir="${utils.build.classes.dir}"/>
   </target>
   
   <target name="compile-stockmetrics" depends="prepare, compile-openapi, compile-utils">
@@ -124,8 +142,8 @@
     </jar>
   </target>
 
-  <target name="compile" depends="prepare, compile-openapi, compile-utils">
-    <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}" includeantruntime="false"
+  <target name="compile" depends="prepare, compile-openapi, compile-utils, compile-stockmetrics">
+    <javac2 srcdir="${src.dir}" destdir="${build.classes.dir}"
             includes="com/sixrr/**" debug="${debug}">
       <classpath refid="plugin.class.path"/>
     </javac2>
@@ -141,7 +159,6 @@
       <fileset dir="src" includes="**/*.properties"/>
       <fileset dir="resources"/>
     </jar>
-    <delete failonerror="false" dir="${build.classes.dir}"/>
   </target>
 
   <target name="deploy" depends="create-utils-jar, create-openapi-jar, create-jars, create-stockmetrics-jars"
@@ -169,16 +186,16 @@
   </target>
 
   <target name="clean" description="Clean up the distribution">
-    <delete failonerror="false" dir="${build.classes.dir}"/>
-    <delete failonerror="false" file="${jar.file}"/>
-    <delete failonerror="false" file="${resources.jar.file}"/>
-    <delete failonerror="false" dir="${openapi.build.classes.dir}"/>
-    <delete failonerror="false" file="${openapi.jar.file}"/>
-    <delete failonerror="false" dir="${stockmetrics.build.classes.dir}"/>
-    <delete failonerror="false" dir="${stockmetrics.jar.file}"/>
-    <delete failonerror="false" dir="${stockmetrics.resources.jar.file}"/>
-    <delete failonerror="false" dir="${utils.build.classes.dir}"/>
-    <delete failonerror="false" dir="${utils.jar.file}"/>
+    <delete dir="${build.classes.dir}"/>
+    <delete dir="${openapi.build.classes.dir}"/>
+    <delete dir="${stockmetrics.build.classes.dir}"/>
+    <delete dir="${utils.build.classes.dir}"/>
+    <delete file="${jar.file}"/>
+    <delete file="${resources.jar.file}"/>
+    <delete file="${openapi.jar.file}"/>
+    <delete file="${stockmetrics.jar.file}"/>
+    <delete file="${stockmetrics.resources.jar.file}"/>
+    <delete file="${utils.jar.file}"/>
   </target>
 
   <target name="package" depends="create-openapi-jar, create-utils-jar, create-stockmetrics-jars, create-jars"
