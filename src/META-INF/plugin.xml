@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+  ~ Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -30,17 +30,13 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must NOT be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.8</version>
+  <version>1.9</version>
   <change-notes><![CDATA[
-  1.8<br>
-  - New Java metrics to count lambdas, anonymous classes and null checks<br>
-  - New tool window icon<br>
-  - Several package metrics now work correctly on non-java languages (Kotlin, Groovy...)<br>
-  - Fixed "Number of assert statements" metric<br>
-  - "Non-comment lines of code" no longer counts lines in text files<br>
-  - "Number of exceptions caught" metric now counts multi-catch exceptions correctly<br>
+  1.9<br>
+  - Restores compatibility with IntelliJ IDEA 2020.1<br>
+  - Fix incompatibility with the Scala plugin<br>
   ]]></change-notes>
-  <idea-version since-build="139"/>
+  <idea-version since-build="191"/>
 
   <depends optional="true" config-file="java-metrics.xml">com.intellij.modules.java</depends>
   <depends optional="true" config-file="jsp-metrics.xml">com.intellij.jsp</depends>
