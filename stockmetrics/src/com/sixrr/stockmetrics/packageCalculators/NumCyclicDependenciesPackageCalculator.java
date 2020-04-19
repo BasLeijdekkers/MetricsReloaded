@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class NumCyclicDependenciesPackageCalculator extends PackageCalculator {
-    private final Set<PsiPackage> packages = new HashSet<PsiPackage>();
+    private final Set<PsiPackage> packages = new HashSet<>();
 
     @Override
     public void endMetricsRun() {
@@ -48,7 +48,10 @@ public class NumCyclicDependenciesPackageCalculator extends PackageCalculator {
 
         @Override
         public void visitFile(PsiFile file) {
-            packages.add(ClassUtils.findPackage(file));
+            final PsiPackage aPackage = ClassUtils.findPackage(file);
+            if (aPackage != null) {
+                packages.add(aPackage);
+            }
         }
     }
 }
