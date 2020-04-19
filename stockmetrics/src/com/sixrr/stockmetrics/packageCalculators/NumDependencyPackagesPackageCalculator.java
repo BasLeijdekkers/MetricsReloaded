@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,10 @@ public class NumDependencyPackagesPackageCalculator extends PackageCalculator {
 
         @Override
         public void visitFile(PsiFile file) {
-            packages.add(ClassUtils.findPackage(file));
+            final PsiPackage aPackage = ClassUtils.findPackage(file);
+            if (aPackage != null) {
+                packages.add(aPackage);
+            }
         }
     }
 }
