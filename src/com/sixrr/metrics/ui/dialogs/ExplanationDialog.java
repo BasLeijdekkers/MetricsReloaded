@@ -28,8 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -66,12 +64,9 @@ public class ExplanationDialog extends DialogWrapper {
             urlLabel.setVisible(true);
             moreInformationLabel.setVisible(true);
         }
-        urlLabel.addHyperlinkListener(new HyperlinkListener() {
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if (helpURL != null) {
-                    BrowserUtil.browse("http://" + helpURL);
-                }
+        urlLabel.addHyperlinkListener(e -> {
+            if (helpURL != null) {
+                BrowserUtil.browse("http://" + helpURL);
             }
         });
         show();

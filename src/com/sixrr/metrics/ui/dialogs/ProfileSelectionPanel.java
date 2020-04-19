@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,10 +26,7 @@ import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class ProfileSelectionPanel extends JPanel {
 
@@ -67,12 +64,7 @@ public class ProfileSelectionPanel extends JPanel {
         final JCheckBox checkBox = new JCheckBox(MetricsReloadedBundle.message(
                 "show.only.results.which.exceed.metrics.thresholds"));
         checkBox.setSelected(configuration.isShowOnlyWarnings());
-        checkBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                configuration.setShowOnlyWarnings(checkBox.isSelected());
-            }
-        });
+        checkBox.addActionListener(event -> configuration.setShowOnlyWarnings(checkBox.isSelected()));
         return checkBox;
     }
 
@@ -85,28 +77,22 @@ public class ProfileSelectionPanel extends JPanel {
         final MetricsProfile currentProfile = repository.getCurrentProfile();
         final String currentProfileName = currentProfile.getName();
         comboBox.setSelectedItem(currentProfileName);
-        comboBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent event) {
-                if (event.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                final String selectedProfile = (String) comboBox.getSelectedItem();
-                repository.setSelectedProfile(selectedProfile);
+        comboBox.addItemListener(event -> {
+            if (event.getStateChange() == ItemEvent.DESELECTED) {
+                return;
             }
+            final String selectedProfile = (String) comboBox.getSelectedItem();
+            repository.setSelectedProfile(selectedProfile);
         });
-        comboboxWithBrowseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final MetricsConfigurationDialog configurationDialog =
-                        new MetricsConfigurationDialog(project, repository);
-                configurationDialog.show();
-                final String[] profiles = repository.getProfileNames();
-                comboBox.setModel(new DefaultComboBoxModel(profiles));
-                final MetricsProfile currentProfile = repository.getCurrentProfile();
-                final String currentProfileName = currentProfile.getName();
-                comboBox.setSelectedItem(currentProfileName);
-            }
+        comboboxWithBrowseButton.addActionListener(e -> {
+            final MetricsConfigurationDialog configurationDialog =
+                    new MetricsConfigurationDialog(project, repository);
+            configurationDialog.show();
+            final String[] profiles1 = repository.getProfileNames();
+            comboBox.setModel(new DefaultComboBoxModel(profiles1));
+            final MetricsProfile currentProfile1 = repository.getCurrentProfile();
+            final String currentProfileName1 = currentProfile1.getName();
+            comboBox.setSelectedItem(currentProfileName1);
         });
         return comboboxWithBrowseButton;
     }

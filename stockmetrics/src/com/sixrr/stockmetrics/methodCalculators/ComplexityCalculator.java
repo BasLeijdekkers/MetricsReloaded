@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiElementFilter;
 import com.sixrr.metrics.utils.MethodUtils;
 import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
@@ -38,12 +37,8 @@ public abstract class ComplexityCalculator extends MethodCalculator {
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method,  new PsiElementFilter() {
-                @Override
-                public boolean isAccepted(PsiElement element) {
-                    return !isReducible(element);
-                }
-            });
+            final int complexity =
+                    CyclomaticComplexityUtil.calculateComplexity(method, element -> !isReducible(element));
             postMetric(method, complexity);
         }
     }

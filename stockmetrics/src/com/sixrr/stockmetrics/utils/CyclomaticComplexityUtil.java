@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,12 +25,7 @@ import com.intellij.psi.util.PsiElementFilter;
  */
 public final class CyclomaticComplexityUtil {
 
-    public static final PsiElementFilter ACCEPT_ALL = new PsiElementFilter() {
-        @Override
-        public boolean isAccepted(PsiElement psiElement) {
-            return true;
-        }
-    };
+    public static final PsiElementFilter ACCEPT_ALL = psiElement -> true;
 
     private CyclomaticComplexityUtil() {}
 

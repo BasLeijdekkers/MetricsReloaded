@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -142,12 +142,7 @@ public class MetricsCommandLine implements ApplicationStarter {
                     error("Unable to open project: " + projectPath);
                 }
 
-                application.runWriteAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-                    }
-                });
+                application.runWriteAction(() -> VirtualFileManager.getInstance().refreshWithoutFileWatcher(false));
                 PatchProjectUtil.patchProject(project);
                 info("Project " + project.getName() + " opened.");
 
@@ -178,27 +173,24 @@ public class MetricsCommandLine implements ApplicationStarter {
                 } else {
                     analysisScope = new AnalysisScope(project);
                 }
-                ProgressManager.getInstance().runProcess(new Runnable() {
-                    @Override
-                    public void run() {
-                        final MetricsRunImpl metricsRun = new MetricsRunImpl();
-                        metricsRun.setProfileName(profile.getName());
-                        metricsRun.setTimestamp(new TimeStamp());
-                        metricsRun.setContext(analysisScope);
-                        final MetricsExecutionContextImpl metricsExecutionContext =
-                                new MetricsExecutionContextImpl(project, analysisScope);
-                        metricsExecutionContext.calculateMetrics(profile, metricsRun);
-                        final Exporter exporter = new XMLExporter(metricsRun);
-                        try {
-                            if (outputXmlPath == null) {
-                                final PrintWriter writer = new PrintWriter(System.out, true);
-                                exporter.export(writer);
-                            } else {
-                                exporter.export(outputXmlPath);
-                            }
-                        } catch (IOException e) {
-                            error(e.getMessage());
+                ProgressManager.getInstance().runProcess(() -> {
+                    final MetricsRunImpl metricsRun = new MetricsRunImpl();
+                    metricsRun.setProfileName(profile.getName());
+                    metricsRun.setTimestamp(new TimeStamp());
+                    metricsRun.setContext(analysisScope);
+                    final MetricsExecutionContextImpl metricsExecutionContext =
+                            new MetricsExecutionContextImpl(project, analysisScope);
+                    metricsExecutionContext.calculateMetrics(profile, metricsRun);
+                    final Exporter exporter = new XMLExporter(metricsRun);
+                    try {
+                        if (outputXmlPath == null) {
+                            final PrintWriter writer = new PrintWriter(System.out, true);
+                            exporter.export(writer);
+                        } else {
+                            exporter.export(outputXmlPath);
                         }
+                    } catch (IOException e) {
+                        error(e.getMessage());
                     }
                 }, new ProgressIndicatorBase() {
                     private int lastPercent = 0;

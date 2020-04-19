@@ -63,12 +63,7 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
 
     @Override
     public void processFile(final PsiFile file) {
-        ProgressManager.getInstance().runProcess(new Runnable() {
-            @Override
-            public void run() {
-                file.accept(visitor);
-            }
-        }, new EmptyProgressIndicator());
+        ProgressManager.getInstance().runProcess(() -> file.accept(visitor), new EmptyProgressIndicator());
     }
 
     protected abstract PsiElementVisitor createVisitor();

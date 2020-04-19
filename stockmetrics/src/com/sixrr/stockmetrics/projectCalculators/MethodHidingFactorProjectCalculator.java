@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -81,17 +81,14 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
             return subclassesPerClass.get(aClass);
         }
         final int[] numSubclasses = new int[1];
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final Project project = executionContext.getProject();
-                final GlobalSearchScope globalScope = GlobalSearchScope.allScope(project);
-                final Query<PsiClass> query = ClassInheritorsSearch.search(
-                        aClass, globalScope, true, true, true);
-                for (final PsiClass inheritor : query) {
-                    if (!inheritor.isInterface()) {
-                        numSubclasses[0]++;
-                    }
+        final Runnable runnable = () -> {
+            final Project project = executionContext.getProject();
+            final GlobalSearchScope globalScope = GlobalSearchScope.allScope(project);
+            final Query<PsiClass> query = ClassInheritorsSearch.search(
+                    aClass, globalScope, true, true, true);
+            for (final PsiClass inheritor : query) {
+                if (!inheritor.isInterface()) {
+                    numSubclasses[0]++;
                 }
             }
         };

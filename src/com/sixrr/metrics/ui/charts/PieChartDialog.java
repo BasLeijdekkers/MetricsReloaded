@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PieChartDialog extends DialogWrapper {
@@ -73,13 +72,10 @@ public class PieChartDialog extends DialogWrapper {
                 total += value;
             }
         }
-        Collections.sort(namedValues, new Comparator<Pair<String, Double>>() {
-            @Override
-            public int compare(Pair<String, Double> pair1, Pair<String, Double> pair2) {
-                final Double value1 = pair1.getSecond();
-                final Double value2 = pair2.getSecond();
-                return -value1.compareTo(value2);
-            }
+        Collections.sort(namedValues, (pair1, pair2) -> {
+            final Double value1 = pair1.getSecond();
+            final Double value2 = pair2.getSecond();
+            return -value1.compareTo(value2);
         });
         final DefaultPieDataset dataset = new DefaultPieDataset();
 

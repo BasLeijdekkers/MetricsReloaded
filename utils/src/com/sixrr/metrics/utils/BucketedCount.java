@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.metrics.utils;
 
 import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectProcedure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -35,12 +34,9 @@ public class BucketedCount<T> {
 
     public Set<T> getBuckets() {
         final Set<T> result = new HashSet<T>(buckets.size());
-        buckets.forEachKey(new TObjectProcedure<T>() {
-            @Override
-            public boolean execute(T t) {
-                result.add(t);
-                return true;
-            }
+        buckets.forEachKey(t -> {
+            result.add(t);
+            return true;
         });
         return result;
     }

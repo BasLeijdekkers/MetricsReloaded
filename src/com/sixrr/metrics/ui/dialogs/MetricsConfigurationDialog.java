@@ -34,21 +34,23 @@ import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.containers.Convertor;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.profile.MetricInstance;
-import com.sixrr.metrics.utils.MetricsCategoryNameUtil;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.SearchUtil;
+import com.sixrr.metrics.utils.MetricsCategoryNameUtil;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.Document;
 import javax.swing.text.NumberFormatter;
@@ -228,34 +230,28 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupLowerThresholdEnabledButton() {
         final ButtonModel checkboxModel = lowerThresholdEnabledCheckbox.getModel();
-        checkboxModel.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (selectedMetricInstance != null) {
-                    final boolean selected = checkboxModel.isSelected();
-                    if (selectedMetricInstance.isLowerThresholdEnabled() != selected) {
-                        selectedMetricInstance.setLowerThresholdEnabled(selected);
-                        markProfileDirty();
-                    }
-                    lowerThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
+        checkboxModel.addChangeListener(e -> {
+            if (selectedMetricInstance != null) {
+                final boolean selected = checkboxModel.isSelected();
+                if (selectedMetricInstance.isLowerThresholdEnabled() != selected) {
+                    selectedMetricInstance.setLowerThresholdEnabled(selected);
+                    markProfileDirty();
                 }
+                lowerThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
             }
         });
     }
 
     private void setupUpperThresholdEnabledButton() {
         final ButtonModel checkboxModel = upperThresholdEnabledCheckbox.getModel();
-        checkboxModel.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (selectedMetricInstance != null) {
-                    final boolean selected = checkboxModel.isSelected();
-                    if (selectedMetricInstance.isUpperThresholdEnabled() != selected) {
-                        selectedMetricInstance.setUpperThresholdEnabled(selected);
-                        markProfileDirty();
-                    }
-                    upperThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
+        checkboxModel.addChangeListener(e -> {
+            if (selectedMetricInstance != null) {
+                final boolean selected = checkboxModel.isSelected();
+                if (selectedMetricInstance.isUpperThresholdEnabled() != selected) {
+                    selectedMetricInstance.setUpperThresholdEnabled(selected);
+                    markProfileDirty();
                 }
+                upperThresholdField.setEnabled(selected && selectedMetricInstance.isEnabled());
             }
         });
     }
@@ -282,17 +278,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             }
         });
         //noinspection ResultOfObjectAllocationIgnored
-        new TreeSpeedSearch(metricsTree, new Convertor<TreePath, String>() {
-            @Override
-            public String convert(TreePath treePath) {
-                final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                final Object userObject = node.getUserObject();
-                if (userObject instanceof MetricInstance) {
-                    final MetricInstance metricInstance = (MetricInstance) userObject;
-                    return metricInstance.getMetric().getDisplayName();
-                } else {
-                    return userObject.toString();
-                }
+        new TreeSpeedSearch(metricsTree, treePath -> {
+            final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+            final Object userObject = node.getUserObject();
+            if (userObject instanceof MetricInstance) {
+                final MetricInstance metricInstance = (MetricInstance) userObject;
+                return metricInstance.getMetric().getDisplayName();
+            } else {
+                return userObject.toString();
             }
         });
         metricsTree.setSelectionRow(0);
@@ -368,22 +361,19 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final MetricsProfile currentProfile = repository.getCurrentProfile();
         profilesDropdown.setSelectedItem(currentProfile.getName());
         toggleDeleteButton();
-        profilesDropdown.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    return;
-                }
-                final String selectedProfile = (String) profilesDropdown.getSelectedItem();
-                final String currentProfileName = profile.getName();
-                if (!selectedProfile.equals(currentProfileName)) {
-                    repository.setSelectedProfile(selectedProfile);
-                    profile = repository.getCurrentProfile();
-                    markProfileClean();
-                }
-                rebindMetricsTree();
-                toggleDeleteButton();
+        profilesDropdown.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                return;
             }
+            final String selectedProfile = (String) profilesDropdown.getSelectedItem();
+            final String currentProfileName = profile.getName();
+            if (!selectedProfile.equals(currentProfileName)) {
+                repository.setSelectedProfile(selectedProfile);
+                profile = repository.getCurrentProfile();
+                markProfileClean();
+            }
+            rebindMetricsTree();
+            toggleDeleteButton();
         });
     }
 
@@ -442,13 +432,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupResetButton() {
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                repository.reloadProfileFromStorage(profile);
-                markProfileClean();
-                populateTree(filterComponent.getFilter());
-            }
+        resetButton.addActionListener(e -> {
+            repository.reloadProfileFromStorage(profile);
+            markProfileClean();
+            populateTree(filterComponent.getFilter());
         });
     }
 
@@ -475,18 +462,15 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupDeleteButton() {
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String currentProfileName = profile.getName();
-                repository.deleteProfile(profile);
-                profile = repository.getCurrentProfile();
-                markProfileClean();
-                profilesDropdown.removeItem(currentProfileName);
-                profilesDropdown.setSelectedItem(profile.getName());
-                toggleDeleteButton();
-                rebindMetricsTree();
-            }
+        deleteButton.addActionListener(e -> {
+            final String currentProfileName = profile.getName();
+            repository.deleteProfile(profile);
+            profile = repository.getCurrentProfile();
+            markProfileClean();
+            profilesDropdown.removeItem(currentProfileName);
+            profilesDropdown.setSelectedItem(profile.getName());
+            toggleDeleteButton();
+            rebindMetricsTree();
         });
     }
 
