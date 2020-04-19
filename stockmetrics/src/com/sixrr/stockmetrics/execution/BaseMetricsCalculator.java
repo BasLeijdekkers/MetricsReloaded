@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ package com.sixrr.stockmetrics.execution;
 
 import com.intellij.analysis.AnalysisScope;
 import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -44,7 +42,7 @@ import com.sixrr.stockmetrics.metricModel.BaseMetric;
 
 public abstract class BaseMetricsCalculator implements MetricCalculator {
 
-    private static final Key<DependencyMapImpl> dependencyMapKey = new Key<DependencyMapImpl>("dependencyMap");
+    private static final Key<DependencyMapImpl> dependencyMapKey = new Key<>("dependencyMap");
 
     protected Metric metric = null;
     protected MetricsResultsHolder resultsHolder = null;
@@ -95,7 +93,6 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
         final AnalysisScope analysisScope = new AnalysisScope(project);
         final int allFilesCount = analysisScope.getFileCount();
         final PsiManager psiManager = PsiManager.getInstance(project);
-        final Application application = ApplicationManager.getApplication();
 
         analysisScope.accept(new Processor<VirtualFile>() {
 
@@ -111,16 +108,13 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
                 if (virtualFile.getFileType() != JavaFileType.INSTANCE) {
                     return true;
                 }
-                final AccessToken token = application.acquireReadActionLock();
-                try {
+                ReadAction.run(() -> {
                     final PsiFile file = psiManager.findFile(virtualFile);
                     if (!(file instanceof PsiJavaFile)) {
-                        return true;
+                        return;
                     }
                     dependencyMap.build(file);
-                } finally {
-                    token.finish();
-                }
+                });
                 return true;
             }
         });
