@@ -43,10 +43,16 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
                 final PsiMethod[] methods = aClass.getMethods();
+                final PsiMethod[] constructors = aClass.getConstructors();
+
+                final PsiMethod[] routines = new PsiMethod[methods.length + constructors.length];
+                System.arraycopy(constructors, 0, routines, 0, constructors.length);
+                System.arraycopy(methods, 0, routines, constructors.length, methods.length);
+
                 final Set<PsiMethod> applicableMethods = new HashSet<PsiMethod>();
-                for (PsiMethod method : methods) {
+                for (PsiMethod method : routines) {
                     final String methodName = method.getName();
-                    if (!method.isConstructor() && !boilerplateMethods.contains(methodName)) {
+                    if (!boilerplateMethods.contains(methodName)) {
                         applicableMethods.add(method);
                     }
                 }
