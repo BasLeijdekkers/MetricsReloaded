@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -458,7 +458,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             public void mouseClicked(MouseEvent event) {
                 final String helpURL = selectedMetricInstance.getMetric().getHelpURL();
                 if (helpURL != null) {
-                    BrowserUtil.launchBrowser("http://" + helpURL);
+                    BrowserUtil.browse("http://" + helpURL);
                 }
             }
         });
