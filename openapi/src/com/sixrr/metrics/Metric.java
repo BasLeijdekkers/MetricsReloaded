@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ import org.jetbrains.annotations.Nullable;
  * and tells how a calculator for the metric may be created.
  */
 public interface Metric {
+
+    Metric[] EMPTY_ARRAY = {};
+
     /**
      * The id of the metric.  This is a non-user visible string which will be used a key for managing metrics internal
      * to MetricsReloaded.  It should be unique over the space of all defined metrics.

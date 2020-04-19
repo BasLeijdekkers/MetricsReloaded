@@ -64,7 +64,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
                                                            Map<PsiMethod, Set<PsiField>> fieldsPerMethod,
                                                            Map<PsiMethod, Set<PsiMethod>> linkedMethods) {
         final Set<Set<PsiMethod>> components = new HashSet<>();
-        while (applicableMethods.size() > 0) {
+        while (!applicableMethods.isEmpty()) {
             final Set<PsiMethod> component = new HashSet<>();
             final Set<PsiField> fieldsUsed = new HashSet<>();
             final PsiMethod testMethod = applicableMethods.iterator().next();
@@ -80,7 +80,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
                         fieldsUsed.addAll(fieldsPerMethod.get(method));
                     }
                 }
-                if (methodsToAdd.size() == 0) {
+                if (methodsToAdd.isEmpty()) {
                     break;
                 }
                 applicableMethods.removeAll(methodsToAdd);

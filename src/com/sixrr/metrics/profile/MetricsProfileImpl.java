@@ -236,16 +236,13 @@ public class MetricsProfileImpl implements MetricsProfile {
     @Override
     @SuppressWarnings({"HardCodedStringLiteral"})
     public void writeToFile(File profileFile) throws FileNotFoundException {
-        final PrintWriter writer = new PrintWriter(new FileOutputStream(profileFile));
-        try {
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(profileFile))) {
             writer.println("<METRICS_PROFILE name = \"" + name + "\">");
             writeDisplaySpec(writer, displaySpecification);
             for (final MetricInstance metric : getMetricInstances()) {
                 writeMetric(metric, writer);
             }
             writer.println("</METRICS_PROFILE>");
-        } finally {
-            writer.close();
         }
     }
 
@@ -275,7 +272,7 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     private static String writeListAsString(List<?> list) {
-        final StringBuffer out = new StringBuffer();
+        final StringBuilder out = new StringBuilder();
 
         for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
             final Object element = iterator.next();

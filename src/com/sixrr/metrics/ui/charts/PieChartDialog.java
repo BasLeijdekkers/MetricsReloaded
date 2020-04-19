@@ -72,7 +72,7 @@ public class PieChartDialog extends DialogWrapper {
                 total += value;
             }
         }
-        Collections.sort(namedValues, (pair1, pair2) -> {
+        namedValues.sort((pair1, pair2) -> {
             final Double value1 = pair1.getSecond();
             final Double value2 = pair2.getSecond();
             return -value1.compareTo(value2);

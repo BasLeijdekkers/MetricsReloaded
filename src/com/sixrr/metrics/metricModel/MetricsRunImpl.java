@@ -36,6 +36,7 @@ import com.sixrr.metrics.utils.MethodUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -193,6 +194,7 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void writeToFile(@NotNull String fileName) {
         try {
+            @NonNls
             final XMLStreamWriter writer =
                     XMLOutputFactory.newInstance().createXMLStreamWriter(new FileOutputStream(fileName), "UTF-8");
             try {
@@ -217,9 +219,7 @@ public class MetricsRunImpl implements MetricsRun {
                     logger.warn(e);
                 }
             }
-        } catch (IOException e) {
-            logger.warn(e);
-        } catch (XMLStreamException e) {
+        } catch (IOException | XMLStreamException e) {
             logger.warn(e);
         }
     }
@@ -276,7 +276,7 @@ public class MetricsRunImpl implements MetricsRun {
         }
     }
 
-    private static void writeResultsForMetric(Metric metric, MetricsResult results, XMLStreamWriter writer)
+    private static void writeResultsForMetric(Metric metric, MetricsResult results, @NonNls XMLStreamWriter writer)
             throws XMLStreamException {
         final Class<?> metricClass = metric.getClass();
         final String[] measuredObjects = results.getMeasuredObjects();
@@ -292,7 +292,7 @@ public class MetricsRunImpl implements MetricsRun {
         writer.writeCharacters("\n");
     }
 
-    private static void writeValue(MetricsResult results, Metric metric, String measuredObject, XMLStreamWriter writer)
+    private static void writeValue(MetricsResult results, Metric metric, String measuredObject, @NonNls XMLStreamWriter writer)
             throws XMLStreamException {
         final Double value = results.getValueForMetric(metric, measuredObject);
         if (value != null) {

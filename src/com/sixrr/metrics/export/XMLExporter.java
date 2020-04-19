@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -40,17 +40,14 @@ public class XMLExporter implements Exporter {
 
     @Override
     public void export(String fileName) throws IOException {
-        @NonNls final PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
-        try {
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(fileName))) {
             export(writer);
-        } finally {
-            writer.close();
         }
     }
 
     @Override
-    public void export(PrintWriter writer) throws IOException {
-        writer.println("<METRICS profile=\"" + StringUtil.escapeXml(run.getProfileName()) + "\" timestamp=\"" +
+    public void export(@NonNls PrintWriter writer) {
+        writer.println("<METRICS profile=\"" + StringUtil.escapeXmlEntities(run.getProfileName()) + "\" timestamp=\"" +
                 run.getTimestamp() + "\">");
         writeContext(run.getContext());
         for (MetricCategory category : MetricCategory.values()) {
@@ -85,7 +82,7 @@ public class XMLExporter implements Exporter {
                                    @NonNls PrintWriter writer) {
         final Double value = results.getValueForMetric(metric, measuredObject);
         if (value != null) {
-            writer.println("\t\t<VALUE measured=\"" + StringUtil.escapeXml(measuredObject) + "\" value=\"" + value + "\"/>");
+            writer.println("\t\t<VALUE measured=\"" + StringUtil.escapeXmlEntities(measuredObject) + "\" value=\"" + value + "\"/>");
         }
     }
 }

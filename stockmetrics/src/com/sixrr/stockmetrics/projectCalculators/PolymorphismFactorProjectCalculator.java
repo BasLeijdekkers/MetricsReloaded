@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PolymorphismFactorProjectCalculator extends ProjectCalculator {
-    private Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
+    private final Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
     private int numOverridingMethods = 0;
     private int numOverridePotentials = 0;
 

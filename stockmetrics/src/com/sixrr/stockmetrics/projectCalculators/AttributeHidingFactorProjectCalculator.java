@@ -33,9 +33,9 @@ public class AttributeHidingFactorProjectCalculator extends ProjectCalculator {
     private int numPublicAttributes = 0;
     private int numClasses = 0;
     private int totalVisibility = 0;
-    private Bag<String> classesPerPackage = new Bag<>();
-    private Bag<String> packageVisibleAttributesPerPackage = new Bag<>();
-    private Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
+    private final Bag<String> classesPerPackage = new Bag<>();
+    private final Bag<String> packageVisibleAttributesPerPackage = new Bag<>();
+    private final Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
 
     @Override
     protected PsiElementVisitor createVisitor() {

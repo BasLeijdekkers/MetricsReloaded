@@ -70,12 +70,12 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public String[] getMeasuredObjects() {
-        return measuredObjects.toArray(new String[measuredObjects.size()]);
+        return measuredObjects.toArray(new String[0]);
     }
 
     @Override
     public Metric[] getMetrics() {
-        return metrics.toArray(new Metric[metrics.size()]);
+        return metrics.toArray(Metric.EMPTY_ARRAY);
     }
 
     @Override

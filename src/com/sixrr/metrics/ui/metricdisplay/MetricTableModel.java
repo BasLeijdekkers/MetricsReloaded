@@ -298,7 +298,7 @@ class MetricTableModel extends AbstractTableModel {
             Collections.addAll(allObjects, prevResultObjects);
         }
         Collections.addAll(allObjects, resultObjects);
-        measuredObjects = allObjects.toArray(new String[allObjects.size()]);
+        measuredObjects = allObjects.toArray(new String[0]);
     }
 
     private void tabulateMetrics() {
@@ -310,7 +310,7 @@ class MetricTableModel extends AbstractTableModel {
             final MetricInstance[] prevResultMetrics = findMetricInstances(prevResults.getMetrics());
             Collections.addAll(allMetrics, prevResultMetrics);
         }
-        metricsInstances = allMetrics.toArray(new MetricInstance[allMetrics.size()]);
+        metricsInstances = allMetrics.toArray(MetricInstance.EMPTY_ARRAY);
         Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
     }
 

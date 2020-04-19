@@ -35,9 +35,9 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
     private int numPublicMethods = 0;
     private int numClasses = 0;
     private int totalVisibility = 0;
-    private Bag<String> classesPerPackage = new Bag<>();
-    private Bag<String> packageVisibleMethodsPerPackage = new Bag<>();
-    private Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
+    private final Bag<String> classesPerPackage = new Bag<>();
+    private final Bag<String> packageVisibleMethodsPerPackage = new Bag<>();
+    private final Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
 
     @Override
     protected PsiElementVisitor createVisitor() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,11 +38,8 @@ public class CSVExporter implements Exporter {
 
     @Override
     public void export(String fileName) throws IOException {
-        PrintWriter writer = new PrintWriter(fileName);
-        try {
+        try (PrintWriter writer = new PrintWriter(fileName)) {
             export(writer);
-        } finally {
-            writer.close();
         }
     }
 

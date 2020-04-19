@@ -145,7 +145,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         return scope;
     }
 
-    private Map userData = new HashMap();
+    private final Map userData = new HashMap();
 
     @Override
     public final <T> T getUserData(@NotNull Key<T> key) {

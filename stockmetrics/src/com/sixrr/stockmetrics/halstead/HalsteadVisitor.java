@@ -35,7 +35,7 @@ public class HalsteadVisitor extends JavaRecursiveElementVisitor {
         super.visitReferenceExpression(expression);
 
         final PsiElement element = expression.resolve();
-        if (element != null && element instanceof PsiVariable) {
+        if (element instanceof PsiVariable) {
             final String expressionText = expression.getText();
             registerOperand(expressionText);
         }

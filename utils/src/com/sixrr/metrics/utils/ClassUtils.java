@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public final class ClassUtils {
             out.add(aPackage);
             aPackage = aPackage.getParentPackage();
         }
-        return out.toArray(new PsiPackage[out.size()]);
+        return out.toArray(PsiPackage.EMPTY_ARRAY);
     }
 
     public static boolean isAnonymous(PsiClass aClass) {
