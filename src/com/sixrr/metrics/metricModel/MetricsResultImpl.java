@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,11 +33,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class MetricsResultImpl implements MetricsResult {
-    private final Map<Metric, StringToFractionMap> values = new HashMap<Metric, StringToFractionMap>(32);
-    private final Set<String> measuredObjects = new HashSet<String>(32);
-    private final Set<Metric> metrics = new HashSet<Metric>(32);
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elements =
-            new HashMap<String, SmartPsiElementPointer<PsiElement>>(1024);
+    private final Map<Metric, StringToFractionMap> values = new HashMap<>(32);
+    private final Set<String> measuredObjects = new HashSet<>(32);
+    private final Set<Metric> metrics = new HashSet<>(32);
+    private final Map<String, SmartPsiElementPointer<PsiElement>> elements = new HashMap<>(1024);
 
     @Override
     public void postValue(Metric metric, String measured, double value) {

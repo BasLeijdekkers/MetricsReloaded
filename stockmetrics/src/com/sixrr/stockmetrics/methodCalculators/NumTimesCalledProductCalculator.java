@@ -39,7 +39,7 @@ public class NumTimesCalledProductCalculator extends MethodCalculator {
         @Override
         public void visitMethod(PsiMethod method) {
             if (methodNestingDepth == 0) {
-                final Key<MethodCallMap> key = new Key<MethodCallMap>("MethodCallMap");
+                final Key<MethodCallMap> key = new Key<>("MethodCallMap");
 
                 MethodCallMap methodCallMap = executionContext.getUserData(key);
                 if (methodCallMap == null) {

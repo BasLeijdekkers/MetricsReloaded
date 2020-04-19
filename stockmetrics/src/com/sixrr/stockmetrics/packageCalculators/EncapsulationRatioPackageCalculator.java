@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import java.util.Set;
 
 public class EncapsulationRatioPackageCalculator extends PackageCalculator {
 
-    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<PsiPackage>();
-    private final BucketedCount<PsiPackage> numInternalClassesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<>();
+    private final BucketedCount<PsiPackage> numInternalClassesPerPackage = new BucketedCount<>();
 
     @Override
     public void endMetricsRun() {
@@ -69,7 +69,7 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
                 return true;
             }
             final String packageName = ClassUtils.calculatePackageName(aClass);
-            final Key<ClassReferenceCache> key = new Key<ClassReferenceCache>("ClassReferenceCache");
+            final Key<ClassReferenceCache> key = new Key<>("ClassReferenceCache");
 
             ClassReferenceCache classReferenceCache = executionContext.getUserData(key);
             if (classReferenceCache == null) {

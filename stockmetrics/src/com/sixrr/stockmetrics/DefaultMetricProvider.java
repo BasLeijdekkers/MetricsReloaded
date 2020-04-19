@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,13 +19,9 @@ package com.sixrr.stockmetrics;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricProvider;
 import com.sixrr.metrics.PrebuiltMetricProfile;
-import com.sixrr.stockmetrics.classMetrics.SourceLinesOfCodeClassMetric;
 import com.sixrr.stockmetrics.fileTypeMetrics.*;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.interfaceMetrics.SourceLinesOfCodeInterfaceMetric;
-import com.sixrr.stockmetrics.methodMetrics.SourceLinesOfCodeMethodMetric;
 import com.sixrr.stockmetrics.moduleMetrics.*;
-import com.sixrr.stockmetrics.packageMetrics.*;
 import com.sixrr.stockmetrics.projectMetrics.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +34,7 @@ public class DefaultMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(38);
+        final List<Metric> metrics = new ArrayList<>(38);
         initializeFileTypeMetrics(metrics);
         initializeModuleMetrics(metrics);
         initializeProjectMetrics(metrics);
@@ -95,7 +91,7 @@ public class DefaultMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(2);
+        final List<PrebuiltMetricProfile> out = new ArrayList<>(2);
         out.add(createCodeSizeProfile());
         out.add(createFileCountProfile());
         return out;

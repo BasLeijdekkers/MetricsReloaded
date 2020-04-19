@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2011 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             final PsiMethod[] allMethods = aClass.getAllMethods();
-            final Set<PsiMethod> nonOverriddenMethods = new HashSet<PsiMethod>();
+            final Set<PsiMethod> nonOverriddenMethods = new HashSet<>();
             for (PsiMethod method : allMethods) {
                 boolean overrideFound = false;
                 for (PsiMethod testMethod : allMethods) {

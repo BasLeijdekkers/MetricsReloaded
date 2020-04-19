@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class MetricDisplaySpecification {
-    private final Map<MetricCategory, MetricTableSpecification> specs =
-            new EnumMap<MetricCategory, MetricTableSpecification>(MetricCategory.class);
+    private final Map<MetricCategory, MetricTableSpecification> specs = new EnumMap<>(MetricCategory.class);
 
     public MetricDisplaySpecification() {
         super();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class CouplingBetweenObjectsClassCalculator extends ClassCalculator {
                 final Set<PsiClass> dependencies = dependencyMap.calculateDependencies(aClass);
                 final DependentsMap dependentsMap = getDependentsMap();
                 final Set<PsiClass> dependents = dependentsMap.calculateDependents(aClass);
-                final Set<PsiClass> union = new HashSet<PsiClass>(dependencies);
+                final Set<PsiClass> union = new HashSet<>(dependencies);
                 union.addAll(dependents);
                 final int coupling = union.size();
                 postMetric(aClass, coupling);

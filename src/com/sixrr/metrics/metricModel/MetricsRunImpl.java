@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class MetricsRunImpl implements MetricsRun {
 
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
     private final Map<MetricCategory, MetricsResult> metricResults =
-            new EnumMap<MetricCategory, MetricsResult>(MetricCategory.class);
+            new EnumMap<>(MetricCategory.class);
     private String profileName = null;
     private AnalysisScope context = null;
     private TimeStamp timestamp = null;
@@ -62,13 +62,13 @@ public class MetricsRunImpl implements MetricsRun {
 
     @Override
     public List<Metric> getMetrics() {
-        final Set<Metric> allMetrics = new HashSet<Metric>();
+        final Set<Metric> allMetrics = new HashSet<>();
         final Collection<MetricsResult> results = metricResults.values();
         for (MetricsResult result : results) {
             final Metric[] metrics = result.getMetrics();
             allMetrics.addAll(Arrays.asList(metrics));
         }
-        return new ArrayList<Metric>(allMetrics);
+        return new ArrayList<>(allMetrics);
     }
 
     @NotNull

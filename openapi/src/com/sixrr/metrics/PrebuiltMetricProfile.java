@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import java.util.*;
  */
 public class PrebuiltMetricProfile {
     private final String profileName;
-    private final Set<String> metricNames = new HashSet<String>();
-    private final Map<String, Double> lowerThresholds = new HashMap<String, Double>();
-    private final Map<String, Double> upperThresholds = new HashMap<String, Double>();
+    private final Set<String> metricNames = new HashSet<>();
+    private final Map<String, Double> lowerThresholds = new HashMap<>();
+    private final Map<String, Double> upperThresholds = new HashMap<>();
 
     /**
      * Create a prebuilt metric profile.

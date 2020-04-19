@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,14 +53,14 @@ class MetricTableModel extends AbstractTableModel {
         measuredObjects = results.getMeasuredObjects();
         metricsInstances = findMetricInstances(results.getMetrics());
         Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
-        final Map<MetricInstance, Integer> remainingMetrics = new LinkedHashMap<MetricInstance, Integer>();
+        final Map<MetricInstance, Integer> remainingMetrics = new LinkedHashMap<>();
         for (int i = 0; i < metricsInstances.length; i++) {
             final MetricInstance metric = metricsInstances[i];
             remainingMetrics.put(metric, Integer.valueOf(i + 1));
         }
         columnPermutation = new int[metricsInstances.length + 1];
         final List<String> columnOrder = tableSpecification.getColumnOrder();
-        final Set<String> strippedColumnOrder = new LinkedHashSet<String>();
+        final Set<String> strippedColumnOrder = new LinkedHashSet<>();
         for (final String columnName : columnOrder) {
             boolean found = false;
             if (columnName.equals(type)) {
@@ -122,7 +122,7 @@ class MetricTableModel extends AbstractTableModel {
         MetricsProfileRepository.getInstance().persistCurrentProfile();
     }
 
-    private MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
+    private static MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
         final MetricsProfile profile = MetricsProfileRepository.getInstance().getCurrentProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
@@ -292,7 +292,7 @@ class MetricTableModel extends AbstractTableModel {
 
     private void tabulateMeasuredObjects() {
         final String[] resultObjects = results.getMeasuredObjects();
-        final Set<String> allObjects = new HashSet<String>(resultObjects.length);
+        final Set<String> allObjects = new HashSet<>(resultObjects.length);
         if (prevResults != null) {
             final String[] prevResultObjects = prevResults.getMeasuredObjects();
             Collections.addAll(allObjects, prevResultObjects);
@@ -304,7 +304,7 @@ class MetricTableModel extends AbstractTableModel {
     private void tabulateMetrics() {
         final Metric[] currentMetrics = results.getMetrics();
         final MetricInstance[] resultMetrics = findMetricInstances(currentMetrics);
-        final Set<MetricInstance> allMetrics = new HashSet<MetricInstance>(resultMetrics.length);
+        final Set<MetricInstance> allMetrics = new HashSet<>(resultMetrics.length);
         Collections.addAll(allMetrics, resultMetrics);
         if (prevResults != null) {
             final MetricInstance[] prevResultMetrics = findMetricInstances(prevResults.getMetrics());

@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class BucketedCount<T> {
 
-    private final TObjectIntHashMap<T> buckets = new TObjectIntHashMap<T>();
+    private final TObjectIntHashMap<T> buckets = new TObjectIntHashMap<>();
 
     public void createBucket(@NotNull T bucketName) {
         if (!buckets.containsKey(bucketName)) {
@@ -33,7 +33,7 @@ public class BucketedCount<T> {
     }
 
     public Set<T> getBuckets() {
-        final Set<T> result = new HashSet<T>(buckets.size());
+        final Set<T> result = new HashSet<>(buckets.size());
         buckets.forEachKey(t -> {
             result.add(t);
             return true;

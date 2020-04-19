@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LevelOrderPackageCalculator extends PackageCalculator {
-    private final Set<PsiPackage> packages = new HashSet<PsiPackage>();
+    private final Set<PsiPackage> packages = new HashSet<>();
 
     @Override
     public void endMetricsRun() {

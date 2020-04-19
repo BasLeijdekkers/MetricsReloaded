@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     @NonNls
     private static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";
 
-    private final Map<String, MetricsProfile> profiles = new LinkedHashMap<String, MetricsProfile>(20);
+    private final Map<String, MetricsProfile> profiles = new LinkedHashMap<>(20);
     private String selectedProfile = "";
-    private final Map<String, Metric> metrics = new HashMap();
+    private final Map<String, Metric> metrics = new HashMap<>();
 
     private MetricsProfileRepository() {
         initialize();
@@ -59,7 +59,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     /**
      * Allows for exporting metrics profiles. (<pre>File | Export settings...</pre>)
      * <p>
-     * The metrics configuration files are located within <code>idea.config.path/metrics/...</code>
+     * The metrics configuration files are located within {@code idea.config.path/metrics/...}
      */
     @NotNull
     @Override
@@ -115,7 +115,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     private MetricsProfile buildProfile(String name) {
-        final List<MetricInstance> result = new ArrayList<MetricInstance>(metrics.size());
+        final List<MetricInstance> result = new ArrayList<>(metrics.size());
         for (final Metric metric : metrics.values()) {
             result.add(new MetricInstanceImpl(metric));
         }

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Bag<T> {
-    private final Map<T, Integer> contents = new HashMap<T, Integer>();
+    private final Map<T, Integer> contents = new HashMap<>();
 
     public Bag() {
         super();

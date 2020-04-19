@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class ResponseForClassCalculator extends ClassCalculator {
                 return;
             }
             super.visitClass(aClass);
-            final Set<PsiMethod> methodsCalled = new HashSet<PsiMethod>();
+            final Set<PsiMethod> methodsCalled = new HashSet<>();
             // class and field initializers are considered part of the constructor and not counted
             Collections.addAll(methodsCalled, aClass.getMethods());
             aClass.acceptChildren(new JavaRecursiveElementVisitor() {

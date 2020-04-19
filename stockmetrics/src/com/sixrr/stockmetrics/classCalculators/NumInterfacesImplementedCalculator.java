@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class NumInterfacesImplementedCalculator extends ClassCalculator {
         public void visitClass(PsiClass aClass) {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
-                final Set<PsiClass> implementedInterfaces = new HashSet<PsiClass>(8);
+                final Set<PsiClass> implementedInterfaces = new HashSet<>(8);
                 accumulateInterfaces(aClass, implementedInterfaces);
                 final int numInterfaces = implementedInterfaces.size();
                 postMetric(aClass, numInterfaces);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import java.util.Set;
 public class HalsteadVisitor extends JavaRecursiveElementVisitor {
     private int numOperands = 0;
     private int numOperators = 0;
-    private final Set<String> operators = new HashSet<String>(32);
-    private final Set<String> operands = new HashSet<String>(32);
+    private final Set<String> operators = new HashSet<>(32);
+    private final Set<String> operands = new HashSet<>(32);
     private boolean inCompileTimeConstant = false;
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         indicator.setText(MetricsReloadedBundle.message("initializing.progress.string"));
         final int numFiles = scope.getFileCount();
         final int numMetrics = metrics.size();
-        final List<MetricCalculator> calculators = new ArrayList<MetricCalculator>(numMetrics);
+        final List<MetricCalculator> calculators = new ArrayList<>(numMetrics);
         for (final MetricInstance metricInstance : metrics) {
             indicator.checkCanceled();
             if (!metricInstance.isEnabled()) {

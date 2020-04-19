@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import java.util.List;
 public class MetricTableSpecification {
     private int sortColumn = 0;
     private boolean ascending = true;
-    private List<String> columnOrder = new ArrayList<String>();
-    private List<Integer> columnWidths = new ArrayList<Integer>();
+    private List<String> columnOrder = new ArrayList<>();
+    private List<Integer> columnWidths = new ArrayList<>();
 
     public int getSortColumn() {
         return sortColumn;

@@ -34,7 +34,7 @@ import java.util.List;
 
 public final class ClassUtils {
 
-    private static final Key<Integer> SUBCLASS_COUNT = new Key<Integer>("MetricsReloadedSubclassCount");
+    private static final Key<Integer> SUBCLASS_COUNT = new Key<>("MetricsReloadedSubclassCount");
 
     private ClassUtils() {}
 
@@ -73,7 +73,7 @@ public final class ClassUtils {
 
     public static PsiPackage[] calculatePackagesRecursive(PsiElement element) {
         PsiPackage aPackage = findPackage(element);
-        final List<PsiPackage> out = new ArrayList<PsiPackage>();
+        final List<PsiPackage> out = new ArrayList<>();
         while (aPackage != null) {
             out.add(aPackage);
             aPackage = aPackage.getParentPackage();

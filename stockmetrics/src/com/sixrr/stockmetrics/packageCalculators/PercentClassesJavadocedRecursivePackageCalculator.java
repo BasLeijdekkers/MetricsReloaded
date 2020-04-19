@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import java.util.Set;
 
 public class PercentClassesJavadocedRecursivePackageCalculator extends PackageCalculator {
 
-    private final BucketedCount<PsiPackage> numJavadocedClassesPerPackage = new BucketedCount<PsiPackage>();
-    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numJavadocedClassesPerPackage = new BucketedCount<>();
+    private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<>();
 
     @Override
     public void endMetricsRun() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import java.util.Set;
 
 public class TestRatioPackageCalculator extends PackageCalculator {
 
-    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<PsiPackage>();
-    private final BucketedCount<PsiPackage> numTestLinesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<>();
+    private final BucketedCount<PsiPackage> numTestLinesPerPackage = new BucketedCount<>();
 
     @Override
     public void endMetricsRun() {

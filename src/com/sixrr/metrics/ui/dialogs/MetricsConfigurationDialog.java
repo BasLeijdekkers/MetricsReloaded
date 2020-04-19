@@ -293,8 +293,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void populateTree(String filter) {
         final MetricTreeNode root = new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
-        final Map<MetricCategory, MetricTreeNode> categoryNodes =
-                new EnumMap<MetricCategory, MetricTreeNode>(MetricCategory.class);
+        final Map<MetricCategory, MetricTreeNode> categoryNodes = new EnumMap<>(MetricCategory.class);
 
         if (profile != null) {
             final List<MetricInstance> metrics = profile.getMetricInstances();

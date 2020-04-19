@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.util.Set;
 
 public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
 
-    private final BucketedCount<Module> numeratorPerModule = new BucketedCount<Module>();
-    private final BucketedCount<Module> denominatorPerModule = new BucketedCount<Module>();
+    private final BucketedCount<Module> numeratorPerModule = new BucketedCount<>();
+    private final BucketedCount<Module> denominatorPerModule = new BucketedCount<>();
 
     @Override
     public void endMetricsRun() {

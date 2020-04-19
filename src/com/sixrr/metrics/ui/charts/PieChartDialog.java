@@ -62,13 +62,13 @@ public class PieChartDialog extends DialogWrapper {
     }
 
     private PieDataset createDataset() {
-        final List<Pair<String, Double>> namedValues = new ArrayList<Pair<String, Double>>();
+        final List<Pair<String, Double>> namedValues = new ArrayList<>();
         double total = 0.0;
         for (int j = 0; j < values.length; j++) {
             final Double value = values[j];
             final String measuredItem = measuredItems[j];
             if (value != null && value != 0.0) {
-                namedValues.add(new Pair<String, Double>(measuredItem, value));
+                namedValues.add(new Pair<>(measuredItem, value));
                 total += value;
             }
         }

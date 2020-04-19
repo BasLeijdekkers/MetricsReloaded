@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import java.util.*;
 public class MetricsProfileImpl implements MetricsProfile {
 
     private String name;
-    private final Map<String, MetricInstance> id2instance = new HashMap<String, MetricInstance>();
+    private final Map<String, MetricInstance> id2instance = new HashMap<>();
     private MetricDisplaySpecification displaySpecification = new MetricDisplaySpecification();
     private boolean builtIn = false;
 
@@ -86,7 +86,7 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     @Override
     public List<MetricInstance> getMetricInstances() {
-        final ArrayList<MetricInstance> result = new ArrayList<MetricInstance>(id2instance.values());
+        final ArrayList<MetricInstance> result = new ArrayList<>(id2instance.values());
         Collections.sort(result);
         return result;
     }
@@ -127,14 +127,14 @@ public class MetricsProfileImpl implements MetricsProfile {
         final Element profileRoot = doc.getRootElement();
         final String profileName = profileRoot.getAttributeValue("name");
         final List<Element> children = profileRoot.getChildren("METRIC");
-        final List<MetricInstance> profileMetrics = new ArrayList<MetricInstance>(200);
+        final List<MetricInstance> profileMetrics = new ArrayList<>(200);
         for (final Element metricElement : children) {
             final MetricInstance metric = parseMetric(metricElement, metrics);
             if (metric != null) {
                 profileMetrics.add(metric);
             }
         }
-        final MetricsProfileImpl profile = new MetricsProfileImpl(profileName, profileMetrics);
+        final MetricsProfile profile = new MetricsProfileImpl(profileName, profileMetrics);
         final Element displaySpecElement = profileRoot.getChild("DISPLAY_SPEC");
         if (displaySpecElement != null) {
             parseDisplaySpec(displaySpecElement, profile.getDisplaySpecification());
@@ -161,7 +161,7 @@ public class MetricsProfileImpl implements MetricsProfile {
     private static List<Integer> parseIntList(String value) {
         if (value != null && !value.isEmpty()) {
             final StringTokenizer tokenizer = new StringTokenizer(value, "|");
-            final List<Integer> out = new ArrayList<Integer>(32);
+            final List<Integer> out = new ArrayList<>(32);
             while (tokenizer.hasMoreTokens()) {
                 final String token = tokenizer.nextToken();
                 final Integer intValue = new Integer(token);
@@ -176,7 +176,7 @@ public class MetricsProfileImpl implements MetricsProfile {
     private static List<String> parseStringList(String value) {
         if (value != null && !value.isEmpty()) {
             final StringTokenizer tokenizer = new StringTokenizer(value, "|");
-            final List<String> out = new ArrayList<String>(32);
+            final List<String> out = new ArrayList<>(32);
             while (tokenizer.hasMoreTokens()) {
                 final String token = tokenizer.nextToken();
                 out.add(token);

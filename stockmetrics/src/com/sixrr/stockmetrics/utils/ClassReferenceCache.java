@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ import java.util.WeakHashMap;
 
 public class ClassReferenceCache {
 
-    private final Map<SmartPsiElementPointer<PsiClass>, Collection<PsiReference>> cachedReferences =
-            new WeakHashMap<SmartPsiElementPointer<PsiClass>, Collection<PsiReference>>(256);
+    private final Map<SmartPsiElementPointer<PsiClass>, Collection<PsiReference>> cachedReferences = new WeakHashMap<>(256);
 
     public Collection<PsiReference> findClassReferences(final PsiClass aClass) {
         final SmartPointerManager manager = SmartPointerManager.getInstance(aClass.getProject());

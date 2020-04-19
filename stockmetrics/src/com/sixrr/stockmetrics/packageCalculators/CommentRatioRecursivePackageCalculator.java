@@ -25,8 +25,8 @@ import java.util.Set;
 
 public class CommentRatioRecursivePackageCalculator extends PackageCalculator {
 
-    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<PsiPackage>();
-    private final BucketedCount<PsiPackage> numCommentLinesPerPackage = new BucketedCount<PsiPackage>();
+    private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<>();
+    private final BucketedCount<PsiPackage> numCommentLinesPerPackage = new BucketedCount<>();
 
     @Override
     public void endMetricsRun() {

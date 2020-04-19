@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public final class StockMetricsBundle {
         ResourceBundle bundle = SoftReference.dereference(INSTANCE);
         if (bundle == null) {
             bundle = ResourceBundle.getBundle(BUNDLE);
-            INSTANCE = new SoftReference<ResourceBundle>(bundle);
+            INSTANCE = new SoftReference<>(bundle);
         }
         return bundle;
     }

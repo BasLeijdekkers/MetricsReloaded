@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,12 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class MethodCallMapImpl implements MethodCallMap {
-    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToCallPointMap =
-            new HashMap<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>>(1024);
-    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToTestCallPointMap =
-            new HashMap<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>>(1024);
-    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToProductCallPointMap =
-            new HashMap<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>>(1024);
+    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToCallPointMap = new HashMap<>(1024);
+    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToTestCallPointMap = new HashMap<>(1024);
+    private final Map<SmartPsiElementPointer<PsiMethod>, Set<PsiReference>> methodToProductCallPointMap = new HashMap<>(1024);
 
     @Override
     public Set<PsiReference> calculateMethodCallPoints(PsiMethod method) {
@@ -66,9 +63,9 @@ public class MethodCallMapImpl implements MethodCallMap {
     }
 
     private void calculateCalls(final PsiMethod method) {
-        final Set<PsiReference> allCalls = new HashSet<PsiReference>(4);
-        final Set<PsiReference> testCalls = new HashSet<PsiReference>(4);
-        final Set<PsiReference> productCalls = new HashSet<PsiReference>(4);
+        final Set<PsiReference> allCalls = new HashSet<>(4);
+        final Set<PsiReference> testCalls = new HashSet<>(4);
+        final Set<PsiReference> productCalls = new HashSet<>(4);
 
         final Query<PsiReference> query = ReferencesSearch.search(method);
         for (final PsiReference reference : query) {

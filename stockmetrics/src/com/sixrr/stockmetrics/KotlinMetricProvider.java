@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2016-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class KotlinMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<Metric>(4);
+        final List<Metric> metrics = new ArrayList<>(4);
         metrics.add(new NumKotlinFilesProjectMetric());
         metrics.add(new NumKotlinFilesModuleMetric());
         metrics.add(new LinesOfKotlinProjectMetric());
@@ -47,7 +47,7 @@ public class KotlinMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<PrebuiltMetricProfile> getPrebuiltProfiles() {
-        final List<PrebuiltMetricProfile> out = new ArrayList<PrebuiltMetricProfile>(2);
+        final List<PrebuiltMetricProfile> out = new ArrayList<>(2);
         out.add(createCodeSizeProfile());
         out.add(createFileCountProfile());
         return out;

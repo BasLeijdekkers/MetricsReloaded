@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Bas Leijdekkers, Sixth and Red River Software
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ import java.util.List;
 public class MetricsDisplay {
     
     private boolean hasOverlay = false;
-    private final Map<MetricCategory, JTable> tables = new EnumMap<MetricCategory, JTable>(MetricCategory.class);
+    private final Map<MetricCategory, JTable> tables = new EnumMap<>(MetricCategory.class);
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
     public MetricsDisplay(@NotNull Project project) {
@@ -337,8 +337,8 @@ public class MetricsDisplay {
         private void saveColumnSpecification() {
             final TableColumnModel columnModel = table.getColumnModel();
             final int numColumns = table.getColumnCount();
-            final List<String> columns = new ArrayList<String>(numColumns);
-            final List<Integer> columnWidths = new ArrayList<Integer>(numColumns);
+            final List<String> columns = new ArrayList<>(numColumns);
+            final List<Integer> columnWidths = new ArrayList<>(numColumns);
             for (int i = 0; i < numColumns; i++) {
                 final String columnName = table.getColumnName(i);
                 columns.add(columnName);

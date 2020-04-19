@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,28 +25,23 @@ import java.util.*;
 
 public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
-    private final Map<PsiClass, Bag<PsiClass>> dependencies = new HashMap<PsiClass, Bag<PsiClass>>();
-    private final Map<PsiClass, Set<PsiClass>> transitiveDependencies = new HashMap<PsiClass, Set<PsiClass>>();
-    private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependencies =
-            new HashMap<PsiPackage, Set<PsiPackage>>();
-    private final Map<PsiClass, Set<PsiClass>> stronglyConnectedComponents = new HashMap<PsiClass, Set<PsiClass>>();
-    private final Map<PsiClass, Integer> levelOrders = new HashMap<PsiClass, Integer>();
-    private final Map<PsiClass, Integer> adjustedLevelOrders = new HashMap<PsiClass, Integer>();
-    private final Map<PsiClass, Bag<PsiPackage>> packageDependencies = new HashMap<PsiClass, Bag<PsiPackage>>();
-    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependencies =
-            new HashMap<PsiPackage, Bag<PsiPackage>>();
-    private final Map<PsiPackage, Set<PsiPackage>> stronglyConnectedPackageComponents =
-            new HashMap<PsiPackage, Set<PsiPackage>>();
-    private final Map<PsiPackage, Integer> packageLevelOrders = new HashMap<PsiPackage, Integer>();
-    private final Map<PsiPackage, Integer> packageAdjustedLevelOrders = new HashMap<PsiPackage, Integer>();
+    private final Map<PsiClass, Bag<PsiClass>> dependencies = new HashMap<>();
+    private final Map<PsiClass, Set<PsiClass>> transitiveDependencies = new HashMap<>();
+    private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependencies = new HashMap<>();
+    private final Map<PsiClass, Set<PsiClass>> stronglyConnectedComponents = new HashMap<>();
+    private final Map<PsiClass, Integer> levelOrders = new HashMap<>();
+    private final Map<PsiClass, Integer> adjustedLevelOrders = new HashMap<>();
+    private final Map<PsiClass, Bag<PsiPackage>> packageDependencies = new HashMap<>();
+    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependencies = new HashMap<>();
+    private final Map<PsiPackage, Set<PsiPackage>> stronglyConnectedPackageComponents = new HashMap<>();
+    private final Map<PsiPackage, Integer> packageLevelOrders = new HashMap<>();
+    private final Map<PsiPackage, Integer> packageAdjustedLevelOrders = new HashMap<>();
 
-    private final Map<PsiClass, Bag<PsiClass>> dependents = new HashMap<PsiClass, Bag<PsiClass>>();
-    private final Map<PsiClass, Bag<PsiPackage>> packageDependents = new HashMap<PsiClass, Bag<PsiPackage>>();
-    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependents =
-            new HashMap<PsiPackage, Bag<PsiPackage>>();
-    private final Map<PsiClass, Set<PsiClass>> transitiveDependents = new HashMap<PsiClass, Set<PsiClass>>();
-    private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependents =
-            new HashMap<PsiPackage, Set<PsiPackage>>();
+    private final Map<PsiClass, Bag<PsiClass>> dependents = new HashMap<>();
+    private final Map<PsiClass, Bag<PsiPackage>> packageDependents = new HashMap<>();
+    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependents = new HashMap<>();
+    private final Map<PsiClass, Set<PsiClass>> transitiveDependents = new HashMap<>();
+    private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependents = new HashMap<>();
 
     @Override
     public Set<PsiClass> calculateDependents(PsiClass aClass) {
@@ -94,9 +89,9 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
             return out;
         }
 
-        final List<PsiClass> pendingClasses = new ArrayList<PsiClass>();
+        final List<PsiClass> pendingClasses = new ArrayList<>();
         pendingClasses.add(aClass);
-        final Set<PsiClass> allDependents = new HashSet<PsiClass>();
+        final Set<PsiClass> allDependents = new HashSet<>();
         while (!pendingClasses.isEmpty()) {
             final PsiClass dependentClass = pendingClasses.get(0);
             pendingClasses.remove(0);
@@ -122,9 +117,9 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
         if (out != null) {
             return out;
         }
-        final List<PsiPackage> pendingPackages = new ArrayList<PsiPackage>();
+        final List<PsiPackage> pendingPackages = new ArrayList<>();
         pendingPackages.add(aPackage);
-        final Set<PsiPackage> allDependents = new HashSet<PsiPackage>();
+        final Set<PsiPackage> allDependents = new HashSet<>();
         while (!pendingPackages.isEmpty()) {
             final PsiPackage dependentPackage = pendingPackages.get(0);
             pendingPackages.remove(0);
@@ -159,9 +154,9 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
             return out;
         }
 
-        final List<PsiClass> pendingClasses = new ArrayList<PsiClass>();
+        final List<PsiClass> pendingClasses = new ArrayList<>();
         pendingClasses.add(aClass);
-        final Set<PsiClass> allDependencies = new HashSet<PsiClass>();
+        final Set<PsiClass> allDependencies = new HashSet<>();
         while (!pendingClasses.isEmpty()) {
             final PsiClass pendingClass = pendingClasses.get(0);
             pendingClasses.remove(0);
@@ -188,7 +183,7 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
             return out;
         }
         final Set<PsiClass> transitiveDeps = calculateTransitiveDependencies(aClass);
-        final Set<PsiClass> component = new HashSet<PsiClass>();
+        final Set<PsiClass> component = new HashSet<>();
         component.add(aClass);
         for (final PsiClass dependencyClass : transitiveDeps) {
             if (dependencyClass != null) {
@@ -267,9 +262,9 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
         if (out != null) {
             return out;
         }
-        final List<PsiPackage> pendingPackages = new ArrayList<PsiPackage>();
+        final List<PsiPackage> pendingPackages = new ArrayList<>();
         pendingPackages.add(aPackage);
-        final Set<PsiPackage> allDependencies = new HashSet<PsiPackage>();
+        final Set<PsiPackage> allDependencies = new HashSet<>();
         while (!pendingPackages.isEmpty()) {
             final PsiPackage dependencyPackageName = pendingPackages.get(0);
             pendingPackages.remove(0);
@@ -295,7 +290,7 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
             return out;
         }
         final Set<PsiPackage> transitiveDeps = calculateTransitivePackageDependencies(aPackage);
-        final Set<PsiPackage> component = new HashSet<PsiPackage>();
+        final Set<PsiPackage> component = new HashSet<>();
         component.add(aPackage);
         for (final PsiPackage dependencyPackage : transitiveDeps) {
             final Set<PsiPackage> dependencyDependencies = calculateTransitivePackageDependencies(dependencyPackage);
@@ -382,7 +377,7 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
     private class DependenciesVisitor extends JavaRecursiveElementVisitor {
 
-        private final Stack<PsiClass> classStack = new Stack<PsiClass>();
+        private final Stack<PsiClass> classStack = new Stack<>();
         private PsiClass currentClass = null;
 
         @Override
@@ -541,7 +536,7 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
         private <K, V> void add(K k, V v, Map<K, Bag<V>> map) {
             Bag<V> bag = map.get(k);
             if (bag == null) {
-                bag = new Bag<V>();
+                bag = new Bag<>();
                 map.put(k, bag);
             }
             bag.add(v);

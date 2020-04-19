@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020, Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.*;
 
 public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
     private static final @NonNls
-    Set<String> boilerplateMethods = new HashSet<String>();
+    Set<String> boilerplateMethods = new HashSet<>();
 
     static {
         //noinspection HardCodedStringLiteral
@@ -43,7 +43,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
             super.visitClass(aClass);
             if (isConcreteClass(aClass)) {
                 final PsiMethod[] methods = aClass.getMethods();
-                final Set<PsiMethod> applicableMethods = new HashSet<PsiMethod>();
+                final Set<PsiMethod> applicableMethods = new HashSet<>();
                 for (PsiMethod method : methods) {
                     final String methodName = method.getName();
                     if (!method.isConstructor() && !boilerplateMethods.contains(methodName)) {
@@ -63,16 +63,16 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
     private static Set<Set<PsiMethod>> calculateComponents(Set<PsiMethod> applicableMethods,
                                                            Map<PsiMethod, Set<PsiField>> fieldsPerMethod,
                                                            Map<PsiMethod, Set<PsiMethod>> linkedMethods) {
-        final Set<Set<PsiMethod>> components = new HashSet<Set<PsiMethod>>();
+        final Set<Set<PsiMethod>> components = new HashSet<>();
         while (applicableMethods.size() > 0) {
-            final Set<PsiMethod> component = new HashSet<PsiMethod>();
-            final Set<PsiField> fieldsUsed = new HashSet<PsiField>();
+            final Set<PsiMethod> component = new HashSet<>();
+            final Set<PsiField> fieldsUsed = new HashSet<>();
             final PsiMethod testMethod = applicableMethods.iterator().next();
             applicableMethods.remove(testMethod);
             component.add(testMethod);
             fieldsUsed.addAll(fieldsPerMethod.get(testMethod));
             while (true) {
-                final Set<PsiMethod> methodsToAdd = new HashSet<PsiMethod>();
+                final Set<PsiMethod> methodsToAdd = new HashSet<>();
                 for (PsiMethod method : applicableMethods) {
                     if (overlaps(fieldsPerMethod.get(method), fieldsUsed) ||
                             overlaps(linkedMethods.get(method), component)) {
@@ -101,7 +101,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
     }
 
     private static Map<PsiMethod, Set<PsiField>> calculateFieldUsage(Set<PsiMethod> applicableMethods) {
-        final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = new HashMap<PsiMethod, Set<PsiField>>();
+        final Map<PsiMethod, Set<PsiField>> fieldsPerMethod = new HashMap<>();
         for (PsiMethod method : applicableMethods) {
             final Set<PsiField> fields = calculateUsedFields(method);
             fieldsPerMethod.put(method, fields);
@@ -116,7 +116,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
     }
 
     private static class FieldsUsedVisitor extends JavaRecursiveElementVisitor {
-        private final Set<PsiField> fieldsUsed = new HashSet<PsiField>();
+        private final Set<PsiField> fieldsUsed = new HashSet<>();
 
         FieldsUsedVisitor() {
         }
@@ -139,7 +139,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
     }
 
     private static Map<PsiMethod, Set<PsiMethod>> calculateMethodLinkage(Set<PsiMethod> applicableMethods) {
-        final Map<PsiMethod, Set<PsiMethod>> linkages = new HashMap<PsiMethod, Set<PsiMethod>>();
+        final Map<PsiMethod, Set<PsiMethod>> linkages = new HashMap<>();
         for (PsiMethod method : applicableMethods) {
             final Set<PsiMethod> linkedMethods = calculateLinkedMethods(method, applicableMethods);
             linkages.put(method, linkedMethods);
@@ -162,7 +162,7 @@ public class LackOfCohesionOfMethodsClassCalculator extends ClassCalculator {
 
     private static class MethodsUsedVisitor extends JavaRecursiveElementVisitor {
         private final Set<PsiMethod> applicableMethods;
-        private final Set<PsiMethod> methodsUsed = new HashSet<PsiMethod>();
+        private final Set<PsiMethod> methodsUsed = new HashSet<>();
 
         MethodsUsedVisitor(Set<PsiMethod> applicableMethods) {
             this.applicableMethods = applicableMethods;
