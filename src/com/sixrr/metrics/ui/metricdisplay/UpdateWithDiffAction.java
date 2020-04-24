@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 class UpdateWithDiffAction extends AnAction {
 
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
     private final Project project;
 
-    UpdateWithDiffAction(MetricsToolWindow toolWindow, Project project) {
+    UpdateWithDiffAction(MetricsView toolWindow, Project project) {
         super(MetricsReloadedBundle.message("update.with.differences.action"),
                 MetricsReloadedBundle.message("update.with.differences.description"), AllIcons.Actions.Rerun);
         this.toolWindow = toolWindow;

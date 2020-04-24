@@ -36,12 +36,12 @@ import java.io.IOException;
 
 class ExportAction extends AnAction {
 
-    public static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
+    private static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
 
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
     private final Project project;
 
-    ExportAction(MetricsToolWindow toolWindow, Project project) {
+    ExportAction(MetricsView toolWindow, Project project) {
         super(MetricsReloadedBundle.message("export.action"),
                 MetricsReloadedBundle.message("export.description"), AllIcons.ToolbarDecorator.Export);
         this.toolWindow = toolWindow;

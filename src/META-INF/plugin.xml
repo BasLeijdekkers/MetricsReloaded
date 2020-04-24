@@ -14,7 +14,7 @@
   ~  limitations under the License.
   -->
 
-<idea-plugin version="2" url="https://github.com/BasLeijdekkers/MetricsReloaded">
+<idea-plugin url="https://github.com/BasLeijdekkers/MetricsReloaded">
   <name>MetricsReloaded</name>
   <id>MetricsReloaded</id>
   <depends>com.intellij.modules.lang</depends>
@@ -54,8 +54,6 @@
     <appStarter implementation="com.sixrr.metrics.offline.MetricsCommandLine"/>
     <applicationService serviceImplementation="com.sixrr.metrics.config.MetricsReloadedConfig"/>
     <applicationService serviceImplementation="com.sixrr.metrics.profile.MetricsProfileRepository"/>
-    <projectService serviceInterface="com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow"
-                    serviceImplementation="com.sixrr.metrics.ui.metricdisplay.MetricsToolWindowImpl"/>
     <exportable serviceInterface="com.sixrr.metrics.profile.MetricsProfileRepository"/>
   </extensions>
   <extensions defaultExtensionNs="MetricsReloaded">

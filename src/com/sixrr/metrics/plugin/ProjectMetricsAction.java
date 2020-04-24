@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import com.sixrr.metrics.metricModel.TimeStamp;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.dialogs.ProfileSelectionPanel;
-import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
+import com.sixrr.metrics.ui.metricdisplay.MetricsView;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,15 +46,15 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
     protected void analyze(@NotNull final Project project, @NotNull final AnalysisScope analysisScope) {
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
         final MetricsProfile profile = repository.getCurrentProfile();
-        final MetricsToolWindow toolWindow = MetricsToolWindow.getInstance(project);
+        final MetricsView toolWindow = new MetricsView(project);
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
         new MetricsExecutionContextImpl(project, analysisScope) {
 
             @Override
             public void onFinish() {
                 final boolean showOnlyWarnings = MetricsReloadedConfig.getInstance().isShowOnlyWarnings();
-                if(!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-                    ToolWindowManager.getInstance(project).notifyByBalloon(MetricsToolWindow.METRICS_TOOL_WINDOW_ID,
+                if (!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
+                    ToolWindowManager.getInstance(project).notifyByBalloon(MetricsView.TOOL_WINDOW_ID,
                             MessageType.INFO, MetricsReloadedBundle.message("no.metrics.warnings.found"));
                     return;
                 }

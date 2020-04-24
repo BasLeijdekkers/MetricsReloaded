@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ import java.io.File;
 
 class CreateSnapshotAction extends AnAction {
     
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
     private final Project project;
 
-    CreateSnapshotAction(MetricsToolWindow toolWindow, Project project) {
+    CreateSnapshotAction(MetricsView toolWindow, Project project) {
         super(MetricsReloadedBundle.message("create.snapshot.action"),
                 MetricsReloadedBundle.message("create.snapshot.description"), AllIcons.Actions.Dump);
         this.toolWindow = toolWindow;

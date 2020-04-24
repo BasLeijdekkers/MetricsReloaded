@@ -35,9 +35,9 @@ import java.util.List;
 
 class EditThresholdsAction extends AnAction {
 
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
 
-    EditThresholdsAction(MetricsToolWindow toolWindow) {
+    EditThresholdsAction(MetricsView toolWindow) {
         super(MetricsReloadedBundle.message("edit.thresholds.action"),
                 MetricsReloadedBundle.message("edit.threshold.values.for.this.metric.profile"),
                 AllIcons.Actions.Properties);

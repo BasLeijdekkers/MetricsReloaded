@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.analysis.AnalysisScope;
+import com.intellij.ide.impl.ContentManagerWatcher;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -25,29 +26,38 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.SideBorder;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentManager;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings({"ThisEscapedInObjectConstruction"})
-public final class MetricsToolWindowImpl extends MetricsToolWindow {
+public class MetricsView {
+
+    @NonNls
+    private static final String ICON_PATH = "/images/metrics.svg";
+    @NonNls
+    public static final String TOOL_WINDOW_ID = "Metrics";
 
     private final Project project;
-    private final JPanel myContentPanel;
     private final MetricsDisplay metricsDisplay;
-    private ToolWindow myToolWindow = null;
+    private final Content myContent;
     private MetricsRun currentResults = null;
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
 
-    private MetricsToolWindowImpl(@NotNull Project project) {
+    public MetricsView(@NotNull Project project) {
         this.project = project;
+
         final DefaultActionGroup toolbarGroup = new DefaultActionGroup();
         toolbarGroup.add(new UpdateWithDiffAction(this, project));
         toolbarGroup.add(new ToggleAutoscrollAction());
@@ -56,26 +66,34 @@ public final class MetricsToolWindowImpl extends MetricsToolWindow {
         toolbarGroup.add(new DiffSnapshotAction(this, project));
         toolbarGroup.add(new RemoveDiffAction(this));
         toolbarGroup.add(new EditThresholdsAction(this));
-        toolbarGroup.add(new CloseMetricsViewAction(this));
         final ActionManager actionManager = ActionManager.getInstance();
-        final ActionToolbar toolbar = actionManager.createActionToolbar(METRICS_TOOL_WINDOW_ID, toolbarGroup, false);
-        myContentPanel = new JPanel(new BorderLayout());
+        final ActionToolbar toolbar = actionManager.createActionToolbar(TOOL_WINDOW_ID, toolbarGroup, false);
+        final JPanel contentPanel = new JPanel(new BorderLayout());
         metricsDisplay = new MetricsDisplay(project);
-        myContentPanel.add(toolbar.getComponent(), BorderLayout.WEST);
-        myContentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
-        register();
+        final JComponent component = toolbar.getComponent();
+        component.setBorder(IdeBorderFactory.createBorder(SideBorder.RIGHT));
+        contentPanel.add(component, BorderLayout.WEST);
+        contentPanel.add(metricsDisplay.getTabbedPane(), BorderLayout.CENTER);
+
+        final ToolWindow toolWindow = getToolWindow();
+        final ContentManager contentManager = toolWindow.getContentManager();
+        myContent = contentManager.getFactory().createContent(contentPanel, "", true);
     }
 
-    private void register() {
+    private ToolWindow getToolWindow() {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        myToolWindow = toolWindowManager.registerToolWindow(METRICS_TOOL_WINDOW_ID, myContentPanel,
-                ToolWindowAnchor.BOTTOM);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
-        myToolWindow.setIcon(IconLoader.getIcon(TOOL_WINDOW_ICON_PATH));
-        myToolWindow.setAvailable(false, null);
+        ToolWindow toolWindow = toolWindowManager.getToolWindow(TOOL_WINDOW_ID);
+        if (toolWindow == null) {
+            toolWindow = toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.BOTTOM, project);
+            toolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
+            toolWindow.setIcon(IconLoader.getIcon(ICON_PATH));
+            toolWindow.setAvailable(true, null);
+            toolWindow.setToHideOnEmptyContent(true);
+            new ContentManagerWatcher(toolWindow, toolWindow.getContentManager());
+        }
+        return toolWindow;
     }
 
-    @Override
     public void show(@NotNull MetricsRun results, @NotNull MetricsProfile profile, @NotNull AnalysisScope scope,
                      boolean showOnlyWarnings) {
         currentScope = scope;
@@ -83,86 +101,64 @@ public final class MetricsToolWindowImpl extends MetricsToolWindow {
         currentProfile = profile;
         final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.setMetricsResults(displaySpecification, currentResults);
-        myToolWindow.setAvailable(true, null);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format",
+
+        final ToolWindow toolWindow = getToolWindow();
+        final ContentManager contentManager = toolWindow.getContentManager();
+        contentManager.addContent(myContent);
+        myContent.setDisplayName(MetricsReloadedBundle.message("run.description.format",
                 currentResults.getProfileName(),
-                currentScope.getDisplayName(), currentResults.getTimestamp()) );
-        myToolWindow.show(null);
+                currentScope.getDisplayName(), currentResults.getTimestamp()));
+        toolWindow.activate(() -> contentManager.setSelectedContent(myContent, true));
     }
 
-    @Override
     public void update(@NotNull MetricsRun results) {
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification =
-                currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.updateMetricsResults(results, displaySpecification);
     }
 
-    @Override
     public void updateWithDiff(@NotNull MetricsRun results) {
         final MetricsRun prevResults = currentResults;
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification =
-                currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.updateMetricsResultsWithDiff(results, displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message",
+        myContent.setDisplayName(MetricsReloadedBundle.message("run.comparison.message",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
-    @Override
     public void reloadAsDiff(@NotNull MetricsRun prevResults) {
-        final MetricDisplaySpecification displaySpecification =
-                currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.overlayWithDiff(prevResults, displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.comparison.message",
+        myContent.setDisplayName(MetricsReloadedBundle.message("run.comparison.message",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
-    @Override
     public void removeDiffOverlay() {
-        final MetricDisplaySpecification displaySpecification =
-                currentProfile.getDisplaySpecification();
+        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
         metricsDisplay.removeDiffOverlay(displaySpecification);
-        myToolWindow.setTitle(MetricsReloadedBundle.message("run.description.format",
+        myContent.setDisplayName(MetricsReloadedBundle.message("run.description.format",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 currentResults.getTimestamp()));
     }
 
-    @Override
     public boolean hasDiffOverlay() {
         return metricsDisplay != null && metricsDisplay.hasDiffOverlay();
     }
 
-    @Override
-    public void close() {
-        myToolWindow.hide(null);
-        myToolWindow.setAvailable(false, null);
-    }
-
-    @Override
     public MetricsRun getCurrentRun() {
         return currentResults;
     }
 
-    @Override
     public AnalysisScope getCurrentScope() {
         return currentScope;
     }
 
-    @Override
-    public void dispose() {
-        final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        toolWindowManager.unregisterToolWindow(METRICS_TOOL_WINDOW_ID);
-    }
-
-    @Override
     public MetricsProfile getCurrentProfile() {
         return currentProfile;
     }
 
-    @Override
     public MetricCategory getSelectedCategory() {
         return metricsDisplay.getSelectedCategory();
     }

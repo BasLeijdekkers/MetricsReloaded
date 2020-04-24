@@ -23,9 +23,9 @@ import com.sixrr.metrics.utils.MetricsReloadedBundle;
 
 class RemoveDiffAction extends AnAction {
     
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
 
-    RemoveDiffAction(MetricsToolWindow toolWindow) {
+    RemoveDiffAction(MetricsView toolWindow) {
         super(MetricsReloadedBundle.message("hide.comparison.action"),
                 MetricsReloadedBundle.message("hide.comparison.description"), AllIcons.General.Reset);
         this.toolWindow = toolWindow;

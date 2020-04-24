@@ -31,10 +31,10 @@ import java.io.File;
 
 class DiffSnapshotAction extends AnAction {
 
-    private final MetricsToolWindow toolWindow;
+    private final MetricsView toolWindow;
     private final Project project;
 
-    DiffSnapshotAction(MetricsToolWindow toolWindow, Project project) {
+    DiffSnapshotAction(MetricsView toolWindow, Project project) {
         super(MetricsReloadedBundle.message("compare.with.snapshot.action"),
                 MetricsReloadedBundle.message("compare.with.snapshot.description"), AllIcons.Actions.Diff);
         this.toolWindow = toolWindow;
@@ -52,8 +52,7 @@ class DiffSnapshotAction extends AnAction {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File selectedFile = chooser.getSelectedFile();
-            final MetricsRun previousResults =
-                    MetricsRunImpl.readFromFile(selectedFile);
+            final MetricsRun previousResults = MetricsRunImpl.readFromFile(selectedFile);
             toolWindow.reloadAsDiff(previousResults);
         }
     }

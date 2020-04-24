@@ -23,7 +23,7 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.profile.*;
-import com.sixrr.metrics.ui.metricdisplay.MetricsToolWindow;
+import com.sixrr.metrics.ui.metricdisplay.MetricsView;
 import com.sixrr.metrics.ui.metricdisplay.SnapshotFileFilter;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
         if (results == null) {
             return;
         }
-        final MetricsToolWindow toolWindow = MetricsToolWindow.getInstance(project);
+        final MetricsView toolWindow = new MetricsView(project);
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
         final String profileName = results.getProfileName();
         MetricsProfile profile = repository.getProfileForName(profileName);
