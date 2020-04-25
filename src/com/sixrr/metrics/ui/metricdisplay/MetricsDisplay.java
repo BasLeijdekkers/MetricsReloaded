@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ import com.intellij.ui.TableSpeedSearch;
 import com.intellij.ui.table.JBTable;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.metricModel.*;
+import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
+import com.sixrr.metrics.metricModel.MetricsResult;
+import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.profile.MetricTableSpecification;
@@ -41,8 +43,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class MetricsDisplay {
     
@@ -73,19 +75,19 @@ public class MetricsDisplay {
         setupTable(interfaceMetricsTable, project);
         setupTable(methodMetricsTable, project);
         tabbedPane.add(MetricsReloadedBundle.message("project.metrics"),
-                ScrollPaneFactory.createScrollPane(projectMetricsTable));
+                ScrollPaneFactory.createScrollPane(projectMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("file.type.metrics"),
-                ScrollPaneFactory.createScrollPane(fileTypeMetricsTable));
+                ScrollPaneFactory.createScrollPane(fileTypeMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("module.metrics"),
-                ScrollPaneFactory.createScrollPane(moduleMetricsTable));
+                ScrollPaneFactory.createScrollPane(moduleMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("package.metrics"),
-                ScrollPaneFactory.createScrollPane(packageMetricsTable));
+                ScrollPaneFactory.createScrollPane(packageMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("class.metrics"),
-                ScrollPaneFactory.createScrollPane(classMetricsTable));
+                ScrollPaneFactory.createScrollPane(classMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("interface.metrics"),
-                ScrollPaneFactory.createScrollPane(interfaceMetricsTable));
+                ScrollPaneFactory.createScrollPane(interfaceMetricsTable, true));
         tabbedPane.add(MetricsReloadedBundle.message("method.metrics"),
-                ScrollPaneFactory.createScrollPane(methodMetricsTable));
+                ScrollPaneFactory.createScrollPane(methodMetricsTable, true));
     }
 
     private static void setupTable(JTable table, Project project) {
@@ -101,8 +103,7 @@ public class MetricsDisplay {
         for (final MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final String type = MetricsCategoryNameUtil.getShortNameForCategory(category);
-            final MetricTableSpecification tableSpecification =
-                    displaySpecification.getSpecification(category);
+            final MetricTableSpecification tableSpecification = displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
             final MetricTableModel model = new MetricTableModel(results, type, tableSpecification);
             table.setModel(model);
@@ -126,8 +127,7 @@ public class MetricsDisplay {
         }
     }
 
-    public void updateMetricsResults(MetricsRun run,
-                                     MetricDisplaySpecification displaySpecification) {
+    public void updateMetricsResults(MetricsRun run, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = tables.get(category);
@@ -135,14 +135,12 @@ public class MetricsDisplay {
             model.setResults(run.getResultsForCategory(category));
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification =
-                    displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
     }
 
-    public void updateMetricsResultsWithDiff(MetricsRun results,
-                                             MetricDisplaySpecification displaySpecification) {
+    public void updateMetricsResultsWithDiff(MetricsRun results, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = tables.get(category);
@@ -166,8 +164,7 @@ public class MetricsDisplay {
         hasOverlay = true;
     }
 
-    public void overlayWithDiff(MetricsRun prevRun,
-                                MetricDisplaySpecification displaySpecification) {
+    public void overlayWithDiff(MetricsRun prevRun, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
         for (final MetricCategory category : categories) {
             final JTable table = tables.get(category);
@@ -182,8 +179,7 @@ public class MetricsDisplay {
             tabbedPane.add(tab, longName);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification =
-                    displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
         hasOverlay = true;
@@ -204,8 +200,7 @@ public class MetricsDisplay {
             tabbedPane.add(tab, longName);
             final String shortName = MetricsCategoryNameUtil.getShortNameForCategory(category);
             setRenderers(table, shortName);
-            final MetricTableSpecification specification =
-                    displaySpecification.getSpecification(category);
+            final MetricTableSpecification specification = displaySpecification.getSpecification(category);
             setColumnWidths(table, specification);
         }
         hasOverlay = false;
@@ -294,7 +289,7 @@ public class MetricsDisplay {
         return null;
     }
 
-    private class MyColumnListener implements TableColumnModelListener, PropertyChangeListener {
+    private static class MyColumnListener implements TableColumnModelListener, PropertyChangeListener {
         
         private final MetricTableSpecification tableSpecification;
         private final JTable table;
