@@ -18,12 +18,13 @@ package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.ide.DataManager;
+import com.intellij.ide.actions.ShowSettingsUtilImpl;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.options.Configurable;
+import com.intellij.openapi.options.ex.Settings;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -31,9 +32,11 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.StreamUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.FilterComponent;
+import com.intellij.ui.SearchTextField;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ResourceUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.profile.MetricInstance;
@@ -47,10 +50,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.Document;
 import javax.swing.text.NumberFormatter;
@@ -59,6 +59,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -66,6 +68,9 @@ import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+
+import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePanel.readHTML;
+import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePanel.toHTML;
 
 /**
  * todo if ok or apply is not pressed do not add or remove profiles!
@@ -76,8 +81,8 @@ import java.util.Map;
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
     private static final Logger logger = Logger.getInstance("MetricsReloaded");
 
-    private JComboBox profilesDropdown;
-    private JTextPane descriptionTextArea;
+    private JComboBox<String> profilesDropdown;
+    private JEditorPane descriptionPanel;
     private JButton deleteButton;
     private JButton saveAsButton;
     private JPanel contentPanel;
@@ -125,6 +130,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         urlLabel.setText("");
         init();
         setTitle(MetricsReloadedBundle.message("metrics.profiles"));
+        descriptionPanel.addHyperlinkListener(new MyHyperlinkListener(project));
     }
 
     private void markProfileClean() {
@@ -346,7 +352,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 final MetricInstance currentMetricInstance = (MetricInstance) metricNode.getUserObject();
                 final MetricInstance newMetric = profile.getMetricInstance(currentMetricInstance.getMetric());
                 metricNode.setUserObject(newMetric);
-                assert newMetric != null;
+                assert newMetric != null : currentMetricInstance;
                 metricNode.enabled = newMetric.isEnabled();
             }
         }
@@ -355,7 +361,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupProfilesDropdown() {
         final String[] profiles = repository.getProfileNames();
-        final MutableComboBoxModel profilesModel = new DefaultComboBoxModel(profiles);
+        final MutableComboBoxModel<String> profilesModel = new DefaultComboBoxModel<>(profiles);
         profilesDropdown.setModel(profilesModel);
         final MetricsProfile currentProfile = repository.getCurrentProfile();
         profilesDropdown.setSelectedItem(currentProfile.getName());
@@ -384,22 +390,59 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
     }
 
+    private static class MyHyperlinkListener implements HyperlinkListener {
+
+        private final Project project;
+
+        public MyHyperlinkListener(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public void hyperlinkUpdate(HyperlinkEvent event) {
+            if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                try {
+                    final URI url = new URI(event.getDescription());
+                    if (url.getScheme().equals("settings")) {
+                        final DataContext context = DataManager.getInstance().getDataContextFromFocus().getResult();
+                        if (context != null) {
+                            final Settings settings = Settings.KEY.getData(context);
+                            final SearchTextField searchTextField = SearchTextField.KEY.getData(context);
+                            final String configId = url.getHost();
+                            final String search = url.getQuery();
+                            if (settings != null) {
+                                final Configurable configurable = settings.find(configId);
+                                settings.select(configurable).doWhenDone(() -> {
+                                    if (searchTextField != null && search != null) {
+                                        searchTextField.setText(search);
+                                    }
+                                });
+                            } else {
+                                ShowSettingsUtilImpl.showSettingsDialog(project, configId, search);
+                            }
+                        }
+                    } else {
+                        BrowserUtil.browse(url);
+                    }
+                } catch (URISyntaxException ex) {
+                    logger.error(ex);
+                }
+            }
+        }
+    }
+
     protected class ApplyAction extends DialogWrapperAction {
 
-        private ApplyAction() {
+        ApplyAction() {
             super(MetricsReloadedBundle.message("apply"));
         }
 
         @Override
         protected void doAction(ActionEvent e) {
-            doApplyAction();
+            processDoNotAskOnOk(NEXT_USER_EXIT_CODE);
+            MetricsProfileRepository.persistProfile(profile);
+            markProfileClean();
         }
-    }
-
-    protected void doApplyAction() {
-        processDoNotAskOnOk(NEXT_USER_EXIT_CODE);
-        MetricsProfileRepository.persistProfile(profile);
-        markProfileClean();
     }
 
     @Override
@@ -421,7 +464,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         });
     }
 
-    public void updateSelection(String newProfileName) {
+    private void updateSelection(String newProfileName) {
         markProfileClean();
         profile = repository.getCurrentProfile();
         profilesDropdown.addItem(newProfileName);
@@ -479,7 +522,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final String url = metric.getHelpURL();
         final String displayString = metric.getHelpDisplayString();
         if (url != null) {
-            urlLabel.setText("<html><a href = \'" + url + "\'>" + displayString + "</a></html>");
+            urlLabel.setText("<html><a href = '" + url + "'>" + displayString + "</a></html>");
         } else {
             urlLabel.setText("");
         }
@@ -506,16 +549,18 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private void setDescriptionFromResource(@NonNls String resourceName) {
         try {
             final URL resourceURL = getClass().getResource(resourceName);
-            descriptionTextArea.setPage(resourceURL);
+            final String description = ResourceUtil.loadText(resourceURL);
+            readHTML(descriptionPanel, toHTML(descriptionPanel, description, false));
         } catch (Exception e) {
             logger.error(e);
         }
     }
 
-    private void setDescriptionFromResource(String resourceName, Metric metric) {
+    private void setDescriptionFromResource(@NonNls String resourceName, Metric metric) {
         try {
             final URL resourceURL = metric.getClass().getResource(resourceName);
-            descriptionTextArea.setPage(resourceURL);
+            final String description = ResourceUtil.loadText(resourceURL);
+            readHTML(descriptionPanel, toHTML(descriptionPanel, description, false));
         } catch (Exception ignore) {
             setDescriptionFromResource("/metricsDescriptions/UnderConstruction.html");
         }
@@ -656,7 +701,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private class MyFilterComponent extends FilterComponent {
 
-        private MyFilterComponent() {
+        MyFilterComponent() {
             super("METRICS_FILTER_HISTORY", 10);
         }
 
@@ -751,7 +796,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private static class MetricTreeNode extends DefaultMutableTreeNode {
         private boolean enabled;
 
-        private MetricTreeNode(Object userObject, boolean enabled) {
+        MetricTreeNode(Object userObject, boolean enabled) {
             super(userObject);
             this.enabled = enabled;
         }

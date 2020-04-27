@@ -26,12 +26,13 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="5331a" class="javax.swing.JTextPane" binding="descriptionTextArea">
+              <component id="e8a23" class="javax.swing.JEditorPane" binding="descriptionPanel">
                 <constraints/>
                 <properties>
+                  <contentType value="text/html"/>
                   <editable value="false"/>
                   <enabled value="true"/>
-                  <text value=""/>
+                  <text value="&lt;html&gt;&#10;  &lt;head&gt;&#10;&#10;  &lt;/head&gt;&#10;  &lt;body&gt;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#10;      &#10;    &lt;/p&gt;&#10;  &lt;/body&gt;&#10;&lt;/html&gt;&#10;"/>
                 </properties>
               </component>
             </children>
