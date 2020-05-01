@@ -79,7 +79,7 @@ import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePane
  * todo resizeability/splitter
  */
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
-    private static final Logger logger = Logger.getInstance("MetricsReloaded");
+    private static final Logger LOG = Logger.getInstance(MetricsConfigurationDialog.class);
 
     private JComboBox<String> profilesDropdown;
     private JEditorPane descriptionPanel;
@@ -425,7 +425,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                         BrowserUtil.browse(url);
                     }
                 } catch (URISyntaxException ex) {
-                    logger.error(ex);
+                    LOG.error(ex);
                 }
             }
         }
@@ -552,7 +552,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             final String description = ResourceUtil.loadText(resourceURL);
             readHTML(descriptionPanel, toHTML(descriptionPanel, description, false));
         } catch (Exception e) {
-            logger.error(e);
+            LOG.error(e);
         }
     }
 
@@ -829,11 +829,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                         if (resourceStream != null) {
                             resourceStream.close();
                         } else {
-                            logger.warn("no description found for " + metric.getID());
+                            LOG.warn("no description found for " + metric.getID());
                         }
                     }
                 } catch (IOException e) {
-                    logger.warn("problem reading metric description", e);
+                    LOG.warn("problem reading metric description", e);
                     return false;
                 }
             }

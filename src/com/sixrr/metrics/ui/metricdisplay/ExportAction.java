@@ -36,7 +36,7 @@ import java.io.IOException;
 
 class ExportAction extends AnAction {
 
-    private static final Logger LOGGER = Logger.getInstance("MetricsReloaded");
+    private static final Logger LOG = Logger.getInstance(ExportAction.class);
 
     private final MetricsView toolWindow;
     private final Project project;
@@ -97,7 +97,7 @@ class ExportAction extends AnAction {
             exporter.export(fileName);
         }
         catch (IOException ex) {
-            LOGGER.info("Metrics export to file failed", ex);
+            LOG.info("Metrics export to file failed", ex);
         }
     }
 }

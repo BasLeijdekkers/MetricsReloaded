@@ -47,9 +47,9 @@ import java.util.*;
 
 public class MetricsRunImpl implements MetricsRun {
 
-    private static final Logger logger = Logger.getInstance("MetricsReloaded");
-    private final Map<MetricCategory, MetricsResult> metricResults =
-            new EnumMap<>(MetricCategory.class);
+    private static final Logger LOG = Logger.getInstance(MetricsRunImpl.class);
+
+    private final Map<MetricCategory, MetricsResult> metricResults = new EnumMap<>(MetricCategory.class);
     private String profileName = null;
     private AnalysisScope context = null;
     private TimeStamp timestamp = null;
@@ -224,11 +224,11 @@ public class MetricsRunImpl implements MetricsRun {
                 try {
                     writer.close();
                 } catch (XMLStreamException e) {
-                    logger.warn(e);
+                    LOG.warn(e);
                 }
             }
         } catch (IOException | XMLStreamException e) {
-            logger.warn(e);
+            LOG.warn(e);
         }
     }
 
@@ -321,7 +321,7 @@ public class MetricsRunImpl implements MetricsRun {
             try {
                 doc = builder.build(fixBrokenXml(file));
             } catch (Exception e1) {
-                logger.warn(e);
+                LOG.warn(e);
                 return null;
             }
         }
@@ -375,7 +375,7 @@ public class MetricsRunImpl implements MetricsRun {
                 }
             }
         } catch (Exception e) {
-            logger.warn(e);
+            LOG.warn(e);
         }
     }
 

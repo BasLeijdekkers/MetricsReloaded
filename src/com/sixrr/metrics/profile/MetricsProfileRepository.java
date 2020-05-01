@@ -39,7 +39,7 @@ import java.util.*;
 
 public final class MetricsProfileRepository implements MetricRepository, ExportableComponent {
 
-    private static final Logger LOG = Logger.getInstance("#com.sixrr.metrics.profile.MetricsProfileRepository");
+    private static final Logger LOG = Logger.getInstance(MetricsProfileRepository.class);
 
     @NonNls
     private static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";

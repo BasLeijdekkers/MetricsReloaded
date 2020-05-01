@@ -56,7 +56,7 @@ import java.util.List;
 
 public class MetricsCommandLine implements ApplicationStarter {
 
-    private static final Logger LOG = Logger.getInstance("MetricsReloaded");
+    private static final Logger LOG = Logger.getInstance(MetricsCommandLine.class);
 
     @Argument(index = 0, required = true, metaVar = "<project_path>", usage = "the project to calculate metrics for")
     private String projectPath = null;
