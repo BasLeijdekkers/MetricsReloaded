@@ -17,7 +17,7 @@
 package com.sixrr.stockmetrics.dependency;
 
 import com.intellij.psi.*;
-import com.sixrr.metrics.utils.Bag;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,61 +25,52 @@ import java.util.*;
 
 public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
-    private final Map<PsiClass, Bag<PsiClass>> dependencies = new HashMap<>();
+    private final Map<PsiClass, BucketedCount<PsiClass>> dependencies = new HashMap<>();
     private final Map<PsiClass, Set<PsiClass>> transitiveDependencies = new HashMap<>();
     private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependencies = new HashMap<>();
     private final Map<PsiClass, Set<PsiClass>> stronglyConnectedComponents = new HashMap<>();
     private final Map<PsiClass, Integer> levelOrders = new HashMap<>();
     private final Map<PsiClass, Integer> adjustedLevelOrders = new HashMap<>();
-    private final Map<PsiClass, Bag<PsiPackage>> packageDependencies = new HashMap<>();
-    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependencies = new HashMap<>();
+    private final Map<PsiClass, BucketedCount<PsiPackage>> packageDependencies = new HashMap<>();
+    private final Map<PsiPackage, BucketedCount<PsiPackage>> packageToPackageDependencies = new HashMap<>();
     private final Map<PsiPackage, Set<PsiPackage>> stronglyConnectedPackageComponents = new HashMap<>();
     private final Map<PsiPackage, Integer> packageLevelOrders = new HashMap<>();
     private final Map<PsiPackage, Integer> packageAdjustedLevelOrders = new HashMap<>();
 
-    private final Map<PsiClass, Bag<PsiClass>> dependents = new HashMap<>();
-    private final Map<PsiClass, Bag<PsiPackage>> packageDependents = new HashMap<>();
-    private final Map<PsiPackage, Bag<PsiPackage>> packageToPackageDependents = new HashMap<>();
+    private final Map<PsiClass, BucketedCount<PsiClass>> dependents = new HashMap<>();
+    private final Map<PsiClass, BucketedCount<PsiPackage>> packageDependents = new HashMap<>();
+    private final Map<PsiPackage, BucketedCount<PsiPackage>> packageToPackageDependents = new HashMap<>();
     private final Map<PsiClass, Set<PsiClass>> transitiveDependents = new HashMap<>();
     private final Map<PsiPackage, Set<PsiPackage>> transitivePackageDependents = new HashMap<>();
 
     @Override
     public Set<PsiClass> calculateDependents(PsiClass aClass) {
-        final Bag<PsiClass> existing = dependents.get(aClass);
-        if (existing != null) {
-            return existing.getContents();
-        }
-        return Collections.emptySet();
+        final BucketedCount<PsiClass> existing = dependents.get(aClass);
+        return (existing == null) ? Collections.emptySet() : existing.getBuckets();
     }
 
     @Override
     public int getStrengthForDependent(PsiClass aClass, PsiClass dependentClass) {
-        final Bag<PsiClass> dependentsForClass = dependents.get(aClass);
-        return dependentsForClass.getCountForObject(dependentClass);
+        final BucketedCount<PsiClass> dependentsForClass = dependents.get(aClass);
+        return dependentsForClass.getBucketValue(dependentClass);
     }
 
     @Override
     public Set<PsiPackage> calculatePackageDependents(PsiClass aClass) {
-        final Bag<PsiPackage> existing = packageDependents.get(aClass);
-        if (existing == null) {
-            return Collections.emptySet();
-        }
-        return existing.getContents();
+        final BucketedCount<PsiPackage> existing = packageDependents.get(aClass);
+        return (existing == null) ? Collections.emptySet() : existing.getBuckets();
     }
 
     @Override
     public Set<PsiPackage> calculatePackageToPackageDependents(PsiPackage aPackage) {
-        final Bag<PsiPackage> existing = packageToPackageDependents.get(aPackage);
-        if (existing == null) {
-            return Collections.emptySet();
-        }
-        return existing.getContents();
+        final BucketedCount<PsiPackage> existing = packageToPackageDependents.get(aPackage);
+        return (existing == null) ? Collections.emptySet() : existing.getBuckets();
     }
 
     @Override
     public int getStrengthForPackageDependent(PsiClass aClass, PsiPackage dependentPackage) {
-        final Bag<PsiPackage> dependentsForClass = packageDependents.get(aClass);
-        return dependentsForClass.getCountForObject(dependentPackage);
+        final BucketedCount<PsiPackage> dependentsForClass = packageDependents.get(aClass);
+        return dependentsForClass.getBucketValue(dependentPackage);
     }
 
     @Override
@@ -139,12 +130,8 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
     @Override
     public Set<PsiClass> calculateDependencies(PsiClass aClass) {
-        if (dependencies.containsKey(aClass)) {
-            final Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
-            return dependenciesForClass.getContents();
-        } else {
-            return Collections.emptySet();
-        }
+        final BucketedCount<PsiClass> dependenciesForClass = dependencies.get(aClass);
+        return (dependenciesForClass == null) ? Collections.emptySet() : dependenciesForClass.getBuckets();
     }
 
     @Override
@@ -249,11 +236,8 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
     @Override
     public Set<PsiPackage> calculatePackageDependencies(PsiClass aClass) {
-        final Bag<PsiPackage> existing = packageDependencies.get(aClass);
-        if (existing != null) {
-            return existing.getContents();
-        }
-        return Collections.emptySet();
+        final BucketedCount<PsiPackage> existing = packageDependencies.get(aClass);
+        return (existing == null) ? Collections.emptySet() : existing.getBuckets();
     }
 
     @Override
@@ -350,29 +334,24 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
 
     @Override
     public int getStrengthForDependency(PsiClass aClass, PsiClass dependencyClass) {
-        final Bag<PsiClass> dependenciesForClass = dependencies.get(aClass);
-        return dependenciesForClass.getCountForObject(dependencyClass);
+        final BucketedCount<PsiClass> dependenciesForClass = dependencies.get(aClass);
+        return dependenciesForClass.getBucketValue(dependencyClass);
     }
 
     @Override
     public int getStrengthForPackageDependency(PsiClass aClass, PsiPackage dependencyPackage) {
-        final Bag<PsiPackage> dependenciesForClass = packageDependencies.get(aClass);
-        return dependenciesForClass.getCountForObject(dependencyPackage);
+        final BucketedCount<PsiPackage> dependenciesForClass = packageDependencies.get(aClass);
+        return dependenciesForClass.getBucketValue(dependencyPackage);
     }
 
     @Override
     public Set<PsiPackage> calculatePackageToPackageDependencies(PsiPackage aPackage) {
-        if (packageToPackageDependencies.containsKey(aPackage)) {
-            final Bag<PsiPackage> dependenciesForPackage = packageToPackageDependencies.get(aPackage);
-            return dependenciesForPackage.getContents();
-        } else {
-            return Collections.emptySet();
-        }
+        final BucketedCount<PsiPackage> dependenciesForPackage = packageToPackageDependencies.get(aPackage);
+        return (dependenciesForPackage == null) ? Collections.emptySet() : dependenciesForPackage.getBuckets();
     }
 
     public void build(PsiElement element) {
-        final DependenciesVisitor visitor = new DependenciesVisitor();
-        element.accept(visitor);
+        element.accept(new DependenciesVisitor());
     }
 
     private class DependenciesVisitor extends JavaRecursiveElementVisitor {
@@ -533,13 +512,13 @@ public class DependencyMapImpl implements DependencyMap, DependentsMap {
             add(dependencyPackage, aPackage, packageToPackageDependents);
         }
 
-        private <K, V> void add(K k, V v, Map<K, Bag<V>> map) {
-            Bag<V> bag = map.get(k);
-            if (bag == null) {
-                bag = new Bag<>();
-                map.put(k, bag);
+        private <K, V> void add(K k, V v, Map<K, BucketedCount<V>> map) {
+            BucketedCount<V> bucketedCount = map.get(k);
+            if (bucketedCount == null) {
+                bucketedCount = new BucketedCount<>();
+                map.put(k, bucketedCount);
             }
-            bag.add(v);
+            bucketedCount.incrementBucketValue(v);
         }
     }
 }

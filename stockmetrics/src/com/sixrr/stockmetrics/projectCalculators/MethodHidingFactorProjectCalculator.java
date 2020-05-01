@@ -22,11 +22,9 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.Query;
-import com.sixrr.metrics.utils.Bag;
+import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
@@ -35,9 +33,9 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
     private int numPublicMethods = 0;
     private int numClasses = 0;
     private int totalVisibility = 0;
-    private final Bag<String> classesPerPackage = new Bag<>();
-    private final Bag<String> packageVisibleMethodsPerPackage = new Bag<>();
-    private final Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
+    private final BucketedCount<String> classesPerPackage = new BucketedCount<>();
+    private final BucketedCount<String> packageVisibleMethodsPerPackage = new BucketedCount<>();
+    private final BucketedCount<PsiClass> subclassesPerClass = new BucketedCount<>();
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -63,7 +61,7 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
                 numPublicMethods++;
             } else {
                 final String packageName = ClassUtils.calculatePackageName(containingClass);
-                packageVisibleMethodsPerPackage.add(packageName);
+                packageVisibleMethodsPerPackage.incrementBucketValue(packageName);
             }
         }
 
@@ -72,13 +70,13 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
             super.visitClass(aClass);
             numClasses++;
             final String packageName = ClassUtils.calculatePackageName(aClass);
-            classesPerPackage.add(packageName);
+            classesPerPackage.incrementBucketValue(packageName);
         }
     }
 
     private int getSubclassCount(final PsiClass aClass) {
-        if (subclassesPerClass.containsKey(aClass)) {
-            return subclassesPerClass.get(aClass);
+        if (subclassesPerClass.containsBucket(aClass)) {
+            return subclassesPerClass.getBucketValue(aClass);
         }
         final int[] numSubclasses = new int[1];
         final Runnable runnable = () -> {
@@ -94,17 +92,17 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
         };
         final ProgressManager progressManager = ProgressManager.getInstance();
         progressManager.runProcess(runnable, null);
-        subclassesPerClass.put(aClass, numSubclasses[0]);
+        subclassesPerClass.incrementBucketValue(aClass, numSubclasses[0]);
         return numSubclasses[0];
     }
 
     @Override
     public void endMetricsRun() {
         totalVisibility += numPublicMethods * (numClasses - 1);
-        final Set<String> packages = classesPerPackage.getContents();
+        final Set<String> packages = classesPerPackage.getBuckets();
         for (String aPackage : packages) {
-            final int visibleMethods = packageVisibleMethodsPerPackage.getCountForObject(aPackage);
-            final int classes = classesPerPackage.getCountForObject(aPackage);
+            final int visibleMethods = packageVisibleMethodsPerPackage.getBucketValue(aPackage);
+            final int classes = classesPerPackage.getBucketValue(aPackage);
             totalVisibility += visibleMethods * (classes - 1);
         }
         final int denominator = numMethods * (numClasses - 1);

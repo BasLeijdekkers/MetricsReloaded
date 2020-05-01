@@ -26,9 +26,9 @@ public class BucketedCount<T> {
 
     private final TObjectIntHashMap<T> buckets = new TObjectIntHashMap<>();
 
-    public void createBucket(@NotNull T bucketName) {
-        if (!buckets.containsKey(bucketName)) {
-            buckets.put(bucketName, 0);
+    public void createBucket(@NotNull T bucket) {
+        if (!buckets.containsKey(bucket)) {
+            buckets.put(bucket, 0);
         }
     }
 
@@ -41,23 +41,24 @@ public class BucketedCount<T> {
         return result;
     }
 
-    public void incrementBucketValue(@NotNull T bucketName, int increment) {
-        if (buckets.containsKey(bucketName)) {
-            buckets.adjustValue(bucketName, increment);
+    public void incrementBucketValue(@NotNull T bucket, int increment) {
+        if (buckets.containsKey(bucket)) {
+            buckets.adjustValue(bucket, increment);
         } else {
-            buckets.put(bucketName, increment);
+            buckets.put(bucket, increment);
         }
     }
 
-    public void incrementBucketValue(@NotNull T bucketName) {
-        incrementBucketValue(bucketName, 1);
+    public void incrementBucketValue(@NotNull T bucket) {
+        incrementBucketValue(bucket, 1);
     }
 
-    public int getBucketValue(T bucketName) {
-        if (!buckets.containsKey(bucketName)) {
-            return 0;
-        }
-        return buckets.get(bucketName);
+    public boolean containsBucket(T bucket) {
+        return buckets.containsKey(bucket);
+    }
+
+    public int getBucketValue(T bucket) {
+        return buckets.get(bucket);
     }
 
     public void clear() {
