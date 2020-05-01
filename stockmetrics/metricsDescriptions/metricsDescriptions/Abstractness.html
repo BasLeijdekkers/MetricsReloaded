@@ -18,10 +18,15 @@
 <body>
 <table>
     <tr><td valign="top" height="150">
-        Calculates the number of abstract classes and interfaces divided by
-        all classes for each package.
-        For more information on the abstractness metric and how it is used,
-        see <a>http://www.objectmentor.com/resources/articles/oodmetrc.pdf</a>.
+        Calculates the Abstractness for each package.
+        Abstractness is defined as the number of abstract classes and interfaces divided by
+        the total number of classes of the package.
+        This metric has a range of [0,1]. A=0 indicates a completely concrete package,
+        A=1 indicates a completely abstract package.
+        <p><p>
+        For more information on the Abstractness metric read
+        <a href="http://web.archive.org/web/20140701184524/http://www.objectmentor.com/resources/articles/oodmetrc.pdf">OO Design Quality Metrics</a>
+        by Robert C. Martin.
     </td></tr>
     <tr><td height="50">Abbreviation: <b>A</b></td></tr>
     <tr><td height="20"><small>Powered by MetricsReloaded</small></td></tr>
