@@ -62,11 +62,23 @@ public class InstabilityCalculator extends PackageCalculator {
             numExternalDependentsPerPackage.createBucket(currentPackage);
             final DependentsMap dependentsMap = getDependentsMap();
             final Set<PsiPackage> packageDependents = dependentsMap.calculatePackageDependents(aClass);
-            numExternalDependentsPerPackage.incrementBucketValue(currentPackage, packageDependents.size());
+            for (PsiPackage referencingPackage : packageDependents) {
+                if (referencingPackage == currentPackage) {
+                    continue; // skip internal references
+                }
+                final int strength = dependentsMap.getStrengthForPackageDependent(aClass, referencingPackage);
+                numExternalDependentsPerPackage.incrementBucketValue(currentPackage, strength);
+            }
             numExternalDependenciesPerPackage.createBucket(currentPackage);
             final DependencyMap dependencyMap = getDependencyMap();
             final Set<PsiPackage> packageDependencies = dependencyMap.calculatePackageDependencies(aClass);
-            numExternalDependenciesPerPackage.incrementBucketValue(currentPackage, packageDependencies.size());
+            for (PsiPackage referencedPackage : packageDependencies) {
+                if (referencedPackage == currentPackage) {
+                    continue; // skip internal references
+                }
+                final int strength = dependencyMap.getStrengthForPackageDependency(aClass, referencedPackage);
+                numExternalDependenciesPerPackage.incrementBucketValue(currentPackage, strength);
+            }
         }
     }
 }

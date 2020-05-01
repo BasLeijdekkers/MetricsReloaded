@@ -59,7 +59,14 @@ public class EfferentCouplingCalculator extends PackageCalculator {
             numExternalDependenciesPerPackage.createBucket(referencingPackage);
             final DependencyMap dependencyMap = getDependencyMap();
             final Set<PsiPackage> packageDependencies = dependencyMap.calculatePackageDependencies(aClass);
-            numExternalDependenciesPerPackage.incrementBucketValue(referencingPackage, packageDependencies.size());
+            for (PsiPackage referencedPackage : packageDependencies) {
+                if (referencedPackage == referencingPackage) {
+                    // skip internal references
+                    continue;
+                }
+                final int strength = dependencyMap.getStrengthForPackageDependency(aClass, referencedPackage);
+                numExternalDependenciesPerPackage.incrementBucketValue(referencingPackage, strength);
+            }
         }
     }
 }
