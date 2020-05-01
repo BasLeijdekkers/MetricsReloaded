@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -83,11 +83,11 @@ class MetricTableHeaderMouseListener extends MouseAdapter {
             popup.add(new JMenuItem(new ShowDiffDistributionAction(project, table)));
             popup.add(new JMenuItem(new ShowDiffHistogramAction(project, table)));
         } else {
-            if (!metricType.equals(MetricType.RecursiveCount) && !metricType.equals(MetricType.RecursiveRatio)) {
+            if (metricType != MetricType.RecursiveCount && metricType != MetricType.RecursiveRatio) {
                 popup.add(new JMenuItem(new ShowDistributionAction(project, table)));
                 popup.add(new JMenuItem(new ShowHistogramAction(project, table)));
             }
-            if (metricType.equals(MetricType.Count)) {
+            if (metricType == MetricType.Count) {
                 popup.add(new JMenuItem(new ShowPieChartAction(project, table)));
             }
             popup.add(new JMenuItem(new ShowExplanationAction(project, table)));

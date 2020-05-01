@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
             final StringBuilder stringValue = new StringBuilder(16);
             final EditorColorsScheme colorsScheme = EditorColorsManager.getInstance().getGlobalScheme();
             Color backgroundColor = null;
-            if (currentValue != null && prevValue != null && prevValue.equals(currentValue)) {
+            if (prevValue != null && prevValue.equals(currentValue)) {
                 stringValue.append(FormatUtils.formatValue(metric, currentValue, average));
             } else {
                 if (currentValue != null) {

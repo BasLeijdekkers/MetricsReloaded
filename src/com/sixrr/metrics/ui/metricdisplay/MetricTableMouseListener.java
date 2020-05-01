@@ -79,11 +79,11 @@ class MetricTableMouseListener extends MouseAdapter {
             popup.add(new JMenuItem(new ShowDiffDistributionAction(project, table)));
             popup.add(new JMenuItem(new ShowDiffHistogramAction(project, table)));
         } else {
-            if (!metricType.equals(MetricType.RecursiveCount) && !metricType.equals(MetricType.RecursiveRatio)) {
+            if (metricType != MetricType.RecursiveCount && metricType != MetricType.RecursiveRatio) {
                 popup.add(new JMenuItem(new ShowDistributionAction(project, table)));
                 popup.add(new JMenuItem(new ShowHistogramAction(project, table)));
             }
-            if (metricType.equals(MetricType.Count)) {
+            if (metricType == MetricType.Count) {
                 popup.add(new JMenuItem(new ShowPieChartAction(project, table)));
             }
             popup.add(new JMenuItem(new ShowExplanationAction(project, table)));

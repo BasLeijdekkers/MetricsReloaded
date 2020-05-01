@@ -17,6 +17,7 @@
 package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.ComboboxWithBrowseButton;
 import com.intellij.ui.TitledSeparator;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
@@ -36,8 +37,7 @@ public class ProfileSelectionPanel extends JPanel {
         final ComboboxWithBrowseButton comboboxWithBrowseButton =
                 buildComboBoxWithBrowseButton(project, MetricsProfileRepository.getInstance());
 
-        final JComponent separator =
-                new TitledSeparator(MetricsReloadedBundle.message("metrics.profile"));
+        final JComponent separator = new TitledSeparator(MetricsReloadedBundle.message("metrics.profile"));
         final JCheckBox checkBox = buildCheckBox(MetricsReloadedConfig.getInstance());
 
         final GridBagConstraints constraints = new GridBagConstraints();
@@ -71,9 +71,8 @@ public class ProfileSelectionPanel extends JPanel {
     private static ComboboxWithBrowseButton buildComboBoxWithBrowseButton(
             final Project project, final MetricsProfileRepository repository) {
         final String[] profiles = repository.getProfileNames();
-        final JComboBox comboBox = new JComboBox(new DefaultComboBoxModel(profiles));
-        final ComboboxWithBrowseButton comboboxWithBrowseButton =
-                new ComboboxWithBrowseButton(comboBox);
+        final JComboBox<String> comboBox = new ComboBox<>(new DefaultComboBoxModel<>(profiles));
+        final ComboboxWithBrowseButton comboboxWithBrowseButton = new ComboboxWithBrowseButton(comboBox);
         final MetricsProfile currentProfile = repository.getCurrentProfile();
         final String currentProfileName = currentProfile.getName();
         comboBox.setSelectedItem(currentProfileName);
@@ -85,11 +84,10 @@ public class ProfileSelectionPanel extends JPanel {
             repository.setSelectedProfile(selectedProfile);
         });
         comboboxWithBrowseButton.addActionListener(e -> {
-            final MetricsConfigurationDialog configurationDialog =
-                    new MetricsConfigurationDialog(project, repository);
+            final MetricsConfigurationDialog configurationDialog = new MetricsConfigurationDialog(project, repository);
             configurationDialog.show();
             final String[] profiles1 = repository.getProfileNames();
-            comboBox.setModel(new DefaultComboBoxModel(profiles1));
+            comboBox.setModel(new DefaultComboBoxModel<>(profiles1));
             final MetricsProfile currentProfile1 = repository.getCurrentProfile();
             final String currentProfileName1 = currentProfile1.getName();
             comboBox.setSelectedItem(currentProfileName1);
