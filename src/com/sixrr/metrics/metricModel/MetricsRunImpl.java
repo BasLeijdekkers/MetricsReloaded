@@ -100,7 +100,9 @@ public class MetricsRunImpl implements MetricsRun {
     @Override
     public void postPackageMetric(@NotNull Metric metric, @NotNull PsiPackage aPackage, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Package);
-        results.postValue(metric, aPackage.getQualifiedName(), value);
+        final String qualifiedName = aPackage.getQualifiedName();
+        results.postValue(metric, qualifiedName, value);
+        results.setElementForMeasuredObject(qualifiedName, aPackage);
     }
 
     @Override
@@ -143,7 +145,9 @@ public class MetricsRunImpl implements MetricsRun {
     public void postPackageMetric(@NotNull Metric metric, @NotNull PsiPackage aPackage,
                                   double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Package);
-        results.postValue(metric, aPackage.getQualifiedName(), numerator, denominator);
+        final String qualifiedName = aPackage.getQualifiedName();
+        results.postValue(metric, qualifiedName, numerator, denominator);
+        results.setElementForMeasuredObject(qualifiedName, aPackage);
     }
 
     @Override
@@ -157,14 +161,18 @@ public class MetricsRunImpl implements MetricsRun {
     public void postClassMetric(@NotNull Metric metric, @NotNull PsiClass aClass,
                                 double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Class);
-        results.postValue(metric, aClass.getQualifiedName(), numerator, denominator);
+        final String qualifiedName = aClass.getQualifiedName();
+        results.postValue(metric, qualifiedName, numerator, denominator);
+        results.setElementForMeasuredObject(qualifiedName, aClass);
     }
 
     @Override
     public void postInterfaceMetric(@NotNull Metric metric, @NotNull PsiClass anInterface,
                                     double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Interface);
-        results.postValue(metric, anInterface.getQualifiedName(), numerator, denominator);
+        final String qualifiedName = anInterface.getQualifiedName();
+        results.postValue(metric, qualifiedName, numerator, denominator);
+        results.setElementForMeasuredObject(qualifiedName, anInterface);
     }
 
     @Override

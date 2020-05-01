@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.metricModel;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SmartPointerManager;
@@ -128,10 +129,12 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public void setElementForMeasuredObject(String measuredObject, PsiElement element) {
-        final Project project = element.getProject();
-        final SmartPointerManager pointerManager = SmartPointerManager.getInstance(project);
-        final SmartPsiElementPointer<PsiElement> pointer = pointerManager.createSmartPsiElementPointer(element);
-        elements.put(measuredObject, pointer);
+        ReadAction.run(() -> {
+            final Project project = element.getProject();
+            final SmartPointerManager pointerManager = SmartPointerManager.getInstance(project);
+            final SmartPsiElementPointer<PsiElement> pointer = pointerManager.createSmartPsiElementPointer(element);
+            elements.put(measuredObject, pointer);
+        });
     }
 
     @Override

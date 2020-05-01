@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package com.sixrr.metrics.ui.metricdisplay;
 
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
-import com.sixrr.metrics.utils.EditorCaretMover;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,14 +51,11 @@ class MetricTableMouseListener extends MouseAdapter {
         final int modelIndex = table.convertColumnIndexToModel(column);
         final boolean autoscroll = MetricsReloadedConfig.getInstance().isAutoscroll();
         if (modelIndex == 0 && (e.getClickCount() == 2 || autoscroll)) {
-            final EditorCaretMover caretMover = new EditorCaretMover(project);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             final PsiElement element = model.getElementAtRow(row);
-            if (element != null) {
-                final Editor editor = caretMover.openInEditor(element);
-                if (editor != null) {
-                    caretMover.moveEditorCaret(element);
-                }
+            if (element instanceof Navigatable) {
+                final Navigatable navigatable = (Navigatable) element;
+                navigatable.navigate(true);
             }
         }
         table.setColumnSelectionInterval(column, column);
