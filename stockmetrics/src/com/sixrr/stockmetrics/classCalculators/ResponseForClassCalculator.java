@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.ClassUtils;
 
 import java.util.Collections;
@@ -24,6 +25,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ResponseForClassCalculator extends ClassCalculator {
+
+    public ResponseForClassCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

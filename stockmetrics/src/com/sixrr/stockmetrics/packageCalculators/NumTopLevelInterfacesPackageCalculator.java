@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,14 +17,17 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.PsiClass;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.ClassUtils;
 
-public class NumTopLevelInterfacesPackageCalculator
-        extends ClassCountingPackageCalculator {
+public class NumTopLevelInterfacesPackageCalculator extends ClassCountingPackageCalculator {
+
+    public NumTopLevelInterfacesPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public boolean satisfies(PsiClass aClass) {
-        return aClass.isInterface() &&
-                ClassUtils.isTopLevel(aClass);
+        return aClass.isInterface() && ClassUtils.isTopLevel(aClass);
     }
 }

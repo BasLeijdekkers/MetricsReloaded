@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,9 +21,14 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.searches.OverridingMethodsSearch;
 import com.intellij.util.Query;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
 
 public class NumImplementationsMethodCalculator extends MethodCalculator {
+
+    public NumImplementationsMethodCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

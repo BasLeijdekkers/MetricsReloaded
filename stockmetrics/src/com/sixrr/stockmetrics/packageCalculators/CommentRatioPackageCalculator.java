@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
@@ -27,6 +28,10 @@ public class CommentRatioPackageCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numCommentLinesPerPackage = new BucketedCount<>();
+
+    public CommentRatioPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,8 +17,13 @@
 package com.sixrr.stockmetrics.interfaceCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 
 public class NumTypeParametersInterfaceCalculator extends InterfaceCalculator {
+
+    public NumTypeParametersInterfaceCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {
@@ -38,11 +43,7 @@ public class NumTypeParametersInterfaceCalculator extends InterfaceCalculator {
                 postMetric(aClass, 0.0);
             } else {
                 final PsiTypeParameter[] parameters = typeParams.getTypeParameters();
-                if (parameters == null) {
-                    postMetric(aClass, 0.0);
-                } else {
-                    postMetric(aClass, (double) parameters.length);
-                }
+                postMetric(aClass, (double) parameters.length);
             }
         }
     }

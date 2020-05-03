@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -26,6 +27,10 @@ public class AbstractnessCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> numAbstractClassesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<>();
+
+    public AbstractnessCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

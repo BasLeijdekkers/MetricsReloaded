@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,8 +17,13 @@
 package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 
 public abstract class ClassCountingModuleCalculator extends ElementCountModuleCalculator {
+
+    public ClassCountingModuleCalculator(Metric metric) {
+        super(metric);
+    }
 
     protected abstract boolean satisfies(PsiClass aClass);
 

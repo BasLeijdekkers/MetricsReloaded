@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,16 +26,15 @@ public interface MetricCalculator {
 
     /**
      * Begin a metrics calculation run.
-     * @param metric   the metric which created this metrics calculator.  This will be needed to report the results.
      * @param resultsHolder the results holder to report metrics results to.
      * @param executionContext the metrics execution context, in which intermediate data can be cached for
      * the duration of the run.
      */
-    void beginMetricsRun(Metric metric, MetricsResultsHolder resultsHolder, MetricsExecutionContext executionContext);
+    void beginMetricsRun(MetricsResultsHolder resultsHolder, MetricsExecutionContext executionContext);
 
     /**
      * Process a file.  This method will be called once for each file in the analysis scope.
-     * @param file
+     * @param file  the file to calculate metrics for.
      */
     void processFile(PsiFile file);
 

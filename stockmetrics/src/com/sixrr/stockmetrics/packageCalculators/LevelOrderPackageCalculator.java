@@ -20,6 +20,7 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiPackage;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.dependency.DependencyMap;
 
@@ -27,7 +28,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LevelOrderPackageCalculator extends PackageCalculator {
+
     private final Set<PsiPackage> packages = new HashSet<>();
+
+    public LevelOrderPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

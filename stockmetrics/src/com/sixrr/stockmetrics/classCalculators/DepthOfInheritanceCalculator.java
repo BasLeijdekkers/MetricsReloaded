@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,8 +19,13 @@ package com.sixrr.stockmetrics.classCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
+import com.sixrr.metrics.Metric;
 
 public class DepthOfInheritanceCalculator extends ClassCalculator {
+
+    public DepthOfInheritanceCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

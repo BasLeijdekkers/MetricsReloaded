@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,14 +17,20 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 import com.sixrr.metrics.utils.MethodUtils;
 
 public class QCPCorrectnessCalculator extends MethodCalculator {
+
     private int methodNestingDepth = 0;
     private int complexity = 0;
     private int numControlStatements = 0;
     private int numExecutableStatements = 0;
+
+    public QCPCorrectnessCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

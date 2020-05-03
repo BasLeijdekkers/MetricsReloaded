@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -26,6 +27,10 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
 
     private int availableMethods = 0;
     private int inheritedMethods = 0;
+
+    public MethodInheritanceFactorProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

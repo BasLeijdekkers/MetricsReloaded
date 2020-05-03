@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPackage;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -29,6 +30,10 @@ import java.util.Set;
 public abstract class ElementCountPackageCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> elementCountPerPackage = new BucketedCount<>();
+
+    public ElementCountPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public final void endMetricsRun() {

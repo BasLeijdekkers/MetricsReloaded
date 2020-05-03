@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.moduleCalculators;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -27,6 +28,10 @@ public abstract class ElementRatioModuleCalculator extends ModuleCalculator {
 
     private final BucketedCount<Module> numeratorPerModule = new BucketedCount<>();
     private final BucketedCount<Module> denominatorPerModule = new BucketedCount<>();
+
+    public ElementRatioModuleCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

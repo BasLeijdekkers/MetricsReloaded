@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,12 +17,18 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.utils.ControlFlowUtils;
 import com.sixrr.metrics.utils.MethodUtils;
 
 public class NumReturnPointsCalculator extends MethodCalculator {
+
     private int methodNestingDepth = 0;
     private int numReturnPoints = 0;
+
+    public NumReturnPointsCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

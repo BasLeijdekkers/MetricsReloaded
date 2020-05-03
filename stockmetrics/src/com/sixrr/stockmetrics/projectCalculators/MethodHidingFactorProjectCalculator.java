@@ -22,6 +22,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.Query;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -36,6 +37,10 @@ public class MethodHidingFactorProjectCalculator extends ProjectCalculator {
     private final BucketedCount<String> classesPerPackage = new BucketedCount<>();
     private final BucketedCount<String> packageVisibleMethodsPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiClass> subclassesPerClass = new BucketedCount<>();
+
+    public MethodHidingFactorProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

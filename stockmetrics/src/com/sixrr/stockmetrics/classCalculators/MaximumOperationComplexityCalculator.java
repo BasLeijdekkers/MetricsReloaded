@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,11 +17,17 @@
 package com.sixrr.stockmetrics.classCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 
 public class MaximumOperationComplexityCalculator extends ClassCalculator {
+
     private int complexity = 0;
     private int maxComplexity = 0;
     private int numMethods = 0;
+
+    public MaximumOperationComplexityCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

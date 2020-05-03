@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,11 +19,17 @@ package com.sixrr.stockmetrics.methodCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.halstead.HalsteadVisitor;
 import com.sixrr.metrics.utils.MethodUtils;
 
 public abstract class HalsteadMethodCalculator extends MethodCalculator {
+
     private int methodNestingDepth = 0;
+
+    public HalsteadMethodCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

@@ -20,6 +20,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
@@ -31,6 +32,10 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
 
     private final BucketedCount<Module> totalComplexityPerModule = new BucketedCount<>();
     private final BucketedCount<Module> numMethodsPerModule = new BucketedCount<>();
+
+    public AverageCyclomaticComplexityModuleCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

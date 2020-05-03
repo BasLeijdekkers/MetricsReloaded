@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,11 +21,16 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.TestUtils;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class SourceLinesOfCodeTestPackageCalculator extends ElementCountPackageCalculator {
-    
+
+    public SourceLinesOfCodeTestPackageCalculator(Metric metric) {
+        super(metric);
+    }
+
     @Override
     protected PsiElementVisitor createVisitor() {
         return new Visitor();

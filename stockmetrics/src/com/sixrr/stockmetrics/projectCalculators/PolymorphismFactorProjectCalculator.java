@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.util.Query;
+import com.sixrr.metrics.Metric;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,10 @@ public class PolymorphismFactorProjectCalculator extends ProjectCalculator {
     private final Map<PsiClass, Integer> subclassesPerClass = new HashMap<>();
     private int numOverridingMethods = 0;
     private int numOverridePotentials = 0;
+
+    public PolymorphismFactorProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

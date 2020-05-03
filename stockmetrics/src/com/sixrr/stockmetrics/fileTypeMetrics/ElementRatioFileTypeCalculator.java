@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -30,6 +31,10 @@ public abstract class ElementRatioFileTypeCalculator extends FileTypeCalculator 
 
     private final BucketedCount<FileType> numeratorPerModule = new BucketedCount<>();
     private final BucketedCount<FileType> denominatorPerModule = new BucketedCount<>();
+
+    public ElementRatioFileTypeCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

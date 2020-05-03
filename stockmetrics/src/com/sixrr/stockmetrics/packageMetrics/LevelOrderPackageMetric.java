@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -64,6 +64,6 @@ public class LevelOrderPackageMetric extends PackageMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new LevelOrderPackageCalculator();
+        return new LevelOrderPackageCalculator(this);
     }
 }

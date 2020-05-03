@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,12 +16,17 @@
 package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.execution.BaseMetricsCalculator;
 
 /**
  * @author Bas Leijdekkers
  */
 public abstract class FileTypeCalculator extends BaseMetricsCalculator {
+
+    public FileTypeCalculator(Metric metric) {
+        super(metric);
+    }
 
     protected void postMetric(FileType fileType, int numerator, int denominator) {
         resultsHolder.postFileTypeMetric(metric, fileType, (double) numerator, (double) denominator);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020, Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,13 +21,19 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.utils.MethodCallMap;
 import com.sixrr.stockmetrics.utils.MethodCallMapImpl;
 
 import java.util.Set;
 
 public class NumTimesCalledCalculator extends MethodCalculator {
+
     private int methodNestingDepth = 0;
+
+    public NumTimesCalledCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

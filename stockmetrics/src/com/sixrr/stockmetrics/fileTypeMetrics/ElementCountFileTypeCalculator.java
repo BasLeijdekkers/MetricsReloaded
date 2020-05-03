@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElement;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,10 @@ import java.util.Set;
 public abstract class ElementCountFileTypeCalculator extends FileTypeCalculator {
 
     private final BucketedCount<FileType> elementCountsPerFileType = new BucketedCount<>();
+
+    public ElementCountFileTypeCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.fileTypeMetrics;
 
 import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
@@ -47,10 +48,14 @@ public class NonCommentLinesOfCodeFileTypeMetric extends FileTypeMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new NonCommentLinesOfCodeFileTypeCalculator();
+        return new NonCommentLinesOfCodeFileTypeCalculator(this);
     }
 
     private static class NonCommentLinesOfCodeFileTypeCalculator extends ElementCountFileTypeCalculator {
+
+        public NonCommentLinesOfCodeFileTypeCalculator(Metric metric) {
+            super(metric);
+        }
 
         @Override
         protected PsiElementVisitor createVisitor() {

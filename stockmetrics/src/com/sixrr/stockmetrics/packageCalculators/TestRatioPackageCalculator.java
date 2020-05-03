@@ -20,6 +20,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
@@ -31,6 +32,10 @@ public class TestRatioPackageCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> numLinesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numTestLinesPerPackage = new BucketedCount<>();
+
+    public TestRatioPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

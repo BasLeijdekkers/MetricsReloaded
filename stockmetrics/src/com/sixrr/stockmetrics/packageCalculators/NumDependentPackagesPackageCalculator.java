@@ -20,6 +20,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.dependency.DependentsMap;
 
@@ -27,7 +28,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class NumDependentPackagesPackageCalculator extends PackageCalculator {
+
     private final Set<PsiPackage> packages = new HashSet<>();
+
+    public NumDependentPackagesPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

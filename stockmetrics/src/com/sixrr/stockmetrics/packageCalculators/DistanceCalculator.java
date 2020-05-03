@@ -17,6 +17,7 @@
 package com.sixrr.stockmetrics.packageCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.dependency.DependencyMap;
@@ -30,6 +31,10 @@ public class DistanceCalculator extends PackageCalculator {
     private final BucketedCount<PsiPackage> numAbstractClassesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numExternalDependentsPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numExternalDependenciesPerPackage = new BucketedCount<>();
+
+    public DistanceCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

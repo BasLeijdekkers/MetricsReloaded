@@ -19,6 +19,7 @@ package com.sixrr.stockmetrics.packageCalculators;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.TestUtils;
@@ -30,6 +31,10 @@ public class EncapsulationRatioPackageCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numInternalClassesPerPackage = new BucketedCount<>();
+
+    public EncapsulationRatioPackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

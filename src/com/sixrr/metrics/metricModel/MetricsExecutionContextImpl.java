@@ -91,7 +91,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
             final MetricCalculator calculator = metric.createCalculator();
 
             calculators.add(calculator);
-            calculator.beginMetricsRun(metric, resultsHolder, this);
+            calculator.beginMetricsRun(resultsHolder, this);
         }
 
         scope.accept(new PsiElementVisitor() {

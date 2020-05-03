@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,10 +17,16 @@
 package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 
 public class AttributeInheritanceFactorProjectCalculator extends ProjectCalculator {
+
     private int availableFields = 0;
     private int inheritedFields = 0;
+
+    public AttributeInheritanceFactorProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class NumTransitiveDependentsInterfaceMetric extends InterfaceMetric {
+
     @NotNull
     @Override
     public String getDisplayName() {
@@ -63,6 +64,6 @@ public class NumTransitiveDependentsInterfaceMetric extends InterfaceMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new NumTransitiveDependentsInterfaceCalculator();
+        return new NumTransitiveDependentsInterfaceCalculator(this);
     }
 }

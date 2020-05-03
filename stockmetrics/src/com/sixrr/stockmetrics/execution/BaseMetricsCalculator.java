@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Bas Leijdekkers, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,24 +38,25 @@ import com.sixrr.stockmetrics.dependency.DependencyMap;
 import com.sixrr.stockmetrics.dependency.DependencyMapImpl;
 import com.sixrr.stockmetrics.dependency.DependentsMap;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.metricModel.BaseMetric;
 
 public abstract class BaseMetricsCalculator implements MetricCalculator {
 
     private static final Key<DependencyMapImpl> dependencyMapKey = new Key<>("dependencyMap");
 
-    protected Metric metric = null;
+    protected final Metric metric;
     protected MetricsResultsHolder resultsHolder = null;
     protected MetricsExecutionContext executionContext = null;
     private PsiElementVisitor visitor;
 
-    @Override
-    public void beginMetricsRun(Metric metric, MetricsResultsHolder resultsHolder,
-                                MetricsExecutionContext executionContext) {
+    public BaseMetricsCalculator(Metric metric) {
         this.metric = metric;
+    }
+
+    @Override
+    public void beginMetricsRun(MetricsResultsHolder resultsHolder, MetricsExecutionContext executionContext) {
         this.resultsHolder = resultsHolder;
         this.executionContext = executionContext;
-        if (((BaseMetric)metric).requiresDependents() && getDependencyMap() == null) {
+        if (metric.requiresDependents() && getDependencyMap() == null) {
             calculateDependencies();
         }
         visitor = createVisitor();
@@ -72,10 +73,12 @@ public abstract class BaseMetricsCalculator implements MetricCalculator {
     public void endMetricsRun() {}
 
     public DependencyMap getDependencyMap() {
+        assert metric.requiresDependents();
         return executionContext.getUserData(dependencyMapKey);
     }
 
     public DependentsMap getDependentsMap() {
+        assert metric.requiresDependents();
         return executionContext.getUserData(dependencyMapKey);
     }
 

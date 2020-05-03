@@ -17,14 +17,20 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.*;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class NumExceptionsCaughtCalculator extends MethodCalculator {
+
     private int methodNestingDepth = 0;
     private final Set<String> caughtExceptions = new HashSet<>();
+
+    public NumExceptionsCaughtCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

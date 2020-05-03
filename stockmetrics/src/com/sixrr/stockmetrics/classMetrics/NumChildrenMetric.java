@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.ClassCalculator;
@@ -53,10 +54,14 @@ public class NumChildrenMetric extends ClassMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new NumberOfChildrenCalculator();
+        return new NumberOfChildrenCalculator(this);
     }
 
     private static class NumberOfChildrenCalculator extends ClassCalculator {
+
+        public NumberOfChildrenCalculator(Metric metric) {
+            super(metric);
+        }
 
         @Override
         protected PsiElementVisitor createVisitor() {

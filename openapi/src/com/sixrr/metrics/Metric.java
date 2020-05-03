@@ -90,4 +90,9 @@ public interface Metric {
      */
     @NotNull
     MetricCalculator createCalculator();
+
+    /**
+     * @return true, if this metric requires the dependency map. false otherwise.
+     */
+    boolean requiresDependents();
 }

@@ -19,6 +19,7 @@ package com.sixrr.stockmetrics.interfaceCalculators;
 import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
+import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.dependency.DependencyMap;
 import com.sixrr.stockmetrics.dependency.DependentsMap;
 
@@ -26,6 +27,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CouplingBetweenObjectsInterfaceCalculator extends InterfaceCalculator {
+
+    public CouplingBetweenObjectsInterfaceCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

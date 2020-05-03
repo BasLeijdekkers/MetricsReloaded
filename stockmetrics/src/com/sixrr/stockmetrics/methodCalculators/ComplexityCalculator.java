@@ -20,10 +20,15 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
 import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
 
 public abstract class ComplexityCalculator extends MethodCalculator {
+
+    public ComplexityCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     protected PsiElementVisitor createVisitor() {

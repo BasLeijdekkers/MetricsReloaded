@@ -20,6 +20,7 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPackage;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.stockmetrics.dependency.DependencyMap;
@@ -31,6 +32,10 @@ public class InstabilityCalculator extends PackageCalculator {
 
     private final BucketedCount<PsiPackage> numExternalDependentsPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numExternalDependenciesPerPackage = new BucketedCount<>();
+
+    public InstabilityCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

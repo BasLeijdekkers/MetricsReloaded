@@ -20,6 +20,7 @@ import com.intellij.psi.JavaRecursiveElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPackage;
+import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 
@@ -29,6 +30,10 @@ public class PercentClassesJavadocedRecursivePackageCalculator extends PackageCa
 
     private final BucketedCount<PsiPackage> numJavadocedClassesPerPackage = new BucketedCount<>();
     private final BucketedCount<PsiPackage> numClassesPerPackage = new BucketedCount<>();
+
+    public PercentClassesJavadocedRecursivePackageCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {

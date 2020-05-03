@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@
 package com.sixrr.stockmetrics.projectCalculators;
 
 import com.intellij.psi.PsiClass;
+import com.sixrr.metrics.Metric;
 
-public class NumAnnotationClassesProjectCalculator
-        extends ClassCountingProjectCalculator {
+public class NumAnnotationClassesProjectCalculator extends ClassCountingProjectCalculator {
+
+    public NumAnnotationClassesProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public boolean satisfies(PsiClass aClass) {

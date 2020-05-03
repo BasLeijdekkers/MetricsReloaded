@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,16 @@
 
 package com.sixrr.stockmetrics.projectCalculators;
 
+import com.sixrr.metrics.Metric;
+
 public abstract class ElementRatioProjectCalculator extends ProjectCalculator {
 
     protected int denominator = 0;
     protected int numerator = 0;
+
+    public ElementRatioProjectCalculator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public void endMetricsRun() {
