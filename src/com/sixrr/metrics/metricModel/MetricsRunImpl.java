@@ -29,6 +29,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPackage;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
+import com.sixrr.metrics.MetricsResultsHolder;
 import com.sixrr.metrics.profile.MetricRepository;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
@@ -45,7 +46,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.util.*;
 
-public class MetricsRunImpl implements MetricsRun {
+public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
 
     private static final Logger LOG = Logger.getInstance(MetricsRunImpl.class);
 

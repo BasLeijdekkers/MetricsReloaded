@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@ package com.sixrr.metrics.metricModel;
 import com.intellij.analysis.AnalysisScope;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
-import com.sixrr.metrics.MetricsResultsHolder;
 import com.sixrr.metrics.profile.MetricsProfile;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.List;
 
-public interface MetricsRun extends MetricsResultsHolder {
+public interface MetricsRun {
 
     List<Metric> getMetrics();
 
