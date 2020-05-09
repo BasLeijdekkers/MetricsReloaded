@@ -8,11 +8,20 @@
       <sourceFolder url="file://$MODULE_DIR$/metricsDescriptions" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tst" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/testdata" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="openapi" />
     <orderEntry type="module" module-name="utils" />
+    <orderEntry type="library" scope="PROVIDED" name="Scala Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="JavaScript Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Groovy Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="JSP Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Properties Plugin" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="CSS Plugin" level="project" />
+    <orderEntry type="module" module-name="MetricsReloaded" scope="TEST" />
   </component>
 </module>

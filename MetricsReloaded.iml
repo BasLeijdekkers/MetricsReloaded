@@ -15,7 +15,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="openapi" />
     <orderEntry type="module" module-name="utils" />
-    <orderEntry type="module" module-name="stockmetrics" />
+    <orderEntry type="module" module-name="stockmetrics" scope="RUNTIME" />
     <orderEntry type="library" name="jcommon-0.9.1" level="project" />
     <orderEntry type="library" name="jfreechart-0.9.16" level="project" />
     <orderEntry type="library" name="args4j" level="project" />
