@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module relativePaths="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/build/classes" />
     <output-test url="file://$MODULE_DIR$/build/testclasses" />
     <exclude-output />
@@ -15,13 +15,79 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="openapi" />
     <orderEntry type="module" module-name="utils" />
-    <orderEntry type="library" scope="PROVIDED" name="Scala Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Kotlin Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="JavaScript Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Groovy Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="JSP Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Properties Plugin" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="CSS Plugin" level="project" />
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="Kotlin Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/Kotlin/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/Kotlin/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="Scala Plugin">
+        <CLASSES>
+          <root url="file://$PLUGIN_DIR$/Scala/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$PLUGIN_DIR$/Scala/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$PLUGIN_DIR$/Scala/lib" recursive="false" />
+        <jarDirectory url="file://$PLUGIN_DIR$/Scala/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="JavaScript and TypeScript Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/JavaScriptLanguage/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/JavaScriptLanguage/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="Groovy Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/Groovy/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/Groovy/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="JSP Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/jsp/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/jsp/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="Properties Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/properties/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/properties/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library name="CSS Plugin">
+        <CLASSES>
+          <root url="file://$INTELLIJ_IDEA$/plugins/CSS/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/CSS/lib" recursive="false" />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="MetricsReloaded" scope="TEST" />
   </component>
 </module>
