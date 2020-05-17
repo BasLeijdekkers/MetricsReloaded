@@ -1,5 +1,5 @@
 /*
- * Copyright 2005, Sixth and Red River Software
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ public interface MetricsResult {
 
     @Nullable
     Double getValueForMetric(Metric metric, String measured);
+
+    double[] getValuesForMetric(Metric metric);
 
     String[] getMeasuredObjects();
 

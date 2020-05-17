@@ -28,10 +28,7 @@ import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.StringToFractionMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MetricsResultImpl implements MetricsResult {
     private final Map<Metric, StringToFractionMap> values = new HashMap<>(32);
@@ -70,13 +67,31 @@ public class MetricsResultImpl implements MetricsResult {
     }
 
     @Override
+    public double[] getValuesForMetric(Metric metric) {
+        final String[] measureds = getMeasuredObjects();
+        final double[] result = new double[measureds.length];
+        final StringToFractionMap metricValues = values.get(metric);
+        if (metricValues == null) {
+            return new double[0];
+        }
+        for (int i = 0, max = measureds.length; i < max; i++) {
+            result[i] = metricValues.get(measureds[i]);
+        }
+        return result;
+    }
+
+    @Override
     public String[] getMeasuredObjects() {
-        return measuredObjects.toArray(new String[0]);
+        final String[] array = measuredObjects.toArray(new String[0]);
+        Arrays.sort(array);
+        return array;
     }
 
     @Override
     public Metric[] getMetrics() {
-        return metrics.toArray(Metric.EMPTY_ARRAY);
+        final Metric[] metrics = this.metrics.toArray(Metric.EMPTY_ARRAY);
+        Arrays.sort(metrics, new MetricAbbreviationComparator());
+        return metrics;
     }
 
     @Override
