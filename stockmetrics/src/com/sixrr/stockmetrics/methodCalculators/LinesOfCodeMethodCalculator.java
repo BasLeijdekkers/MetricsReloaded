@@ -25,9 +25,6 @@ import com.sixrr.metrics.utils.MethodUtils;
 
 public class LinesOfCodeMethodCalculator extends MethodCalculator {
 
-    private int methodNestingDepth = 0;
-    private int elementCount = 0;
-
     public LinesOfCodeMethodCalculator(Metric metric) {
         super(metric);
     }
@@ -41,16 +38,10 @@ public class LinesOfCodeMethodCalculator extends MethodCalculator {
 
         @Override
         public void visitMethod(PsiMethod method) {
-            if (methodNestingDepth == 0) {
-                elementCount = 0;
+            if (MethodUtils.isAbstract(method)) {
+                return;
             }
-            methodNestingDepth++;
-            elementCount = LineUtil.countLines(method);
-            super.visitMethod(method);
-            methodNestingDepth--;
-            if (methodNestingDepth == 0 && !MethodUtils.isAbstract(method)) {
-                postMetric(method, elementCount);
-            }
+            postMetric(method, LineUtil.countLines(method));
         }
     }
 }
