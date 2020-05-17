@@ -19,7 +19,10 @@
 <table>
     <tr><td valign="top" height="150">
         Calculates the number of lines of comments in each method. Whitespace is not
-        counted.
+        counted. Multiple separate comments on a single line are counted as one line of comments.
+        A line that has both code and one or more comments is counted as one line of comments.
+        Comments on anonymous and local classes are not counted separately,
+        but included in the count of the containing method.
     </td></tr>
     <tr><td height="50">Abbreviation: <b>CLOC</b></td></tr>
     <tr><td height="20"><small>Powered by MetricsReloaded</small></td></tr>

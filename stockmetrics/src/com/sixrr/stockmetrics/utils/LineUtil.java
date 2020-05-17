@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 
 package com.sixrr.stockmetrics.utils;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.*;
+import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.search.PsiElementProcessor;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 
 public final class LineUtil {
 
@@ -37,15 +40,13 @@ public final class LineUtil {
         int lines = 0;
         boolean onEmptyLine = true;
         final char[] chars = text.toCharArray();
-        for (final char aChar : chars) {
+        for (char aChar : chars) {
             if (aChar == '\n' || aChar == '\r') {
                 if (!onEmptyLine) {
                     lines++;
                     onEmptyLine = true;
                 }
-            } else if (aChar == ' ' || aChar == '\t') {
-                //don't do anything
-            } else {
+            } else if (aChar != ' ' && aChar != '\t') {
                 onEmptyLine = false;
             }
         }
@@ -116,5 +117,48 @@ public final class LineUtil {
         }
         final String text = element.getText();
         return text != null && (text.contains("\n") || text.contains("\r"));
+    }
+
+    public static String getCommentText(PsiComment comment) {
+        if (comment instanceof PsiDocComment) {
+            final PsiDocComment docComment = (PsiDocComment)comment;
+            final StringBuilder result = new StringBuilder();
+            for (PsiElement element : docComment.getDescriptionElements()) {
+                result.append(element.getText());
+            }
+            return result.toString();
+        }
+        else {
+            final IElementType type = comment.getTokenType();
+            final String text = comment.getText();
+            return (type == JavaTokenType.END_OF_LINE_COMMENT)
+                    ? StringUtil.trimStart(text, "//")
+                    : StringUtil.trimEnd(text.substring(2), "*/");
+        }
+    }
+
+    public static int calculateCommentLinesOfCode(PsiElement element) {
+        final CommentLinesOfCodeProcessor processor = new CommentLinesOfCodeProcessor();
+        PsiTreeUtil.processElements(element, processor);
+        return processor.count;
+    }
+
+    private static class CommentLinesOfCodeProcessor implements PsiElementProcessor<PsiElement> {
+        private boolean newline = true;
+        int count = 0;
+
+        @Override
+        public boolean execute(@NotNull PsiElement e) {
+            if (e instanceof PsiWhiteSpace) {
+                newline |= StringUtil.containsChar(e.getText(), '\n');
+            } else if (e instanceof PsiComment) {
+                count += StringUtil.countChars(getCommentText((PsiComment) e), '\n');
+                if (newline) {
+                    count++;
+                    newline = false;
+                }
+            }
+            return true;
+        }
     }
 }

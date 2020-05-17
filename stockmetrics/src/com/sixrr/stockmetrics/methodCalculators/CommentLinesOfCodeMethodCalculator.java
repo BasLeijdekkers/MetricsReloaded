@@ -17,16 +17,12 @@
 package com.sixrr.stockmetrics.methodCalculators;
 
 import com.intellij.psi.JavaRecursiveElementVisitor;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.Metric;
 import com.sixrr.stockmetrics.utils.LineUtil;
 
 public class CommentLinesOfCodeMethodCalculator extends MethodCalculator {
-
-    private int methodNestingDepth = 0;
-    private int elementCount = 0;
 
     public CommentLinesOfCodeMethodCalculator(Metric metric) {
         super(metric);
@@ -41,21 +37,7 @@ public class CommentLinesOfCodeMethodCalculator extends MethodCalculator {
 
         @Override
         public void visitMethod(PsiMethod method) {
-            if (methodNestingDepth == 0) {
-                elementCount = 0;
-            }
-            methodNestingDepth++;
-            super.visitMethod(method);
-            methodNestingDepth--;
-            if (methodNestingDepth == 0) {
-                postMetric(method, elementCount);
-            }
-        }
-
-        @Override
-        public void visitComment(PsiComment comment) {
-            super.visitComment(comment);
-            elementCount += LineUtil.countLines(comment);
+            postMetric(method, LineUtil.calculateCommentLinesOfCode(method));
         }
     }
 }
