@@ -18,67 +18,76 @@ package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiElementFilter;
+
+import java.util.function.Predicate;
 
 /**
  * @author Bas Leijdekkers
  */
 public final class CyclomaticComplexityUtil {
 
-    public static final PsiElementFilter ACCEPT_ALL = psiElement -> true;
-
     private CyclomaticComplexityUtil() {}
 
     public static int calculateComplexity(PsiElement element) {
-        return calculateComplexity(element, ACCEPT_ALL);
+        return calculateComplexity(element, e -> true);
     }
 
-    public static int calculateComplexity(PsiElement element, PsiElementFilter filter) {
+    public static int calculateComplexity(PsiElement element, Predicate<PsiElement> filter) {
         if (element == null) {
             return 1;
         }
-        ComplexityVisitor visitor = new ComplexityVisitor(filter);
+        final ComplexityVisitor visitor = new ComplexityVisitor(filter);
         element.accept(visitor);
         return visitor.getComplexity();
     }
 
     private static class ComplexityVisitor extends JavaRecursiveElementWalkingVisitor {
 
-        private final PsiElementFilter filter;
+        private final Predicate<PsiElement> filter;
         private int complexity = 1;
 
-        public ComplexityVisitor(PsiElementFilter filter) {
+        public ComplexityVisitor(Predicate<PsiElement> filter) {
             this.filter = filter;
         }
 
         @Override
         public void visitForStatement(PsiForStatement statement) {
             super.visitForStatement(statement);
-            if (filter.isAccepted(statement)) complexity++;
+            if (filter.test(statement)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitForeachStatement(PsiForeachStatement statement) {
             super.visitForeachStatement(statement);
-            if (filter.isAccepted(statement)) complexity++;
+            if (filter.test(statement)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitIfStatement(PsiIfStatement statement) {
             super.visitIfStatement(statement);
-            if (filter.isAccepted(statement)) complexity++;
+            if (filter.test(statement)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitDoWhileStatement(PsiDoWhileStatement statement) {
             super.visitDoWhileStatement(statement);
-            if (filter.isAccepted(statement)) complexity++;
+            if (filter.test(statement)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitConditionalExpression(PsiConditionalExpression expression) {
             super.visitConditionalExpression(expression);
-            if (filter.isAccepted(expression)) complexity++;
+            if (filter.test(expression)) {
+                complexity++;
+            }
         }
 
         @Override
@@ -91,7 +100,7 @@ public final class CyclomaticComplexityUtil {
             final PsiStatement[] statements = body.getStatements();
             boolean pendingLabel = false;
             boolean accepted = true;
-            for (final PsiStatement child : statements) {
+            for (PsiStatement child : statements) {
                 if (child instanceof PsiSwitchLabelStatement) {
                     if (!pendingLabel && accepted) {
                         complexity++;
@@ -99,7 +108,7 @@ public final class CyclomaticComplexityUtil {
                     accepted = true;
                     pendingLabel = true;
                 } else {
-                    accepted &= filter.isAccepted(child);
+                    accepted &= filter.test(child);
                     pendingLabel = false;
                 }
             }
@@ -108,19 +117,23 @@ public final class CyclomaticComplexityUtil {
         @Override
         public void visitWhileStatement(PsiWhileStatement statement) {
             super.visitWhileStatement(statement);
-            if (filter.isAccepted(statement)) complexity++;
+            if (filter.test(statement)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitCatchSection(PsiCatchSection section) {
             super.visitCatchSection(section);
-            if (filter.isAccepted(section)) complexity++;
+            if (filter.test(section)) {
+                complexity++;
+            }
         }
 
         @Override
         public void visitPolyadicExpression(PsiPolyadicExpression expression) {
             super.visitPolyadicExpression(expression);
-            if (!filter.isAccepted(expression)) {
+            if (!filter.test(expression)) {
                 return;
             }
             final IElementType token = expression.getOperationTokenType();
