@@ -53,12 +53,13 @@ public abstract class MetricTestCase extends LightCodeInsightFixtureTestCase {
 
     protected abstract Metric getMetric();
 
-    protected void doTest(double[] expected) {
-        Assert.assertArrayEquals(expected, calculateMetricValues(), 0.0);
+    protected void doTest(double... expected) {
+        final Metric metric = getMetric();
+        final MetricsResult metricsResult = calculateMetric(metric);
+        Assert.assertArrayEquals(expected, metricsResult.getValuesForMetric(metric), 0.0);
     }
 
-    protected double[] calculateMetricValues() {
-        final Metric metric = getMetric();
+    protected MetricsResult calculateMetric(Metric metric) {
         final String testName = camelCaseToSnakeCase(getTestName(true));
         final File file = new File(getTestDataPath(), testName);
         final VirtualFile projectDir = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file);
@@ -79,7 +80,7 @@ public abstract class MetricTestCase extends LightCodeInsightFixtureTestCase {
         final MetricInstance metricInstance = new MetricInstanceImpl(metric);
         metricInstance.setEnabled(true);
         final MetricsProfile profile = new MetricsProfileImpl("test", Collections.singletonList(metricInstance));
-        final MetricsResult metricsResult = ProgressManager.getInstance().runProcess(() -> {
+        return ProgressManager.getInstance().runProcess(() -> {
             final MetricsRunImpl metricsRun = new MetricsRunImpl();
             metricsRun.setProfileName(profile.getName());
             metricsRun.setTimestamp(new TimeStamp());
@@ -88,7 +89,6 @@ public abstract class MetricTestCase extends LightCodeInsightFixtureTestCase {
             metricsExecutionContext.calculateMetrics(profile, metricsRun);
             return metricsRun.getResultsForCategory(metric.getCategory());
         }, new EmptyProgressIndicator());
-        return metricsResult.getValuesForMetric(getMetric());
     }
 
     private static String camelCaseToSnakeCase(CharSequence camelCase) {

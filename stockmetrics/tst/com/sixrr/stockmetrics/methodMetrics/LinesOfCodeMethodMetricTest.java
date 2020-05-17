@@ -25,7 +25,7 @@ import com.sixrr.metrics.test.MetricTestCase;
 public class LinesOfCodeMethodMetricTest extends MetricTestCase {
 
     public void testLinesOfCode() {
-        doTest(new double[]{3.0, 1.0, 17.0});
+        doTest(3.0, 1.0, 17.0);
     }
 
     @Override

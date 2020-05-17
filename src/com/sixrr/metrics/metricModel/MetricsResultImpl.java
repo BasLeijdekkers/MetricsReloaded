@@ -68,12 +68,12 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public double[] getValuesForMetric(Metric metric) {
-        final String[] measureds = getMeasuredObjects();
-        final double[] result = new double[measureds.length];
         final StringToFractionMap metricValues = values.get(metric);
         if (metricValues == null) {
             return new double[0];
         }
+        final String[] measureds = metricValues.getKeys();
+        final double[] result = new double[measureds.length];
         for (int i = 0, max = measureds.length; i < max; i++) {
             result[i] = metricValues.get(measureds[i]);
         }
@@ -219,6 +219,17 @@ public class MetricsResultImpl implements MetricsResult {
             }
         }
         return out;
+    }
 
+    public String toString() {
+        final StringBuilder result = new StringBuilder();
+        for (Map.Entry<Metric, StringToFractionMap> entry : values.entrySet()) {
+            result.append(entry.getKey().getDisplayName()).append('\n');
+            final StringToFractionMap value = entry.getValue();
+            for (String key : value.getKeys()) {
+                result.append(key).append(": ").append(value.get(key)).append('\n');
+            }
+        }
+        return result.toString();
     }
 }
