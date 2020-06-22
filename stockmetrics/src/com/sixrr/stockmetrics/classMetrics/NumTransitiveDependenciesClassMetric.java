@@ -19,10 +19,8 @@ package com.sixrr.stockmetrics.classMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.NumTransitiveDependenciesClassCalculator;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class NumTransitiveDependenciesClassMetric extends ClassMetric {
 
@@ -42,18 +40,6 @@ public class NumTransitiveDependenciesClassMetric extends ClassMetric {
     @Override
     public MetricType getType() {
         return MetricType.Score;
-    }
-
-    @Override
-    @Nullable
-    public String getHelpURL() {
-        return HelpURLs.LAYERING_URL;
-    }
-
-    @Override
-    @Nullable
-    public String getHelpDisplayString() {
-        return HelpURLs.LAYERING_DISPLAY_STRING;
     }
 
     @Override

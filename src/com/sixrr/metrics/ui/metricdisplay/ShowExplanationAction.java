@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2013 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,6 +43,6 @@ class ShowExplanationAction extends AbstractAction {
         final int selectedColumn = table.getSelectedColumn();
         final int modelColumn = table.convertColumnIndexToModel(selectedColumn);
         final Metric metric = model.getMetricForColumn(modelColumn).getMetric();
-        dialog.run(metric);
+        dialog.show(metric);
     }
 }

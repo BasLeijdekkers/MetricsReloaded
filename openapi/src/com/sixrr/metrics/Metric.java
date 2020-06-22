@@ -70,7 +70,9 @@ public interface Metric {
      * "For more information" label.
      *
      * @return an online help URL, or null if no help is available.
+     * @deprecated no longer used. Provide any additional inforation as regular links inside the description
      */
+    @Deprecated
     @NonNls
     @Nullable
     String getHelpURL();
@@ -79,7 +81,9 @@ public interface Metric {
      * A user-visible text fragment directing the user to further information on the metric.  This will be the text displayed in the
      * "For more information" label
      * @return a string describing any online help available, or null if no help is available
+     * @deprecated no longer used. Provide any additional inforation as regular links inside the description
      */
+    @Deprecated
     @Nullable
     String getHelpDisplayString();
 

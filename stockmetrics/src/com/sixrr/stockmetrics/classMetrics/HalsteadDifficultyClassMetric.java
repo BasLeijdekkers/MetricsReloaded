@@ -19,7 +19,6 @@ package com.sixrr.stockmetrics.classMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.HalsteadDifficultyClassCalculator;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,16 +40,6 @@ public class HalsteadDifficultyClassMetric extends ClassMetric {
     @Override
     public MetricType getType() {
         return MetricType.Score;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.HALSTEAD_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.HALSTEAD_DISPLAY_STRING;
     }
 
     @NotNull

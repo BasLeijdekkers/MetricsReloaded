@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.interfaceMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.interfaceCalculators.NumCommandsInterfaceCalculator;
 import org.jetbrains.annotations.NotNull;
@@ -41,16 +40,6 @@ public class NumCommandsInterfaceMetric extends InterfaceMetric {
     @Override
     public MetricType getType() {
         return MetricType.Count;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.MEYER_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.MEYER_DISPLAY_STRING;
     }
 
     @NotNull

@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.projectMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.projectCalculators.CouplingFactorProjectCalculator;
 import org.jetbrains.annotations.NotNull;
@@ -41,16 +40,6 @@ public class CouplingFactorProjectMetric extends ProjectMetric {
     @Override
     public MetricType getType() {
         return MetricType.Ratio;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.MOOD_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.MOOD_DISPLAY_STRING;
     }
 
     @Override

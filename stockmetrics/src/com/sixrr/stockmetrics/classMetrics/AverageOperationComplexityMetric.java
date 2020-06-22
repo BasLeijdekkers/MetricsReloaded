@@ -19,7 +19,6 @@ package com.sixrr.stockmetrics.classMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.AverageOperationComplexityCalculator;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,16 +40,6 @@ public class AverageOperationComplexityMetric extends ClassMetric {
     @Override
     public MetricType getType() {
         return MetricType.Average;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.COMPLEXITY_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }
 
     @NotNull

@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.moduleMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.moduleCalculators.AverageCyclomaticComplexityModuleCalculator;
 import org.jetbrains.annotations.NotNull;
@@ -41,16 +40,6 @@ public class AverageCyclomaticComplexityModuleMetric extends ModuleMetric {
     @Override
     public MetricType getType() {
         return MetricType.Average;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.COMPLEXITY_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }
 
     @NotNull

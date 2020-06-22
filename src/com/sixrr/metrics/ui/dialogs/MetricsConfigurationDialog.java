@@ -17,14 +17,12 @@
 package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.BrowserUtil;
-import com.intellij.ide.DataManager;
-import com.intellij.ide.actions.ShowSettingsUtilImpl;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ex.Settings;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -32,7 +30,6 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.StreamUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.FilterComponent;
-import com.intellij.ui.SearchTextField;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
@@ -50,7 +47,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.Document;
 import javax.swing.text.NumberFormatter;
@@ -59,8 +59,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -82,7 +80,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private static final Logger LOG = Logger.getInstance(MetricsConfigurationDialog.class);
 
     private JComboBox<String> profilesDropdown;
-    private JEditorPane descriptionPanel;
+    private JEditorPane descriptionPane;
     private JButton deleteButton;
     private JButton saveAsButton;
     private JPanel contentPanel;
@@ -90,7 +88,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private JCheckBox upperThresholdEnabledCheckbox;
     private JFormattedTextField lowerThresholdField;
     private JCheckBox lowerThresholdEnabledCheckbox;
-    @NonNls private JLabel urlLabel;
     private JButton resetButton;
     private ActionToolbarImpl treeToolbar;
     private MetricInstance selectedMetricInstance = null;
@@ -110,7 +107,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         profile = repository.getCurrentProfile();
         setupMetricsTree();
 
-        setDescriptionFromResource("/metricsDescriptions/Blank.html");
+        descriptionPane.setContentType("text/html");
+        descriptionPane.setText("<html><body></body></html>");
         setupProfilesDropdown();
         setupDeleteButton();
         setupAddButton();
@@ -119,7 +117,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setupLowerThresholdField();
         setupUpperThresholdEnabledButton();
         setupUpperThresholdField();
-        setupURLLabel();
         toggleDeleteButton();
         applyAction.setEnabled(false);
         resetButton.setEnabled(false);
@@ -127,10 +124,9 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         upperThresholdField.setEnabled(false);
         lowerThresholdEnabledCheckbox.setEnabled(false);
         upperThresholdEnabledCheckbox.setEnabled(false);
-        urlLabel.setText("");
         init();
         setTitle(MetricsReloadedBundle.message("metrics.profiles"));
-        descriptionPanel.addHyperlinkListener(new MyHyperlinkListener(project));
+        descriptionPane.addHyperlinkListener(new DescriptionHyperlinkListener(project));
     }
 
     private void markProfileClean() {
@@ -390,47 +386,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
     }
 
-    private static class MyHyperlinkListener implements HyperlinkListener {
-
-        private final Project project;
-
-        public MyHyperlinkListener(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        public void hyperlinkUpdate(HyperlinkEvent event) {
-            if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                try {
-                    final URI url = new URI(event.getDescription());
-                    if (url.getScheme().equals("settings")) {
-                        final DataContext context = DataManager.getInstance().getDataContextFromFocus().getResult();
-                        if (context != null) {
-                            final Settings settings = Settings.KEY.getData(context);
-                            final SearchTextField searchTextField = SearchTextField.KEY.getData(context);
-                            final String configId = url.getHost();
-                            final String search = url.getQuery();
-                            if (settings != null) {
-                                final Configurable configurable = settings.find(configId);
-                                settings.select(configurable).doWhenDone(() -> {
-                                    if (searchTextField != null && search != null) {
-                                        searchTextField.setText(search);
-                                    }
-                                });
-                            } else {
-                                ShowSettingsUtilImpl.showSettingsDialog(project, configId, search);
-                            }
-                        }
-                    } else {
-                        BrowserUtil.browse(url);
-                    }
-                } catch (URISyntaxException ex) {
-                    LOG.error(ex);
-                }
-            }
-        }
-    }
-
     protected class ApplyAction extends DialogWrapperAction {
 
         ApplyAction() {
@@ -481,18 +436,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         });
     }
 
-    private void setupURLLabel() {
-        urlLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                final String helpURL = selectedMetricInstance.getMetric().getHelpURL();
-                if (helpURL != null) {
-                    BrowserUtil.browse("http://" + helpURL);
-                }
-            }
-        });
-    }
-
     private void toggleDeleteButton() {
 //        deleteButton.setEnabled(repository.getProfileNames().length != 0);
 //        final boolean anyProfilesLeft = repository.getProfileNames().length != 0;
@@ -519,13 +462,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private void selectMetric(MetricInstance metricInstance) {
         selectedMetricInstance = metricInstance;
         final Metric metric = metricInstance.getMetric();
-        final String url = metric.getHelpURL();
-        final String displayString = metric.getHelpDisplayString();
-        if (url != null) {
-            urlLabel.setText("<html><a href = '" + url + "'>" + displayString + "</a></html>");
-        } else {
-            urlLabel.setText("");
-        }
         final boolean metricInstanceEnabled = metricInstance.isEnabled();
 
         final double upperThreshold = metricInstance.getUpperThreshold();
@@ -542,27 +478,26 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         lowerThresholdField.setValue(Double.valueOf(lowerThreshold));
         lowerThresholdField.setEnabled(lowerThresholdEnabled && metricInstanceEnabled);
 
-        @NonNls final String descriptionName = "/metricsDescriptions/" + metric.getID() + ".html";
-        setDescriptionFromResource(descriptionName, metric);
+        loadDescription(metric, descriptionPane);
     }
 
-    private void setDescriptionFromResource(@NonNls String resourceName) {
-        try {
-            final URL resourceURL = getClass().getResource(resourceName);
-            final String description = ResourceUtil.loadText(resourceURL);
-            readHTML(descriptionPanel, toHTML(descriptionPanel, description, false));
-        } catch (Exception e) {
-            LOG.error(e);
+    public static void loadDescription(Metric metric, JEditorPane descriptionPane) {
+        final boolean success =
+                loadDescription(metric, "/metricsDescriptions/" + metric.getID() + ".html", descriptionPane);
+        if (!success) {
+            loadDescription(metric, "/metricsDescriptions/UnderConstruction.html", descriptionPane);
         }
     }
 
-    private void setDescriptionFromResource(@NonNls String resourceName, Metric metric) {
+    private static boolean loadDescription(Metric metric, String path, JEditorPane descriptionPane) {
         try {
-            final URL resourceURL = metric.getClass().getResource(resourceName);
+            final URL resourceURL = metric.getClass().getResource(path);
             final String description = ResourceUtil.loadText(resourceURL);
-            readHTML(descriptionPanel, toHTML(descriptionPanel, description, false));
-        } catch (Exception ignore) {
-            setDescriptionFromResource("/metricsDescriptions/UnderConstruction.html");
+            readHTML(descriptionPane, toHTML(descriptionPane, description, false));
+            return true;
+        } catch (IOException e) {
+            LOG.error(e);
+            return false;
         }
     }
 
@@ -574,7 +509,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         upperThresholdField.setText("");
         upperThresholdField.setEnabled(false);
         upperThresholdEnabledCheckbox.setEnabled(false);
-        setDescriptionFromResource("/metricsDescriptions/Blank.html");
+        descriptionPane.setContentType("text/html");
+        descriptionPane.setText("<html><body></body></html>");
     }
 
     @Override

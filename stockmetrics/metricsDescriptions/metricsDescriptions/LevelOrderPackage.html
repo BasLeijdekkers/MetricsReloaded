@@ -18,7 +18,7 @@
 <body>
 <table>
     <tr><td valign="top" height="150">
-        Calculates the level order of an package. The level order is defined as 0
+        Calculates the Level Order of an package. The Level Order is defined as 0
         for packages which are dependent on no other project packages. Packages with
         dependencies have level order equal to one more then the greatest dependency class,
         ignoring packages on which they have mutual or cyclic dependencies. Conceptually,
@@ -26,6 +26,10 @@
         Packages with large level orders may be difficult to test and maintain.
         In designs with large cyclic dependencies, level order may give an unreasonably
         rosy picture of how many layers of software depends on.
+        <p><p>
+        For more information on the Level Order metric read the
+        <a href="https://www.amazon.com/exec/obidos/tg/detail/-/0201633620/104-5075564-3280716">Large-Scale C++ Software Design</a>
+        book.
     </td></tr>
     <tr><td height="50">Abbreviation: <b>Level</b></td></tr>
     <tr><td height="20"><small>Powered by MetricsReloaded</small></td></tr>

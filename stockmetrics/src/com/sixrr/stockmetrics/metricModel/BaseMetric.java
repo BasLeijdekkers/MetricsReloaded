@@ -55,12 +55,14 @@ public abstract class BaseMetric implements Metric {
         return name;
     }
 
+    @Deprecated
     @Override
     @Nullable
     public String getHelpURL() {
         return null;
     }
 
+    @Deprecated
     @Override
     @Nullable
     public String getHelpDisplayString() {

@@ -18,7 +18,6 @@ package com.sixrr.stockmetrics.methodMetrics;
 
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import com.sixrr.stockmetrics.methodCalculators.CyclomaticComplexityCalculator;
 import org.jetbrains.annotations.NotNull;
@@ -41,16 +40,6 @@ public class CyclomaticComplexityMetric extends MethodMetric {
     @Override
     public MetricType getType() {
         return MetricType.Count;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.COMPLEXITY_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }
 
     @NotNull

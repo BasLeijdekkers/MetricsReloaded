@@ -19,7 +19,6 @@ package com.sixrr.stockmetrics.classMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.classCalculators.MaximumOperationComplexityCalculator;
-import com.sixrr.stockmetrics.i18n.HelpURLs;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,16 +40,6 @@ public class MaximumOperationComplexityMetric extends ClassMetric {
     @Override
     public MetricType getType() {
         return MetricType.Score;
-    }
-
-    @Override
-    public String getHelpURL() {
-        return HelpURLs.COMPLEXITY_URL;
-    }
-
-    @Override
-    public String getHelpDisplayString() {
-        return HelpURLs.COMPLEXITY_DISPLAY_STRING;
     }
 
     @NotNull
