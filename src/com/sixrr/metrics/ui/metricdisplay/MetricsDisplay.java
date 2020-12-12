@@ -233,7 +233,7 @@ public class MetricsDisplay {
             int maxFirstColumnWidth = 100;
             for (int i = 0; i < rowCount; i++) {
                 final String name = (String) model.getValueAt(i, 0);
-                if (name != null) {
+                if (name != null && !name.isEmpty()) {
                     final Rectangle2D stringBounds = fontMetrics.getStringBounds(name, graphics);
                     final double stringWidth = stringBounds.getWidth();
                     if (stringWidth > maxFirstColumnWidth) {
