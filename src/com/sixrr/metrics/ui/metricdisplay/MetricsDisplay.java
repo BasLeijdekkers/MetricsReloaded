@@ -100,12 +100,12 @@ public class MetricsDisplay {
 
     public void setMetricsResults(MetricDisplaySpecification displaySpecification, MetricsRun run) {
         final MetricCategory[] categories = MetricCategory.values();
-        for (final MetricCategory category : categories) {
+        for (MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final String type = MetricsCategoryNameUtil.getShortNameForCategory(category);
             final MetricTableSpecification tableSpecification = displaySpecification.getSpecification(category);
             final MetricsResult results = run.getResultsForCategory(category);
-            final MetricTableModel model = new MetricTableModel(results, type, tableSpecification);
+            final TableModel model = new MetricTableModel(results, type, tableSpecification);
             table.setModel(model);
             final Container tab = table.getParent().getParent();
             if (model.getRowCount() == 0) {
@@ -129,7 +129,7 @@ public class MetricsDisplay {
 
     public void updateMetricsResults(MetricsRun run, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
-        for (final MetricCategory category : categories) {
+        for (MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setResults(run.getResultsForCategory(category));
@@ -142,7 +142,7 @@ public class MetricsDisplay {
 
     public void updateMetricsResultsWithDiff(MetricsRun results, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
-        for (final MetricCategory category : categories) {
+        for (MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             final MetricsResult prevResults = model.getResults();
@@ -166,7 +166,7 @@ public class MetricsDisplay {
 
     public void overlayWithDiff(MetricsRun prevRun, MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
-        for (final MetricCategory category : categories) {
+        for (MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setPrevResults(prevRun.getResultsForCategory(category));
@@ -187,7 +187,7 @@ public class MetricsDisplay {
 
     public void removeDiffOverlay(MetricDisplaySpecification displaySpecification) {
         final MetricCategory[] categories = MetricCategory.values();
-        for (final MetricCategory category : categories) {
+        for (MetricCategory category : categories) {
             final JTable table = tables.get(category);
             final MetricTableModel model = (MetricTableModel) table.getModel();
             model.setPrevResults(null);
