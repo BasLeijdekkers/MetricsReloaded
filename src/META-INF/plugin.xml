@@ -30,11 +30,14 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must NOT be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.9</version>
+  <version>1.10</version>
   <change-notes><![CDATA[
-  1.9<br>
-  - Restores compatibility with IntelliJ IDEA 2020.1<br>
-  - Fix incompatibility with the Scala plugin<br>
+  1.10<br>
+  - Allow multiple metric results in separate tabs in the tool window<br>
+  - Cleanup of descriptions<br>
+  - Double clicking a package metrics result now navigates to package<br>
+  - Several exceptions in the UI fixed<br>
+  - Bug fixed in several metrics for more accurate calculation<br>
   ]]></change-notes>
   <idea-version since-build="191"/>
 
