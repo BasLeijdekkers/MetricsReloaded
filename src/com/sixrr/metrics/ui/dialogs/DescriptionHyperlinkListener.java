@@ -19,7 +19,6 @@ package com.sixrr.metrics.ui.dialogs;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.actions.ShowSettingsUtilImpl;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ex.Settings;
@@ -50,23 +49,24 @@ class DescriptionHyperlinkListener implements HyperlinkListener {
             try {
                 final URI url = new URI(event.getDescription());
                 if (url.getScheme().equals("settings")) {
-                    final DataContext context = DataManager.getInstance().getDataContextFromFocus().getResult();
-                    if (context != null) {
-                        final Settings settings = Settings.KEY.getData(context);
-                        final SearchTextField searchTextField = SearchTextField.KEY.getData(context);
-                        final String configId = url.getHost();
-                        final String search = url.getQuery();
-                        if (settings != null) {
-                            final Configurable configurable = settings.find(configId);
-                            settings.select(configurable).doWhenDone(() -> {
-                                if (searchTextField != null && search != null) {
-                                    searchTextField.setText(search);
+                    DataManager.getInstance().getDataContextFromFocusAsync().onSuccess(
+                            context -> {
+                                final Settings settings = Settings.KEY.getData(context);
+                                final SearchTextField searchTextField = SearchTextField.KEY.getData(context);
+                                final String configId = url.getHost();
+                                final String search = url.getQuery();
+                                if (settings != null) {
+                                    final Configurable configurable = settings.find(configId);
+                                    settings.select(configurable).doWhenDone(() -> {
+                                        if (searchTextField != null && search != null) {
+                                            searchTextField.setText(search);
+                                        }
+                                    });
+                                } else {
+                                    ShowSettingsUtilImpl.showSettingsDialog(project, configId, search);
                                 }
-                            });
-                        } else {
-                            ShowSettingsUtilImpl.showSettingsDialog(project, configId, search);
-                        }
-                    }
+                            }
+                    );
                 } else {
                     BrowserUtil.browse(url);
                 }
