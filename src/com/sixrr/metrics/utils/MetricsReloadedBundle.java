@@ -15,7 +15,7 @@
  */
 package com.sixrr.metrics.utils;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 import com.intellij.reference.SoftReference;
 import org.jetbrains.annotations.PropertyKey;
 
@@ -30,7 +30,7 @@ public final class MetricsReloadedBundle {
     private MetricsReloadedBundle() {}
 
     public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params) {
-        return CommonBundle.message(getBundle(), key, params);
+        return AbstractBundle.message(getBundle(), key, params);
     }
 
     private static ResourceBundle getBundle() {
