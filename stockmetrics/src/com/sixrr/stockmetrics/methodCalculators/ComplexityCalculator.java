@@ -22,7 +22,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexity;
 
 public abstract class ComplexityCalculator extends MethodCalculator {
 
@@ -42,8 +42,7 @@ public abstract class ComplexityCalculator extends MethodCalculator {
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            final int complexity =
-                    CyclomaticComplexityUtil.calculateComplexity(method, element -> !isReducible(element));
+            final int complexity = CyclomaticComplexity.calculate(method, element -> !isReducible(element));
             postMetric(method, complexity);
         }
     }

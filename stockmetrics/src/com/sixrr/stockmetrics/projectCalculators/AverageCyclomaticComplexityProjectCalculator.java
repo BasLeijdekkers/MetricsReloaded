@@ -21,7 +21,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexity;
 
 public class AverageCyclomaticComplexityProjectCalculator extends ProjectCalculator {
 
@@ -50,7 +50,7 @@ public class AverageCyclomaticComplexityProjectCalculator extends ProjectCalcula
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            totalComplexity += CyclomaticComplexityUtil.calculateComplexity(method);
+            totalComplexity += CyclomaticComplexity.calculate(method);
             numMethods++;
         }
     }

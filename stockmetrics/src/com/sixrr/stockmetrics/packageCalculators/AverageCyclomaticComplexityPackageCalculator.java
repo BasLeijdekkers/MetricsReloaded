@@ -24,7 +24,7 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexity;
 
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
     @Override
     public void endMetricsRun() {
         final Set<PsiPackage> packages = numMethodsPerPackage.getBuckets();
-        for (final PsiPackage aPackage : packages) {
+        for (PsiPackage aPackage : packages) {
             final int numClasses = numMethodsPerPackage.getBucketValue(aPackage);
             final int numAbstractClasses = totalComplexityPerPackage.getBucketValue(aPackage);
 
@@ -65,7 +65,7 @@ public class AverageCyclomaticComplexityPackageCalculator extends PackageCalcula
             if (aPackage == null) {
                 return;
             }
-            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method);
+            final int complexity = CyclomaticComplexity.calculate(method);
             totalComplexityPerPackage.incrementBucketValue(aPackage, complexity);
             numMethodsPerPackage.incrementBucketValue(aPackage);
         }

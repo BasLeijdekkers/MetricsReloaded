@@ -24,7 +24,7 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.BucketedCount;
 import com.sixrr.metrics.utils.ClassUtils;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexity;
 
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
     @Override
     public void endMetricsRun() {
         final Set<Module> modules = numMethodsPerModule.getBuckets();
-        for (final Module module : modules) {
+        for (Module module : modules) {
             final int numMethods = numMethodsPerModule.getBucketValue(module);
             final int totalComplexity = totalComplexityPerModule.getBucketValue(module);
 
@@ -64,7 +64,7 @@ public class AverageCyclomaticComplexityModuleCalculator extends ModuleCalculato
             if (module == null) {
                 return;
             }
-            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method);
+            final int complexity = CyclomaticComplexity.calculate(method);
             totalComplexityPerModule.incrementBucketValue(module, complexity);
             numMethodsPerModule.incrementBucketValue(module);
         }

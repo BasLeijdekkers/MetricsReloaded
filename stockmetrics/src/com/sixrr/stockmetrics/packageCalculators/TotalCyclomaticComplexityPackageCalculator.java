@@ -21,7 +21,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
-import com.sixrr.stockmetrics.utils.CyclomaticComplexityUtil;
+import com.sixrr.stockmetrics.utils.CyclomaticComplexity;
 
 public class TotalCyclomaticComplexityPackageCalculator extends ElementCountPackageCalculator {
 
@@ -41,7 +41,7 @@ public class TotalCyclomaticComplexityPackageCalculator extends ElementCountPack
             if (MethodUtils.isAbstract(method)) {
                 return;
             }
-            final int complexity = CyclomaticComplexityUtil.calculateComplexity(method);
+            final int complexity = CyclomaticComplexity.calculate(method);
             incrementCount(method, complexity);
         }
     }

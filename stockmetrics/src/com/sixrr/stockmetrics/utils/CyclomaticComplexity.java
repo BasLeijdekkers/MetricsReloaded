@@ -24,15 +24,15 @@ import java.util.function.Predicate;
 /**
  * @author Bas Leijdekkers
  */
-public final class CyclomaticComplexityUtil {
+public final class CyclomaticComplexity {
 
-    private CyclomaticComplexityUtil() {}
+    private CyclomaticComplexity() {}
 
-    public static int calculateComplexity(PsiElement element) {
-        return calculateComplexity(element, e -> true);
+    public static int calculate(PsiElement element) {
+        return calculate(element, e -> true);
     }
 
-    public static int calculateComplexity(PsiElement element, Predicate<PsiElement> filter) {
+    public static int calculate(PsiElement element, Predicate<PsiElement> filter) {
         if (element == null) {
             return 1;
         }
