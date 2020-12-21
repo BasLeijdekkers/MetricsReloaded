@@ -506,7 +506,7 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="IntelliJ IDEA 2019.1" project-jdk-type="IDEA JDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="IntelliJ IDEA 2020.1" project-jdk-type="IDEA JDK" />
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="MetricsReloaded" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="MetricsReloaded" />
@@ -530,7 +530,6 @@
       <method />
     </configuration>
   </component>
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false" />
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
   </component>

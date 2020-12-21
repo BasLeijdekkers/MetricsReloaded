@@ -39,7 +39,7 @@
   - Several exceptions in the UI fixed<br>
   - Bug fixed in several metrics for more accurate calculation<br>
   ]]></change-notes>
-  <idea-version since-build="191"/>
+  <idea-version since-build="201"/>
 
   <depends optional="true" config-file="java-metrics.xml">com.intellij.modules.java</depends>
   <depends optional="true" config-file="jsp-metrics.xml">com.intellij.jsp</depends>
@@ -50,7 +50,7 @@
   <depends optional="true" config-file="scala-metrics.xml">org.intellij.scala</depends>
 
   <extensionPoints>
-    <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider"/>
+    <extensionPoint name="metricProvider" interface="com.sixrr.metrics.MetricProvider" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">

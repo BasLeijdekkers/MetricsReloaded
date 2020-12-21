@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <project name="MetricsReloaded" default="package">
 
   <property file="build.properties"/>
 
-  <!-- override these two in a build.properties file -->
-  <property name="idea.dir" value="/Applications/IntelliJ IDEA 2019.1.app/Contents"/>
-  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea2019.1"/>
+  <!--
+  Override these next two properties `idea.dir` and `idea.plugin.dir` in a
+  build.properties file.
+
+  The IntelliJ IDEA version must be at least Ultimate 2020.1 and needs to have plugins
+  installed for Java, JSP, Groovy, Kotlin, JavaScript, CSS and Scale. Of these Scala
+  is the only one not included in a default IntelliJ IDEA install and needs to be
+  downloaded separately. Newer versions of IntelliJ IDEA may work as well, but often
+  fail because of changes in jar packaging.
+  -->
+  <property name="idea.dir" value="/Applications/IntelliJ IDEA 2020.1.app/Contents"/>
+  <property name="idea.plugin.dir" value="${user.home}/Library/Application Support/IntelliJIdea2020.1"/>
 
   <property name="src.dir" value="src"/>
   <property name="build.classes.dir" value="build/jar-classes"/>
@@ -35,9 +60,9 @@
   <path id="openapi.class.path">
     <pathelement location="${idea.dir}/lib/platform-api.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
-    <pathelement location="${idea.dir}/lib/java-api.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
+    <pathelement location="${idea.dir}/plugins/java/lib/java-api.jar"/>
   </path>
 
   <path id="utils.class.path">
@@ -45,8 +70,8 @@
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
     <pathelement location="${idea.dir}/lib/platform-api.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
-    <pathelement location="${idea.dir}/lib/java-api.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
+    <pathelement location="${idea.dir}/plugins/java/lib/java-api.jar"/>
   </path>
 
   <path id="plugin.class.path">
@@ -55,22 +80,26 @@
     <pathelement location="lib/args4j-2.32.jar" />
     <pathelement location="${openapi.build.classes.dir}"/>
     <pathelement location="${utils.build.classes.dir}"/>
+
     <pathelement location="${idea.dir}/lib/platform-api.jar"/>
     <pathelement location="${idea.dir}/lib/platform-impl.jar"/>
-    <pathelement location="${idea.dir}/lib/java-api.jar"/>
+    <pathelement location="${idea.dir}/lib/platform-core-ui.jar"/>
+    <pathelement location="${idea.dir}/lib/platform-util-ui.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
     <pathelement location="${idea.dir}/lib/jdom.jar"/>
+    <pathelement location="${idea.dir}/lib/intellij-xml.jar"/>
     <pathelement location="${idea.dir}/redist/annotations.jar"/>
     <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
 
     <!-- jars for language specific metrics support -->
-    <pathelement location="${idea.dir}/lib/java-impl.jar"/>
+    <pathelement location="${idea.dir}/plugins/java/lib/java-api.jar"/>
+    <pathelement location="${idea.dir}/plugins/java/lib/java-impl.jar"/>
     <pathelement location="${idea.dir}/plugins/CSS/lib/css-openapi.jar"/>
     <pathelement location="${idea.dir}/plugins/Groovy/lib/Groovy.jar"/>
     <pathelement location="${idea.dir}/plugins/jsp/lib/jsp-impl.jar"/>
     <pathelement location="${idea.dir}/plugins/JavaScriptLanguage/lib/javascript-openapi.jar"/>
-    <pathelement location="${idea.plugin.dir}/Scala/lib/scalaUltimate.jar"/>
+    <pathelement location="${idea.plugin.dir}/Scala/lib/scala-plugin.jar"/>
     <pathelement location="${idea.plugin.dir}/Kotlin/lib/kotlin-plugin.jar"/>
   </path>
 
