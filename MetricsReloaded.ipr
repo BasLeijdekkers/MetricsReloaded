@@ -500,6 +500,7 @@
       <module fileurl="file://$PROJECT_DIR$/MetricsReloaded.iml" filepath="$PROJECT_DIR$/MetricsReloaded.iml" />
       <module fileurl="file://$PROJECT_DIR$/openapi/openapi.iml" filepath="$PROJECT_DIR$/openapi/openapi.iml" />
       <module fileurl="file://$PROJECT_DIR$/stockmetrics/stockmetrics.iml" filepath="$PROJECT_DIR$/stockmetrics/stockmetrics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tests/tests.iml" filepath="$PROJECT_DIR$/tests/tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
     </modules>
   </component>
@@ -532,6 +533,7 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tests" vcs="Git" />
   </component>
   <component name="com.sixrr.metrics.MetricsReloaded">
     <option name="selectedProfile" value="Complexity metrics" />
