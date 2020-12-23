@@ -91,26 +91,46 @@ public final class CyclomaticComplexity {
         }
 
         @Override
+        public void visitSwitchExpression(PsiSwitchExpression expression) {
+            super.visitSwitchExpression(expression);
+            visitSwitchBlock(expression);
+        }
+
+        @Override
         public void visitSwitchStatement(PsiSwitchStatement statement) {
             super.visitSwitchStatement(statement);
+            visitSwitchBlock(statement);
+        }
+
+        private void visitSwitchBlock(PsiSwitchBlock statement) {
             final PsiCodeBlock body = statement.getBody();
             if (body == null) {
                 return;
             }
             final PsiStatement[] statements = body.getStatements();
-            boolean pendingLabel = false;
+            boolean pendingBranch = false;
+            boolean nonDefault = true;
             boolean accepted = true;
             for (PsiStatement child : statements) {
                 if (child instanceof PsiSwitchLabelStatement) {
-                    if (!pendingLabel && accepted) {
+                    if (pendingBranch && accepted) {
                         complexity++;
                     }
+                    nonDefault = !((PsiSwitchLabelStatement) child).isDefaultCase();
                     accepted = true;
-                    pendingLabel = true;
+                    pendingBranch = false;
+                } else if (child instanceof PsiSwitchLabeledRuleStatement) {
+                    if (!((PsiSwitchLabeledRuleStatement) child).isDefaultCase() &&
+                            filter.test(((PsiSwitchLabeledRuleStatement) child).getBody())) {
+                        complexity++;
+                    }
                 } else {
                     accepted &= filter.test(child);
-                    pendingLabel = false;
+                    pendingBranch = true;
                 }
+            }
+            if (pendingBranch && accepted && nonDefault) {
+                complexity++;
             }
         }
 
