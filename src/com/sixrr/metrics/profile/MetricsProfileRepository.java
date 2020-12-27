@@ -16,8 +16,6 @@
 
 package com.sixrr.metrics.profile;
 
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.ExportableComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -96,8 +94,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     private void loadMetricsFromProviders() {
-        final Application application = ApplicationManager.getApplication();
-        final MetricProvider[] metricProviders = application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
+        final MetricProvider[] metricProviders = MetricProvider.EXTENSION_POINT_NAME.getExtensions();
         for (MetricProvider provider : metricProviders) {
             final List<Metric> metrics = provider.getMetrics();
             for (Metric metric : metrics) {
@@ -107,7 +104,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     private void reconcile(MetricsProfile profile) {
-        for (final Metric metric : metrics.values()) {
+        for (Metric metric : metrics.values()) {
             if (profile.getMetricInstance(metric) == null) {
                 profile.addMetricInstance(new MetricInstanceImpl(metric));
             }
@@ -116,15 +113,14 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
 
     private MetricsProfile buildProfile(String name) {
         final List<MetricInstance> result = new ArrayList<>(metrics.size());
-        for (final Metric metric : metrics.values()) {
+        for (Metric metric : metrics.values()) {
             result.add(new MetricInstanceImpl(metric));
         }
         return new MetricsProfileImpl(name, result);
     }
 
     private void addPrebuiltProfiles() {
-        final Application application = ApplicationManager.getApplication();
-        final MetricProvider[] metricProviders = application.getExtensions(MetricProvider.EXTENSION_POINT_NAME);
+        final MetricProvider[] metricProviders = MetricProvider.EXTENSION_POINT_NAME.getExtensions();
         for (MetricProvider provider : metricProviders) {
             final List<PrebuiltMetricProfile> prebuiltProfiles = provider.getPrebuiltProfiles();
             for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {
@@ -193,7 +189,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
 
     private void reconcileProfiles() {
         final Collection<MetricsProfile> existingProfiles = profiles.values();
-        for (final MetricsProfile profile : existingProfiles) {
+        for (MetricsProfile profile : existingProfiles) {
             reconcile(profile);
         }
     }
@@ -300,7 +296,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
 
         System.out.println(metrics.size() + "  metrics");
         MetricCategory currentCategory = null;
-        for (final Metric metric : metrics) {
+        for (Metric metric : metrics) {
             final MetricCategory category = metric.getCategory();
             if (category != currentCategory) {
                 System.out.println(MetricsCategoryNameUtil.getLongNameForCategory(category));

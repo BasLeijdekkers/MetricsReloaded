@@ -321,7 +321,6 @@ public class MetricsDisplay {
         }
 
         @Override
-        @SuppressWarnings("HardCodedStringLiteral")
         public void propertyChange(PropertyChangeEvent evt) {
             final String propertyName = evt.getPropertyName();
             if ("width".equalsIgnoreCase(propertyName)) {

@@ -84,12 +84,13 @@ public class MetricsView {
         final ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         ToolWindow toolWindow = toolWindowManager.getToolWindow(TOOL_WINDOW_ID);
         if (toolWindow == null) {
+            final Icon icon = IconLoader.getIcon(ICON_PATH);
             toolWindow = toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.BOTTOM, project);
             toolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
-            toolWindow.setIcon(IconLoader.getIcon(ICON_PATH));
+            toolWindow.setIcon(icon);
             toolWindow.setAvailable(true, null);
             toolWindow.setToHideOnEmptyContent(true);
-            new ContentManagerWatcher(toolWindow, toolWindow.getContentManager());
+            ContentManagerWatcher.watchContentManager(toolWindow, toolWindow.getContentManager());
         }
         return toolWindow;
     }

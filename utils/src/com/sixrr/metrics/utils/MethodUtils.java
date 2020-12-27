@@ -20,6 +20,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.searches.SuperMethodsSearch;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.util.Query;
+import org.jetbrains.annotations.NotNull;
 
 public final class MethodUtils {
 
@@ -37,7 +38,7 @@ public final class MethodUtils {
         });
     }
 
-    public static boolean isAbstract(PsiMethod method) {
+    public static boolean isAbstract(@NotNull PsiMethod method) {
         if (method.hasModifierProperty(PsiModifier.STATIC) || method.hasModifierProperty(PsiModifier.DEFAULT)) {
             return false;
         }

@@ -130,7 +130,7 @@ public class MetricsCommandLine implements ApplicationStarter {
         try {
             final ApplicationInfoEx applicationInfo = (ApplicationInfoEx) ApplicationInfo.getInstance();
             info("MetricsReloaded running on " + applicationInfo.getFullApplicationName());
-            application.doNotSave();
+            application.setSaveAllowed(false);
             try {
                 info("Opening project...");
                 if (projectPath == null) {

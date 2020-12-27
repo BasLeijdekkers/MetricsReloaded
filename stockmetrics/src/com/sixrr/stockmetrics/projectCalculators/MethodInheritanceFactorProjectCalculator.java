@@ -95,8 +95,6 @@ public class MethodInheritanceFactorProjectCalculator extends ProjectCalculator 
         if (file == null) {
             return false;
         }
-        final String fileName = file.getName();
-        //noinspection HardCodedStringLiteral
-        return !fileName.endsWith(".java");
+        return !file.getName().endsWith(".java");
     }
 }

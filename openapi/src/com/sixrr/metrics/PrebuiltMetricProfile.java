@@ -114,7 +114,7 @@ public class PrebuiltMetricProfile {
     }
 
     private static String calculateName(@NotNull Class<? extends Metric> metricClass) {
-        final String className = metricClass.getSimpleName();
+        @NonNls final String className = metricClass.getSimpleName();
         if (!className.endsWith("Metric")) {
             throw new IllegalArgumentException("class name must end with Metric");
         }

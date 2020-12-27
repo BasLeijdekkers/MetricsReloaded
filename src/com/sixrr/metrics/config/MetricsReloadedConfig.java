@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-@State(name = "MetricsReloaded", storages = @Storage(file = "metrics.reloaded.xml"))
+@State(name = "MetricsReloaded", storages = @Storage("metrics.reloaded.xml"))
 public final class MetricsReloadedConfig implements PersistentStateComponent<MetricsReloadedConfig> {
 
     public String selectedProfile = "";
@@ -60,14 +60,13 @@ public final class MetricsReloadedConfig implements PersistentStateComponent<Met
         this.showOnlyWarnings = showOnlyWarnings;
     }
 
-    @Nullable
     @Override
     public MetricsReloadedConfig getState() {
         return this;
     }
 
     @Override
-    public void loadState(MetricsReloadedConfig state) {
+    public void loadState(@NotNull MetricsReloadedConfig state) {
         XmlSerializerUtil.copyBean(state, this);
     }
 }
