@@ -52,6 +52,13 @@ public class Stack<E> {
         size++;
     }
 
+    public E peek() {
+        if (size == 0) {
+            throw new EmptyStackException();
+        }
+        return (size == 1) ? (E) elements : ((E[]) elements)[size - 1];
+    }
+
     public E pop() {
         if (size == 0) {
             throw new EmptyStackException();

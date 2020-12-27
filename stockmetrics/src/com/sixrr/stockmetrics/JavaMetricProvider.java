@@ -1,17 +1,17 @@
 /*
  * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.sixrr.stockmetrics;
 
@@ -39,7 +39,7 @@ public class JavaMetricProvider implements MetricProvider {
     @NotNull
     @Override
     public List<Metric> getMetrics() {
-        final List<Metric> metrics = new ArrayList<>(255);
+        final List<Metric> metrics = new ArrayList<>(260);
         initializeClassMetrics(metrics);
         initializeInterfaceMetrics(metrics);
         initializeMethodMetrics(metrics);
@@ -137,6 +137,7 @@ public class JavaMetricProvider implements MetricProvider {
     }
 
     private static void initializeMethodMetrics(Collection<Metric> metrics) {
+        metrics.add(new CognitiveComplexityMetric());
         metrics.add(new CommentLinesOfCodeMethodMetric());
         metrics.add(new CommentRatioMethodMetric());
         metrics.add(new ConditionalNestingDepthMetric());
@@ -401,6 +402,7 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric(TotalCyclomaticComplexityPackageMetric.class, null, null);
         profile.addMetric(TotalCyclomaticComplexityProjectMetric.class, null, null);
         profile.addMetric(WeightedMethodComplexityMetric.class, null, Double.valueOf(30.0));
+        profile.addMetric(CognitiveComplexityMetric.class, null, Double.valueOf(15.0));
         return profile;
     }
 

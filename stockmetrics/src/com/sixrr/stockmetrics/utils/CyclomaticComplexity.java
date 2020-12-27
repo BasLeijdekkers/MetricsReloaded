@@ -18,6 +18,7 @@ package com.sixrr.stockmetrics.utils;
 
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -28,25 +29,25 @@ public final class CyclomaticComplexity {
 
     private CyclomaticComplexity() {}
 
-    public static int calculate(PsiElement element) {
+    public static int calculate(@Nullable PsiElement element) {
         return calculate(element, e -> true);
     }
 
-    public static int calculate(PsiElement element, Predicate<PsiElement> filter) {
+    public static int calculate(@Nullable PsiElement element, Predicate<PsiElement> filter) {
         if (element == null) {
             return 1;
         }
-        final ComplexityVisitor visitor = new ComplexityVisitor(filter);
+        final CyclomaticComplexityVisitor visitor = new CyclomaticComplexityVisitor(filter);
         element.accept(visitor);
-        return visitor.getComplexity();
+        return visitor.getCyclomaticComplexity();
     }
 
-    private static class ComplexityVisitor extends JavaRecursiveElementWalkingVisitor {
+    private static class CyclomaticComplexityVisitor extends JavaRecursiveElementWalkingVisitor {
 
         private final Predicate<PsiElement> filter;
         private int complexity = 1;
 
-        public ComplexityVisitor(Predicate<PsiElement> filter) {
+        public CyclomaticComplexityVisitor(Predicate<PsiElement> filter) {
             this.filter = filter;
         }
 
@@ -162,7 +163,7 @@ public final class CyclomaticComplexity {
             }
         }
 
-        public int getComplexity() {
+        public int getCyclomaticComplexity() {
             return complexity;
         }
     }
