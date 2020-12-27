@@ -1,7 +1,8 @@
+/build/
 /utils/build/
 /stockmetrics/build/
 /openapi/build/
-/build/
+/tests/build/
 /metrics.xml
 /build.properties
 /MetricsReloaded.iws
