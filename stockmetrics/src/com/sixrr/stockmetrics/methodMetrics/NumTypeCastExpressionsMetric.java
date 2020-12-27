@@ -19,10 +19,10 @@ package com.sixrr.stockmetrics.methodMetrics;
 import com.sixrr.metrics.MetricCalculator;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.stockmetrics.i18n.StockMetricsBundle;
-import com.sixrr.stockmetrics.methodCalculators.NumTypecastExpressionsCalculator;
+import com.sixrr.stockmetrics.methodCalculators.NumTypeCastExpressionsCalculator;
 import org.jetbrains.annotations.NotNull;
 
-public class NumTypecastExpressionsMetric extends MethodMetric {
+public class NumTypeCastExpressionsMetric extends MethodMetric {
 
     @NotNull
     @Override
@@ -45,6 +45,6 @@ public class NumTypecastExpressionsMetric extends MethodMetric {
     @NotNull
     @Override
     public MetricCalculator createCalculator() {
-        return new NumTypecastExpressionsCalculator(this);
+        return new NumTypeCastExpressionsCalculator(this);
     }
 }

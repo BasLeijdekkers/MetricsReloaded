@@ -172,7 +172,7 @@ public class JavaMetricProvider implements MetricProvider {
         metrics.add(new NumTimesCalledMetric());
         metrics.add(new NumTimesCalledProductMetric());
         metrics.add(new NumTimesCalledTestMetric());
-        metrics.add(new NumTypecastExpressionsMetric());
+        metrics.add(new NumTypeCastExpressionsMetric());
         metrics.add(new NumTypeParametersMetric());
         metrics.add(new QCPCorrectnessMetric());
         metrics.add(new QCPMaintainabilityMetric());

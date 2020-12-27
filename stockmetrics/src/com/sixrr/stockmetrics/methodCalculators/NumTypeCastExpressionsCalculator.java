@@ -20,12 +20,12 @@ import com.intellij.psi.*;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.utils.MethodUtils;
 
-public class NumTypecastExpressionsCalculator extends MethodCalculator {
+public class NumTypeCastExpressionsCalculator extends MethodCalculator {
 
     private int methodNestingDepth = 0;
     private int elementCount = 0;
 
-    public NumTypecastExpressionsCalculator(Metric metric) {
+    public NumTypeCastExpressionsCalculator(Metric metric) {
         super(metric);
     }
 
