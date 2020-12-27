@@ -339,6 +339,16 @@
       <option name="myDefaultAttributes" />
     </info>
   </component>
+  <component name="IssueNavigationConfiguration">
+    <option name="links">
+      <list>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/BasLeijdekkers/MetricsReloaded/issues/$1" />
+        </IssueNavigationLink>
+      </list>
+    </option>
+  </component>
   <component name="JavadocGenerationManager">
     <option name="OTHER_OPTIONS" value="" />
   </component>
