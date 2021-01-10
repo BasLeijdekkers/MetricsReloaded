@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -238,6 +238,10 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     public static void persistProfile(MetricsProfile profile) {
         final File profileFile = getFileForProfile(profile);
         try {
+            final File profileDirectory = new File(METRIC_PROFILE_DIR);
+            if (!profileDirectory.exists() && !profileDirectory.mkdirs()) {
+                return;
+            }
             profile.writeToFile(profileFile);
         } catch (IOException e) {
             LOG.warn(e);
