@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.sixrr.metrics.ui.dialogs;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.ComboboxWithBrowseButton;
+import com.intellij.ui.SimpleListCellRenderer;
 import com.intellij.ui.TitledSeparator;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.profile.MetricsProfile;
@@ -60,37 +61,35 @@ public class ProfileSelectionPanel extends JPanel {
         add(checkBox, constraints);
     }
 
-    private static JCheckBox buildCheckBox(final MetricsReloadedConfig configuration) {
-        final JCheckBox checkBox = new JCheckBox(MetricsReloadedBundle.message(
-                "show.only.results.which.exceed.metrics.thresholds"));
+    private static JCheckBox buildCheckBox(MetricsReloadedConfig configuration) {
+        final JCheckBox checkBox = new JCheckBox(
+                MetricsReloadedBundle.message("show.only.results.which.exceed.metrics.thresholds"));
         checkBox.setSelected(configuration.isShowOnlyWarnings());
         checkBox.addActionListener(event -> configuration.setShowOnlyWarnings(checkBox.isSelected()));
         return checkBox;
     }
 
-    private static ComboboxWithBrowseButton buildComboBoxWithBrowseButton(
-            final Project project, final MetricsProfileRepository repository) {
-        final String[] profiles = repository.getProfileNames();
-        final JComboBox<String> comboBox = new ComboBox<>(new DefaultComboBoxModel<>(profiles));
+    private static ComboboxWithBrowseButton buildComboBoxWithBrowseButton(Project project,
+                                                                          MetricsProfileRepository repository) {
+        final JComboBox<MetricsProfile> comboBox = new ComboBox<>(new DefaultComboBoxModel<>(repository.getProfiles()));
+        comboBox.setRenderer(SimpleListCellRenderer.create((label, profile, i) -> {
+            label.setText(profile.getName());
+        }));
         final ComboboxWithBrowseButton comboboxWithBrowseButton = new ComboboxWithBrowseButton(comboBox);
-        final MetricsProfile currentProfile = repository.getCurrentProfile();
-        final String currentProfileName = currentProfile.getName();
-        comboBox.setSelectedItem(currentProfileName);
+        comboBox.setSelectedItem(repository.getCurrentProfile());
         comboBox.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.DESELECTED) {
                 return;
             }
-            final String selectedProfile = (String) comboBox.getSelectedItem();
-            repository.setSelectedProfile(selectedProfile);
+            final MetricsProfile selectedProfile = (MetricsProfile) comboBox.getSelectedItem();
+            if (selectedProfile != null) {
+                repository.setSelectedProfile(selectedProfile);
+            }
         });
         comboboxWithBrowseButton.addActionListener(e -> {
-            final MetricsConfigurationDialog configurationDialog = new MetricsConfigurationDialog(project, repository);
-            configurationDialog.show();
-            final String[] profiles1 = repository.getProfileNames();
-            comboBox.setModel(new DefaultComboBoxModel<>(profiles1));
-            final MetricsProfile currentProfile1 = repository.getCurrentProfile();
-            final String currentProfileName1 = currentProfile1.getName();
-            comboBox.setSelectedItem(currentProfileName1);
+            new MetricsConfigurationDialog(project, repository).show();
+            comboBox.setModel(new DefaultComboBoxModel<>(repository.getProfiles()));
+            comboBox.setSelectedItem(repository.getCurrentProfile());
         });
         return comboboxWithBrowseButton;
     }

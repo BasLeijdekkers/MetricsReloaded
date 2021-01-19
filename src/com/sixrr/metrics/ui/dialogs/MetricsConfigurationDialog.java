@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.StreamUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.FilterComponent;
+import com.intellij.ui.SimpleListCellRenderer;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
@@ -79,7 +80,7 @@ import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePane
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
     private static final Logger LOG = Logger.getInstance(MetricsConfigurationDialog.class);
 
-    private JComboBox<String> profilesDropdown;
+    private JComboBox<MetricsProfile> profilesDropdown;
     private JEditorPane descriptionPane;
     private JButton deleteButton;
     private JButton saveAsButton;
@@ -300,7 +301,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         if (profile != null) {
             final List<MetricInstance> metrics = profile.getMetricInstances();
             final List<String> filterTokens = SearchUtil.tokenizeFilter(filter);
-            for (final MetricInstance metricInstance : metrics) {
+            for (MetricInstance metricInstance : metrics) {
                 final Metric metric = metricInstance.getMetric();
                 if (!isMetricAccepted(metric, filterTokens)) {
                     continue;
@@ -356,19 +357,23 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void setupProfilesDropdown() {
-        final String[] profiles = repository.getProfileNames();
-        final MutableComboBoxModel<String> profilesModel = new DefaultComboBoxModel<>(profiles);
+        final MetricsProfile[] profiles = repository.getProfiles();
+        final MutableComboBoxModel<MetricsProfile> profilesModel = new DefaultComboBoxModel<>(profiles);
         profilesDropdown.setModel(profilesModel);
+        profilesDropdown.setRenderer(SimpleListCellRenderer.create((label, profile, i) -> {
+            label.setText(profile.getName());
+        }));
         final MetricsProfile currentProfile = repository.getCurrentProfile();
-        profilesDropdown.setSelectedItem(currentProfile.getName());
+        if (currentProfile != null) {
+            profilesDropdown.setSelectedItem(currentProfile);
+        }
         toggleDeleteButton();
         profilesDropdown.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 return;
             }
-            final String selectedProfile = (String) profilesDropdown.getSelectedItem();
-            final String currentProfileName = profile.getName();
-            if (!selectedProfile.equals(currentProfileName)) {
+            final MetricsProfile selectedProfile = (MetricsProfile) profilesDropdown.getSelectedItem();
+            if (selectedProfile != null && !selectedProfile.equals(profile)) {
                 repository.setSelectedProfile(selectedProfile);
                 profile = repository.getCurrentProfile();
                 markProfileClean();
@@ -419,11 +424,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         });
     }
 
-    private void updateSelection(String newProfileName) {
+    private void updateSelection(MetricsProfile newProfile) {
         markProfileClean();
         profile = repository.getCurrentProfile();
-        profilesDropdown.addItem(newProfileName);
-        profilesDropdown.setSelectedItem(newProfileName);
+        profilesDropdown.addItem(newProfile);
+        profilesDropdown.setSelectedItem(newProfile);
         rebindMetricsTree();
         toggleDeleteButton();
     }
@@ -437,12 +442,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void toggleDeleteButton() {
-//        deleteButton.setEnabled(repository.getProfileNames().length != 0);
-//        final boolean anyProfilesLeft = repository.getProfileNames().length != 0;
-//        if (!anyProfilesLeft) {
-//            deleteButton.setEnabled(anyProfilesLeft);
-//            return;
-//        }
         deleteButton.setEnabled(profile != null && !profile.isBuiltIn());
     }
 
@@ -481,6 +480,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         loadDescription(metric, descriptionPane);
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     public static void loadDescription(Metric metric, JEditorPane descriptionPane) {
         final boolean success =
                 loadDescription(metric, "/metricsDescriptions/" + metric.getID() + ".html", descriptionPane);
@@ -805,8 +805,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                                 newProfileName),
                         MetricsReloadedBundle.message("unable.to.create.profile.dialog.title"));
             } else {
-                repository.duplicateCurrentProfile(newProfileName);
-                updateSelection(newProfileName);
+                updateSelection(repository.duplicateCurrentProfile(newProfileName));
             }
         }
     }
@@ -835,8 +834,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                                 newProfileName),
                         MetricsReloadedBundle.message("unable.to.create.profile.dialog.title"));
             } else {
-                repository.createEmptyProfile(newProfileName);
-                updateSelection(newProfileName);
+                updateSelection(repository.createEmptyProfile(newProfileName));
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
         final MetricsView toolWindow = new MetricsView(project);
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
         final String profileName = results.getProfileName();
-        MetricsProfile profile = repository.getProfileForName(profileName);
+        MetricsProfile profile = repository.getProfileByName(profileName);
         if (profile == null) {
             final List<Metric> metrics = results.getMetrics();
             final List<MetricInstance> instances = new ArrayList<>();

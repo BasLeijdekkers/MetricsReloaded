@@ -200,12 +200,11 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         return metrics.get(fqName);
     }
 
-    public String[] getProfileNames() {
-        final Set<String> keys = profiles.keySet();
-        final int numKeys = keys.size();
-        final String[] names = keys.toArray(new String[numKeys]);
-        Arrays.sort(names);
-        return names;
+    public MetricsProfile[] getProfiles() {
+        final Collection<MetricsProfile> values = profiles.values();
+        final MetricsProfile[] array = values.toArray(MetricsProfile.EMPTY_ARRAY);
+        Arrays.sort(array, Comparator.comparing(MetricsProfile::getName));
+        return array;
     }
 
     @Nullable
@@ -213,18 +212,16 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         return profiles.get(selectedProfile);
     }
 
-    public void setSelectedProfile(String profileName) {
-        selectedProfile = profileName;
+    public void setSelectedProfile(MetricsProfile profile) {
+        selectedProfile = profile.getName();
         MetricsReloadedConfig.getInstance().setSelectedProfile(selectedProfile);
     }
 
     public void deleteProfile(MetricsProfile profile) {
-        final String profileName = profile.getName();
-        profiles.remove(profileName);
-        final String randomProfileName = profiles.keySet().iterator().next();
-        setSelectedProfile(randomProfileName);
-        final File profileFile = getFileForProfile(profile);
-        profileFile.delete();
+        profiles.remove(profile.getName());
+        MetricsReloadedConfig.getInstance().removeDisplaySpecification(profile);
+        setSelectedProfile(profiles.values().iterator().next());
+        getFileForProfile(profile).delete();
     }
 
     public void reloadProfileFromStorage(MetricsProfile profile) {
@@ -254,26 +251,28 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         return new File(METRIC_PROFILE_DIR, profileName + ".xml");
     }
 
-    public void duplicateCurrentProfile(String newProfileName) {
+    public MetricsProfile duplicateCurrentProfile(String newProfileName) {
         final MetricsProfile currentProfile = getCurrentProfile();
         assert currentProfile != null;
         final MetricsProfile newProfile;
         try {
             newProfile = currentProfile.clone();
         } catch (CloneNotSupportedException ignore) {
-            return;
+            throw new AssertionError();
         }
         newProfile.setName(newProfileName);
         profiles.put(newProfileName, newProfile);
         persistProfile(newProfile);
-        setSelectedProfile(newProfileName);
+        setSelectedProfile(newProfile);
+        return newProfile;
     }
 
-    public void createEmptyProfile(String newProfileName) {
+    public MetricsProfile createEmptyProfile(String newProfileName) {
         final MetricsProfile newProfile = buildProfile(newProfileName);
         profiles.put(newProfileName, newProfile);
         persistProfile(newProfile);
-        setSelectedProfile(newProfileName);
+        setSelectedProfile(newProfile);
+        return newProfile;
     }
 
     public void persistCurrentProfile() {
@@ -285,14 +284,13 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         return profiles.containsKey(profileName);
     }
 
-    public MetricsProfile getProfileForName(String profileName) {
+    public MetricsProfile getProfileByName(String profileName) {
         return profiles.get(profileName);
     }
 
     public void addProfile(MetricsProfile profile) {
-        final String newProfileName = profile.getName();
-        profiles.put(newProfileName, profile);
-        setSelectedProfile(newProfileName);
+        profiles.put(profile.getName(), profile);
+        setSelectedProfile(profile);
     }
 
     public void printMetricsDescriptions() {

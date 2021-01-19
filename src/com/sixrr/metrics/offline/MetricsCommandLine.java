@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.List;
 
 public class MetricsCommandLine implements ApplicationStarter {
 
@@ -217,12 +216,13 @@ public class MetricsCommandLine implements ApplicationStarter {
 
     private static MetricsProfile getMetricsProfile(String profileName) {
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
-        final List<String> metricsProfileNames = Arrays.asList(repository.getProfileNames());
-        if (!metricsProfileNames.contains(profileName)) {
-            return null;
+        for (MetricsProfile profile : repository.getProfiles()) {
+            if (profile.getName().equals(profileName)) {
+                repository.setSelectedProfile(profile);
+                return profile;
+            }
         }
-        repository.setSelectedProfile(profileName);
-        return repository.getCurrentProfile();
+        return null;
     }
 
     @Contract("_ -> fail")
