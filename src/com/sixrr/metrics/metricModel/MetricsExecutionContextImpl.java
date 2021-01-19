@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -39,11 +39,9 @@ import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class MetricsExecutionContextImpl implements MetricsExecutionContext {
+public class MetricsExecutionContextImpl extends UserDataHolderBase implements MetricsExecutionContext {
 
     private final Project project;
     private final AnalysisScope scope;
@@ -53,12 +51,12 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         this.scope = scope;
     }
 
-    public final void execute(final MetricsProfile profile, final MetricsResultsHolder resultsHolder) {
-        final Task.Backgroundable task = new Task.Backgroundable(project,
-                MetricsReloadedBundle.message("calculating.metrics"), true) {
+    public final void execute(MetricsProfile profile, MetricsResultsHolder resultsHolder) {
+        final Task.Backgroundable task =
+                new Task.Backgroundable(project, MetricsReloadedBundle.message("calculating.metrics"), true) {
 
             @Override
-            public void run(@NotNull final ProgressIndicator indicator) {
+            public void run(@NotNull ProgressIndicator indicator) {
                 calculateMetrics(profile, resultsHolder);
             }
 
@@ -75,7 +73,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         task.queue();
     }
 
-    public void calculateMetrics(MetricsProfile profile, final MetricsResultsHolder resultsHolder) {
+    public void calculateMetrics(MetricsProfile profile, MetricsResultsHolder resultsHolder) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
         final List<MetricInstance> metrics = profile.getMetricInstances();
         indicator.setIndeterminate(false);
@@ -83,7 +81,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
         final int numFiles = scope.getFileCount();
         final int numMetrics = metrics.size();
         final List<MetricCalculator> calculators = new ArrayList<>(numMetrics);
-        for (final MetricInstance metricInstance : metrics) {
+        for (MetricInstance metricInstance : metrics) {
             indicator.checkCanceled();
             if (!metricInstance.isEnabled()) {
                 continue;
@@ -99,7 +97,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
             private int mainTraversalProgress = 0;
 
             @Override
-            public void visitFile(PsiFile file) {
+            public void visitFile(@NotNull PsiFile file) {
                 super.visitFile(file);
                 if (file instanceof PsiCompiledElement) {
                     return;
@@ -144,17 +142,5 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
     @Override
     public final AnalysisScope getScope() {
         return scope;
-    }
-
-    private final Map userData = new HashMap();
-
-    @Override
-    public final <T> T getUserData(@NotNull Key<T> key) {
-        return (T) userData.get(key);
-    }
-
-    @Override
-    public final <T> void putUserData(@NotNull Key<T> key, T t) {
-        userData.put(key, t);
     }
 }
