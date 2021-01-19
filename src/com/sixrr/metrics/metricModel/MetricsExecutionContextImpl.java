@@ -78,6 +78,7 @@ public class MetricsExecutionContextImpl implements MetricsExecutionContext {
     public void calculateMetrics(MetricsProfile profile, final MetricsResultsHolder resultsHolder) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
         final List<MetricInstance> metrics = profile.getMetricInstances();
+        indicator.setIndeterminate(false);
         indicator.setText(MetricsReloadedBundle.message("initializing.progress.string"));
         final int numFiles = scope.getFileCount();
         final int numMetrics = metrics.size();
