@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.util.List;
 
 public interface MetricsProfile extends Cloneable {
 
+    MetricsProfile[] EMPTY_ARRAY = new MetricsProfile[0];
+
     void addMetricInstance(MetricInstance metricInstance);
 
     MetricsProfile clone() throws CloneNotSupportedException;
@@ -42,8 +44,6 @@ public interface MetricsProfile extends Cloneable {
     @Nullable MetricInstance getMetricInstance(String metricID);
 
     void writeToFile(File profileFile) throws IOException;
-
-    MetricDisplaySpecification getDisplaySpecification();
 
     void setBuiltIn(boolean builtIn);
 

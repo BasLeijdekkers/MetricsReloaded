@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,13 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.intellij.util.xmlb.annotations.XMap;
+import com.sixrr.metrics.profile.MetricsProfile;
+import com.sixrr.metrics.ui.metricdisplay.MetricDisplaySpecification;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @State(name = "MetricsReloaded", storages = @Storage("metrics.reloaded.xml"))
 public final class MetricsReloadedConfig implements PersistentStateComponent<MetricsReloadedConfig> {
@@ -29,6 +35,9 @@ public final class MetricsReloadedConfig implements PersistentStateComponent<Met
     public String selectedProfile = "";
     public boolean autoscroll = false;
     public boolean showOnlyWarnings = false;
+
+    @XMap(propertyElementName = "layout", entryTagName = "profile", keyAttributeName = "name")
+    private final Map<String, MetricDisplaySpecification> displaySpecifications = new HashMap<>();
 
     private MetricsReloadedConfig() {}
 
@@ -58,6 +67,14 @@ public final class MetricsReloadedConfig implements PersistentStateComponent<Met
 
     public void setShowOnlyWarnings(boolean showOnlyWarnings) {
         this.showOnlyWarnings = showOnlyWarnings;
+    }
+
+    public MetricDisplaySpecification getDisplaySpecification(MetricsProfile profile) {
+        return displaySpecifications.computeIfAbsent(profile.getName(), p -> new MetricDisplaySpecification());
+    }
+
+    public void removeDisplaySpecification(MetricsProfile profile) {
+        displaySpecifications.remove(profile.getName());
     }
 
     @Override

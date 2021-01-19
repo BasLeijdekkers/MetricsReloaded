@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020, Sixth and Red River Software
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,25 +14,21 @@
  *  limitations under the License.
  */
 
-package com.sixrr.metrics.profile;
+package com.sixrr.metrics.ui.metricdisplay;
 
+import com.intellij.util.xmlb.annotations.Tag;
+import com.intellij.util.xmlb.annotations.XMap;
 import com.sixrr.metrics.MetricCategory;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MetricDisplaySpecification {
+@Tag("metrics_layout")
+public final class MetricDisplaySpecification {
+    @XMap(propertyElementName = "tables", keyAttributeName = "category", entryTagName = "table")
     private final Map<MetricCategory, MetricTableSpecification> specs = new EnumMap<>(MetricCategory.class);
 
-    public MetricDisplaySpecification() {
-        super();
-        final MetricCategory[] categories = MetricCategory.values();
-        for (MetricCategory category : categories) {
-            specs.put(category, new MetricTableSpecification());
-        }
-    }
-
     public MetricTableSpecification getSpecification(MetricCategory category) {
-        return specs.get(category);
+        return specs.computeIfAbsent(category, c -> new MetricTableSpecification());
     }
 }

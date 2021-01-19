@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
-import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
@@ -61,12 +61,12 @@ class MetricTableModel extends AbstractTableModel {
         columnPermutation = new int[metricsInstances.length + 1];
         final List<String> columnOrder = tableSpecification.getColumnOrder();
         final Set<String> strippedColumnOrder = new LinkedHashSet<>();
-        for (final String columnName : columnOrder) {
+        for (String columnName : columnOrder) {
             boolean found = false;
             if (columnName.equals(type)) {
                 found = true;
             } else {
-                for (final MetricInstance metricInstance : metricsInstances) {
+                for (MetricInstance metricInstance : metricsInstances) {
                     if (metricInstance.getMetric().getAbbreviation().equals(columnName)) {
                         found = true;
                         break;
@@ -79,7 +79,7 @@ class MetricTableModel extends AbstractTableModel {
         }
         int columnCount = 0;
         int leftOverCount = strippedColumnOrder.size();
-        for (final String columnName : strippedColumnOrder) {
+        for (String columnName : strippedColumnOrder) {
             if (columnName.equals(type)) {
                 columnPermutation[columnCount] = 0;
             } else {
@@ -106,8 +106,8 @@ class MetricTableModel extends AbstractTableModel {
             columnCount = 1;
         }
         final Collection<Integer> remainingMetricSlots = remainingMetrics.values();
-        for (final Integer position : remainingMetricSlots) {
-            columnPermutation[columnCount] = position;
+        for (Integer position : remainingMetricSlots) {
+            columnPermutation[columnCount] = position.intValue();
             columnCount++;
         }
         rowPermutation = new int[measuredObjects.length];
@@ -119,7 +119,6 @@ class MetricTableModel extends AbstractTableModel {
         tableSpecification.setAscending(ascending);
         sort();
         fireTableDataChanged();
-        MetricsProfileRepository.getInstance().persistCurrentProfile();
     }
 
     private static MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
@@ -298,7 +297,7 @@ class MetricTableModel extends AbstractTableModel {
             Collections.addAll(allObjects, prevResultObjects);
         }
         Collections.addAll(allObjects, resultObjects);
-        measuredObjects = allObjects.toArray(new String[0]);
+        measuredObjects = allObjects.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     private void tabulateMetrics() {
@@ -314,7 +313,7 @@ class MetricTableModel extends AbstractTableModel {
         Arrays.sort(metricsInstances, new MetricInstanceAbbreviationComparator());
     }
 
-    private static class PairComparator implements Comparator<Pair> {
+    private static class PairComparator implements Comparator<Pair<Integer, ? extends Comparable>> {
         private final boolean ascending;
 
         PairComparator(boolean ascending) {
@@ -322,9 +321,9 @@ class MetricTableModel extends AbstractTableModel {
         }
 
         @Override
-        public int compare(Pair pair1, Pair pair2) {
-            final Object value1 = pair1.getSecond();
-            final Object value2 = pair2.getSecond();
+        public int compare(Pair<Integer, ? extends Comparable> pair1, Pair<Integer, ? extends Comparable> pair2) {
+            final Comparable value1 = pair1.getSecond();
+            final Comparable value2 = pair2.getSecond();
             if (value1 == null && value2 == null) {
                 return 0;
             }
@@ -339,7 +338,7 @@ class MetricTableModel extends AbstractTableModel {
                     final String s2 = (String) value2;
                     comparison = StringUtil.naturalCompare(s1, s2);
                 } else {
-                    comparison = ((Comparable) value1).compareTo(value2);
+                    comparison = value1.compareTo(value2);
                 }
             }
             return ascending ? comparison : -comparison;

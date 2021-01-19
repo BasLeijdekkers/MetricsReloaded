@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,17 +14,26 @@
  *  limitations under the License.
  */
 
-package com.sixrr.metrics.profile;
+package com.sixrr.metrics.ui.metricdisplay;
 
-import java.util.ArrayList;
+import com.intellij.util.SmartList;
+import com.intellij.util.xmlb.annotations.Attribute;
+import com.intellij.util.xmlb.annotations.Tag;
+import com.intellij.util.xmlb.annotations.XCollection;
+
 import java.util.Collections;
 import java.util.List;
 
-public class MetricTableSpecification {
+@Tag("table_layout")
+public final class MetricTableSpecification {
+    @Attribute("sort_column")
     private int sortColumn = 0;
+    @Attribute("ascending")
     private boolean ascending = true;
-    private List<String> columnOrder = new ArrayList<>();
-    private List<Integer> columnWidths = new ArrayList<>();
+    @XCollection(propertyElementName = "column_order", elementName = "c", valueAttributeName = "", style = XCollection.Style.v2)
+    private List<String> columnOrder = new SmartList<>();
+    @XCollection(propertyElementName = "column_widths", elementName = "w", valueAttributeName = "", style = XCollection.Style.v2)
+    private List<Integer> columnWidths = new SmartList<>();
 
     public int getSortColumn() {
         return sortColumn;

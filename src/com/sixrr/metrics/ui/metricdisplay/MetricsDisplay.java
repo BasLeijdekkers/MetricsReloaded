@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,9 +25,7 @@ import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricInstance;
-import com.sixrr.metrics.profile.MetricTableSpecification;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsCategoryNameUtil;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
@@ -212,7 +210,7 @@ public class MetricsDisplay {
 
         final List<Integer> columnWidths = tableSpecification.getColumnWidths();
         final List<String> columnOrder = tableSpecification.getColumnOrder();
-        if (columnWidths != null && !columnWidths.isEmpty()) {
+        if (!columnWidths.isEmpty()) {
 
             final int columnCount = model.getColumnCount();
             for (int i = 0; i < columnCount; i++) {
@@ -342,7 +340,6 @@ public class MetricsDisplay {
             }
             tableSpecification.setColumnOrder(columns);
             tableSpecification.setColumnWidths(columnWidths);
-            MetricsProfileRepository.getInstance().persistCurrentProfile();
         }
     }
 }

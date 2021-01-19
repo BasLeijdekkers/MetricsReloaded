@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import com.intellij.ui.SideBorder;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.sixrr.metrics.MetricCategory;
+import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.metricModel.MetricsRun;
-import com.sixrr.metrics.profile.MetricDisplaySpecification;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NonNls;
@@ -54,6 +54,7 @@ public class MetricsView {
     private MetricsRun currentResults = null;
     private AnalysisScope currentScope = null;
     private MetricsProfile currentProfile = null;
+    private MetricDisplaySpecification currentDisplaySpecification = null;
 
     public MetricsView(@NotNull Project project) {
         this.project = project;
@@ -100,8 +101,8 @@ public class MetricsView {
         currentScope = scope;
         currentResults = showOnlyWarnings ? results.filterRowsWithoutWarnings(profile) : results;
         currentProfile = profile;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
-        metricsDisplay.setMetricsResults(displaySpecification, currentResults);
+        currentDisplaySpecification = MetricsReloadedConfig.getInstance().getDisplaySpecification(currentProfile);
+        metricsDisplay.setMetricsResults(currentDisplaySpecification, currentResults);
 
         final ToolWindow toolWindow = getToolWindow();
         final ContentManager contentManager = toolWindow.getContentManager();
@@ -114,31 +115,27 @@ public class MetricsView {
 
     public void update(@NotNull MetricsRun results) {
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
-        metricsDisplay.updateMetricsResults(results, displaySpecification);
+        metricsDisplay.updateMetricsResults(results, currentDisplaySpecification);
     }
 
     public void updateWithDiff(@NotNull MetricsRun results) {
         final MetricsRun prevResults = currentResults;
         currentResults = results;
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
-        metricsDisplay.updateMetricsResultsWithDiff(results, displaySpecification);
+        metricsDisplay.updateMetricsResultsWithDiff(results, currentDisplaySpecification);
         myContent.setDisplayName(MetricsReloadedBundle.message("run.comparison.message",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
     public void reloadAsDiff(@NotNull MetricsRun prevResults) {
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
-        metricsDisplay.overlayWithDiff(prevResults, displaySpecification);
+        metricsDisplay.overlayWithDiff(prevResults, currentDisplaySpecification);
         myContent.setDisplayName(MetricsReloadedBundle.message("run.comparison.message",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 prevResults.getTimestamp(), currentResults.getTimestamp()));
     }
 
     public void removeDiffOverlay() {
-        final MetricDisplaySpecification displaySpecification = currentProfile.getDisplaySpecification();
-        metricsDisplay.removeDiffOverlay(displaySpecification);
+        metricsDisplay.removeDiffOverlay(currentDisplaySpecification);
         myContent.setDisplayName(MetricsReloadedBundle.message("run.description.format",
                 currentResults.getProfileName(), currentScope.getDisplayName(),
                 currentResults.getTimestamp()));

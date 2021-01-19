@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.sixrr.metrics.profile;
 
 import com.sixrr.metrics.Metric;
-import com.sixrr.metrics.MetricCategory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -34,7 +33,6 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     private String name;
     private final Map<String, MetricInstance> id2instance = new HashMap<>();
-    private MetricDisplaySpecification displaySpecification = new MetricDisplaySpecification();
     private boolean builtIn = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
@@ -50,8 +48,20 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @Override
-    public MetricDisplaySpecification getDisplaySpecification() {
-        return displaySpecification;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final MetricsProfileImpl that = (MetricsProfileImpl) o;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 
     @Override
@@ -98,7 +108,6 @@ public class MetricsProfileImpl implements MetricsProfile {
         for (Map.Entry<String, MetricInstance> entry : id2instance.entrySet()) {
             out.id2instance.put(entry.getKey(), entry.getValue().clone());
         }
-        out.displaySpecification = new MetricDisplaySpecification();
         return out;
     }
 
@@ -114,7 +123,6 @@ public class MetricsProfileImpl implements MetricsProfile {
         return id2instance.get(metricID);
     }
 
-    @SuppressWarnings("HardCodedStringLiteral")
     @Nullable
     public static MetricsProfile loadFromFile(File file, MetricRepository metrics) {
         final Document doc;
@@ -128,66 +136,16 @@ public class MetricsProfileImpl implements MetricsProfile {
         final String profileName = profileRoot.getAttributeValue("name");
         final List<Element> children = profileRoot.getChildren("METRIC");
         final List<MetricInstance> profileMetrics = new ArrayList<>(200);
-        for (final Element metricElement : children) {
+        for (Element metricElement : children) {
             final MetricInstance metric = parseMetric(metricElement, metrics);
             if (metric != null) {
                 profileMetrics.add(metric);
             }
         }
-        final MetricsProfile profile = new MetricsProfileImpl(profileName, profileMetrics);
-        final Element displaySpecElement = profileRoot.getChild("DISPLAY_SPEC");
-        if (displaySpecElement != null) {
-            parseDisplaySpec(displaySpecElement, profile.getDisplaySpecification());
-        }
-        return profile;
+        return new MetricsProfileImpl(profileName, profileMetrics);
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void parseDisplaySpec(Element displaySpecElement, MetricDisplaySpecification spec) {
-        for (MetricCategory category : MetricCategory.values()) {
-            final String tag = category.name();
-            final Element element = displaySpecElement.getChild(tag.toUpperCase());
-            if (element == null) {
-                continue;
-            }
-            final MetricTableSpecification specification = spec.getSpecification(category);
-            specification.setAscending("true".equals(element.getAttributeValue("ascending")));
-            specification.setSortColumn(Integer.parseInt(element.getAttributeValue("sort_column")));
-            specification.setColumnOrder(parseStringList(element.getAttributeValue("column_order")));
-            specification.setColumnWidths(parseIntList(element.getAttributeValue("column_widths")));
-        }
-    }
-
-    private static List<Integer> parseIntList(String value) {
-        if (value != null && !value.isEmpty()) {
-            final StringTokenizer tokenizer = new StringTokenizer(value, "|");
-            final List<Integer> out = new ArrayList<>(32);
-            while (tokenizer.hasMoreTokens()) {
-                final String token = tokenizer.nextToken();
-                final Integer intValue = new Integer(token);
-                out.add(intValue);
-            }
-            return out;
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    private static List<String> parseStringList(String value) {
-        if (value != null && !value.isEmpty()) {
-            final StringTokenizer tokenizer = new StringTokenizer(value, "|");
-            final List<String> out = new ArrayList<>(32);
-            while (tokenizer.hasMoreTokens()) {
-                final String token = tokenizer.nextToken();
-                out.add(token);
-            }
-            return out;
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @SuppressWarnings({"HardCodedStringLiteral"})
+    @SuppressWarnings("HardCodedStringLiteral")
     @Nullable
     private static MetricInstance parseMetric(Element metricElement, MetricRepository metrics) {
         final String className = metricElement.getAttributeValue("className");
@@ -234,54 +192,15 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @Override
-    @SuppressWarnings({"HardCodedStringLiteral"})
+    @SuppressWarnings("HardCodedStringLiteral")
     public void writeToFile(File profileFile) throws FileNotFoundException {
         try (PrintWriter writer = new PrintWriter(new FileOutputStream(profileFile))) {
             writer.println("<METRICS_PROFILE name = \"" + name + "\">");
-            writeDisplaySpec(writer, displaySpecification);
-            for (final MetricInstance metric : getMetricInstances()) {
+            for (MetricInstance metric : getMetricInstances()) {
                 writeMetric(metric, writer);
             }
             writer.println("</METRICS_PROFILE>");
         }
-    }
-
-    @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void writeDisplaySpec(PrintWriter writer,
-                                         MetricDisplaySpecification displaySpecification) {
-        writer.println("\t<DISPLAY_SPEC>");
-
-        final MetricCategory[] categories = MetricCategory.values();
-        for (MetricCategory category : categories) {
-            printTableSpec(displaySpecification, category, writer);
-        }
-        writer.println("\t</DISPLAY_SPEC>");
-    }
-
-    @SuppressWarnings({"HardCodedStringLiteral"})
-    private static void printTableSpec(MetricDisplaySpecification displaySpecification,
-                                       MetricCategory category,
-                                       PrintWriter writer) {
-        final MetricTableSpecification projectSpec = displaySpecification.getSpecification(category);
-        final List<String> columnOrder = projectSpec.getColumnOrder();
-        final List<Integer> columnWidths = projectSpec.getColumnWidths();
-        final String tag = category.name().toUpperCase();
-        writer.println("\t\t<" + tag + " ascending = \"" + projectSpec.isAscending() + "\" sort_column = \"" +
-                projectSpec.getSortColumn() + "\" " + "column_order = \"" + writeListAsString(columnOrder) +
-                "\" column_widths = \"" + writeListAsString(columnWidths) + "\" />");
-    }
-
-    private static String writeListAsString(List<?> list) {
-        final StringBuilder out = new StringBuilder();
-
-        for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
-            final Object element = iterator.next();
-            out.append(element);
-            if (iterator.hasNext()) {
-                out.append('|');
-            }
-        }
-        return out.toString();
     }
 
     @SuppressWarnings({"HardCodedStringLiteral"})
@@ -294,6 +213,7 @@ public class MetricsProfileImpl implements MetricsProfile {
                 "\" />");
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     @Override
     public String toString() {
         return name + (builtIn ? " (built-in)" : "");
