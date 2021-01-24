@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public interface Metric {
      * "For more information" label.
      *
      * @return an online help URL, or null if no help is available.
-     * @deprecated no longer used. Provide any additional inforation as regular links inside the description
+     * @deprecated no longer used. Provide any additional information as regular links inside the description
      */
     @Deprecated
     @NonNls
@@ -81,7 +81,7 @@ public interface Metric {
      * A user-visible text fragment directing the user to further information on the metric.  This will be the text displayed in the
      * "For more information" label
      * @return a string describing any online help available, or null if no help is available
-     * @deprecated no longer used. Provide any additional inforation as regular links inside the description
+     * @deprecated no longer used. Provide any additional information as regular links inside the description
      */
     @Deprecated
     @Nullable
