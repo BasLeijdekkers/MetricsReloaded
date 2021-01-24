@@ -33,7 +33,7 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     private String name;
     private final Map<String, MetricInstance> id2instance = new HashMap<>();
-    private boolean builtIn = false;
+    private boolean prebuilt = false;
 
     public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
         this.name = name;
@@ -75,13 +75,13 @@ public class MetricsProfileImpl implements MetricsProfile {
     }
 
     @Override
-    public boolean isBuiltIn() {
-        return builtIn;
+    public boolean isPrebuilt() {
+        return prebuilt;
     }
 
     @Override
-    public void setBuiltIn(boolean builtIn) {
-        this.builtIn = builtIn;
+    public void setPrebuilt(boolean prebuilt) {
+        this.prebuilt = prebuilt;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class MetricsProfileImpl implements MetricsProfile {
 
     @Override
     public List<MetricInstance> getMetricInstances() {
-        final ArrayList<MetricInstance> result = new ArrayList<>(id2instance.values());
+        final List<MetricInstance> result = new ArrayList<>(id2instance.values());
         Collections.sort(result);
         return result;
     }
@@ -216,6 +216,6 @@ public class MetricsProfileImpl implements MetricsProfile {
     @SuppressWarnings("HardCodedStringLiteral")
     @Override
     public String toString() {
-        return name + (builtIn ? " (built-in)" : "");
+        return name + (prebuilt ? " (prebuilt)" : "");
     }
 }

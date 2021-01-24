@@ -122,7 +122,7 @@ class MetricTableModel extends AbstractTableModel {
     }
 
     private static MetricInstance[] findMetricInstances(@NotNull Metric[] metrics) {
-        final MetricsProfile profile = MetricsProfileRepository.getInstance().getCurrentProfile();
+        final MetricsProfile profile = MetricsProfileRepository.getInstance().getSelectedProfile();
         final MetricInstance[] metricInstances = new MetricInstance[metrics.length];
         for (int i = 0; i < metrics.length; i++) {
             final MetricInstance metricInstance = profile.getMetricInstance(metrics[i]);

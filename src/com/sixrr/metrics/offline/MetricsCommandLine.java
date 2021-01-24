@@ -216,13 +216,12 @@ public class MetricsCommandLine implements ApplicationStarter {
 
     private static MetricsProfile getMetricsProfile(String profileName) {
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
-        for (MetricsProfile profile : repository.getProfiles()) {
-            if (profile.getName().equals(profileName)) {
-                repository.setSelectedProfile(profile);
-                return profile;
-            }
+        final MetricsProfile profile = repository.getProfileByName(profileName);
+        if (profile == null) {
+            return null;
         }
-        return null;
+        repository.setSelectedProfile(profile);
+        return profile;
     }
 
     @Contract("_ -> fail")

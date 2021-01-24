@@ -45,7 +45,7 @@ public interface MetricsProfile extends Cloneable {
 
     void writeToFile(File profileFile) throws IOException;
 
-    void setBuiltIn(boolean builtIn);
+    void setPrebuilt(boolean prebuilt);
 
-    boolean isBuiltIn();
+    boolean isPrebuilt();
 }

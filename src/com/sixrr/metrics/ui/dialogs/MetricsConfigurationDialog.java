@@ -105,7 +105,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     public MetricsConfigurationDialog(Project project, MetricsProfileRepository repository) {
         super(project, true);
         this.repository = repository;
-        profile = repository.getCurrentProfile();
+        profile = repository.getSelectedProfile();
         setupMetricsTree();
 
         descriptionPane.setContentType("text/html");
@@ -363,7 +363,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         profilesDropdown.setRenderer(SimpleListCellRenderer.create((label, profile, i) -> {
             label.setText(profile.getName());
         }));
-        final MetricsProfile currentProfile = repository.getCurrentProfile();
+        final MetricsProfile currentProfile = repository.getSelectedProfile();
         if (currentProfile != null) {
             profilesDropdown.setSelectedItem(currentProfile);
         }
@@ -375,7 +375,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             final MetricsProfile selectedProfile = (MetricsProfile) profilesDropdown.getSelectedItem();
             if (selectedProfile != null && !selectedProfile.equals(profile)) {
                 repository.setSelectedProfile(selectedProfile);
-                profile = repository.getCurrentProfile();
+                profile = repository.getSelectedProfile();
                 markProfileClean();
             }
             rebindMetricsTree();
@@ -426,7 +426,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void updateSelection(MetricsProfile newProfile) {
         markProfileClean();
-        profile = repository.getCurrentProfile();
+        profile = repository.getSelectedProfile();
         profilesDropdown.addItem(newProfile);
         profilesDropdown.setSelectedItem(newProfile);
         rebindMetricsTree();
@@ -442,14 +442,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void toggleDeleteButton() {
-        deleteButton.setEnabled(profile != null && !profile.isBuiltIn());
+        deleteButton.setEnabled(profile != null && !profile.isPrebuilt());
     }
 
     private void setupDeleteButton() {
         deleteButton.addActionListener(e -> {
             final String currentProfileName = profile.getName();
             repository.deleteProfile(profile);
-            profile = repository.getCurrentProfile();
+            profile = repository.getSelectedProfile();
             markProfileClean();
             profilesDropdown.removeItem(currentProfileName);
             profilesDropdown.setSelectedItem(profile.getName());
@@ -805,7 +805,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                                 newProfileName),
                         MetricsReloadedBundle.message("unable.to.create.profile.dialog.title"));
             } else {
-                updateSelection(repository.duplicateCurrentProfile(newProfileName));
+                updateSelection(repository.duplicateSelectedProfile(newProfileName));
             }
         }
     }

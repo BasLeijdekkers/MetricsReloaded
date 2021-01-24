@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,9 +43,12 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
     }
 
     @Override
-    protected void analyze(@NotNull final Project project, @NotNull final AnalysisScope analysisScope) {
+    protected void analyze(@NotNull Project project, @NotNull AnalysisScope analysisScope) {
         final MetricsProfileRepository repository = MetricsProfileRepository.getInstance();
-        final MetricsProfile profile = repository.getCurrentProfile();
+        final MetricsProfile profile = repository.getSelectedProfile();
+        if (profile == null) {
+            return;
+        }
         final MetricsView toolWindow = new MetricsView(project);
         final MetricsRunImpl metricsRun = new MetricsRunImpl();
         new MetricsExecutionContextImpl(project, analysisScope) {

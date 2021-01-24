@@ -76,7 +76,7 @@ public class ProfileSelectionPanel extends JPanel {
             label.setText(profile.getName());
         }));
         final ComboboxWithBrowseButton comboboxWithBrowseButton = new ComboboxWithBrowseButton(comboBox);
-        comboBox.setSelectedItem(repository.getCurrentProfile());
+        comboBox.setSelectedItem(repository.getSelectedProfile());
         comboBox.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.DESELECTED) {
                 return;
@@ -89,7 +89,7 @@ public class ProfileSelectionPanel extends JPanel {
         comboboxWithBrowseButton.addActionListener(e -> {
             new MetricsConfigurationDialog(project, repository).show();
             comboBox.setModel(new DefaultComboBoxModel<>(repository.getProfiles()));
-            comboBox.setSelectedItem(repository.getCurrentProfile());
+            comboBox.setSelectedItem(repository.getSelectedProfile());
         });
         return comboboxWithBrowseButton;
     }

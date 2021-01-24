@@ -43,7 +43,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     private static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";
 
     private final Map<String, MetricsProfile> profiles = new LinkedHashMap<>(20);
-    private String selectedProfile = "";
+    private MetricsProfile selectedProfile = null;
     private final Map<String, Metric> metrics = new HashMap<>();
 
     private MetricsProfileRepository() {
@@ -88,9 +88,8 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         reconcileProfiles();
         addPrebuiltProfiles();
         final String previouslySelectedProfile = MetricsReloadedConfig.getInstance().getSelectedProfile();
-        selectedProfile = profiles.containsKey(previouslySelectedProfile)
-                ? previouslySelectedProfile
-                : profiles.keySet().iterator().next();
+        final MetricsProfile profile = profiles.get(previouslySelectedProfile);
+        selectedProfile = (profile != null) ? profile : profiles.values().iterator().next();
     }
 
     private void loadMetricsFromProviders() {
@@ -120,26 +119,24 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     private void addPrebuiltProfiles() {
-        final MetricProvider[] metricProviders = MetricProvider.EXTENSION_POINT_NAME.getExtensions();
-        for (MetricProvider provider : metricProviders) {
-            final List<PrebuiltMetricProfile> prebuiltProfiles = provider.getPrebuiltProfiles();
-            for (PrebuiltMetricProfile prebuiltProfile : prebuiltProfiles) {
+        for (MetricProvider provider : MetricProvider.EXTENSION_POINT_NAME.getExtensions()) {
+            for (PrebuiltMetricProfile prebuiltProfile : provider.getPrebuiltProfiles()) {
                 addPrebuiltProfile(prebuiltProfile);
             }
         }
     }
 
-    private void addPrebuiltProfile(PrebuiltMetricProfile builtInProfile) {
-        final String name = builtInProfile.getProfileName();
+    private void addPrebuiltProfile(PrebuiltMetricProfile prebuiltProfile) {
+        final String name = prebuiltProfile.getProfileName();
         final MetricsProfile existingProfile = profiles.get(name);
         final MetricsProfile profile = (existingProfile != null) ? existingProfile : buildProfile(name);
-        final Set<String> metricIDs = builtInProfile.getMetricIDs();
+        final Set<String> metricIDs = prebuiltProfile.getMetricIDs();
         for (String metricID : metricIDs) {
             final MetricInstance instance = profile.getMetricInstance(metricID);
             assert instance != null : "no instance found for " + metricID;
             instance.setEnabled(true);
-            final Double lowerThreshold = builtInProfile.getLowerThresholdForMetric(metricID);
-            final Double upperThreshold = builtInProfile.getUpperThresholdForMetric(metricID);
+            final Double lowerThreshold = prebuiltProfile.getLowerThresholdForMetric(metricID);
+            final Double upperThreshold = prebuiltProfile.getUpperThresholdForMetric(metricID);
             if (lowerThreshold != null) {
                 instance.setLowerThresholdEnabled(true);
                 instance.setLowerThreshold(lowerThreshold.doubleValue());
@@ -149,13 +146,12 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
                 instance.setUpperThreshold(upperThreshold.doubleValue());
             }
         }
-        profile.setBuiltIn(true);
+        profile.setPrebuilt(true);
         profiles.put(name, profile);
     }
 
     public String generateNewProfileName() {
-        final String baseName =
-                (selectedProfile == null || selectedProfile.isEmpty()) ? "Metrics" : selectedProfile;
+        final String baseName = (selectedProfile == null) ? "Metrics" : selectedProfile.getName();
         return generateNewProfileName(baseName);
     }
 
@@ -208,25 +204,24 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     @Nullable
-    public MetricsProfile getCurrentProfile() {
-        return profiles.get(selectedProfile);
+    public MetricsProfile getSelectedProfile() {
+        return selectedProfile;
     }
 
     public void setSelectedProfile(MetricsProfile profile) {
-        selectedProfile = profile.getName();
-        MetricsReloadedConfig.getInstance().setSelectedProfile(selectedProfile);
+        selectedProfile = profile;
+        MetricsReloadedConfig.getInstance().setSelectedProfile(selectedProfile.getName());
     }
 
     public void deleteProfile(MetricsProfile profile) {
         profiles.remove(profile.getName());
         MetricsReloadedConfig.getInstance().removeDisplaySpecification(profile);
-        setSelectedProfile(profiles.values().iterator().next());
         getFileForProfile(profile).delete();
+        setSelectedProfile(profiles.values().iterator().next());
     }
 
     public void reloadProfileFromStorage(MetricsProfile profile) {
-        final File profileFile = getFileForProfile(profile);
-        final MetricsProfile newProfile = MetricsProfileImpl.loadFromFile(profileFile, this);
+        final MetricsProfile newProfile = MetricsProfileImpl.loadFromFile(getFileForProfile(profile), this);
         if (newProfile != null) {
             profiles.put(newProfile.getName(),  newProfile);
         }
@@ -251,12 +246,12 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         return new File(METRIC_PROFILE_DIR, profileName + ".xml");
     }
 
-    public MetricsProfile duplicateCurrentProfile(String newProfileName) {
-        final MetricsProfile currentProfile = getCurrentProfile();
-        assert currentProfile != null;
+    public MetricsProfile duplicateSelectedProfile(String newProfileName) {
+        final MetricsProfile selectedProfile = getSelectedProfile();
+        assert selectedProfile != null;
         final MetricsProfile newProfile;
         try {
-            newProfile = currentProfile.clone();
+            newProfile = selectedProfile.clone();
         } catch (CloneNotSupportedException ignore) {
             throw new AssertionError();
         }
@@ -273,11 +268,6 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         persistProfile(newProfile);
         setSelectedProfile(newProfile);
         return newProfile;
-    }
-
-    public void persistCurrentProfile() {
-        final MetricsProfile currentProfile = getCurrentProfile();
-        persistProfile(currentProfile);
     }
 
     public boolean profileExists(String profileName) {
