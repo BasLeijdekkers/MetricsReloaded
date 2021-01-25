@@ -56,12 +56,12 @@ public class MetricsProfileImpl implements MetricsProfile {
             return false;
         }
         final MetricsProfileImpl that = (MetricsProfileImpl) o;
-        return name.equals(that.name);
+        return name.equals(that.name) && prebuilt == that.prebuilt;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return 31 * name.hashCode() + (prebuilt ? 1 : 0);
     }
 
     @Override

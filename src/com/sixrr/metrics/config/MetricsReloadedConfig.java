@@ -33,6 +33,7 @@ import java.util.Map;
 public final class MetricsReloadedConfig implements PersistentStateComponent<MetricsReloadedConfig> {
 
     public String selectedProfile = "";
+    public boolean prebuilt = false;
     public boolean autoscroll = false;
     public boolean showOnlyWarnings = false;
 
@@ -51,6 +52,14 @@ public final class MetricsReloadedConfig implements PersistentStateComponent<Met
 
     public void setSelectedProfile(String selectedProfile) {
         this.selectedProfile = selectedProfile;
+    }
+
+    public boolean isSelectedProfilePrebuilt() {
+        return prebuilt;
+    }
+
+    public void setSelectedProfilePrebuilt(boolean prebuilt) {
+        this.prebuilt = prebuilt;
     }
 
     public boolean isAutoscroll() {
