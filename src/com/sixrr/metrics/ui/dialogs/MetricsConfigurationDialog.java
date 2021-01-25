@@ -88,7 +88,6 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private JCheckBox upperThresholdEnabledCheckbox;
     private JFormattedTextField lowerThresholdField;
     private JCheckBox lowerThresholdEnabledCheckbox;
-    private JButton resetButton;
     private ActionToolbarImpl treeToolbar;
     private MetricInstance selectedMetricInstance = null;
 
@@ -112,14 +111,12 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         setupProfilesDropdown();
         setupDeleteButton();
         setupAddButton();
-        setupResetButton();
         setupLowerThresholdEnabledButton();
         setupLowerThresholdField();
         setupUpperThresholdEnabledButton();
         setupUpperThresholdField();
         toggleDeleteButton();
         applyAction.setEnabled(false);
-        resetButton.setEnabled(false);
         lowerThresholdField.setEnabled(false);
         upperThresholdField.setEnabled(false);
         lowerThresholdEnabledCheckbox.setEnabled(false);
@@ -131,13 +128,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void markProfileClean() {
         currentProfileIsModified = false;
-        resetButton.setEnabled(false);
         applyAction.setEnabled(false);
     }
 
     private void markProfileDirty() {
         currentProfileIsModified = true;
-        resetButton.setEnabled(true);
         applyAction.setEnabled(true);
     }
 
@@ -422,20 +417,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void updateSelection(MetricsProfile newProfile) {
-        markProfileClean();
-        profile = repository.getSelectedProfile();
         profilesDropdown.addItem(newProfile);
         profilesDropdown.setSelectedItem(newProfile);
-        rebindMetricsTree();
-        toggleDeleteButton();
-    }
-
-    private void setupResetButton() {
-        resetButton.addActionListener(e -> {
-            repository.reloadProfileFromStorage(profile);
-            markProfileClean();
-            populateTree(filterComponent.getFilter());
-        });
     }
 
     private void toggleDeleteButton() {
