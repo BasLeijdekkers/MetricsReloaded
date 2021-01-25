@@ -35,6 +35,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class MetricsProfileRepository implements MetricRepository, ExportableComponent {
 
@@ -42,6 +44,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
 
     @NonNls
     private static final String METRIC_PROFILE_DIR = PathManager.getConfigPath() + File.separator + "metrics";
+    private static final Pattern NUMBERED_PROFILE_NAME = Pattern.compile("(?<base>.*) \\(\\d+\\)");
 
     private final Map<String, MetricsProfile> profiles = new LinkedHashMap<>();
     private final Map<String, MetricsProfile> prebuiltProfiles = new HashMap<>();
@@ -167,14 +170,20 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     public String generateNewProfileName() {
-        final String baseName = (selectedProfile == null) ? "Metrics" : selectedProfile.getName();
+        final String baseName = (selectedProfile == null)
+                                ? MetricsReloadedBundle.message("default.new.profile.name")
+                                : selectedProfile.getName();
         return generateNewProfileName(baseName);
     }
 
     public String generateNewProfileName(@NotNull String baseName) {
+        final Matcher matcher = NUMBERED_PROFILE_NAME.matcher(baseName);
+        if (matcher.matches()) {
+            baseName = matcher.group("base");
+        }
         int index = 1;
         String newName = baseName;
-        while (profiles.containsKey(newName)) {
+        while (profileExists(newName)) {
             index++;
             newName = baseName + " (" + index + ")";
         }
@@ -272,6 +281,9 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     public MetricsProfile duplicateSelectedProfile(String newProfileName) {
+        if (profileExists(newProfileName)) {
+            throw new IllegalArgumentException("name already exists: " + newProfileName);
+        }
         final MetricsProfile selectedProfile = getSelectedProfile();
         assert selectedProfile != null;
         final MetricsProfile newProfile;
@@ -288,6 +300,9 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     public MetricsProfile createEmptyProfile(String newProfileName) {
+        if (profileExists(newProfileName)) {
+            throw new IllegalArgumentException("name already exists: " + newProfileName);
+        }
         final MetricsProfile newProfile = buildProfile(newProfileName);
         profiles.put(newProfileName, newProfile);
         persistProfile(newProfile);
@@ -296,7 +311,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
     }
 
     public boolean profileExists(String profileName) {
-        return profiles.containsKey(profileName);
+        return profiles.containsKey(profileName) || prebuiltProfiles.containsKey(profileName);
     }
 
     public MetricsProfile getProfileByName(String profileName) {
