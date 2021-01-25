@@ -332,6 +332,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
     private void rebindMetricsTree() {
+        assert profile != null;
         final TreeModel model = metricsTree.getModel();
         final MetricTreeNode root = (MetricTreeNode) model.getRoot();
         final int numCategories = root.getChildCount();
@@ -342,8 +343,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 final MetricTreeNode metricNode = (MetricTreeNode) category.getChildAt(j);
                 final MetricInstance currentMetricInstance = (MetricInstance) metricNode.getUserObject();
                 final MetricInstance newMetric = profile.getMetricInstance(currentMetricInstance.getMetric());
-                metricNode.setUserObject(newMetric);
                 assert newMetric != null : currentMetricInstance;
+                metricNode.setUserObject(newMetric);
                 metricNode.enabled = newMetric.isEnabled();
             }
         }
@@ -470,6 +471,9 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     private static boolean loadDescription(Metric metric, String path, JEditorPane descriptionPane) {
         try {
             final URL resourceURL = metric.getClass().getResource(path);
+            if (resourceURL == null) {
+                return false;
+            }
             final String description = ResourceUtil.loadText(resourceURL);
             readHTML(descriptionPane, toHTML(descriptionPane, description, false));
             return true;
@@ -552,7 +556,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             markProfileDirty();
         } else {
             node.enabled = !node.enabled;
-            final Enumeration children = node.children();
+            final Enumeration<?> children = node.children();
             while (children.hasMoreElements()) {
                 final MetricTreeNode child = (MetricTreeNode) children.nextElement();
                 child.enabled = node.enabled;
@@ -561,7 +565,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
                 else
                 {
-                    final Enumeration grandchildren = child.children();
+                    final Enumeration<?> grandchildren = child.children();
                     while (grandchildren.hasMoreElements()) {
                         final MetricTreeNode grandChild = (MetricTreeNode) grandchildren.nextElement();
                         grandChild.enabled = node.enabled;
@@ -580,10 +584,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final AnAction expandActon = new AnAction(MetricsReloadedBundle.message("expand.all.action"),
                 MetricsReloadedBundle.message("expand.all.description"), AllIcons.Actions.Expandall) {
             @Override
-            public void actionPerformed(AnActionEvent anActionEvent) {
+            public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
-                for (Enumeration e = root.children(); e.hasMoreElements();) {
+                for (final Enumeration<?> e = root.children(); e.hasMoreElements();) {
                     final MetricTreeNode childNode = (MetricTreeNode) e.nextElement();
                     final TreePath path = rootPath.pathByAddingChild(childNode);
                     metricsTree.expandPath(path);
@@ -593,10 +597,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final AnAction collapseAction = new AnAction(MetricsReloadedBundle.message("collapse.all.action"),
                 MetricsReloadedBundle.message("collapse.all.description"), AllIcons.Actions.Collapseall) {
             @Override
-            public void actionPerformed(AnActionEvent anActionEvent) {
+            public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
                 final TreePath rootPath = new TreePath(root);
-                for (Enumeration e = root.children(); e.hasMoreElements();) {
+                for (final Enumeration<?> e = root.children(); e.hasMoreElements();) {
                     final MetricTreeNode childNode = (MetricTreeNode) e.nextElement();
                     final TreePath path = rootPath.pathByAddingChild(childNode);
                     metricsTree.collapsePath(path);
@@ -797,10 +801,13 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            final String newProfileName = Messages.showInputDialog(saveAsButton,
+            final String newProfileName = Messages.showInputDialog(
+                    saveAsButton,
                     MetricsReloadedBundle.message("enter.new.profile.name"),
                     MetricsReloadedBundle.message("create.new.metrics.profile"),
-                    Messages.getQuestionIcon(), repository.generateNewProfileName("Metrics"), null);
+                    Messages.getQuestionIcon(),
+                    repository.generateNewProfileName(MetricsReloadedBundle.message("default.new.profile.name")),
+                    null);
             if (newProfileName == null) {
                 return;
             }
