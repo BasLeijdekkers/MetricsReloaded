@@ -257,10 +257,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         metricsTree = new MetricsTree();
         treeScrollPane.setViewportView(metricsTree);
         populateTree("");
-        final MyTreeCellRenderer renderer = new MyTreeCellRenderer();
+        final ProfileTreeCellRenderer renderer = new ProfileTreeCellRenderer();
         metricsTree.setCellRenderer(renderer);
-        metricsTree.setRootVisible(true);
-        metricsTree.setShowsRootHandles(false);
+        metricsTree.setRootVisible(false);
+        metricsTree.setShowsRootHandles(true);
         metricsTree.putClientProperty("JTree.lineStyle", "Angled");
 
         metricsTree.addKeyListener(new KeyAdapter() {
@@ -625,14 +625,14 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         }
     }
 
-    private static class MyTreeCellRenderer extends JPanel implements TreeCellRenderer {
+    private class ProfileTreeCellRenderer extends JPanel implements TreeCellRenderer {
 
         private final JLabel myLabel;
         private final JCheckBox myCheckbox;
 
         @SuppressWarnings("OverridableMethodCallInConstructor")
-         MyTreeCellRenderer() {
-            super(new BorderLayout());
+        ProfileTreeCellRenderer() {
+            super(new BorderLayout(4, 4));
             myCheckbox = new JCheckBox();
             myLabel = new JLabel();
             add(myCheckbox, BorderLayout.WEST);
@@ -647,22 +647,20 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
             myCheckbox.setSelected(node.enabled);
 
-            myCheckbox.setBackground(UIManager.getColor("Tree.textBackground"));
+            myCheckbox.setBackground(UIManager.getColor(selected ? "Tree.selectionBackground" : "Tree.textBackground"));
             setBackground(UIManager.getColor(selected ? "Tree.selectionBackground" : "Tree.textBackground"));
             final Color foreground = UIManager.getColor(selected ? "Tree.selectionForeground" : "Tree.textForeground");
             setForeground(foreground);
             myCheckbox.setForeground(foreground);
             myLabel.setForeground(foreground);
-            myCheckbox.setEnabled(true);
+            myCheckbox.setEnabled(profile != null && !profile.isPrebuilt());
 
             if (object instanceof MetricInstance) {
                 final MetricInstance tool = (MetricInstance) object;
                 myLabel.setFont(tree.getFont());
                 myLabel.setText(tool.getMetric().getDisplayName());
             } else {
-                final Font font = tree.getFont();
-                final Font boldFont = new Font(font.getName(), Font.BOLD, font.getSize());
-                myLabel.setFont(boldFont);
+                myLabel.setFont(tree.getFont().deriveFont(Font.BOLD));
                 myLabel.setText((String) object);
             }
 
@@ -681,11 +679,11 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
         @Override
         protected void processMouseEvent(MouseEvent e) {
-            if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+            if (e.getID() == MouseEvent.MOUSE_CLICKED && profile != null && !profile.isPrebuilt()) {
                 final int row = getRowForLocation(e.getX(), e.getY());
                 if (row >= 0) {
                     final Rectangle rowBounds = getRowBounds(row);
-                    final MyTreeCellRenderer renderer = (MyTreeCellRenderer) getCellRenderer();
+                    final ProfileTreeCellRenderer renderer = (ProfileTreeCellRenderer) getCellRenderer();
                     renderer.setBounds(rowBounds);
                     final Rectangle checkBounds = renderer.myCheckbox.getBounds();
 
