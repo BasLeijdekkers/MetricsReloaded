@@ -427,14 +427,12 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void setupDeleteButton() {
         deleteButton.addActionListener(e -> {
-            final String currentProfileName = profile.getName();
-            repository.deleteProfile(profile);
-            profile = repository.getSelectedProfile();
-            markProfileClean();
-            profilesDropdown.removeItem(currentProfileName);
-            profilesDropdown.setSelectedItem(profile.getName());
-            toggleDeleteButton();
-            rebindMetricsTree();
+            if (profile == null) {
+                return;
+            }
+            final MetricsProfile currentProfile = profile;
+            repository.deleteProfile(currentProfile);
+            profilesDropdown.removeItem(currentProfile);
         });
     }
 
