@@ -71,10 +71,8 @@ public class ProfileSelectionPanel extends JPanel {
 
     private static ComboboxWithBrowseButton buildComboBoxWithBrowseButton(Project project,
                                                                           MetricsProfileRepository repository) {
-        final JComboBox<MetricsProfile> comboBox = new ComboBox<>(new DefaultComboBoxModel<>(repository.getProfiles()));
-        comboBox.setRenderer(SimpleListCellRenderer.create((label, profile, i) -> {
-            label.setText(profile.getName());
-        }));
+        final ComboBox<MetricsProfile> comboBox = new ComboBox<>(new DefaultComboBoxModel<>(repository.getProfiles()));
+        comboBox.setRenderer(new ProfileListCellRenderer());
         final ComboboxWithBrowseButton comboboxWithBrowseButton = new ComboboxWithBrowseButton(comboBox);
         comboBox.setSelectedItem(repository.getSelectedProfile());
         comboBox.addItemListener(event -> {

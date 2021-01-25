@@ -30,7 +30,6 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.StreamUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.FilterComponent;
-import com.intellij.ui.SimpleListCellRenderer;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
@@ -360,9 +359,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final MetricsProfile[] profiles = repository.getProfiles();
         final MutableComboBoxModel<MetricsProfile> profilesModel = new DefaultComboBoxModel<>(profiles);
         profilesDropdown.setModel(profilesModel);
-        profilesDropdown.setRenderer(SimpleListCellRenderer.create((label, profile, i) -> {
-            label.setText(profile.getName());
-        }));
+        profilesDropdown.setRenderer(new ProfileListCellRenderer());
         final MetricsProfile currentProfile = repository.getSelectedProfile();
         if (currentProfile != null) {
             profilesDropdown.setSelectedItem(currentProfile);
