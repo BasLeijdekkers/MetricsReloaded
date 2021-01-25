@@ -23,13 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public interface MetricsProfile extends Cloneable {
+public interface MetricsProfile {
 
     MetricsProfile[] EMPTY_ARRAY = new MetricsProfile[0];
 
     void addMetricInstance(MetricInstance metricInstance);
-
-    MetricsProfile clone() throws CloneNotSupportedException;
 
     void copyFrom(List<MetricInstance> metrics);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.profile.MetricInstance;
 import com.sixrr.metrics.metricModel.MetricsResult;
+import com.sixrr.metrics.profile.MetricInstanceImpl;
 import com.sixrr.metrics.profile.MetricsProfile;
 import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.ui.dialogs.ThresholdDialog;
@@ -60,11 +61,7 @@ class EditThresholdsAction extends AnAction {
             if (metric.getCategory() != category) {
                 continue;
             }
-            try {
-                metrics.add(instance.clone());
-            } catch (CloneNotSupportedException e) {
-                throw new AssertionError(e);
-            }
+            metrics.add(new MetricInstanceImpl(instance));
         }
         final MetricsResult results = toolWindow.getCurrentRun().getResultsForCategory(category);
         final ThresholdDialog dialog =

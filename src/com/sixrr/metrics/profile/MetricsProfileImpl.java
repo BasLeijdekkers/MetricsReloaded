@@ -35,11 +35,15 @@ public class MetricsProfileImpl implements MetricsProfile {
     private final Map<String, MetricInstance> id2instance = new HashMap<>();
     private boolean prebuilt = false;
 
-    public MetricsProfileImpl(String name, List<MetricInstance> metrics) {
+    public MetricsProfileImpl(String name, Collection<MetricInstance> metrics) {
         this.name = name;
         for (MetricInstance metricInstance : metrics) {
-            id2instance.put(metricInstance.getMetric().getID(), metricInstance);
+            addMetricInstance(metricInstance);
         }
+    }
+
+    public MetricsProfileImpl(MetricsProfile copy) {
+        this(copy.getName(), copy.getMetricInstances());
     }
 
     @Override
@@ -99,16 +103,6 @@ public class MetricsProfileImpl implements MetricsProfile {
         final List<MetricInstance> result = new ArrayList<>(id2instance.values());
         Collections.sort(result);
         return result;
-    }
-
-    @Override
-    public MetricsProfileImpl clone() throws CloneNotSupportedException {
-        final MetricsProfileImpl out = (MetricsProfileImpl) super.clone();
-        out.id2instance.clear();
-        for (Map.Entry<String, MetricInstance> entry : id2instance.entrySet()) {
-            out.id2instance.put(entry.getKey(), entry.getValue().clone());
-        }
-        return out;
     }
 
     @Override

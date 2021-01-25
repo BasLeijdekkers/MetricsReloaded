@@ -286,12 +286,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         }
         final MetricsProfile selectedProfile = getSelectedProfile();
         assert selectedProfile != null;
-        final MetricsProfile newProfile;
-        try {
-            newProfile = selectedProfile.clone();
-        } catch (CloneNotSupportedException ignore) {
-            throw new AssertionError();
-        }
+        final MetricsProfile newProfile = new MetricsProfileImpl(selectedProfile);
         newProfile.setName(newProfileName);
         profiles.put(newProfileName, newProfile);
         persistProfile(newProfile);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.sixrr.metrics.profile;
 
 import com.sixrr.metrics.Metric;
 
-public interface MetricInstance extends Cloneable, Comparable<MetricInstance> {
+public interface MetricInstance extends Comparable<MetricInstance> {
 
     MetricInstance[] EMPTY_ARRAY = {};
 
@@ -45,6 +45,4 @@ public interface MetricInstance extends Cloneable, Comparable<MetricInstance> {
     double getUpperThreshold();
 
     double getLowerThreshold();
-
-    MetricInstance clone() throws CloneNotSupportedException;
 }
