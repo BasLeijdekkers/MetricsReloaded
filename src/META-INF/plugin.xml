@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+  ~ Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -30,14 +30,15 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must NOT be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.10</version>
+  <version>1.11</version>
   <change-notes><![CDATA[
-  1.10<br>
-  - Allow multiple metric results in separate tabs in the tool window<br>
-  - Cleanup of descriptions<br>
-  - Double clicking a package metrics result now navigates to package<br>
-  - Several exceptions in the UI fixed<br>
-  - Bug fixed in several metrics for more accurate calculation<br>
+  1.11<br>
+  - Important fixes and improvements in Metrics Profile handling<br>
+  - Improved compatibility with IntelliJ Platform, but now requires at least 2020.1<br>
+  - Added Cognitive Complexity metric for Java<br>
+  - Calculate Cyclomatic Complexity for Enhanced Switches and regular switch statements correctly<br>
+  - Fixed assertion error in Number of Cyclic Dependencies metric<br>
+  - Further minor fixes and improvements<br>
   ]]></change-notes>
   <idea-version since-build="201"/>
 
