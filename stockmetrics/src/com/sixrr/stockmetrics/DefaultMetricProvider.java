@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -100,37 +100,38 @@ public class DefaultMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
-        profile.addMetric(LinesOfCodeFileTypeMetric.class);
-        profile.addMetric(LinesOfCodeModuleMetric.class);
-        profile.addMetric(LinesOfCodeProjectMetric.class);
-        profile.addMetric(LinesOfHTMLModuleMetric.class);
-        profile.addMetric(LinesOfHTMLProjectMetric.class);
-        profile.addMetric(LinesOfProductCodeModuleMetric.class);
-        profile.addMetric(LinesOfProductCodeProjectMetric.class);
-        profile.addMetric(LinesOfTestCodeModuleMetric.class);
-        profile.addMetric(LinesOfTestCodeProjectMetric.class);
-        profile.addMetric(LinesOfXMLModuleMetric.class);
-        profile.addMetric(LinesOfXMLProjectMetric.class);
-        profile.addMetric(NonCommentLinesOfCodeFileTypeMetric.class);
-        profile.addMetric(SourceLinesOfCodeModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodeProductModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodeProductProjectMetric.class);
-        profile.addMetric(SourceLinesOfCodeProjectMetric.class);
-        profile.addMetric(SourceLinesOfCodeTestModuleMetric.class);
-        profile.addMetric(SourceLinesOfCodeTestProjectMetric.class);
+        profile.addMetric("LinesOfCodeFileType");
+        profile.addMetric("LinesOfCodeModule");
+        profile.addMetric("LinesOfCodeProject");
+        profile.addMetric("LinesOfHTMLModule");
+        profile.addMetric("LinesOfHTMLProject");
+        profile.addMetric("LinesOfProductCodeModule");
+        profile.addMetric("LinesOfProductCodeProject");
+        profile.addMetric("LinesOfTestCodeModule");
+        profile.addMetric("LinesOfTestCodeProject");
+        profile.addMetric("LinesOfXMLModule");
+        profile.addMetric("LinesOfXMLProject");
+        profile.addMetric("NonCommentLinesOfCodeFileType");
+        profile.addMetric("RelativeLinesOfCode");
+        profile.addMetric("SourceLinesOfCodeModule");
+        profile.addMetric("SourceLinesOfCodeProductModule");
+        profile.addMetric("SourceLinesOfCodeProductProject");
+        profile.addMetric("SourceLinesOfCodeProject");
+        profile.addMetric("SourceLinesOfCodeTestModule");
+        profile.addMetric("SourceLinesOfCodeTestProject");
         return profile;
     }
 
     private static PrebuiltMetricProfile createFileCountProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
-        profile.addMetric(NumFilesFileTypeMetric.class);
-        profile.addMetric(NumFilesModuleMetric.class);
-        profile.addMetric(NumFilesProjectMetric.class);
-        profile.addMetric(NumHTMLFilesModuleMetric.class);
-        profile.addMetric(NumHTMLFilesProjectMetric.class);
-        profile.addMetric(NumXMLFilesModuleMetric.class);
-        profile.addMetric(NumXMLFilesProjectMetric.class);
+        profile.addMetric("NumFilesFileType");
+        profile.addMetric("NumFilesModule");
+        profile.addMetric("NumFilesProject");
+        profile.addMetric("NumHTMLFilesModule");
+        profile.addMetric("NumHTMLFilesProject");
+        profile.addMetric("NumXMLFilesModule");
+        profile.addMetric("NumXMLFilesProject");
         return profile;
     }
 }

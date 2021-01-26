@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -347,153 +347,183 @@ public class JavaMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createChidamberKemererProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("chidamber.kemerer.metrics.profile.name"));
-        profile.addMetric(CouplingBetweenObjectsClassMetric.class);
-        profile.addMetric(DepthOfInheritanceMetric.class);
-        profile.addMetric(LackOfCohesionOfMethodsClassMetric.class);
-        profile.addMetric(NumChildrenMetric.class);
-        profile.addMetric(ResponseForClassMetric.class);
-        profile.addMetric(WeightedMethodComplexityMetric.class);
+        profile.addMetric("CouplingBetweenObjectsClass");
+        profile.addMetric("DepthOfInheritance");
+        profile.addMetric("LackOfCohesionOfMethodsClass");
+        profile.addMetric("NumChildren");
+        profile.addMetric("ResponseForClass");
+        profile.addMetric("WeightedMethodComplexity");
         return profile;
     }
 
     private static PrebuiltMetricProfile createClassCountProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("class.count.metrics.profile.name"));
-        profile.addMetric(NumClassesProjectMetric.class);
-        profile.addMetric(NumClassesModuleMetric.class);
-        profile.addMetric(NumClassesPackageMetric.class);
-        profile.addMetric(NumClassesRecursivePackageMetric.class);
-        profile.addMetric(NumProductClassesProjectMetric.class);
-        profile.addMetric(NumProductClassesModuleMetric.class);
-        profile.addMetric(NumProductClassesPackageMetric.class);
-        profile.addMetric(NumProductClassesRecursivePackageMetric.class);
-        profile.addMetric(NumTestClassesProjectMetric.class);
-        profile.addMetric(NumTestClassesModuleMetric.class);
-        profile.addMetric(NumTestClassesPackageMetric.class);
-        profile.addMetric(NumTestClassesRecursivePackageMetric.class);
+        profile.addMetric("NumClassesProject");
+        profile.addMetric("NumClassesModule");
+        profile.addMetric("NumClassesPackage");
+        profile.addMetric("NumClassesRecursivePackage");
+        profile.addMetric("NumProductClassesProject");
+        profile.addMetric("NumProductClassesModule");
+        profile.addMetric("NumProductClassesPackage");
+        profile.addMetric("NumProductClassesRecursivePackage");
+        profile.addMetric("NumTestClassesProject");
+        profile.addMetric("NumTestClassesModule");
+        profile.addMetric("NumTestClassesPackage");
+        profile.addMetric("NumTestClassesRecursivePackage");
         return profile;
     }
 
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
-        profile.addMetric(LinesOfCodePackageMetric.class);
-        profile.addMetric(LinesOfCodeRecursivePackageMetric.class);
-        profile.addMetric(LinesOfJavaModuleMetric.class);
-        profile.addMetric(LinesOfJavaProjectMetric.class);
-        profile.addMetric(LinesOfProductCodePackageMetric.class);
-        profile.addMetric(LinesOfProductCodeRecursivePackageMetric.class);
-        profile.addMetric(LinesOfTestCodePackageMetric.class);
-        profile.addMetric(LinesOfTestCodeRecursivePackageMetric.class);
+        profile.addMetric("CommentLinesOfCodeClass");
+        profile.addMetric("CommentLinesOfCodeInterface");
+        profile.addMetric("CommentLinesOfCodeMethod");
+        profile.addMetric("CommentLinesOfCodePackage");
+        profile.addMetric("CommentLinesOfCodeProject");
+        profile.addMetric("CommentLinesOfCodeRecursivePackage");
+        profile.addMetric("JavadocLinesOfCodeClass");
+        profile.addMetric("JavadocLinesOfCodeInterface");
+        profile.addMetric("JavadocLinesOfCodeMethod");
+        profile.addMetric("JavadocLinesOfCodeModule");
+        profile.addMetric("JavadocLinesOfCodePackage");
+        profile.addMetric("JavadocLinesOfCodeProject");
+        profile.addMetric("JavadocLinesOfCodeRecursivePackage");
+        profile.addMetric("LinesOfCodeClass");
+        profile.addMetric("LinesOfCodeInterface");
+        profile.addMetric("LinesOfCodeMethod");
+        profile.addMetric("LinesOfCodePackage");
+        profile.addMetric("LinesOfCodeRecursivePackage");
+        profile.addMetric("LinesOfJavaModule");
+        profile.addMetric("LinesOfJavaProject");
+        profile.addMetric("LinesOfProductCodePackage");
+        profile.addMetric("LinesOfProductCodeRecursivePackage");
+        profile.addMetric("LinesOfTestCodePackage");
+        profile.addMetric("LinesOfTestCodeRecursivePackage");
+        profile.addMetric("SourceLinesOfCodeInterface");
+        profile.addMetric("SourceLinesOfCodeMethod");
+        profile.addMetric("SourceLinesOfCodePackage");
+        profile.addMetric("SourceLinesOfCodeProductPackage");
+        profile.addMetric("SourceLinesOfCodeProductRecursivePackage");
+        profile.addMetric("SourceLinesOfCodeTestPackage");
+        profile.addMetric("SourceLinesOfCodeTestRecursivePackage");
         return profile;
     }
 
     private static PrebuiltMetricProfile createComplexityProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("complexity.metrics.profile.name"));
-        profile.addMetric(AverageCyclomaticComplexityModuleMetric.class, null, null);
-        profile.addMetric(AverageCyclomaticComplexityPackageMetric.class, null, null);
-        profile.addMetric(AverageCyclomaticComplexityProjectMetric.class, null, null);
-        profile.addMetric(AverageOperationComplexityMetric.class, null, Double.valueOf(3.0));
-        profile.addMetric(CyclomaticComplexityMetric.class, null, Double.valueOf(10.0));
-        profile.addMetric(DesignComplexityMetric.class, null, Double.valueOf(8.0));
-        profile.addMetric(EssentialCyclomaticComplexityMetric.class, null, Double.valueOf(3.0));
-        profile.addMetric(TotalCyclomaticComplexityModuleMetric.class, null, null);
-        profile.addMetric(TotalCyclomaticComplexityPackageMetric.class, null, null);
-        profile.addMetric(TotalCyclomaticComplexityProjectMetric.class, null, null);
-        profile.addMetric(WeightedMethodComplexityMetric.class, null, Double.valueOf(30.0));
-        profile.addMetric(CognitiveComplexityMetric.class, null, Double.valueOf(15.0));
+        profile.addMetric("AverageCyclomaticComplexityModule", null, null);
+        profile.addMetric("AverageCyclomaticComplexityPackage", null, null);
+        profile.addMetric("AverageCyclomaticComplexityProject", null, null);
+        profile.addMetric("AverageOperationComplexity", null, Double.valueOf(3.0));
+        profile.addMetric("CognitiveComplexity", null, Double.valueOf(15.0));
+        profile.addMetric("CyclomaticComplexity", null, Double.valueOf(10.0));
+        profile.addMetric("DesignComplexity", null, Double.valueOf(8.0));
+        profile.addMetric("EssentialCyclomaticComplexity", null, Double.valueOf(3.0));
+        profile.addMetric("MaximumOperationComplexity", null, null);
+        profile.addMetric("TotalCyclomaticComplexityModule", null, null);
+        profile.addMetric("TotalCyclomaticComplexityPackage", null, null);
+        profile.addMetric("TotalCyclomaticComplexityProject", null, null);
+        profile.addMetric("WeightedMethodComplexity", null, Double.valueOf(30.0));
         return profile;
     }
 
     private static PrebuiltMetricProfile createDependencyProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("dependency.metrics.profile.name"));
-        profile.addMetric(NumCyclicDependenciesClassMetric.class);
-        profile.addMetric(NumCyclicDependenciesInterfaceMetric.class);
-        profile.addMetric(NumDependenciesClassMetric.class);
-        profile.addMetric(NumDependenciesInterfaceMetric.class);
-        profile.addMetric(NumDependencyPackagesPackageMetric.class);
-        profile.addMetric(NumDependentPackagesPackageMetric.class);
-        profile.addMetric(NumDependentsClassMetric.class);
-        profile.addMetric(NumDependentsInterfaceMetric.class);
-        profile.addMetric(NumTransitiveDependenciesClassMetric.class);
-        profile.addMetric(NumTransitiveDependenciesInterfaceMetric.class);
-        profile.addMetric(NumTransitiveDependentsClassMetric.class);
-        profile.addMetric(NumTransitiveDependentsInterfaceMetric.class);
+        profile.addMetric("NumCyclicDependenciesClass");
+        profile.addMetric("NumCyclicDependenciesInterface");
+        profile.addMetric("NumCyclicDependenciesPackage");
+        profile.addMetric("NumDependenciesClass");
+        profile.addMetric("NumDependenciesInterface");
+        profile.addMetric("NumDependencyPackagesPackage");
+        profile.addMetric("NumDependentPackagesPackage");
+        profile.addMetric("NumDependentsClass");
+        profile.addMetric("NumDependentsInterface");
+        profile.addMetric("NumPackageDependenciesClass");
+        profile.addMetric("NumPackageDependenciesInterface");
+        profile.addMetric("NumPackageDependentsClass");
+        profile.addMetric("NumPackageDependentsInterface");
+        profile.addMetric("NumTransitiveDependenciesClass");
+        profile.addMetric("NumTransitiveDependenciesInterface");
+        profile.addMetric("NumTransitiveDependentPackagesPackage");
+        profile.addMetric("NumTransitiveDependentsClass");
+        profile.addMetric("NumTransitiveDependentsInterface");
         return profile;
     }
 
     private static PrebuiltMetricProfile createFileCountProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
-        profile.addMetric(NumJavaFilesModuleMetric.class);
-        profile.addMetric(NumJavaFilesProjectMetric.class);
+        profile.addMetric("NumJavaFilesModule");
+        profile.addMetric("NumJavaFilesProject");
         return profile;
     }
 
     private static PrebuiltMetricProfile createJavadocProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("javadoc.coverage.metrics.profile.name"));
-        profile.addMetric(JavadocLinesOfCodeClassMetric.class);
-        profile.addMetric(JavadocLinesOfCodeInterfaceMetric.class);
-        profile.addMetric(JavadocLinesOfCodeMethodMetric.class);
-        profile.addMetric(JavadocLinesOfCodeModuleMetric.class);
-        profile.addMetric(JavadocLinesOfCodePackageMetric.class);
-        profile.addMetric(JavadocLinesOfCodeProjectMetric.class);
-        profile.addMetric(PercentClassesJavadocedModuleMetric.class);
-        profile.addMetric(PercentClassesJavadocedPackageMetric.class);
-        profile.addMetric(PercentClassesJavadocedProjectMetric.class);
-        profile.addMetric(PercentFieldsJavadocedClassMetric.class);
-        profile.addMetric(PercentFieldsJavadocedInterfaceMetric.class);
-        profile.addMetric(PercentFieldsJavadocedModuleMetric.class);
-        profile.addMetric(PercentFieldsJavadocedPackageMetric.class);
-        profile.addMetric(PercentFieldsJavadocedProjectMetric.class);
-        profile.addMetric(PercentMethodsJavadocedClassMetric.class);
-        profile.addMetric(PercentMethodsJavadocedInterfaceMetric.class);
-        profile.addMetric(PercentMethodsJavadocedModuleMetric.class);
-        profile.addMetric(PercentMethodsJavadocedPackageMetric.class);
-        profile.addMetric(PercentMethodsJavadocedProjectMetric.class);
+        profile.addMetric("JavadocLinesOfCodeClass");
+        profile.addMetric("JavadocLinesOfCodeInterface");
+        profile.addMetric("JavadocLinesOfCodeMethod");
+        profile.addMetric("JavadocLinesOfCodeModule");
+        profile.addMetric("JavadocLinesOfCodePackage");
+        profile.addMetric("JavadocLinesOfCodeProject");
+        profile.addMetric("PercentClassesJavadocedModule");
+        profile.addMetric("PercentClassesJavadocedPackage");
+        profile.addMetric("PercentClassesJavadocedProject");
+        profile.addMetric("PercentFieldsJavadocedClass");
+        profile.addMetric("PercentFieldsJavadocedInterface");
+        profile.addMetric("PercentFieldsJavadocedModule");
+        profile.addMetric("PercentFieldsJavadocedPackage");
+        profile.addMetric("PercentFieldsJavadocedProject");
+        profile.addMetric("PercentMethodsJavadocedClass");
+        profile.addMetric("PercentMethodsJavadocedInterface");
+        profile.addMetric("PercentMethodsJavadocedModule");
+        profile.addMetric("PercentMethodsJavadocedPackage");
+        profile.addMetric("PercentMethodsJavadocedProject");
         return profile;
     }
 
     private static PrebuiltMetricProfile createMartinProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("martin.packaging.metrics.profile.name"));
-        profile.addMetric(AbstractnessMetric.class);
-        profile.addMetric(AfferentCouplingMetric.class);
-        profile.addMetric(DistanceMetric.class);
-        profile.addMetric(EfferentCouplingMetric.class);
-        profile.addMetric(InstabilityMetric.class);
+        profile.addMetric("Abstractness");
+        profile.addMetric("AfferentCoupling");
+        profile.addMetric("Distance");
+        profile.addMetric("EfferentCoupling");
+        profile.addMetric("Instability");
         return profile;
     }
 
     private static PrebuiltMetricProfile createMoodProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("mood.metrics.profile.name"));
-        profile.addMetric(AttributeHidingFactorProjectMetric.class);
-        profile.addMetric(AttributeInheritanceFactorProjectMetric.class);
-        profile.addMetric(CouplingFactorProjectMetric.class);
-        profile.addMetric(MethodHidingFactorProjectMetric.class);
-        profile.addMetric(MethodInheritanceFactorProjectMetric.class);
-        profile.addMetric(PolymorphismFactorProjectMetric.class);
+        profile.addMetric("AttributeHidingFactorProject");
+        profile.addMetric("AttributeInheritanceFactorProject");
+        profile.addMetric("CouplingFactorProject");
+        profile.addMetric("MethodHidingFactorProject");
+        profile.addMetric("MethodInheritanceFactorProject");
+        profile.addMetric("PolymorphismFactorProject");
         return profile;
     }
 
     private static PrebuiltMetricProfile createTestProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("junit.testing.metrics.profile.name"));
-        profile.addMetric(NumTestAssertsClassMetric.class);
-        profile.addMetric(NumTestAssertsModuleMetric.class);
-        profile.addMetric(NumTestAssertsPackageMetric.class);
-        profile.addMetric(NumTestAssertsProjectMetric.class);
-        profile.addMetric(NumTestCasesModuleMetric.class);
-        profile.addMetric(NumTestCasesPackageMetric.class);
-        profile.addMetric(NumTestCasesProjectMetric.class);
-        profile.addMetric(NumTestMethodsClassMetric.class);
-        profile.addMetric(NumTestMethodsModuleMetric.class);
-        profile.addMetric(NumTestMethodsPackageMetric.class);
-        profile.addMetric(NumTestMethodsProjectMetric.class);
+        profile.addMetric("NumTestAssertsClass");
+        profile.addMetric("NumTestAssertsModule");
+        profile.addMetric("NumTestAssertsPackage");
+        profile.addMetric("NumTestAssertsProject");
+        profile.addMetric("NumTestCasesModule");
+        profile.addMetric("NumTestCasesPackage");
+        profile.addMetric("NumTestCasesProject");
+        profile.addMetric("NumTestMethodsClass");
+        profile.addMetric("NumTestMethodsModule");
+        profile.addMetric("NumTestMethodsPackage");
+        profile.addMetric("NumTestMethodsProject");
         return profile;
     }
 }

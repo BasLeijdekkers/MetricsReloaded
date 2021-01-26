@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -56,16 +56,16 @@ public class KotlinMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
-        profile.addMetric(LinesOfKotlinProjectMetric.class);
-        profile.addMetric(LinesOfKotlinModuleMetric.class);
+        profile.addMetric("LinesOfKotlinProject");
+        profile.addMetric("LinesOfKotlinModule");
         return profile;
     }
 
     private static  PrebuiltMetricProfile createFileCountProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("file.count.metrics.profile.name"));
-        profile.addMetric(NumKotlinFilesProjectMetric.class);
-        profile.addMetric(NumKotlinFilesModuleMetric.class);
+        profile.addMetric("NumKotlinFilesProject");
+        profile.addMetric("NumKotlinFilesModule");
         return profile;
     }
 }
