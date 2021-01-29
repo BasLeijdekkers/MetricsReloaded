@@ -226,7 +226,7 @@ public class MetricsDisplay {
             final Font font = table.getFont();
             final FontMetrics fontMetrics = table.getFontMetrics(font);
 
-            final int rowCount = model.getRowCount();
+            final int rowCount = Math.min(model.getRowCount(), 500);
             int maxFirstColumnWidth = 100;
             for (int i = 0; i < rowCount; i++) {
                 final String name = (String) model.getValueAt(i, 0);
