@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.intellij.ui.speedSearch.SpeedSearchUtil.appendFragmentsForSpeedSearch;
+
 class MetricCellRenderer extends ColoredTableCellRenderer {
 
     private final MetricInstance metricInstance;
@@ -40,15 +42,14 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
     }
 
     @Override
-    protected void customizeCellRenderer(JTable table, @Nullable Object value, boolean selected, boolean hasFocus, int row, int column) {
+    protected void customizeCellRenderer(JTable table, @Nullable Object value, boolean selected,
+                                         boolean hasFocus, int row, int column) {
         final MetricTableModel model = (MetricTableModel) table.getModel();
         if (value instanceof String) { // measured object
-            if (model.hasSummaryRows() && row == model.getRowCount() - 2) {
-                append((String) value, SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
-            }
-            else {
-                append((String) value);
-            }
+            final SimpleTextAttributes attributes = model.hasSummaryRows() && row == model.getRowCount() - 2
+                                                    ? SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES
+                                                    : SimpleTextAttributes.REGULAR_ATTRIBUTES;
+            appendFragmentsForSpeedSearch(table, (String)value, attributes, selected, this);
         }
         if (metricInstance == null) {
             return;
@@ -63,21 +64,31 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
             }
             if (model.hasSummaryRows()) {
                 if (row == model.getRowCount() - 1) {
-                    append(FormatUtils.formatValue(metric, (Double) value, true));
+                    appendFragmentsForSpeedSearch(table,
+                                                  FormatUtils.formatValue(metric, (Double) value, true),
+                                                  SimpleTextAttributes.REGULAR_ATTRIBUTES,
+                                                  selected,
+                                                  this);
                     return;
                 }
                 else if (row == model.getRowCount() - 2) {
-                    append(FormatUtils.formatValue(metric, (Double) value), SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+                    appendFragmentsForSpeedSearch(table,
+                                                  FormatUtils.formatValue(metric, (Double) value),
+                                                  SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES,
+                                                  selected,
+                                                  this);
                     return;
                 }
             }
             final String stringValue = FormatUtils.formatValue(metric, (Double) value);
+            final SimpleTextAttributes attributes;
             if (metricInstance.isUpperThresholdEnabled() && doubleValue > metricInstance.getUpperThreshold() ||
                     metricInstance.isLowerThresholdEnabled() && doubleValue < metricInstance.getLowerThreshold()) {
-                append(stringValue, SimpleTextAttributes.ERROR_ATTRIBUTES);
+                attributes = SimpleTextAttributes.ERROR_ATTRIBUTES;
             } else {
-                append(stringValue);
+                attributes = SimpleTextAttributes.REGULAR_ATTRIBUTES;
             }
+            appendFragmentsForSpeedSearch(table, stringValue, attributes, selected, this);
         } else if (value instanceof Pair) { // diff value
             final Pair<Double, Double> pair = (Pair<Double, Double>) value;
             final Double currentValue = pair.getFirst();
@@ -110,7 +121,7 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
                     (model.hasSummaryRows() && row == model.getRowCount() - 2) ? SimpleTextAttributes.STYLE_BOLD : -1;
             final SimpleTextAttributes attributes =
                     SimpleTextAttributes.REGULAR_ATTRIBUTES.derive(style, null, backgroundColor, null);
-            append(stringValue.toString(), attributes);
+            appendFragmentsForSpeedSearch(this, stringValue.toString(), attributes, selected, this);
         }
     }
 }
