@@ -26,7 +26,6 @@ import com.sixrr.metrics.metricModel.MetricInstanceAbbreviationComparator;
 import com.sixrr.metrics.metricModel.MetricsResult;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.profile.MetricInstance;
-import com.sixrr.metrics.profile.MetricsProfileRepository;
 import com.sixrr.metrics.utils.MetricsCategoryNameUtil;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
@@ -240,9 +239,13 @@ public class MetricsDisplay {
                 }
             }
 
-            final int allocatedFirstColumnWidth = Math.min(300, maxFirstColumnWidth + 5);
+            final int allocatedFirstColumnWidth = Math.min(500, maxFirstColumnWidth + 5);
             final TableColumn column = columnModel.getColumn(0);
             column.setPreferredWidth(allocatedFirstColumnWidth);
+            final int count = columnModel.getColumnCount();
+            for (int i = 1; i < count; i++) {
+                columnModel.getColumn(i).setPreferredWidth(100);
+            }
         }
     }
 
