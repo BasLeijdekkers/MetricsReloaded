@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +16,17 @@
 
 package com.sixrr.metrics.utils;
 
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.search.searches.SuperMethodsSearch;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.psi.util.PsiFormatUtil;
 import com.intellij.util.Query;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.psi.util.PsiFormatUtilBase.*;
 
 public final class MethodUtils {
 
@@ -50,30 +56,8 @@ public final class MethodUtils {
     }
 
     public static String calculateSignature(PsiMethod method) {
-        final PsiClass containingClass = method.getContainingClass();
-        final String className;
-        if (containingClass != null) {
-            className = containingClass.getQualifiedName();
-        } else {
-            className = "";
-        }
-        final String methodName = method.getName();
-        final StringBuilder out = new StringBuilder(50);
-        out.append(className);
-        out.append('.');
-        out.append(methodName);
-        out.append('(');
-        final PsiParameterList parameterList = method.getParameterList();
-        final PsiParameter[] parameters = parameterList.getParameters();
-        for (int i = 0; i < parameters.length; i++) {
-            if (i != 0) {
-                out.append(',');
-            }
-            final PsiType parameterType = parameters[i].getType();
-            final String parameterTypeText = parameterType.getPresentableText();
-            out.append(parameterTypeText);
-        }
-        out.append(')');
-        return out.toString();
+        return PsiFormatUtil.formatMethod(method, PsiSubstitutor.EMPTY,
+                                          SHOW_NAME | SHOW_FQ_NAME | SHOW_CONTAINING_CLASS | SHOW_FQ_CLASS_NAMES | SHOW_PARAMETERS,
+                                          SHOW_TYPE);
     }
 }
