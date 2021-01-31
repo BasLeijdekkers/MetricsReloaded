@@ -19,7 +19,12 @@ package com.sixrr.metrics.ui.metricdisplay;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.ColoredTableCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
 import com.sixrr.metrics.Metric;
@@ -49,6 +54,20 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
             final SimpleTextAttributes attributes = model.hasSummaryRows() && row == model.getRowCount() - 2
                                                     ? SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES
                                                     : SimpleTextAttributes.REGULAR_ATTRIBUTES;
+            final PsiElement element = model.getElementAtRow(row);
+            if (element != null) {
+                setIcon(element.getIcon(Iconable.ICON_FLAG_VISIBILITY));
+            }
+            else {
+                final Object original = model.getOriginalAtRow(row);
+                if (original instanceof FileType) {
+                    final FileType fileType = (FileType) original;
+                    setIcon(fileType.getIcon());
+                }
+                else if (original instanceof Module) {
+                    setIcon(ModuleType.get((Module) original).getIcon());
+                }
+            }
             appendFragmentsForSpeedSearch(table, (String)value, attributes, selected, this);
         }
         if (metricInstance == null) {

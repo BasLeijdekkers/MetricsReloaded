@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.ArrayUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricType;
 import com.sixrr.metrics.profile.MetricInstance;
@@ -31,10 +32,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MetricsResultImpl implements MetricsResult {
+    private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
+
     private final Map<Metric, StringToFractionMap> values = new HashMap<>(32);
     private final Set<String> measuredObjects = new HashSet<>(32);
     private final Set<Metric> metrics = new HashSet<>(32);
-    private final Map<String, SmartPsiElementPointer<PsiElement>> elements = new HashMap<>(1024);
+    private final Map<String, Object> elements = new HashMap<>(1024);
 
     @Override
     public void postValue(Metric metric, String measured, double value) {
@@ -70,7 +73,7 @@ public class MetricsResultImpl implements MetricsResult {
     public double[] getValuesForMetric(Metric metric) {
         final StringToFractionMap metricValues = values.get(metric);
         if (metricValues == null) {
-            return new double[0];
+            return EMPTY_DOUBLE_ARRAY;
         }
         final String[] measureds = metricValues.getKeys();
         final double[] result = new double[measureds.length];
@@ -82,7 +85,7 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public String[] getMeasuredObjects() {
-        final String[] array = measuredObjects.toArray(new String[0]);
+        final String[] array = measuredObjects.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
         Arrays.sort(array);
         return array;
     }
@@ -155,11 +158,26 @@ public class MetricsResultImpl implements MetricsResult {
     @Override
     @Nullable
     public PsiElement getElementForMeasuredObject(String measuredObject) {
-        final SmartPsiElementPointer<PsiElement> pointer = elements.get(measuredObject);
-        if (pointer == null) {
+        final Object o = elements.get(measuredObject);
+        if (!(o instanceof SmartPsiElementPointer)) {
             return null;
         }
+        final SmartPsiElementPointer<PsiElement> pointer = (SmartPsiElementPointer<PsiElement>) o;
         return pointer.getElement();
+    }
+
+    @Override
+    public void setOriginalForMeasuredObject(String measuredObject, Object original) {
+        elements.put(measuredObject, original);
+    }
+
+    @Override
+    public <T> T getOriginalForMeasuredObject(String measuredObject) {
+        final Object o = elements.get(measuredObject);
+        if (o instanceof SmartPsiElementPointer) {
+            return null;
+        }
+        return (T)o;
     }
 
     @Override
@@ -183,7 +201,7 @@ public class MetricsResultImpl implements MetricsResult {
 
     @Override
     public MetricsResult filterRowsWithoutWarnings(MetricsProfile profile) {
-        final MetricsResult out = new MetricsResultImpl();
+        final MetricsResultImpl out = new MetricsResultImpl();
         for (String measuredObject : measuredObjects) {
             boolean found = false;
             for (Metric metric : metrics) {
@@ -212,9 +230,9 @@ public class MetricsResultImpl implements MetricsResult {
                     final double value = valuesForMetric.get(measuredObject);
                     out.postValue(metric, measuredObject, value, 1.0); //not quite right
                 }
-                final PsiElement elementForMeasuredObject = getElementForMeasuredObject(measuredObject);
-                if (elementForMeasuredObject != null) {
-                    out.setElementForMeasuredObject(measuredObject, elementForMeasuredObject);
+                final Object o = elements.get(measuredObject);
+                if (o != null) {
+                    out.elements.put(measuredObject, o);
                 }
             }
         }

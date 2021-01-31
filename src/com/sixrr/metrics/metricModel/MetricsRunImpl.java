@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -89,13 +89,17 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
     @Override
     public void postFileTypeMetric(Metric metric, FileType fileType, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
-        results.postValue(metric, getFileTypeString(fileType), value);
+        final String fileTypeString = getFileTypeString(fileType);
+        results.postValue(metric, fileTypeString, value);
+        results.setOriginalForMeasuredObject(fileTypeString, fileType);
     }
 
     @Override
     public void postModuleMetric(@NotNull Metric metric, @NotNull Module module, double value) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Module);
-        results.postValue(metric, module.getName(), value);
+        final String moduleName = module.getName();
+        results.postValue(metric, moduleName, value);
+        results.setOriginalForMeasuredObject(moduleName, module);
     }
 
     @Override
@@ -139,7 +143,9 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
     @Override
     public void postModuleMetric(@NotNull Metric metric, @NotNull Module module, double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.Module);
-        results.postValue(metric, module.getName(), numerator, denominator);
+        final String moduleName = module.getName();
+        results.postValue(metric, moduleName, numerator, denominator);
+        results.setOriginalForMeasuredObject(moduleName, module);
     }
 
     @Override
@@ -155,7 +161,9 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
     public void postFileTypeMetric(@NotNull Metric metric, @NotNull FileType fileType,
                                    double numerator, double denominator) {
         final MetricsResult results = getResultsForCategory(MetricCategory.FileType);
-        results.postValue(metric, getFileTypeString(fileType), numerator, denominator);
+        final String fileTypeString = getFileTypeString(fileType);
+        results.postValue(metric, fileTypeString, numerator, denominator);
+        results.setOriginalForMeasuredObject(fileTypeString, fileType);
     }
 
     @Override
@@ -280,7 +288,7 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
     private void writeResultsForCategory(MetricCategory category, XMLStreamWriter writer) throws XMLStreamException {
         final MetricsResult results = getResultsForCategory(category);
         final Metric[] metrics = results.getMetrics();
-        for (final Metric metric : metrics) {
+        for (Metric metric : metrics) {
             writeResultsForMetric(metric, results, writer);
         }
     }
@@ -293,7 +301,7 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
         writer.writeStartElement("METRIC");
         writer.writeAttribute("class_name", metricClass.getName());
         writer.writeCharacters("\n");
-        for (final String measuredObject : measuredObjects) {
+        for (String measuredObject : measuredObjects) {
             writeValue(results, metric, measuredObject, writer);
         }
         writer.writeCharacters("  ");
@@ -333,7 +341,7 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
         final String version = snapshotElement.getAttributeValue("version"); // may need this later
         final List<Element> metrics = snapshotElement.getChildren("METRIC");
         final MetricRepository repository = MetricsProfileRepository.getInstance();
-        for (final Element metricElement : metrics) {
+        for (Element metricElement : metrics) {
             readMetricElement(metricElement, repository, run);
         }
         return run;
@@ -368,7 +376,7 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
             final Metric metric = repository.getMetric(className);
             if (metric != null) {
                 final List<Element> values = metricElement.getChildren("VALUE");
-                for (final Element valueElement : values) {
+                for (Element valueElement : values) {
                     final String measured = valueElement.getAttributeValue("measured");
                     final String valueString = valueElement.getAttributeValue("value");
                     final double value = Double.parseDouble(valueString);

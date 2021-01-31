@@ -159,6 +159,14 @@ class MetricTableModel extends AbstractTableModel {
         return results.getElementForMeasuredObject(measuredObject);
     }
 
+    public Object getOriginalAtRow(int row) {
+        if (row >= rowPermutation.length) {
+            return null;
+        }
+        final String measuredObject = measuredObjects[rowPermutation[row]];
+        return results.getOriginalForMeasuredObject(measuredObject);
+    }
+
     public MetricInstance getMetricForColumn(int column) {
         final int permutedColumn = columnPermutation[column];
         return metricsInstances[permutedColumn - 1];
