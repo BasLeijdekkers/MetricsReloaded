@@ -17,7 +17,8 @@
 package com.sixrr.metrics.metricModel;
 
 import com.intellij.analysis.AnalysisScope;
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.FileType;
@@ -220,7 +221,10 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
                 writer.writeStartElement("SNAPSHOT");
                 writer.writeAttribute("profile", profileName);
                 writer.writeAttribute("timestamp", timestamp.toString());
-                final String version = PluginManager.getPlugin(PluginId.getId("MetricsReloaded")).getVersion();
+                final IdeaPluginDescriptor pluginDescriptor =
+                        PluginManagerCore.getPlugin(PluginId.getId("MetricsReloaded"));
+                assert pluginDescriptor != null;
+                final String version = pluginDescriptor.getVersion();
                 writer.writeAttribute("version", version);
                 writer.writeCharacters("\n");
                 final MetricCategory[] categories = MetricCategory.values();
