@@ -112,7 +112,6 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric("LinesOfXMLModule");
         profile.addMetric("LinesOfXMLProject");
         profile.addMetric("NonCommentLinesOfCodeFileType");
-        profile.addMetric("RelativeLinesOfCode");
         profile.addMetric("SourceLinesOfCodeModule");
         profile.addMetric("SourceLinesOfCodeProductModule");
         profile.addMetric("SourceLinesOfCodeProductProject");

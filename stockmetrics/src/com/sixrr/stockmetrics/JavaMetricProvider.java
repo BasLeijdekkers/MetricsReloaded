@@ -401,6 +401,7 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric("LinesOfProductCodeRecursivePackage");
         profile.addMetric("LinesOfTestCodePackage");
         profile.addMetric("LinesOfTestCodeRecursivePackage");
+        profile.addMetric("RelativeLinesOfCode");
         profile.addMetric("SourceLinesOfCodeInterface");
         profile.addMetric("SourceLinesOfCodeMethod");
         profile.addMetric("SourceLinesOfCodePackage");
