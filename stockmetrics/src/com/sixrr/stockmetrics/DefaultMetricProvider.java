@@ -100,6 +100,7 @@ public class DefaultMetricProvider implements MetricProvider {
     private static PrebuiltMetricProfile createCodeSizeProfile() {
         final PrebuiltMetricProfile profile =
                 new PrebuiltMetricProfile(StockMetricsBundle.message("lines.of.code.metrics.profile.name"));
+        profile.addMetric("CommentLinesOfCodeProject");
         profile.addMetric("LinesOfCodeFileType");
         profile.addMetric("LinesOfCodeModule");
         profile.addMetric("LinesOfCodeProject");

@@ -381,7 +381,6 @@ public class JavaMetricProvider implements MetricProvider {
         profile.addMetric("CommentLinesOfCodeInterface");
         profile.addMetric("CommentLinesOfCodeMethod");
         profile.addMetric("CommentLinesOfCodePackage");
-        profile.addMetric("CommentLinesOfCodeProject");
         profile.addMetric("CommentLinesOfCodeRecursivePackage");
         profile.addMetric("JavadocLinesOfCodeClass");
         profile.addMetric("JavadocLinesOfCodeInterface");
