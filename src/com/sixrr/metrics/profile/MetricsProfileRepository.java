@@ -107,10 +107,29 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
 
     private void loadMetricsFromProviders() {
         final MetricProvider[] metricProviders = MetricProvider.EXTENSION_POINT_NAME.getExtensions();
+        boolean assertsEnabled = false;
+        //noinspection AssertWithSideEffects
+        assert assertsEnabled = true;
         for (MetricProvider provider : metricProviders) {
-            final List<Metric> metrics = provider.getMetrics();
-            for (Metric metric : metrics) {
-                this.metrics.put(metric.getClass().getName(), metric);
+            final Set<String> extensionMetrics = assertsEnabled ? new HashSet<>() : null;
+            for (Metric metric : provider.getMetrics()) {
+                metrics.put(metric.getClass().getName(), metric);
+                if (assertsEnabled) {
+                    final boolean added = extensionMetrics.add(metric.getID());
+                    assert added : "Duplicate metric id '" + metric.getID() +
+                                   "' found in '" + provider.getClass().getName() + "'";
+                }
+            }
+            if (assertsEnabled) {
+                for (PrebuiltMetricProfile prebuiltProfile : provider.getPrebuiltProfiles()) {
+                    // sanity check
+                    for (String metricID : prebuiltProfile.getMetricIDs()) {
+                        assert extensionMetrics.contains(metricID) :
+                                "Prebuilt profile '" + prebuiltProfile.getProfileName() +
+                                "' contains metric id not provided by '" + provider.getClass().getName() +
+                                "': " + metricID;
+                    }
+                }
             }
         }
     }
@@ -153,7 +172,7 @@ public final class MetricsProfileRepository implements MetricRepository, Exporta
         final Set<String> metricIDs = prebuiltProfile.getMetricIDs();
         for (String metricID : metricIDs) {
             final MetricInstance instance = profile.getMetricInstance(metricID);
-            assert instance != null : "no instance found for " + metricID;
+            assert instance != null : "no instance found for " + metricID + " in profile " + profile.getName();
             assert !instance.isEnabled() : "instance already enabled for " + metricID;
             instance.setEnabled(true);
             final Double lowerThreshold = prebuiltProfile.getLowerThresholdForMetric(metricID);
