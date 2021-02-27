@@ -44,6 +44,9 @@ class MetricCellRenderer extends ColoredTableCellRenderer {
 
     MetricCellRenderer(MetricInstance metricInstance) {
         this.metricInstance = metricInstance;
+        setOpaque(false);
+        setIconOpaque(false);
+        setTransparentIconBackground(true);
     }
 
     @Override
