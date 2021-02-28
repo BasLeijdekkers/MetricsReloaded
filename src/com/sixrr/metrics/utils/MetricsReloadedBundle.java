@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,30 +15,32 @@
  */
 package com.sixrr.metrics.utils;
 
-import com.intellij.AbstractBundle;
-import com.intellij.reference.SoftReference;
+import com.intellij.DynamicBundle;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.PropertyKey;
 
-import java.lang.ref.Reference;
-import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
-public final class MetricsReloadedBundle {
+public final class MetricsReloadedBundle extends DynamicBundle {
 
     public static final String BUNDLE = "com.sixrr.metrics.utils.MetricsReloadedBundle";
-    private static Reference<ResourceBundle> INSTANCE;
+    private static final MetricsReloadedBundle INSTANCE = new MetricsReloadedBundle();
 
-    private MetricsReloadedBundle() {}
-
-    public static String message(@PropertyKey(resourceBundle = BUNDLE) String key, Object... params) {
-        return AbstractBundle.message(getBundle(), key, params);
+    private MetricsReloadedBundle() {
+        super(BUNDLE);
     }
 
-    private static ResourceBundle getBundle() {
-        ResourceBundle bundle = SoftReference.dereference(INSTANCE);
-        if (bundle == null) {
-            bundle = ResourceBundle.getBundle(BUNDLE);
-            INSTANCE = new SoftReference<>(bundle);
-        }
-        return bundle;
+    @SuppressWarnings("OverloadedVarargsMethod")
+    @NotNull
+    public static @Nls String message(@NotNull @PropertyKey(resourceBundle = BUNDLE) String key,
+                                      Object @NotNull ... params) {
+        return INSTANCE.getMessage(key, params);
+    }
+
+    @NotNull
+    public static Supplier<@Nls String> messagePointer(@NotNull @PropertyKey(resourceBundle = BUNDLE) String key,
+                                                       Object @NotNull ... params) {
+        return INSTANCE.getLazyMessage(key, params);
     }
 }

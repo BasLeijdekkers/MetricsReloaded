@@ -33,8 +33,8 @@ class UpdateMetricsViewAction extends DumbAwareAction {
     private final Project project;
 
     UpdateMetricsViewAction(MetricsView toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("update.metrics.action"),
-                MetricsReloadedBundle.message("update.metrics.description"), AllIcons.Actions.Refresh);
+        super(MetricsReloadedBundle.messagePointer("update.metrics.action"),
+              MetricsReloadedBundle.messagePointer("update.metrics.description"), AllIcons.Actions.Refresh);
         this.toolWindow = toolWindow;
         this.project = project;
     }

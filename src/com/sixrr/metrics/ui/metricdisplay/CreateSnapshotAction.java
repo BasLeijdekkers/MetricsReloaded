@@ -37,8 +37,8 @@ class CreateSnapshotAction extends DumbAwareAction {
     private final Project project;
 
     CreateSnapshotAction(MetricsView toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("create.snapshot.action"),
-                MetricsReloadedBundle.message("create.snapshot.description"), AllIcons.Actions.Dump);
+        super(MetricsReloadedBundle.messagePointer("create.snapshot.action"),
+              MetricsReloadedBundle.messagePointer("create.snapshot.description"), AllIcons.Actions.Dump);
         this.toolWindow = toolWindow;
         this.project = project;
     }

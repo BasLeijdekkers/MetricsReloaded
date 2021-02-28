@@ -43,8 +43,8 @@ class ExportAction extends DumbAwareAction {
     private final Project project;
 
     ExportAction(MetricsView toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("export.action"),
-                MetricsReloadedBundle.message("export.description"), AllIcons.ToolbarDecorator.Export);
+        super(MetricsReloadedBundle.messagePointer("export.action"),
+              MetricsReloadedBundle.messagePointer("export.description"), AllIcons.ToolbarDecorator.Export);
         this.toolWindow = toolWindow;
         this.project = project;
     }

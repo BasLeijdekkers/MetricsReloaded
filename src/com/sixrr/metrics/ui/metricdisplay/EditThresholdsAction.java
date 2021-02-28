@@ -39,9 +39,9 @@ class EditThresholdsAction extends DumbAwareAction {
     private final MetricsView toolWindow;
 
     EditThresholdsAction(MetricsView toolWindow) {
-        super(MetricsReloadedBundle.message("edit.thresholds.action"),
-                MetricsReloadedBundle.message("edit.threshold.values.for.this.metric.profile"),
-                AllIcons.Actions.Properties);
+        super(MetricsReloadedBundle.messagePointer("edit.thresholds.action"),
+              MetricsReloadedBundle.messagePointer("edit.threshold.values.for.this.metric.profile"),
+              AllIcons.Actions.Properties);
         this.toolWindow = toolWindow;
     }
 

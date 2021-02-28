@@ -17,6 +17,7 @@
 package com.sixrr.metrics.ui.dialogs;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.IdeBundle;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -581,10 +582,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     public void createUIComponents() {
         filterComponent = new MyFilterComponent();
-        final DumbAwareAction expandActon =
-                new DumbAwareAction(MetricsReloadedBundle.message("expand.all.action"),
-                                    MetricsReloadedBundle.message("expand.all.description"),
-                                    AllIcons.Actions.Expandall) {
+        final DumbAwareAction expandActon = new DumbAwareAction(IdeBundle.messagePointer("action.expand.all"),
+                                                                AllIcons.Actions.Expandall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();
@@ -596,10 +595,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 }
             }
         };
-        final DumbAwareAction collapseAction =
-                new DumbAwareAction(MetricsReloadedBundle.message("collapse.all.action"),
-                                    MetricsReloadedBundle.message("collapse.all.description"),
-                                    AllIcons.Actions.Collapseall) {
+        final DumbAwareAction collapseAction = new DumbAwareAction(IdeBundle.messagePointer("action.collapse.all"),
+                                                                   AllIcons.Actions.Collapseall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                 final MetricTreeNode root = (MetricTreeNode) metricsTree.getModel().getRoot();

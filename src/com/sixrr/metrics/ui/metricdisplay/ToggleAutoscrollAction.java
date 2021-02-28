@@ -20,14 +20,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareToggleAction;
 import com.intellij.ui.UIBundle;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
-import com.sixrr.metrics.utils.MetricsReloadedBundle;
 import org.jetbrains.annotations.NotNull;
 
 class ToggleAutoscrollAction extends DumbAwareToggleAction {
 
     ToggleAutoscrollAction() {
-        super(MetricsReloadedBundle.message("autoscroll.to.source.action"),
-              MetricsReloadedBundle.message("autoscroll.to.source.description"), AllIcons.General.AutoscrollToSource);
+        super(UIBundle.message("autoscroll.to.source.action.name"),
+              UIBundle.message("autoscroll.to.source.action.description"), AllIcons.General.AutoscrollToSource);
     }
 
     @Override

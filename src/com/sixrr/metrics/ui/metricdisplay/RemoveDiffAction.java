@@ -27,8 +27,8 @@ class RemoveDiffAction extends DumbAwareAction  {
     private final MetricsView toolWindow;
 
     RemoveDiffAction(MetricsView toolWindow) {
-        super(MetricsReloadedBundle.message("hide.comparison.action"),
-                MetricsReloadedBundle.message("hide.comparison.description"), AllIcons.General.Reset);
+        super(MetricsReloadedBundle.messagePointer("hide.comparison.action"),
+              MetricsReloadedBundle.messagePointer("hide.comparison.description"), AllIcons.General.Reset);
         this.toolWindow = toolWindow;
     }
 

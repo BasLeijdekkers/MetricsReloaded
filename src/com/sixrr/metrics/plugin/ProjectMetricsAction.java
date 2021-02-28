@@ -39,7 +39,8 @@ import javax.swing.*;
 public class ProjectMetricsAction extends BaseAnalysisAction {
 
     public ProjectMetricsAction() {
-        super(MetricsReloadedBundle.message("metrics.calculation"), MetricsReloadedBundle.message("metrics"));
+        super(MetricsReloadedBundle.messagePointer("metrics.calculation"),
+              MetricsReloadedBundle.messagePointer("metrics"));
     }
 
     @Override

@@ -33,8 +33,8 @@ class UpdateWithDiffAction extends DumbAwareAction {
     private final Project project;
 
     UpdateWithDiffAction(MetricsView toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("update.with.differences.action"),
-                MetricsReloadedBundle.message("update.with.differences.description"), AllIcons.Actions.Rerun);
+        super(MetricsReloadedBundle.messagePointer("update.with.differences.action"),
+              MetricsReloadedBundle.messagePointer("update.with.differences.description"), AllIcons.Actions.Rerun);
         this.toolWindow = toolWindow;
         this.project = project;
     }

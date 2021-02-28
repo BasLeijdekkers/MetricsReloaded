@@ -36,8 +36,8 @@ class DiffSnapshotAction extends DumbAwareAction {
     private final Project project;
 
     DiffSnapshotAction(MetricsView toolWindow, Project project) {
-        super(MetricsReloadedBundle.message("compare.with.snapshot.action"),
-                MetricsReloadedBundle.message("compare.with.snapshot.description"), AllIcons.Actions.Diff);
+        super(MetricsReloadedBundle.messagePointer("compare.with.snapshot.action"),
+              MetricsReloadedBundle.messagePointer("compare.with.snapshot.description"), AllIcons.Actions.Diff);
         this.toolWindow = toolWindow;
         this.project = project;
     }
