@@ -23,8 +23,8 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.wm.RegisterToolWindowTask;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.SideBorder;
@@ -86,10 +86,8 @@ public class MetricsView {
         ToolWindow toolWindow = toolWindowManager.getToolWindow(TOOL_WINDOW_ID);
         if (toolWindow == null) {
             final Icon icon = IconLoader.getIcon(ICON_PATH);
-            toolWindow = toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.BOTTOM, project);
+            toolWindow = toolWindowManager.registerToolWindow(RegisterToolWindowTask.closable(TOOL_WINDOW_ID, icon));
             toolWindow.setTitle(MetricsReloadedBundle.message("metrics.reloaded.toolwindow.title"));
-            toolWindow.setIcon(icon);
-            toolWindow.setAvailable(true, null);
             toolWindow.setToHideOnEmptyContent(true);
             ContentManagerWatcher.watchContentManager(toolWindow, toolWindow.getContentManager());
         }
