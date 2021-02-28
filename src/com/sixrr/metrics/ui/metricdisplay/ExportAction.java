@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.export.CSVExporter;
@@ -28,13 +28,14 @@ import com.sixrr.metrics.export.Exporter;
 import com.sixrr.metrics.export.XMLExporter;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-class ExportAction extends AnAction {
+class ExportAction extends DumbAwareAction {
 
     private static final Logger LOG = Logger.getInstance(ExportAction.class);
 
@@ -49,7 +50,7 @@ class ExportAction extends AnAction {
     }
 
     @Override
-    public void actionPerformed(AnActionEvent event) {
+    public void actionPerformed(@NotNull AnActionEvent event) {
         final MetricsRun currentResults = toolWindow.getCurrentRun();
         final JFileChooser chooser = new JFileChooser();
         final FileTypeFilter xmlFilter =

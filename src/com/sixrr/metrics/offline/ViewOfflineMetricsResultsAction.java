@@ -17,6 +17,7 @@
 package com.sixrr.metrics.offline;
 
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.Metric;
@@ -25,6 +26,7 @@ import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.profile.*;
 import com.sixrr.metrics.ui.metricdisplay.MetricsView;
 import com.sixrr.metrics.ui.metricdisplay.SnapshotFileFilter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -33,7 +35,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewOfflineMetricsResultsAction extends AnAction {
+public class ViewOfflineMetricsResultsAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(AnActionEvent event) {
@@ -77,7 +79,7 @@ public class ViewOfflineMetricsResultsAction extends AnAction {
     }
 
     @Override
-    public void update(AnActionEvent event) {
+    public void update(@NotNull AnActionEvent event) {
         super.update(event);
         final Presentation presentation = event.getPresentation();
         final DataContext dataContext = event.getDataContext();

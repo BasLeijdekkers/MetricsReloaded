@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.WindowManager;
 import com.sixrr.metrics.metricModel.MetricsRun;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 
-class DiffSnapshotAction extends AnAction {
+class DiffSnapshotAction extends DumbAwareAction {
 
     private final MetricsView toolWindow;
     private final Project project;
@@ -42,7 +43,7 @@ class DiffSnapshotAction extends AnAction {
     }
 
     @Override
-    public void actionPerformed(AnActionEvent event) {
+    public void actionPerformed(@NotNull AnActionEvent event) {
         final JFileChooser chooser = new JFileChooser();
         final FileFilter filter = new SnapshotFileFilter();
         chooser.setFileFilter(filter);
@@ -53,7 +54,9 @@ class DiffSnapshotAction extends AnAction {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File selectedFile = chooser.getSelectedFile();
             final MetricsRun previousResults = MetricsRunImpl.readFromFile(selectedFile);
-            toolWindow.reloadAsDiff(previousResults);
+            if (previousResults != null) {
+                toolWindow.reloadAsDiff(previousResults);
+            }
         }
     }
 }

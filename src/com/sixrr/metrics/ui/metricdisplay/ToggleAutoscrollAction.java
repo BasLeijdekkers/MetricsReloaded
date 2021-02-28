@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2016 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,24 +17,26 @@ package com.sixrr.metrics.ui.metricdisplay;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.ToggleAction;
+import com.intellij.openapi.project.DumbAwareToggleAction;
+import com.intellij.ui.UIBundle;
 import com.sixrr.metrics.config.MetricsReloadedConfig;
 import com.sixrr.metrics.utils.MetricsReloadedBundle;
+import org.jetbrains.annotations.NotNull;
 
-class ToggleAutoscrollAction extends ToggleAction {
+class ToggleAutoscrollAction extends DumbAwareToggleAction {
 
     ToggleAutoscrollAction() {
         super(MetricsReloadedBundle.message("autoscroll.to.source.action"),
-                MetricsReloadedBundle.message("autoscroll.to.source.description"), AllIcons.General.AutoscrollToSource);
+              MetricsReloadedBundle.message("autoscroll.to.source.description"), AllIcons.General.AutoscrollToSource);
     }
 
     @Override
-    public boolean isSelected(AnActionEvent event) {
+    public boolean isSelected(@NotNull AnActionEvent event) {
         return MetricsReloadedConfig.getInstance().isAutoscroll();
     }
 
     @Override
-    public void setSelected(AnActionEvent event, boolean b) {
+    public void setSelected(@NotNull AnActionEvent event, boolean b) {
         MetricsReloadedConfig.getInstance().setAutoscroll(b);
     }
 }
