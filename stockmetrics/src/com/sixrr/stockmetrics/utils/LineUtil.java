@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,20 +23,23 @@ import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class LineUtil {
 
     private LineUtil() {}
 
-    public static int countLines(PsiElement element) {
-        if (element instanceof PsiCompiledElement) {
+    public static int countLines(@Nullable PsiElement element) {
+        if (element == null || element instanceof PsiCompiledElement) {
             return 0;
         }
-        final String text = element.getText();
-        return countLines(text);
+        return countLines(element.getText());
     }
 
     static int countLines(String text) {
+        if (text == null) {
+            return 0;
+        }
         int lines = 0;
         boolean onEmptyLine = true;
         final char[] chars = text.toCharArray();
