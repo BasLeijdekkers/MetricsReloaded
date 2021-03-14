@@ -30,8 +30,10 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must NOT be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.11.1</version>
+  <version>1.11.2</version>
   <change-notes><![CDATA[
+  1.11.2<br>
+  - Fixes NullPointerException in Lines of Code calculation<br>
   1.11.1<br>
   - Fixes bug that prevented MetricsReloaded from working in IDE without Java support (e.g. CLion)<br>
   1.11<br>
