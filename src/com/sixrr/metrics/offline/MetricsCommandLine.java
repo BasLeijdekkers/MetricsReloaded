@@ -38,6 +38,7 @@ import com.intellij.psi.search.GlobalSearchScopesCore;
 import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.scope.packageSet.NamedScopesHolder;
 import com.sixrr.metrics.export.Exporter;
+import com.sixrr.metrics.export.JSONExporter;
 import com.sixrr.metrics.export.XMLExporter;
 import com.sixrr.metrics.metricModel.MetricsExecutionContextImpl;
 import com.sixrr.metrics.metricModel.MetricsRunImpl;
@@ -84,6 +85,10 @@ public class MetricsCommandLine implements ApplicationStarter {
 
     @Option(name = "-h", aliases = "--help", usage = "show this message", help = true)
     private boolean help = false;
+
+    @Option(name = "-f", aliases = "--format", metaVar = "<output_format>",
+            usage = "report output format. Supported options: xml, json. Defaults to xml")
+    private String format = "xml";
 
     @Override
     public String getCommandName() {
@@ -180,7 +185,12 @@ public class MetricsCommandLine implements ApplicationStarter {
                     final MetricsExecutionContextImpl metricsExecutionContext =
                             new MetricsExecutionContextImpl(project, analysisScope);
                     metricsExecutionContext.calculateMetrics(profile, metricsRun);
-                    final Exporter exporter = new XMLExporter(metricsRun);
+                    final Exporter exporter;
+                    if (format.equals("json")) {
+                        exporter = new JSONExporter(metricsRun);
+                    } else {
+                        exporter = new XMLExporter(metricsRun);
+                    }
                     try {
                         if (outputXmlPath == null) {
                             final PrintWriter writer = new PrintWriter(System.out, true);
