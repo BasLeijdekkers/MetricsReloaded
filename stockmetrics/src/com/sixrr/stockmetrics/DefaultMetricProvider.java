@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -79,6 +79,7 @@ public class DefaultMetricProvider implements MetricProvider {
         metrics.add(new LinesOfXMLProjectMetric());
         metrics.add(new NumFilesProjectMetric());
         metrics.add(new NumHTMLFilesProjectMetric());
+        metrics.add(new NumModulesInProjectMetric());
         metrics.add(new NumXMLFilesProjectMetric());
         metrics.add(new SourceLinesOfCodeProductProjectMetric());
         metrics.add(new SourceLinesOfCodeProjectMetric());
@@ -130,6 +131,7 @@ public class DefaultMetricProvider implements MetricProvider {
         profile.addMetric("NumFilesProject");
         profile.addMetric("NumHTMLFilesModule");
         profile.addMetric("NumHTMLFilesProject");
+        profile.addMetric("NumModulesInProject");
         profile.addMetric("NumXMLFilesModule");
         profile.addMetric("NumXMLFilesProject");
         return profile;
