@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,18 +20,20 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.sixrr.metrics.Metric;
+import org.jetbrains.annotations.NotNull;
 
 public class FileCountModuleCalculator extends ElementCountModuleCalculator {
 
     private final FileType fileType;
 
-    public FileCountModuleCalculator(Metric metric, FileType fileType) {
+    public FileCountModuleCalculator(@NotNull Metric metric) {
         super(metric);
-        this.fileType = fileType;
+        fileType = null;
     }
 
-    protected boolean satisfies(PsiFile file) {
-        return file.getFileType() == fileType;
+    public FileCountModuleCalculator(@NotNull Metric metric, @NotNull FileType fileType) {
+        super(metric);
+        this.fileType = fileType;
     }
 
     @Override
@@ -42,12 +44,9 @@ public class FileCountModuleCalculator extends ElementCountModuleCalculator {
     private class Visitor extends PsiElementVisitor {
 
         @Override
-        public void visitFile(PsiFile file) {
+        public void visitFile(@NotNull PsiFile file) {
             super.visitFile(file);
-            createCount(file);
-            if (satisfies(file)) {
-                incrementCount(file, 1);
-            }
+            incrementCount(file, fileType == null || file.getFileType() == fileType ? 1 : 0);
         }
     }
 }
