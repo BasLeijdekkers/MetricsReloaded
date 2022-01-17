@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.StreamUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.FilterComponent;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
@@ -63,10 +64,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.EnumMap;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePanel.readHTML;
 import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePanel.toHTML;
@@ -79,6 +78,7 @@ import static com.intellij.profile.codeInspection.ui.SingleInspectionProfilePane
  */
 public class MetricsConfigurationDialog extends DialogWrapper implements TreeSelectionListener {
     private static final Logger LOG = Logger.getInstance(MetricsConfigurationDialog.class);
+    private final Map<MetricCategory, MetricTreeNode> categoryNodes = new EnumMap<>(MetricCategory.class);
 
     private JComboBox<MetricsProfile> profilesDropdown;
     private JEditorPane descriptionPane;
@@ -268,13 +268,22 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    final TreePath treePath = metricsTree.getLeadSelectionPath();
-                    final MetricTreeNode node = (MetricTreeNode) treePath.getLastPathComponent();
-                    toggleNode(metricsTree, node);
+                    toggleNodes(metricsTree, metricsTree.getSelectedNodes(MetricTreeNode.class, null));
                     e.consume();
                 }
             }
         });
+        new DoubleClickListener() {
+            @Override
+            protected boolean onDoubleClick(@NotNull MouseEvent event) {
+                final TreePath path = metricsTree.getLeadSelectionPath();
+                final MetricTreeNode node = (MetricTreeNode) path.getLastPathComponent();
+                if (node.isLeaf()) {
+                    toggleNodes(metricsTree, node);
+                }
+                return true;
+            }
+        }.installOn(metricsTree);
         //noinspection ResultOfObjectAllocationIgnored
         new TreeSpeedSearch(metricsTree, treePath -> {
             final DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
@@ -291,7 +300,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
 
     private void populateTree(String filter) {
         final MetricTreeNode root = new MetricTreeNode(MetricsReloadedBundle.message("metrics"), true);
-        final Map<MetricCategory, MetricTreeNode> categoryNodes = new EnumMap<>(MetricCategory.class);
+        categoryNodes.clear();
 
         if (profile != null) {
             final List<MetricInstance> metrics = profile.getMetricInstances();
@@ -316,15 +325,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         final DefaultTreeModel treeModel = new DefaultTreeModel(root);
         metricsTree.setModel(treeModel);
         metricsTree.addTreeSelectionListener(this);
-        final TreeSelectionModel selectionModel = metricsTree.getSelectionModel();
-        selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        enableCategoryNodes();
 
-        for (int j = root.getChildCount() - 1; j >= 0; j--) {
-            final MetricTreeNode categoryNode = (MetricTreeNode) root.getChildAt(j);
-            if (categoryNode.getChildCount() == 0) {
-                root.remove(categoryNode);
-            }
-        }
         final TreePath rootPath = new TreePath(root);
         metricsTree.expandPath(rootPath);
         for (MetricTreeNode categoryNode : categoryNodes.values()) {
@@ -349,6 +351,7 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                 metricNode.enabled = newMetric.isEnabled();
             }
         }
+        enableCategoryNodes();
         metricsTree.treeDidChange();
     }
 
@@ -509,9 +512,8 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
     }
 
 
-    @NotNull
     @Override
-    public Action[] createActions() {
+    public Action @NotNull [] createActions() {
         if (SystemInfo.isMac) {
             return new Action[] {getCancelAction(), applyAction, getOKAction()};
         } else {
@@ -536,48 +538,65 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
         return "MetricsReloaded.MetricsConfigurationDialog";
     }
 
-    private void toggleNode(JTree tree, MetricTreeNode node) {
-        final Object userObject = node.getUserObject();
-        if (userObject instanceof MetricInstance) {
-            final MetricInstance tool = (MetricInstance) userObject;
-            node.enabled = !node.enabled;
-            if (node.enabled) {
-                final MetricTreeNode parent = (MetricTreeNode) node.getParent();
-                if (!parent.equals(tree.getModel().getRoot())) {
-                    parent.enabled = true;
-                }
-                tool.setEnabled(true);
-                upperThresholdEnabledCheckbox.setEnabled(true);
-                lowerThresholdEnabledCheckbox.setEnabled(true);
-            } else {
-                tool.setEnabled(false);
-                upperThresholdEnabledCheckbox.setEnabled(false);
-                lowerThresholdEnabledCheckbox.setEnabled(false);
+    private void toggleNodes(JTree tree, MetricTreeNode... nodes) {
+        if (profile.isPrebuilt()) {
+            return;
+        }
+        final Set<MetricTreeNode> parents = new HashSet<>();
+        for (MetricTreeNode node : nodes) {
+            if (node.getChildCount() > 0) {
+                parents.add(node);
             }
-            markProfileDirty();
-        } else {
+        }
+        for (MetricTreeNode node : nodes) {
+            final MetricTreeNode parent = (MetricTreeNode) node.getParent();
+            if (parents.contains(parent)) {
+                continue;
+            }
             node.enabled = !node.enabled;
-            final Enumeration<?> children = node.children();
-            while (children.hasMoreElements()) {
-                final MetricTreeNode child = (MetricTreeNode) children.nextElement();
-                child.enabled = node.enabled;
-                if (child.getUserObject()instanceof MetricInstance) {
-                    ((MetricInstance) child.getUserObject()).setEnabled(node.enabled);
-                }
-                else
-                {
-                    final Enumeration<?> grandchildren = child.children();
-                    while (grandchildren.hasMoreElements()) {
-                        final MetricTreeNode grandChild = (MetricTreeNode) grandchildren.nextElement();
-                        grandChild.enabled = node.enabled;
-                        if (grandChild.getUserObject()instanceof MetricInstance) {
-                            ((MetricInstance) grandChild.getUserObject()).setEnabled(node.enabled);
+            final Object userObject = node.getUserObject();
+            if (userObject instanceof MetricInstance) {
+                final MetricInstance tool = (MetricInstance) userObject;
+                tool.setEnabled(node.enabled);
+                upperThresholdEnabledCheckbox.setEnabled(node.enabled);
+                lowerThresholdEnabledCheckbox.setEnabled(node.enabled);
+                markProfileDirty();
+            } else {
+                final Enumeration<?> children = node.children();
+                while (children.hasMoreElements()) {
+                    final MetricTreeNode child = (MetricTreeNode) children.nextElement();
+                    child.enabled = node.enabled;
+                    if (child.getUserObject() instanceof MetricInstance) {
+                        ((MetricInstance) child.getUserObject()).setEnabled(node.enabled);
+                    } else {
+                        final Enumeration<?> grandchildren = child.children();
+                        while (grandchildren.hasMoreElements()) {
+                            final MetricTreeNode grandChild = (MetricTreeNode) grandchildren.nextElement();
+                            grandChild.enabled = node.enabled;
+                            if (grandChild.getUserObject() instanceof MetricInstance) {
+                                ((MetricInstance) grandChild.getUserObject()).setEnabled(node.enabled);
+                            }
                         }
                     }
                 }
             }
         }
+        enableCategoryNodes();
         tree.repaint();
+    }
+
+    private void enableCategoryNodes() {
+        for (MetricTreeNode node : categoryNodes.values()) {
+            node.enabled = false;
+            final Enumeration<TreeNode> children = node.children();
+            while (children.hasMoreElements()) {
+                final MetricTreeNode child = (MetricTreeNode) children.nextElement();
+                if (child.enabled) {
+                    node.enabled = true;
+                    break;
+                }
+            }
+        }
     }
 
     public void createUIComponents() {
@@ -691,13 +710,10 @@ public class MetricsConfigurationDialog extends DialogWrapper implements TreeSel
                     final ProfileTreeCellRenderer renderer = (ProfileTreeCellRenderer) getCellRenderer();
                     renderer.setBounds(rowBounds);
                     final Rectangle checkBounds = renderer.myCheckbox.getBounds();
-
                     checkBounds.setLocation(rowBounds.getLocation());
 
                     if (checkBounds.contains(e.getPoint())) {
-                        final MetricTreeNode node = (MetricTreeNode) getPathForRow(row)
-                                .getLastPathComponent();
-                        toggleNode(this, node);
+                        toggleNodes(this, (MetricTreeNode) getPathForRow(row).getLastPathComponent());
                         e.consume();
                         setSelectionRow(row);
                     }
