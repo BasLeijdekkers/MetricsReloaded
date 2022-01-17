@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -396,6 +396,16 @@ public class MetricsRunImpl implements MetricsRun, MetricsResultsHolder {
         for (MetricCategory category : MetricCategory.values()) {
             final MetricsResult result = metricResults.get(category);
             if (result.hasWarnings(profile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasResults() {
+        for (MetricCategory category : MetricCategory.values()) {
+            final MetricsResult result = metricResults.get(category);
+            if (result.hasValues()) {
                 return true;
             }
         }

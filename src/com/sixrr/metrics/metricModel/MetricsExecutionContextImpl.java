@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -91,6 +91,9 @@ public class MetricsExecutionContextImpl extends UserDataHolderBase implements M
 
             calculators.add(calculator);
             calculator.beginMetricsRun(resultsHolder, this);
+        }
+        if (calculators.isEmpty()) {
+            return;
         }
 
         scope.accept(new PsiElementVisitor() {

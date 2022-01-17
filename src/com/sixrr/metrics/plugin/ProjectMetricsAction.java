@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -58,8 +58,15 @@ public class ProjectMetricsAction extends BaseAnalysisAction {
             public void onFinish() {
                 final boolean showOnlyWarnings = MetricsReloadedConfig.getInstance().isShowOnlyWarnings();
                 if (!metricsRun.hasWarnings(profile) && showOnlyWarnings) {
-                    ToolWindowManager.getInstance(project).notifyByBalloon(MetricsView.TOOL_WINDOW_ID,
-                            MessageType.INFO, MetricsReloadedBundle.message("no.metrics.warnings.found"));
+                    ToolWindowManager.getInstance(project).notifyByBalloon(
+                            MetricsView.TOOL_WINDOW_ID, MessageType.INFO,
+                            MetricsReloadedBundle.message("no.metrics.warnings.found"));
+                    return;
+                }
+                else if (!metricsRun.hasResults()) {
+                    ToolWindowManager.getInstance(project).notifyByBalloon(
+                            MetricsView.TOOL_WINDOW_ID, MessageType.WARNING,
+                            "Profile '" + profile.getName() + "' has no enabled metrics");
                     return;
                 }
                 final String profileName = profile.getName();
