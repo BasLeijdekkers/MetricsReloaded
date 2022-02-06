@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+  ~ Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@
   <property name="build.sysclasspath" value="ignore"/>
   <path id="openapi.class.path">
     <pathelement location="${idea.dir}/lib/platform-api.jar"/>
-    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/redist/annotations-java8.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
     <pathelement location="${idea.dir}/plugins/java/lib/java-api.jar"/>
@@ -67,7 +67,7 @@
 
   <path id="utils.class.path">
     <pathelement location="${idea.dir}/lib/trove4j.jar"/>
-    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/redist/annotations-java8.jar"/>
     <pathelement location="${idea.dir}/lib/platform-api.jar"/>
     <pathelement location="${idea.dir}/lib/util.jar"/>
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
@@ -89,7 +89,7 @@
     <pathelement location="${idea.dir}/lib/extensions.jar"/>
     <pathelement location="${idea.dir}/lib/jdom.jar"/>
     <pathelement location="${idea.dir}/lib/intellij-xml.jar"/>
-    <pathelement location="${idea.dir}/redist/annotations.jar"/>
+    <pathelement location="${idea.dir}/redist/annotations-java8.jar"/>
     <pathelement location="${idea.dir}/redist/forms_rt.jar"/>
 
     <!-- jars for language specific metrics support -->
