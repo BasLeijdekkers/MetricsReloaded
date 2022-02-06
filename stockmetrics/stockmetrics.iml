@@ -85,6 +85,5 @@
         <jarDirectory url="file://$INTELLIJ_IDEA$/plugins/CSS/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="MetricsReloaded" scope="TEST" />
   </component>
 </module>
