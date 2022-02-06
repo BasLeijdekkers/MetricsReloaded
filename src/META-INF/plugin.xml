@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2005-2021 Sixth and Red River Software, Bas Leijdekkers
+  ~ Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
   ~  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
   <id>MetricsReloaded</id>
   <depends>com.intellij.modules.lang</depends>
   <description><![CDATA[
-    Automated code metrics for IntelliJ IDEA and IntelliJ Platform IDEs.
+    Automated source code metrics for IntelliJ IDEA and IntelliJ Platform IDEs.
     Lines of Code and file count metrics for all languages supported by your IDE and many more metrics for Java.
     <br><br>
 
@@ -30,15 +30,16 @@
     Enter <code>idea metrics -h</code> for help. For this to work IntelliJ IDEA must NOT be running.
     ]]></description>
   <vendor url="https://twitter.com/inspectorbas" email="basleijdekkers@gmail.com">Bas Leijdekkers</vendor>
-  <version>1.11</version>
+  <version>1.12</version>
   <change-notes><![CDATA[
-  1.11<br>
-  - Important fixes and improvements in Metrics Profile handling<br>
-  - Improved compatibility with IntelliJ Platform, but now requires at least 2020.1<br>
-  - Added Cognitive Complexity metric for Java<br>
-  - Calculate Cyclomatic Complexity for Enhanced Switches and regular switch statements correctly<br>
-  - Fixed assertion error in Number of Cyclic Dependencies metric<br>
-  - Further minor fixes and improvements<br>
+  1.12<br>
+  - UI improvements in Metrics dialog<br>
+  - Rendering improvements in results table<br>
+  - Bugs fixed including the dreaded ClassNotFoundException
+  (<a href="https://github.com/BasLeijdekkers/MetricsReloaded/issues/4">#4</a>,
+  <a href="https://github.com/BasLeijdekkers/MetricsReloaded/issues/69">#69</a>,
+  <a href="https://github.com/BasLeijdekkers/MetricsReloaded/issues/70">#70</a>,
+  <a href="https://github.com/BasLeijdekkers/MetricsReloaded/issues/73">#73</a>).<br>
   ]]></change-notes>
   <idea-version since-build="201"/>
 
