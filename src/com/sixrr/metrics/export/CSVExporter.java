@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2020 Sixth and Red River Software, Bas Leijdekkers
+ * Copyright 2005-2022 Sixth and Red River Software, Bas Leijdekkers
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.sixrr.metrics.export;
 
+import com.intellij.openapi.util.text.StringUtil;
 import com.sixrr.metrics.Metric;
 import com.sixrr.metrics.MetricCategory;
 import com.sixrr.metrics.metricModel.MetricAbbreviationComparator;
@@ -66,30 +67,52 @@ public class CSVExporter implements Exporter {
         }
         Arrays.sort(metrics, new MetricAbbreviationComparator());
         writer.print(type);
-        for (final Metric metric : metrics) {
-            final String abbreviation = metric.getAbbreviation();
-            writer.print(',' + abbreviation);
+        for (Metric metric : metrics) {
+            writer.print(',' + metric.getAbbreviation());
         }
         writer.println();
         final String[] measuredObjects = results.getMeasuredObjects();
         Arrays.sort(measuredObjects);
 
-        for (final String object : measuredObjects) {
-            writer.print('\"' + object + '\"');
-            for (final Metric metric : metrics) {
+        for (String object : measuredObjects) {
+            writer.print(escape(object));
+            for (Metric metric : metrics) {
                 final Double metricValue = results.getValueForMetric(metric, object);
                 if (metricValue == null) {
                     writer.print(",n/a");
                 } else {
-                    String formattedValue = FormatUtils.formatValue(metric, metricValue);
-                    if (formattedValue.indexOf((int) ',') >= 0) {
-                        formattedValue = '"' + formattedValue + '"';
-                    }
-                    writer.print(',' + formattedValue);
+                    writer.print(',' + escape(FormatUtils.formatValue(metric, metricValue)));
                 }
             }
             writer.println();
         }
         writer.println();
+    }
+
+    /**
+     * Wraps the specified string into double-quotes if it contains commas, newlines or double-quotes.
+     * Any double-quote that is part of the string will be represented by two double-quote characters
+     * @param s  the string to escape
+     * @return the escaped string
+     */
+    static String escape(String s) {
+        if (!StringUtil.containsAnyChar(s, "\",\n")) {
+            return s;
+        }
+        final StringBuilder result = new StringBuilder("\"");
+        int i = 0;
+        final int length = s.length();
+        while (i < length) {
+            final int codePoint = s.codePointAt(i);
+            if (codePoint == '"') {
+                result.append("\"\"");
+            }
+            else {
+                result.appendCodePoint(codePoint);
+            }
+            i += Character.charCount(codePoint);
+        }
+        result.append("\"");
+        return result.toString();
     }
 }
